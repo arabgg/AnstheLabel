@@ -1,0 +1,115 @@
+/* Reset & Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Container */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Top Bar */
+.top-bar {
+    background-color: #1c2431;
+    color: white;
+    font-size: clamp(10px, 1.2vw, 13px);
+    padding: 10px 0;
+    width: 100%;
+}
+
+.top-bar-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.top-left span,
+.top-right span {
+    margin-right: 15px;
+}
+
+.top-left i,
+.top-right i {
+    margin-right: 5px;
+}
+
+.top-right a {
+    color: white;
+    margin-left: 10px;
+    text-decoration: none;
+}
+
+.top-center {
+    text-align: center;
+    flex: 1;
+}
+
+/* Header Navigation */
+.main-header {
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    padding: 15px 0;
+    width: 100%;
+}
+
+.nav-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+/* Logo */
+.logo h2 {
+    font-size: clamp(20px, 3vw, 26px);
+    font-weight: 700;
+    color: #222;
+    margin: 0;
+}
+
+/* Navigation Links */
+.nav-links a {
+    margin: 0 12px;
+    text-decoration: none;
+    color: #444;
+    font-size: clamp(12px, 1.5vw, 16px);
+    font-weight: 500;
+}
+
+/* Icons: Login, Wishlist, Cart */
+.nav-icons a {
+    margin-left: 15px;
+    color: #222;
+    text-decoration: none;
+    font-size: clamp(12px, 1.4vw, 15px);
+}
+
+.nav-icons i {
+    font-size: clamp(14px, 1.6vw, 18px);
+}
+
+/* Responsive Layout */
+@media screen and (max-width: 768px) {
+    .top-bar-content,
+    .nav-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+    .nav-links a {
+        display: block;
+        margin: 6px 0;
+    }
+}
