@@ -7,7 +7,7 @@
 
 html, body {
     width: 100%;
-    font-family: 'Arial', sans-serif;
+    font-family: 'Montserrat', sans-serif !important;
 }
 
 /* Container */
@@ -20,7 +20,7 @@ html, body {
 
 /* Top Bar */
 .top-bar {
-    background-color: #1c2431;
+    background-color: #560024;
     color: white;
     font-size: clamp(10px, 1.2vw, 13px);
     padding: 10px 0;
@@ -66,30 +66,41 @@ html, body {
 .nav-content {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 60px;
 }
 
 /* Logo */
-.logo h2 {
-    font-size: clamp(20px, 3vw, 26px);
-    font-weight: 700;
-    color: #222;
+.logo img {
+    height: 40px;
     margin: 0;
 }
 
 /* Navigation Links */
+.nav-links {
+    display: flex;
+    align-items: center;
+    margin-left: 170px;
+    gap: 20px;
+}
+
 .nav-links a {
-    margin: 0 12px;
+    margin: 0 20px;
     text-decoration: none;
     color: #444;
     font-size: clamp(12px, 1.5vw, 16px);
     font-weight: 500;
 }
 
+.nav-links a.active,
+.nav-links a:hover {
+    color: #560024;
+}
+
 /* Icons: Login, Wishlist, Cart */
 .nav-icons a {
     margin-left: 15px;
+    margin: 0 13px;
     color: #222;
     text-decoration: none;
     font-size: clamp(12px, 1.4vw, 15px);
@@ -113,3 +124,22 @@ html, body {
         margin: 6px 0;
     }
 }
+
+/* Breadcrumb */
+.breadcrumb {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    color: #333;
+    margin: 40px 0;
+}
+
+.breadcrumb a {
+    color: #8c1c40;
+    text-decoration: none;
+}
+
+.breadcrumb span {
+    color: #666;
+    margin-left: 5px;
+}
+

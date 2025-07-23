@@ -2,8 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WelcomeController;
-use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\ProdukController;
 
 /*
@@ -24,7 +24,11 @@ Route::get('/', function () {
 });
 
 //Route Landing Page
-Route::get('page', [LandingPageController::class, 'index'])->name('page');
+Route::get('page', [HomeController::class, 'index'])->name('page');
+Route::get('/collection', [HomeController::class, 'collection'])->name('collection');
+Route::get('/about', [HomeController::class, 'about'])->name('about');
+Route::get('/produk/{id}', [ProdukController::class, 'show'])->name('produk.show');
+
 
 //Route Login
 Route::get('login', [AuthController::class, 'login'])->name('login');

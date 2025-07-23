@@ -1,0 +1,63 @@
+.custom-footer {
+    background-color: #52002A; /* warna maroon gelap */
+    color: white;
+    padding: 40px 20px;
+    font-family: Arial, sans-serif;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.footer-content h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.email-form {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.email-form input[type="email"] {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    outline: none;
+}
+
+.email-form button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 20px;
+    padding: 0 15px;
+    cursor: pointer;
+}
+
+.consent {
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 25px;
+}
+
+.social-icons a {
+    color: white;
+    font-size: 20px;
+    margin-right: 15px;
+    text-decoration: none;
+}
+
+.social-icons {
+    margin-top: 100px;
+    margin-bottom: 20px;
+}
+
+.copyright {
+    font-size: 12px;
+}
