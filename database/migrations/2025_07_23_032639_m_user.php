@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('m_kategori', function (Blueprint $table) {
-            $table->id('kategori_id');
-            $table->string('nama_kategori', 100)->unique();
-            $table->text('deskripsi');
+        Schema::create('m_user', function (Blueprint $table) {
+            $table->id('user_id');
+            $table->string('nama', 100);
+            $table->string('username', 50)->unique();
+            $table->string('password');
+            $table->rememberToken();
             $table->timestamp('created_at')->useCurrent();
-        });
+        });        
     }
 
     /**
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('m_kategori');
+        Schema::dropIfExists('m_user');
     }
 };

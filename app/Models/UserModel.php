@@ -13,24 +13,17 @@ class UserModel extends Model
     protected $primaryKey = 'user_id';
     
     protected $fillable = [
-        'nama',
-        'email',
-        'no_telp',
         'username',
         'password',
-        'email_verified_at',
-        'remember_token',
-        'warna'
+        'remember_token'
     ];
 
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
-        'email_verified_at' => 'datetime',
     ];
 
     protected $hidden = [
         'password',
-        'remember_token',
     ];
 }

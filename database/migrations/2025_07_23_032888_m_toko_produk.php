@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('m_detail_produk', function (Blueprint $table) {
-            $table->id('detail_produk_id');
-            $table->string('ukuran', 20)->unique();
-            $table->string('warna', 20)->unique();
+        Schema::create('m_toko_produk', function (Blueprint $table) {
+            $table->id('toko_produk_id');
+            $table->string('nama_toko', 200);
             $table->timestamp('created_at')->useCurrent();
         });
     }
@@ -24,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('m_detail_produk');
+        Schema::dropIfExists('m_toko_produk');
     }
 };

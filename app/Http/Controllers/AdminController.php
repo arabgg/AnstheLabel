@@ -30,9 +30,6 @@ class AdminController extends Controller
     {
         // Validasi input
         $validated = $request->validate([
-            'nama' => 'required|min:3|max:100',
-            'email' => 'required|email',
-            'no_telp' => 'required|min:3|max:50',
             'username' => 'required|min:5|max:50',
             'password' => 'nullable|min:4', 
         ]);
@@ -42,9 +39,6 @@ class AdminController extends Controller
     
         if ($profile) {
             // Update data lainnya
-            $profile->nama = $validated['nama'];
-            $profile->email = $validated['email'];
-            $profile->no_telp = $validated['no_telp'];
             $profile->username = $validated['username'];
     
             // Jika password diisi, enkripsi dan simpan password baru

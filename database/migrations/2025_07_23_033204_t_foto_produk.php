@@ -11,23 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('t_produk', function (Blueprint $table) {
-            $table->id('produk_id');
+        Schema::create('t_foto_produk', function (Blueprint $table) {
+            $table->id('foto_produk_id');
 
             //Menghubungkan ke tabel lain
-            $table->unsignedBigInteger('kategori_id')->index();
-            $table->unsignedBigInteger('detail_produk_id')->index();
+            $table->unsignedBigInteger('produk_id')->index();
 
-            $table->string('nama_produk', 200);
-            $table->string('harga', 100);
             $table->string('foto_produk');
+            $table->boolean('status_foto')->default(false);
             $table->text('deskripsi');
 
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
 
-            $table->foreign('kategori_id')->references('kategori_id')->on('m_kategori');
-            $table->foreign('detail_produk_id')->references('detail_produk_id')->on('m_detail_produk');
+            $table->foreign('produk_id')->references('produk_id')->on('t_produk');
         });
     }
 
@@ -36,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('t_produk');
+        Schema::dropIfExists('t_foto_produk');
     }
 };

@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('m_user', function (Blueprint $table) {
-            $table->id('user_id');
-            $table->string('username', 50)->unique();
-            $table->string('password');
-            $table->timestamps();
-            $table->rememberToken();
-        });  
+        Schema::create('m_warna_produk', function (Blueprint $table) {
+            $table->id('warna_produk_id');
+            $table->string('nama_warna', 100);
+            $table->string('kode_hex', 7);
+            $table->timestamp('created_at')->useCurrent();
+        });
     }
 
     /**
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('m_user');
+        Schema::dropIfExists('m_warna_produk');
     }
 };
