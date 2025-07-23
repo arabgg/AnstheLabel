@@ -13,6 +13,7 @@ class UserModel extends Model
     protected $primaryKey = 'user_id';
     
     protected $fillable = [
+        'nama',
         'username',
         'password',
         'remember_token'
@@ -20,7 +21,6 @@ class UserModel extends Model
 
     protected $casts = [
         'created_at' => 'datetime',
-        'updated_at' => 'datetime',
     ];
 
     protected $hidden = [

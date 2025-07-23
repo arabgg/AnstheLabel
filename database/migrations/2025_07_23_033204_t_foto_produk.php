@@ -19,7 +19,6 @@ return new class extends Migration
 
             $table->string('foto_produk');
             $table->boolean('status_foto')->default(false);
-            $table->text('deskripsi');
 
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
