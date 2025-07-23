@@ -6,6 +6,7 @@ use App\Models\DetailProdukModel;
 use App\Models\GambarUtamaModel;
 use App\Models\HeroModel;
 use App\Models\KategoriModel;
+use App\Models\KategoriProdukModel;
 use Illuminate\Http\Request;
 use App\Models\ProdukModel;
 
@@ -44,7 +45,7 @@ class HomeController extends Controller
     public function collection(Request $request) {
         $filterKategori = $request->input('filter'); // string, satu kategori
 
-        $kategori = Katego::all();
+        $kategori = KategoriProdukModel::all();
         $detail = DetailProdukModel::all();
 
         // Bangun query
@@ -60,7 +61,7 @@ class HomeController extends Controller
         // Eksekusi query
         $produk = $produk->get();
 
-        $warnaList = KategoriModel::all();
+        $warnaList = KategoriProdukModel::all();
 
         // Kirim ke view
         return view('collection.index', [
