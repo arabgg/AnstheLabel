@@ -81,4 +81,35 @@ class HomeController extends Controller
             'produk' => $produk
         ]);
     }
+        
+    public function show_produk(Request $request) {
+        $filterKategori = $request->input('filter'); // string, satu kategori
+
+        $kategori = KategoriProdukModel::all();
+        $detail = DetailProdukModel::all();
+
+        // Bangun query
+        $produk = ProdukModel::with('kategori', 'detail');
+
+        // Terapkan filter jika ada
+        if (!empty($filterKategori)) {
+            $produk->whereHas('kategori', function ($query) use ($filterKategori) {
+                $query->where('kategori_produk_id', $filterKategori);
+            });
+        }
+
+        // Eksekusi query
+        $produk = $produk->get();
+
+        $warnaList = KategoriProdukModel::all();
+
+        // Kirim ke view
+        return view('collection.index', [
+            'produk' => $produk,
+            'kategori' => $kategori,
+            'detail' => $detail,
+            'warnaList' => $warnaList,
+            'filterkategori' => $filterKategori
+        ]);
+    }
 }

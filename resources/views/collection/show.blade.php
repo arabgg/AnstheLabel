@@ -42,15 +42,17 @@
     {{-- Product Grid --}}
     <div class="produk-product-grid">
         @foreach ($produk as $produk)
-            <div class="produk-card">
-                <img src="{{ asset('images/' . $produk->image) }}" alt="{{ $produk->name }}">
-                <h3>{{ $produk->name }}</h3>
-                <p>{{ $produk->description ?? 'Pakaian Muslim Wanita' }}</p>
-                <div class="produk-color-dots">
-                    <span class="produk-dot produk-black"></span>
-                    <span class="produk-dot produk-pink"></span>
+            <a href="{{ route('produk.show', $produk->id) }}" class="produk-card-link">
+                <div class="produk-card">
+                    <img src="{{ asset('images/' . $produk->image) }}" alt="{{ $produk->name }}">
+                    <h3>{{ $produk->name }}</h3>
+                    <p>{{ $produk->description ?? 'Pakaian Muslim Wanita' }}</p>
+                    <div class="produk-color-dots">
+                        <span class="produk-dot produk-black"></span>
+                        <span class="produk-dot produk-pink"></span>
+                    </div>
                 </div>
-            </div>
+            </a>
         @endforeach
     </div>
 

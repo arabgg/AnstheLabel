@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DetailProdukModel;
-use App\Models\KategoriModel;
+use App\Models\KategoriProdukModel;
 use App\Models\ProdukModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -19,7 +19,7 @@ class ProdukController extends Controller
         // ];
 
         $produk = ProdukModel::all();
-        $kategori = KategoriModel::all();
+        $kategori = KategoriProdukModel::all();
         $detail = DetailProdukModel::all();
     
         return view('admin.index', [
@@ -33,7 +33,7 @@ class ProdukController extends Controller
     {   
         $produk = ProdukModel::get();
         
-        $kategori = KategoriModel::select('kategori_id', 'nama_kategori')->get();
+        $kategori = KategoriProdukModel::select('kategori_id', 'nama_kategori')->get();
         $detail = DetailProdukModel::select('detail_produk_id', 'warna', 'ukuran')->get();
 
         return view('admin.create_ajax')->with([
@@ -113,7 +113,7 @@ class ProdukController extends Controller
     public function edit_ajax(string $id)
     {   
         $produk = ProdukModel::find($id);
-        $kategori = KategoriModel::select('kategori_id', 'nama_kategori')->get();
+        $kategori = KategoriProdukModel::select('kategori_id', 'nama_kategori')->get();
         $detail = DetailProdukModel::select('detail_produk_id', 'warna', 'ukuran')->get();
 
         return view('admin.edit_ajax', [

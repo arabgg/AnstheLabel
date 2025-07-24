@@ -293,3 +293,15 @@ input[type="radio"]:checked::before {
 .produk-buttons button:hover {
     background-color: #dbcbd2;
 }
+
+.produk-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: inline-block;
+}
+
+.produk-card-link:hover .produk-card {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+    transition: 0.3s;
+}

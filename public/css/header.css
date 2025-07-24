@@ -57,7 +57,7 @@ html, body {
 
 /* Header Navigation */
 .main-header {
-    background-color: #ffffff;
+    background-color: #FBE9EB;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     padding: 15px 0;
     width: 100%;
@@ -134,7 +134,7 @@ html, body {
 }
 
 .breadcrumb a {
-    color: #8c1c40;
+    color: #96516E;
     text-decoration: none;
 }
 

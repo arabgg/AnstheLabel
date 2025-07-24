@@ -27,7 +27,7 @@ Route::get('/', function () {
 Route::get('page', [HomeController::class, 'index'])->name('page');
 Route::get('/collection', [HomeController::class, 'collection'])->name('collection');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
-Route::get('/produk/{id}', [ProdukController::class, 'show'])->name('produk.show');
+Route::get('/produk/{id}', [HomeController::class, 'show_produk'])->name('produk.show');
 
 
 //Route Login
