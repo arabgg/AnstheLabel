@@ -9,6 +9,9 @@
 @endsection
 
 @section('content')
+<div>
+    <h1>Selamat datang</h1>
+</div>
 @endsection
 
 @push('scripts')
