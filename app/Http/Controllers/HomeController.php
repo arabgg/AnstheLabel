@@ -49,7 +49,7 @@ class HomeController extends Controller
         $detail = DetailProdukModel::all();
 
         // Bangun query
-        $produk = ProdukModel::with('kategori', 'detail');
+        $produk = ProdukModel::with('kategori', 'toko');
 
         // Terapkan filter jika ada
         if (!empty($filterKategori)) {
