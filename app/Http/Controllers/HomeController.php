@@ -81,4 +81,13 @@ class HomeController extends Controller
             'produk' => $produk
         ]);
     }
+        
+    public function show_produk($id) {
+        $detail = DetailProdukModel::with('produk', 'warna', 'bahan', 'ukuran', 'foto',)->findOrFail($id);
+
+        // Kirim ke view
+        return view('detail.index', [
+            'detail' => $detail,
+        ]);
+    }
 }
