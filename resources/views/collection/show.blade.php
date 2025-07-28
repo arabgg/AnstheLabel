@@ -39,26 +39,29 @@
         </form>
     </div>
 
-    {{-- Product Grid --}}
-    <div class="produk-product-grid">
-        @foreach ($produk as $produk)
-            <a href="{{ route('produk.show', $produk->id) }}" class="produk-card-link">
-                <div class="produk-card">
-                    <img src="{{ asset('images/' . $produk->image) }}" alt="{{ $produk->name }}">
-                    <h3>{{ $produk->name }}</h3>
-                    <p>{{ $produk->description ?? 'Pakaian Muslim Wanita' }}</p>
-                    <div class="produk-color-dots">
-                        <span class="produk-dot produk-black"></span>
-                        <span class="produk-dot produk-pink"></span>
+    {{-- Kontainer Konten Produk --}}
+    <div style="flex: 1;">
+        {{-- Product Grid --}}
+        <div class="produk-product-grid">
+            @foreach ($detail as $index => $item)
+                <a href="{{ route('detail.show', $item->produk_id) }}" class="produk-card-link">
+                    <div class="produk-card bestproduk-card {{ $index >= 2 ? 'bestproduk-hidden' : '' }}">
+                        <img src="{{ asset('storage/foto_produk/' . $item->foto->foto_produk) }}" alt="{{ $item->produk->nama_produk }}">
+                        <h3>{{ $item->produk->nama_produk }}</h3>
+                        <p>{{ $item->produk->deskripsi ?? 'Pakaian Muslim Wanita' }}</p>
+                        <div class="produk-color-dots">
+                            <span class="produk-dot produk-black"></span>
+                            <span class="produk-dot produk-pink"></span>
+                        </div>
                     </div>
-                </div>
-            </a>
-        @endforeach
-    </div>
+                </a>
+            @endforeach
+        </div>
 
-    {{-- Tombol Load More --}}
-    <div class="produk-buttons" style="text-align: center; margin-top: 30px;">
-        <button id="viewAllButton" onclick="showAllKatalog()">Load More</button>
-        <button id="hideButton" onclick="hideExtraKatalog()" style="display: none;">Hide</button>
+        {{-- Tombol Load More di bawah produk --}}
+        <div class="produk-buttons" style="text-align: center; margin-top: 30px;">
+            <button id="viewAllButton" onclick="showAllKatalog()">Load More</button>
+            <button id="hideButton" onclick="hideExtraKatalog()" style="display: none;">Hide</button>
+        </div>
     </div>
 </div>

@@ -14,12 +14,39 @@ class ProdukSeeder extends Seeder
     public function run(): void
     {
         DB::table('t_produk')->insert([
+            [
             'kategori_produk_id' => 1,
             'toko_produk_id' => 1,
             'nama_produk' => 'Hijab Syar’i',
             'url_toko' => 'https://toko.com/hijab-syari',
             'deskripsi' => 'Hijab bahan adem dan jatuh.',
             'created_at' => now(),
-        ]);
+            ],
+            [
+            'kategori_produk_id' => 1,
+            'toko_produk_id' => 1,
+            'nama_produk' => 'Hijab Syar’i',
+            'url_toko' => 'https://toko.com/hijab-syari',
+            'deskripsi' => 'Hijab bahan adem dan jatuh.',
+            'created_at' => now(),
+            ],
+            [
+            'kategori_produk_id' => 1,
+            'toko_produk_id' => 1,
+            'nama_produk' => 'Hijab Syar’i',
+            'url_toko' => 'https://toko.com/hijab-syari',
+            'deskripsi' => 'Hijab bahan adem dan jatuh.',
+            'created_at' => now(),
+            ],
+            [
+            'kategori_produk_id' => 1,
+            'toko_produk_id' => 1,
+            'nama_produk' => 'Hijab Syar’i',
+            'url_toko' => 'https://toko.com/hijab-syari',
+            'deskripsi' => 'Hijab bahan adem dan jatuh.',
+            'created_at' => now(),
+            ],
+        ]
+        );
     }
 }

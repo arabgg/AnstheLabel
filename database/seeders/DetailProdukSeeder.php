@@ -14,12 +14,27 @@ class DetailProdukSeeder extends Seeder
     public function run(): void
     {
         DB::table('t_detail_produk')->insert([
-            'produk_id' => 1,
-            'warna_produk_id' => 1,
+            [
             'bahan_produk_id' => 1,
             'ukuran_produk_id' => 1,
-            'foto_produk_id' => 1,
             'created_at' => now(),
-        ]);
+            ],
+            [
+            'bahan_produk_id' => 1,
+            'ukuran_produk_id' => 1,
+            'created_at' => now(),
+            ],
+            [
+            'bahan_produk_id' => 1,
+            'ukuran_produk_id' => 1,
+            'created_at' => now(),
+            ],
+            [
+            'bahan_produk_id' => 1,
+            'ukuran_produk_id' => 1,
+            'created_at' => now(),
+            ],
+            ]
+        );
     }
 }

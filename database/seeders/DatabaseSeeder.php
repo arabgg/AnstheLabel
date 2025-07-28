@@ -20,8 +20,8 @@ class DatabaseSeeder extends Seeder
             UkuranProdukSeeder::class,
             BahanProdukSeeder::class,
             ProdukSeeder::class,
-            FotoProdukSeeder::class,
             DetailProdukSeeder::class,
+            ShowProdukSeeder::class,
         ]);
     }
 }

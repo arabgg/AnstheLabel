@@ -82,10 +82,12 @@ class HomeController extends Controller
         ]);
     }
         
-    public function show_produk($id) {
-        $detail = DetailProdukModel::with('produk', 'warna', 'bahan', 'ukuran', 'foto',)->findOrFail($id);
+    public function show_produk($id)
+    {
+        $detail = DetailProdukModel::with('produk', 'warna', 'bahan', 'ukuran', 'foto')
+            ->where('produk_id', $id)
+            ->first();
 
-        // Kirim ke view
         return view('detail.index', [
             'detail' => $detail,
         ]);
