@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProdukModel extends Model
 {
@@ -34,5 +35,10 @@ class ProdukModel extends Model
     public function toko() :BelongsTo
     {
         return $this->belongsTo(DetailProdukModel::class, 'detail_produk_id', 'detail_produk_id');
+    }
+
+    public function show() :HasMany
+    {
+        return $this->hasMany(ShowProdukModel::class, 'produk_id', 'produk_id');
     }
 }

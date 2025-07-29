@@ -45,7 +45,7 @@
     function hideExtraKatalog() {
         const cards = document.querySelectorAll('.bestproduk-card');
         cards.forEach((card, index) => {
-            if (index >= 3) {
+            if (index >= 2) {
                 card.classList.add('bestproduk-hidden');
             }
         });
@@ -67,24 +67,6 @@
 
         // Atur tombol view/hide berdasarkan filter
         document.getElementById("viewAllButton").style.display = "none";
-        document.getElementById("hideButton").style.display = "none";
-    }
-
-    function showAllKatalog() {
-        const cards = document.querySelectorAll(".produk-card");
-        cards.forEach(card => card.classList.remove("hidden"));
-        document.getElementById("viewAllButton").style.display = "none";
-        document.getElementById("hideButton").style.display = "inline-block";
-    }
-
-    function hideExtraKatalog() {
-        const cards = document.querySelectorAll(".produk-card");
-        cards.forEach((card, index) => {
-            if (index >= 3) {
-                card.classList.add("hidden");
-            }
-        });
-        document.getElementById("viewAllButton").style.display = "inline-block";
         document.getElementById("hideButton").style.display = "none";
     }
 </script>

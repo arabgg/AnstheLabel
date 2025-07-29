@@ -9,6 +9,7 @@ use App\Models\KategoriModel;
 use App\Models\KategoriProdukModel;
 use Illuminate\Http\Request;
 use App\Models\ProdukModel;
+use App\Models\ShowProdukModel;
 
 class HomeController extends Controller
 {
@@ -46,10 +47,10 @@ class HomeController extends Controller
         $filterKategori = $request->input('filter'); // string, satu kategori
 
         $kategori = KategoriProdukModel::all();
-        $detail = DetailProdukModel::all();
+        $show = ShowProdukModel::all();
 
         // Bangun query
-        $produk = ProdukModel::with('kategori', 'detail');
+        $produk = ProdukModel::with('kategori', 'toko');
 
         // Terapkan filter jika ada
         if (!empty($filterKategori)) {
@@ -67,7 +68,7 @@ class HomeController extends Controller
         return view('collection.index', [
             'produk' => $produk,
             'kategori' => $kategori,
-            'detail' => $detail,
+            'show' => $show,
             'warnaList' => $warnaList,
             'filterkategori' => $filterKategori
         ]);
@@ -82,34 +83,14 @@ class HomeController extends Controller
         ]);
     }
         
-    public function show_produk(Request $request) {
-        $filterKategori = $request->input('filter'); // string, satu kategori
+    public function show_produk($id)
+    {
+        $show = ShowProdukModel::with('produk', 'detail', 'warna')
+            ->where('produk_id', $id)
+            ->first();
 
-        $kategori = KategoriProdukModel::all();
-        $detail = DetailProdukModel::all();
-
-        // Bangun query
-        $produk = ProdukModel::with('kategori', 'detail');
-
-        // Terapkan filter jika ada
-        if (!empty($filterKategori)) {
-            $produk->whereHas('kategori', function ($query) use ($filterKategori) {
-                $query->where('kategori_produk_id', $filterKategori);
-            });
-        }
-
-        // Eksekusi query
-        $produk = $produk->get();
-
-        $warnaList = KategoriProdukModel::all();
-
-        // Kirim ke view
-        return view('collection.index', [
-            'produk' => $produk,
-            'kategori' => $kategori,
-            'detail' => $detail,
-            'warnaList' => $warnaList,
-            'filterkategori' => $filterKategori
+        return view('detail.index', [
+            'show' => $show,
         ]);
     }
 }
