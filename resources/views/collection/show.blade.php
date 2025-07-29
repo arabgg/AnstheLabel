@@ -44,24 +44,17 @@
         {{-- Product Grid --}}
         <div class="produk-product-grid">
             @foreach ($show as $index => $item)
-               @if (!in_array($item->produk_id, $displayedProdukIds))
-            @php
-                $displayedProdukIds[] = $item->produk_id;
-            @endphp
-
-            <a href="{{ route('detail.show', $item->produk_id) }}" class="produk-card-link">
-                <div class="produk-card">
-                    <img src="{{ asset('storage/foto_produk/' . $item->foto_produk) }}" alt="{{ $item->produk->nama_produk }}">
-                    <h3>{{ $item->produk->nama_produk }}</h3>
-                    <p>{{ $item->produk->deskripsi ?? 'Pakaian Muslim Wanita' }}</p>
-                    <div class="produk-color-dots">
-                        <span class="produk-dot produk-black"></span>
-                        <span class="produk-dot produk-pink"></span>
+                <a href="{{ route('detail.show', $item->produk_id) }}" class="produk-card-link">
+                    <div class="produk-card bestproduk-card {{ $index >= 2 ? 'bestproduk-hidden' : '' }}">
+                        <img src="{{ asset('storage/foto_produk/' . $item->foto_produk) }}" alt="{{ $item->produk->nama_produk }}">
+                        <h3>{{ $item->produk->nama_produk }}</h3>
+                        <p>{{ $item->produk->deskripsi ?? 'Pakaian Muslim Wanita' }}</p>
+                        <div class="produk-color-dots">
+                            <span class="produk-dot produk-black"></span>
+                            <span class="produk-dot produk-pink"></span>
+                        </div>
                     </div>
-                </div>
-            </a>
-        @endif
-
+                </a>
             @endforeach
         </div>
 

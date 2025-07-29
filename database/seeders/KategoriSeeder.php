@@ -13,7 +13,7 @@ class KategoriProdukSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('m_kategori_produk')->insert([
+        DB::table('m_kategori')->insert([
             ['nama_kategori' => 'Hijab', 'created_at' => now()],
             ['nama_kategori' => 'Dress', 'created_at' => now()],
         ]);
