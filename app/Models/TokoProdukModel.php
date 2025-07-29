@@ -23,6 +23,6 @@ class TokoProdukModel extends Model
 
     public function detail() :HasMany
     {
-        return $this->hasMany(DetailProdukModel::class, 'bahan_produk_id', 'bahan_produk_id');
+        return $this->hasMany(DetailProdukModel::class, 'toko_produk_id', 'toko_produk_id');
     }
 }

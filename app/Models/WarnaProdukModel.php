@@ -22,8 +22,8 @@ class WarnaProdukModel extends Model
         'created_at' => 'datetime',
     ];
 
-    public function detail() :HasMany
+    public function show() :HasMany
     {
-        return $this->hasMany(DetailProdukModel::class, 'bahan_produk_id', 'bahan_produk_id');
+        return $this->hasMany(ShowProdukModel::class, 'warna_produk_id', 'warna_produk_id');
     }
 }
