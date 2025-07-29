@@ -18,6 +18,7 @@ class ShowProdukSeeder extends Seeder
             'produk_id' => 1,
             'warna_produk_id' => 1,
             'detail_produk_id' => 1,
+            'detail_produk_id' => 1,
             'foto_produk' => 'foto_hijab1.jpg',
             'status_foto' => 1,
             'created_at' => now(),

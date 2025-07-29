@@ -9,6 +9,7 @@ use App\Models\KategoriModel;
 use App\Models\KategoriProdukModel;
 use Illuminate\Http\Request;
 use App\Models\ProdukModel;
+use App\Models\ShowProdukModel;
 
 class HomeController extends Controller
 {
@@ -46,7 +47,7 @@ class HomeController extends Controller
         $filterKategori = $request->input('filter'); // string, satu kategori
 
         $kategori = KategoriProdukModel::all();
-        $detail = DetailProdukModel::all();
+        $show = ShowProdukModel::all();
 
         // Bangun query
         $produk = ProdukModel::with('kategori', 'toko');
@@ -67,7 +68,7 @@ class HomeController extends Controller
         return view('collection.index', [
             'produk' => $produk,
             'kategori' => $kategori,
-            'detail' => $detail,
+            'show' => $show,
             'warnaList' => $warnaList,
             'filterkategori' => $filterKategori
         ]);
@@ -84,12 +85,12 @@ class HomeController extends Controller
         
     public function show_produk($id)
     {
-        $detail = DetailProdukModel::with('produk', 'warna', 'bahan', 'ukuran', 'foto')
+        $show = ShowProdukModel::with('produk', 'detail', 'warna')
             ->where('produk_id', $id)
             ->first();
 
         return view('detail.index', [
-            'detail' => $detail,
+            'show' => $show,
         ]);
     }
 }

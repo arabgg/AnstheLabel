@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('produk_id')->index();
             $table->unsignedBigInteger('detail_produk_id')->index();
             $table->unsignedBigInteger('warna_produk_id')->index();
+            $table->unsignedBigInteger('ukuran_produk_id')->index();
 
             $table->string('foto_produk');
             $table->boolean('status_foto')->default(false);
@@ -28,6 +29,7 @@ return new class extends Migration
             $table->foreign('produk_id')->references('produk_id')->on('t_produk');
             $table->foreign('detail_produk_id')->references('detail_produk_id')->on('t_detail_produk');
             $table->foreign('warna_produk_id')->references('warna_produk_id')->on('m_warna_produk');
+            $table->foreign('ukuran_produk_id')->references('ukuran_produk_id')->on('m_ukuran_produk');
         });
     }
 
@@ -36,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('t_foto_produk');
+        Schema::dropIfExists('t_show_produk');
     }
 };
