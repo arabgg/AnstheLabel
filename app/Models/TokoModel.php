@@ -6,23 +6,24 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class KategoriProdukModel extends Model
+class TokoModel extends Model
 {
     use HasFactory;
 
-    protected $table = 'm_kategori_produk';
-    protected $primaryKey = 'kategori_produk_id';
+    protected $table = 'm_toko';
+    protected $primaryKey = 'toko_id';
     
     protected $fillable = [
-        'nama_kategori',
+        'nama_toko',
+        'icon_toko',
     ];
 
     protected $casts = [
         'created_at' => 'datetime',
     ];
 
-    public function produk() :HasMany
+    public function toko() :HasMany
     {
-        return $this->hasMany(ProdukModel::class, 'kategori_produk_id', 'kategori_produk_id');
+        return $this->hasMany(TokoProdukModel::class, 'toko_id', 'toko_id');
     }
 }
