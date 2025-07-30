@@ -6,15 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class BahanProdukModel extends Model
+class UkuranModel extends Model
 {
     use HasFactory;
 
-    protected $table = 'm_bahan_produk';
-    protected $primaryKey = 'bahan_produk_id';
+    protected $table = 'm_ukuran';
+    protected $primaryKey = 'ukuran_id';
     
     protected $fillable = [
-        'nama_bahan',
+        'nama_ukuran',
         'deskripsi',
     ];
 
@@ -22,8 +22,8 @@ class BahanProdukModel extends Model
         'created_at' => 'datetime',
     ];
 
-    public function detail() :HasMany
+    public function ukuran() :HasMany
     {
-        return $this->hasMany(DetailProdukModel::class, 'bahan_produk_id', 'bahan_produk_id');
+        return $this->hasMany(UkuranProdukModel::class, 'ukuran_id', 'ukuran_id');
     }
 }

@@ -4,25 +4,33 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TokoProdukModel extends Model
 {
     use HasFactory;
 
-    protected $table = 'm_toko_produk';
+    protected $table = 't_toko_produk';
     protected $primaryKey = 'toko_produk_id';
     
     protected $fillable = [
-        'nama_toko',
+        'produk_id',
+        'toko_id',
+        'url_toko',
     ];
 
     protected $casts = [
         'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
-    public function detail() :HasMany
+    public function produk() :BelongsTo
     {
-        return $this->hasMany(DetailProdukModel::class, 'toko_produk_id', 'toko_produk_id');
+        return $this->belongsTo(ProdukModel::class, 'produk_id', 'produk_id');
+    }
+
+    public function toko() :BelongsTo
+    {
+        return $this->belongsTo(TokoModel::class, 'toko_id', 'toko_id');
     }
 }

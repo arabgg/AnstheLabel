@@ -13,9 +13,38 @@ class UkuranProdukSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('m_ukuran_produk')->insert([
-            ['nama_ukuran' => 'M', 'deskripsi' => 'Ukuran Medium', 'created_at' => now()],
-            ['nama_ukuran' => 'L', 'deskripsi' => 'Ukuran Large', 'created_at' => now()],
-        ]);
+        DB::table('t_ukuran_produk')->insert([
+            [
+            'produk_id' => 1,
+            'ukuran_id' => 1,
+            'created_at' => now(),
+            ],
+            [
+            'produk_id' => 1,
+            'ukuran_id' => 2,
+            'created_at' => now(),
+            ],
+            [
+            'produk_id' => 2,
+            'ukuran_id' => 1,
+            'created_at' => now(),
+            ],
+            [
+            'produk_id' => 2,
+            'ukuran_id' => 2,
+            'created_at' => now(),
+            ],
+            [
+            'produk_id' => 3,
+            'ukuran_id' => 1,
+            'created_at' => now(),
+            ],
+            [
+            'produk_id' => 3,
+            'ukuran_id' => 2,
+            'created_at' => now(),
+            ],
+        ]
+        );
     }
 }

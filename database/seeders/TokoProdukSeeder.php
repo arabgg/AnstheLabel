@@ -13,9 +13,44 @@ class TokoProdukSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('m_toko_produk')->insert([
-            'nama_toko' => 'Shopee',
+        DB::table('t_toko_produk')->insert([
+            [
+            'produk_id' => 1,
+            'toko_id' => 1,
+            'url_toko' => 'https://shopee.co.id/',
             'created_at' => now(),
-        ]);
+            ],
+            [
+            'produk_id' => 1,
+            'toko_id' => 2,
+            'url_toko' => 'https://www.tokopedia.com/',
+            'created_at' => now(),
+            ],
+            [
+            'produk_id' => 2,
+            'toko_id' => 1,
+            'url_toko' => 'https://shopee.co.id/',
+            'created_at' => now(),
+            ],
+            [
+            'produk_id' => 2,
+            'toko_id' => 2,
+            'url_toko' => 'https://www.tokopedia.com/',
+            'created_at' => now(),
+            ],
+            [
+            'produk_id' => 3,
+            'toko_id' => 1,
+            'url_toko' => 'https://shopee.co.id/',
+            'created_at' => now(),
+            ],
+            [
+            'produk_id' => 3,
+            'toko_id' => 2,
+            'url_toko' => 'https://www.tokopedia.com/',
+            'created_at' => now(),
+            ],
+        ]
+        );
     }
 }

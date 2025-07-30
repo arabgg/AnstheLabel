@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('m_warna_produk', function (Blueprint $table) {
-            $table->id('warna_produk_id');
+        Schema::create('m_warna', function (Blueprint $table) {
+            $table->id('warna_id');
             $table->string('nama_warna', 100);
-            $table->string('kode_hex', 7);
             $table->timestamp('created_at')->useCurrent();
         });
     }

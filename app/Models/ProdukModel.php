@@ -15,11 +15,10 @@ class ProdukModel extends Model
     protected $primaryKey = 'produk_id';
     
     protected $fillable = [
-        'kategori_produk_id',
-        'toko_produk_id',
+        'kategori_id',
+        'bahan_id',
         'nama_produk',
         'deskripsi',
-        'url_toko'
     ];
 
     protected $casts = [
@@ -29,16 +28,31 @@ class ProdukModel extends Model
 
     public function kategori() :BelongsTo
     {
-        return $this->belongsTo(KategoriProdukModel::class, 'kategori_produk_id', 'kategori_produk_id');
+        return $this->belongsTo(KategoriModel::class, 'kategori_id', 'kategori_id');
     }
 
-    public function toko() :BelongsTo
+    public function bahan() :BelongsTo
     {
-        return $this->belongsTo(DetailProdukModel::class, 'detail_produk_id', 'detail_produk_id');
+        return $this->belongsTo(BahanModel::class, 'bahan_id', 'bahan_id');
     }
 
-    public function show() :HasMany
+    public function foto() :HasMany
     {
-        return $this->hasMany(ShowProdukModel::class, 'produk_id', 'produk_id');
+        return $this->hasMany(FotoProdukModel::class, 'produk_id', 'produk_id');
+    }
+
+    public function warna() :HasMany
+    {
+        return $this->hasMany(WarnaProdukModel::class, 'produk_id', 'produk_id');
+    }
+
+    public function ukuran() :HasMany
+    {
+        return $this->hasMany(UkuranProdukModel::class, 'produk_id', 'produk_id');
+    }
+
+    public function toko() :HasMany
+    {
+        return $this->hasMany(TokoProdukModel::class, 'produk_id', 'produk_id');
     }
 }

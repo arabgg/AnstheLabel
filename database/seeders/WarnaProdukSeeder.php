@@ -13,9 +13,38 @@ class WarnaProdukSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('m_warna_produk')->insert([
-            ['nama_warna' => 'Hitam', 'kode_hex' => '#000000', 'created_at' => now()],
-            ['nama_warna' => 'Putih', 'kode_hex' => '#FFFFFF', 'created_at' => now()],
-        ]);
+        DB::table('t_warna_produk')->insert([
+            [
+            'warna_id' => 1,
+            'produk_id' => 1,
+            'created_at' => now(),
+            ],
+            [
+            'warna_id' => 1,
+            'produk_id' => 2,
+            'created_at' => now(),
+            ],
+            [
+            'warna_id' => 2,
+            'produk_id' => 1,
+            'created_at' => now(),
+            ],
+            [
+            'warna_id' => 2,
+            'produk_id' => 2,
+            'created_at' => now(),
+            ],
+            [
+            'warna_id' => 3,
+            'produk_id' => 1,
+            'created_at' => now(),
+            ],
+            [
+            'warna_id' => 3,
+            'produk_id' => 2,
+            'created_at' => now(),
+            ],
+        ]
+        );
     }
 }
