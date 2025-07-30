@@ -55,4 +55,11 @@ class ProdukModel extends Model
     {
         return $this->hasMany(TokoProdukModel::class, 'produk_id', 'produk_id');
     }
+
+    public function fotoUtama()
+    {
+        return $this->hasOne(FotoProdukModel::class, 'produk_id', 'produk_id')
+            ->where('status_foto', 1);
+    }
+
 }

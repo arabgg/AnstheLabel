@@ -95,6 +95,7 @@ html, body {
 .nav-links a.active,
 .nav-links a:hover {
     color: #560024;
+    font-weight: bold;
 }
 
 /* Icons: Login, Wishlist, Cart */

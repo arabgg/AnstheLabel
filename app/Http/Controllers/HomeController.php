@@ -2,14 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DetailProdukModel;
-use App\Models\GambarUtamaModel;
-use App\Models\HeroModel;
 use App\Models\KategoriModel;
-use App\Models\KategoriProdukModel;
 use Illuminate\Http\Request;
 use App\Models\ProdukModel;
-use App\Models\ShowProdukModel;
 
 class HomeController extends Controller
 {
@@ -44,32 +39,23 @@ class HomeController extends Controller
     }
 
     public function collection(Request $request) {
-        $filterKategori = $request->input('filter'); // string, satu kategori
-
-        $kategori = KategoriProdukModel::all();
-        $show = ShowProdukModel::all();
-
-        // Bangun query
-        $produk = ProdukModel::with('kategori', 'toko');
-
-        // Terapkan filter jika ada
-        if (!empty($filterKategori)) {
-            $produk->whereHas('kategori', function ($query) use ($filterKategori) {
-                $query->where('kategori_produk_id', $filterKategori);
-            });
+        $filterKategori = $request->input('filter', []);
+        if (!is_array($filterKategori)) {
+            $filterKategori = [$filterKategori];
         }
 
-        // Eksekusi query
+        $produk = ProdukModel::with('kategori', 'bahan', 'fotoUtama', 'foto', 'warna', 'ukuran', 'toko');
+
+        if (!empty($filterKategori)) {
+            $produk->whereIn('kategori_id', $filterKategori);
+        }
+
         $produk = $produk->get();
+        $kategori = KategoriModel::all();
 
-        $warnaList = KategoriProdukModel::all();
-
-        // Kirim ke view
         return view('collection.index', [
             'produk' => $produk,
             'kategori' => $kategori,
-            'show' => $show,
-            'warnaList' => $warnaList,
             'filterkategori' => $filterKategori
         ]);
     }
@@ -85,12 +71,12 @@ class HomeController extends Controller
         
     public function show_produk($id)
     {
-        $show = ShowProdukModel::with('produk', 'detail', 'warna')
+        $produk = ProdukModel::with('kategori', 'bahan', 'foto', 'warna', 'ukuran', 'toko')
             ->where('produk_id', $id)
             ->first();
 
         return view('detail.index', [
-            'show' => $show,
+            'produk' => $produk,
         ]);
     }
 }

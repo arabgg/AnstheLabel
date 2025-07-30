@@ -4,7 +4,7 @@
     <div class="breadcrumb">
         <a href="{{ route('page') }}">Home</a> / 
         <a href="{{ route('collection') }}">Collection</a> / 
-        <span>{{ $show->produk->nama_produk }}</span>
+        <span>{{ $produk->nama_produk }}</span>
     </div>
 @endsection
 
@@ -14,50 +14,58 @@
             <div class="detail-product-wrapper">
                 <!-- Left: Product Images -->
                 <div class="detail-product-images">
-                    <img class="detail-main-image" src="{{ asset('storage/foto_produk/foto_hijab1.jpg') }}" alt="Rumila Scarf">
+                    {{-- Foto Utama --}}
+                    <img class="detail-main-image"
+                        src="{{ asset('storage/foto_produk/' . $produk->fotoUtama->foto_produk) }}"
+                        alt="{{ $produk->nama_produk }}">
+
+                    {{-- Foto Thumbnail --}}
                     <div class="detail-thumbnail-wrapper">
-                        <img src="{{ asset('storage/foto_produk/foto_hijab1.jpg') }}" alt="Thumb 1">
-                        <img src="{{ asset('storage/foto_produk/foto_hijab1.jpg') }}" alt="Thumb 2">
-                        <img src="{{ asset('storage/foto_produk/foto_hijab1.jpg') }}" alt="Thumb 3">
-                        <img src="{{ asset('storage/foto_produk/foto_hijab1.jpg') }}" alt="Thumb 4">
-                        <img src="{{ asset('storage/foto_produk/foto_hijab1.jpg') }}" alt="Thumb 5">
+                        @foreach ($produk->foto->where('status_foto', 0) as $foto)
+                            <img src="{{ asset('storage/foto_produk/' . $foto->foto_produk) }}"
+                                alt="Thumbnail {{ $loop->iteration }}">
+                        @endforeach
                     </div>
                 </div>
 
                 <!-- Right: Product Info -->
                 <div class="detail-product-info">
-                    <h2 class="detail-product-name">Rumila Scarf</h2>
-                    <p class="detail-product-price">Rp 198.000</p>
+                    <div class="detail-section">
+                        <h2 class="detail-product-name">{{ $produk->nama_produk }}</h2>
+                        <p class="detail-product-kategori">{{ $produk->deskripsi }}</p>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <form>
+                            <label>Color: <b>Rumila</b></label>
+                            <div class="detail-size-wrapper">
+                                <label for="size">Size:</label>
+                                <select id="size" name="size">
+                                    <option>One Size</option>
+                                </select>
+                            </div>
 
-                    <form>
-                        <label>Color: <b>Rumila</b></label>
-                        <div class="detail-size-wrapper">
-                            <label for="size">Size:</label>
-                            <select id="size" name="size">
-                                <option>One Size</option>
-                            </select>
+                            <div class="detail-quantity-wrapper">
+                                <label>Quantity:</label>
+                                <input type="number" value="1" min="1">
+                            </div>
+
+                            <button type="button" class="detail-btn-soldout">Sold Out</button>
+                            <button type="button" class="detail-btn-wishlist">Add to Wishlist</button>
+                        </form>
+
+                        <div class="detail-product-description">
+                            <p>
+                                Dapatkan tampilan memukau dengan Rumila Scarf hijab printed yang
+                                didesain dengan kesan kuat dan tegas yang mudah untuk menarik
+                                perhatian mulai langsung dari motif sampai rona pada bagian tepi.
+                            </p>
+                            <ul>
+                                <li>Bahan: Voal</li>
+                                <li>Size: 115x115 cm</li>
+                                <li>*Terdapat sedikit perbedaan warna akibat cahaya/screen</li>
+                            </ul>
                         </div>
-
-                        <div class="detail-quantity-wrapper">
-                            <label>Quantity:</label>
-                            <input type="number" value="1" min="1">
-                        </div>
-
-                        <button type="button" class="detail-btn-soldout">Sold Out</button>
-                        <button type="button" class="detail-btn-wishlist">Add to Wishlist</button>
-                    </form>
-
-                    <div class="detail-product-description">
-                        <p>
-                            Dapatkan tampilan memukau dengan Rumila Scarf hijab printed yang
-                            didesain dengan kesan kuat dan tegas yang mudah untuk menarik
-                            perhatian mulai langsung dari motif sampai rona pada bagian tepi.
-                        </p>
-                        <ul>
-                            <li>Bahan: Voal</li>
-                            <li>Size: 115x115 cm</li>
-                            <li>*Terdapat sedikit perbedaan warna akibat cahaya/screen</li>
-                        </ul>
                     </div>
                 </div>
             </div>
