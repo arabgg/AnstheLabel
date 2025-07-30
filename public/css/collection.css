@@ -346,7 +346,7 @@ input[type="checkbox"]:checked::before {
 .detail-product-page {
     margin: 0 200px;
     padding: 60px 0;
-    font-family: 'Arial', sans-serif;
+    margin-bottom: 150px;
 }
 
 .detail-container {
@@ -460,4 +460,58 @@ input[type="number"] {
     padding: 15px 0;
     font-size: 14px;
     color: #888;
+}
+
+/* REKOMENDASI PRODUK DETAIL */
+.detail-recommend {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.detail-recommend h2 {
+  font-size: 24px;
+  margin-bottom: 40px;
+  font-weight: bold;
+}
+
+.detail-recommend-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.detail-recommend-card {
+  background: white;
+  padding: 5px;
+  width: 250px;
+  height: 350px;
+  text-align: left;
+  transition: transform 0.3s;
+}
+
+.detail-recommend-card:hover {
+  transform: translateY(-5px);
+}
+.detail-recommend-card a {
+    text-decoration: none;
+}
+
+.detail-recommend-card img {
+  width: 100%;
+  height: 80%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.detail-recommend-card h3 {
+  font-size: 18px;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.detail-recommend-card p {
+  font-size: 14px;
+  color: #a66;
+  margin-bottom: 10px;
 }

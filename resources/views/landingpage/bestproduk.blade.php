@@ -20,37 +20,8 @@
                 <div class="bestproduk-info">
                     <div class="bestproduk-name">{{ $item['nama'] }}</div>
                     <div class="bestproduk-kategori">{{ $item['kategori'] }}</div>
-                    @if (!empty($item['warna']))
-                        <div class="bestproduk-color-dots">
-                            @foreach ($item['warna'] as $warna)
-                                <span class="bestproduk-dot" style="background-color: {{ $warna }};"></span>
-                            @endforeach
-                        </div>
-                    @endif
                 </div>
             </div>
         @endforeach
     </div>
-
-    {{-- <script>
-        function showAllKatalog() {
-            const cards = document.querySelectorAll('.bestproduk-card');
-            cards.forEach(card => card.classList.remove('bestproduk-hidden'));
-
-            document.getElementById('viewAllButton').style.display = 'none';
-            document.getElementById('hideButton').style.display = 'inline-block';
-        }
-
-        function hideExtraKatalog() {
-            const cards = document.querySelectorAll('.bestproduk-card');
-            cards.forEach((card, index) => {
-                if (index >= 3) {
-                    card.classList.add('bestproduk-hidden');
-                }
-            });
-
-            document.getElementById('viewAllButton').style.display = 'inline-block';
-            document.getElementById('hideButton').style.display = 'none';
-        }
-    </script> --}}
 </div>

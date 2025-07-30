@@ -71,6 +71,21 @@
             </div>
         </div>
     </div>
+
+    <div class="detail-recommend">
+        <h2>You May Also Like</h2>
+        <div class="detail-recommend-grid">
+            @foreach ($rekomendasi as $item)
+            <div class="detail-recommend-card">
+                <a href="{{ route('detail.show', $item->produk_id) }}">
+                    <img src="{{ asset('storage/foto_produk/' . $item->fotoUtama->foto_produk) }}" alt="{{ $item->nama_produk }}">
+                    <h3>{{ $item->nama_produk }}</h3>
+                    <p>{{ $item->kategori->nama_kategori }}</p>
+                </a>
+            </div>
+            @endforeach
+        </div>
+    </div>
 @endsection
 
 @push('scripts')

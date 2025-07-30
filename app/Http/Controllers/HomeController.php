@@ -64,8 +64,14 @@ class HomeController extends Controller
     public function about() {
         $produk = ProdukModel::all();
 
+        $rekomendasi = ProdukModel::with('kategori')
+        ->get()
+        ->unique(fn ($item) => $item->kategori_id)
+        ->take(3); 
+
         return view('about.index', [
-            'produk' => $produk
+            'produk' => $produk,
+            'rekomendasi' => $rekomendasi,
         ]);
     }
         
@@ -75,8 +81,14 @@ class HomeController extends Controller
             ->where('produk_id', $id)
             ->first();
 
+        $rekomendasi = ProdukModel::with('kategori')
+            ->get()
+            ->unique(fn ($item) => $item->kategori_id)
+            ->take(3); 
+
         return view('detail.index', [
             'produk' => $produk,
+            'rekomendasi' => $rekomendasi,
         ]);
     }
 }
