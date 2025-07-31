@@ -12,12 +12,6 @@ class ProdukController extends Controller
 {
     public function index()
     {
-        // $activeMenu = 'kegiatanjti';
-        // $breadcrumb = (object) [
-        //     'title' => 'Data Kegiatan JTI',
-        //     'list' => ['Home', 'Kegiatan JTI']
-        // ];
-
         $produk = ProdukModel::all();
         $kategori = KategoriProdukModel::all();
         $detail = DetailProdukModel::all();

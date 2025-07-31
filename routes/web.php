@@ -45,9 +45,23 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin', [AdminController::class, 'index']);
 
     Route::prefix('produk')->group(function () {
-        Route::get('/', [ProdukController::class, 'index']);
-        Route::post('/list', [ProdukController::class, 'list']);
-        Route::get('/create_ajax', [ProdukController::class, 'create_ajax']);
-        Route::post('/ajax', [ProdukController::class, 'store_ajax']);
+        // List
+        Route::get('/', [ProdukController::class, 'index']); // Halaman utama
+        Route::post('/list', [ProdukController::class, 'list']); // List data produk
+
+        // Show
+        Route::get('/{id}/show', [ProdukController::class, 'show']); // Detail produk
+
+        // Create
+        Route::get('/create', [ProdukController::class, 'create']); // Tampilkan form
+        Route::post('/upload', [ProdukController::class, 'upload']); // Simpan data baru
+
+        // Edit
+        Route::get('/{id}/edit', [ProdukController::class, 'edit']); // Tampilkan form edit
+        Route::put('/{id}/update', [ProdukController::class, 'update']); // Update data
+
+        // Delete
+        Route::get('/{id}/delete', [ProdukController::class, 'confirm']); // Konfirmasi hapus
+        Route::delete('/{id}/delete', [ProdukController::class, 'delete']); // Hapus data
     });
 });
