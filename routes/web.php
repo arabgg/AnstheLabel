@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,20 +32,22 @@ Route::get('/detail/{id}', [HomeController::class, 'show_produk'])->name('detail
 
 
 //Route Login
-Route::get('login', [AuthController::class, 'login'])->name('login');
-Route::post('login', [AuthController::class, 'postlogin']);
-Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
+// Guest-only routes
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'login'])->name('login');
+    Route::post('/login', [AuthController::class, 'postLogin']);
+});
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/home', [WelcomeController::class, 'index']);
+// Authenticated-only routes
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::group(['prefix' => 'produk'], function () {
+    Route::get('/admin', [AdminController::class, 'index']);
+
+    Route::prefix('produk')->group(function () {
         Route::get('/', [ProdukController::class, 'index']);
+        Route::post('/list', [ProdukController::class, 'list']);
         Route::get('/create_ajax', [ProdukController::class, 'create_ajax']);
         Route::post('/ajax', [ProdukController::class, 'store_ajax']);
-        Route::get('/{id}/edit_ajax', [ProdukController::class, 'edit_ajax']);
-        Route::put('/{id}/update_ajax', [ProdukController::class, 'update_ajax']);
-        Route::get('/{id}/delete_ajax', [ProdukController::class, 'confirm_ajax']);
-        Route::delete('/{id}/delete_ajax', [ProdukController::class, 'delete_ajax']);
-    });    
+    });
 });
