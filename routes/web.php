@@ -21,11 +21,11 @@ use App\Http\Controllers\AdminController;
 Route::pattern('id', '[0-9]+');
 
 Route::get('/', function () {
-    return redirect()->route('page');
+    return redirect()->route('home');
 });
 
 //Route Landing Page
-Route::get('page', [HomeController::class, 'index'])->name('page');
+Route::get('home', [HomeController::class, 'index'])->name('home');
 Route::get('/collection', [HomeController::class, 'collection'])->name('collection');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/detail/{id}', [HomeController::class, 'show_produk'])->name('detail.show');

@@ -25,7 +25,7 @@
             <img src="{{ asset('storage/images/ansthelabel.png') }}" alt="Ansthelabel Logo">
         </div>
         <nav class="nav-links">
-            <a href="{{ route('page') }}" class="nav-item {{ request()->is('page') ? 'active' : '' }}">Home</a>
+            <a href="{{ route('home') }}" class="nav-item {{ request()->is('home') ? 'active' : '' }}">Home</a>
             <a href="{{ route('collection') }}" class="nav-item {{ request()->is('collection') ? 'active' : '' }}">Collection</a>
             <a href="{{ route('about') }}" class="nav-item {{ request()->is('about') ? 'active' : '' }}">About Us</a>
         </nav>

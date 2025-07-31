@@ -2,7 +2,7 @@
 
 @section('breadcrumb')
     <div class="breadcrumb">
-        <a href="{{ route('page') }}">Home</a> / 
+        <a href="{{ route('home') }}">Home</a> / 
         <a href="{{ route('collection') }}">Collection</a> / 
         <span>{{ $produk->nama_produk }}</span>
     </div>

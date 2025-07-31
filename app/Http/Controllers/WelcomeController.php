@@ -12,6 +12,6 @@ class WelcomeController extends Controller
         if (Auth::check()) {
             return redirect()->route('admin.index');
         }
-        return redirect()->route('page');
+        return redirect()->route('home');
     }
 }

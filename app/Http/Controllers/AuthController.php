@@ -17,9 +17,6 @@ class AuthController extends Controller
             return redirect('/admin');
         }
 
-        if (session()->has('logged_in')) {
-            return redirect()->route('/page'); // arahkan ke halaman setelah login
-        }
         return view('auth.login'); // Tampilkan form login
     }
 
@@ -55,6 +52,6 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         session()->flush();
-        return redirect('/page');
+        return redirect('/home');
     }
 }
