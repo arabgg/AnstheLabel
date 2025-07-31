@@ -396,6 +396,13 @@ input[type="checkbox"]:checked::before {
 .detail-section {
     border-bottom: 1px solid #ccc;
     padding: 5px 0;
+    padding-left: 0px;
+    margin-bottom: 15px;
+}
+
+.detail-section-info {
+    border-bottom: 1px solid #ccc;
+    padding: 5px 0;
     padding-left: 10px;
 }
 
@@ -415,7 +422,7 @@ input[type="checkbox"]:checked::before {
 .detail-product-kategori {
     font-size: 14px;
     color: #7d5f37;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 
 .detail-size-wrapper,

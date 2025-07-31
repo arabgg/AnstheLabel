@@ -77,18 +77,32 @@ class HomeController extends Controller
         
     public function show_produk($id)
     {
-        $produk = ProdukModel::with('kategori', 'bahan', 'foto', 'warna', 'ukuran', 'toko')
+        // Memuat produk beserta relasi yang sesuai
+        $produk = ProdukModel::with([
+                'kategori',
+                'bahan',
+                'foto',
+                'warnaProduk.warna', // sesuai nama relasi
+                'ukuran.ukuran',
+                'toko'
+            ])
             ->where('produk_id', $id)
             ->first();
 
+        // Produk rekomendasi berdasarkan kategori yang berbeda
         $rekomendasi = ProdukModel::with('kategori')
             ->get()
             ->unique(fn ($item) => $item->kategori_id)
-            ->take(3); 
+            ->take(3);
+
+        $defaultUkuran = $produk->ukuran->first(function ($item) {
+            return optional($item->ukuran)->kategori_id == 1;
+        });
 
         return view('detail.index', [
             'produk' => $produk,
             'rekomendasi' => $rekomendasi,
+            'defaultUkuran' => $defaultUkuran,
         ]);
     }
 }
