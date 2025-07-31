@@ -522,3 +522,56 @@ input[type="number"] {
   color: #a66;
   margin-bottom: 10px;
 }
+
+.detail-color-wrapper {
+    margin-bottom: 25px;
+}
+
+.detail-color-wrapper p {
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: #7d5f37;
+}
+
+.detail-color-dot {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 6px;
+    padding-left: 5px;
+}
+
+.detail-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid #aaa;
+}
+
+.detail-size-wrapper p {
+    margin-bottom: 5px;
+    font-size: 12px;
+    color: #7d5f37;
+    text-align: right;
+}
+
+.detail-size {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+    padding-left: 5px;
+    border: 1px solid #FBE9EB; 
+    background-color: #FBE9EB;       
+    height: 30px; 
+}
+
+.detail-size-nama {
+    display: flex;
+    padding-left: 20px;
+    align-items: center;
+    justify-content: center;     
+    font-size: 14px;
+    font-weight: 800;
+    color: #560024;
+    text-align: center;
+}

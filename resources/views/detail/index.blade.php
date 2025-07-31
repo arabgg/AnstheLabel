@@ -39,10 +39,10 @@
                         <div class="detail-color-wrapper">
                             <p>Colors</p>
                             @if ($produk->warnaProduk->isNotEmpty())
-                                <div class="bestproduk-color-dots">
+                                <div class="detail-color-dot">
                                     @foreach ($produk->warnaProduk as $warnaItem)
                                         @if ($warnaItem->warna)
-                                            <span class="bestproduk-dot"
+                                            <span class="detail-dot"
                                                 style="background-color: {{ $warnaItem->warna->kode_hex ?? '#000000' }};">
                                             </span>
                                         @endif
@@ -51,29 +51,35 @@
                             @endif
                         </div>
 
-                        <div class="produk-ukuran-wrapper">
-                            <p class="mb-2 font-semibold">Pilih Ukuran:</p>
-                            <div class="flex gap-2 flex-wrap">
-                                @foreach ($produk->ukuran as $ukuranItem)
-                                    @if ($ukuranItem->ukuran)
-                                        @php
-                                            $isActive = isset($defaultUkuran) && $defaultUkuran->ukuran_id === $ukuranItem->ukuran_id;
-                                        @endphp
-                                        <button 
-                                            type="button" 
-                                            class="ukuran-button px-4 py-2 border rounded 
-                                                {{ $isActive ? 'bg-[#560024] text-white' : 'bg-gray-200 text-black' }}"
-                                            data-deskripsi="{{ $ukuranItem->ukuran->deskripsi ?? 'Tidak ada deskripsi.' }}"
-                                            onclick="updateDeskripsiUkuran(this)">
-                                            {{ $ukuranItem->ukuran->nama_ukuran }}
-                                        </button>
-                                    @endif
-                                @endforeach
-                            </div>
+                        <div class="detail-size-wrapper">    
+                            <p>Size Guide</p>
+                            @if ($produk->ukuran->isNotEmpty())
+                                <div class="detail-size">
+                                    @foreach ($produk->ukuran as $sizeItem)
+                                        @if ($sizeItem->produk)
+                                            <span class="detail-size-nama">
+                                                {{ $sizeItem->ukuran->nama_ukuran }}
+                                            </span>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
 
-                            <div id="deskripsi-ukuran" class="mt-4 p-3 bg-gray-100 rounded text-sm text-gray-800">
-                                {{ $defaultUkuran->ukuran->deskripsi ?? 'Silakan pilih ukuran.' }}
-                            </div>
+                        <div class="detail-toko-wrapper">    
+                            <p>Link Shop</p>
+                            @if ($produk->toko->isNotEmpty())
+                                <div class="detail-toko">
+                                    @foreach ($produk->toko as $tokoItem)
+                                        @if ($tokoItem->produk)
+                                        <a href="{{ $tokoItem->url_toko }}">
+                                            <img src="{{ asset('storage/icon/' . $tokoItem->toko->icon_toko) }}" 
+                                            alt="{{ $tokoItem->toko->nama_toko }}">
+                                        </a>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -98,21 +104,4 @@
 @endsection
 
 @push('scripts')
-<script>
-    function updateDeskripsiUkuran(button) {
-        const deskripsi = button.getAttribute('data-deskripsi');
-        document.getElementById('deskripsi-ukuran').innerText = deskripsi;
-
-        // Update styling tombol
-        const buttons = document.querySelectorAll('.ukuran-button');
-        buttons.forEach(btn => {
-            btn.classList.remove('bg-[#560024]', 'text-white');
-            btn.classList.add('bg-gray-200', 'text-black');
-        });
-
-        button.classList.remove('bg-gray-200', 'text-black');
-        button.classList.add('bg-[#560024]', 'text-white');
-    }
-</script>
-
 @endpush

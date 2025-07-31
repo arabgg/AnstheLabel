@@ -84,7 +84,7 @@ class HomeController extends Controller
                 'foto',
                 'warnaProduk.warna', // sesuai nama relasi
                 'ukuran.ukuran',
-                'toko'
+                'toko.toko'
             ])
             ->where('produk_id', $id)
             ->first();
@@ -95,14 +95,9 @@ class HomeController extends Controller
             ->unique(fn ($item) => $item->kategori_id)
             ->take(3);
 
-        $defaultUkuran = $produk->ukuran->first(function ($item) {
-            return optional($item->ukuran)->kategori_id == 1;
-        });
-
         return view('detail.index', [
             'produk' => $produk,
             'rekomendasi' => $rekomendasi,
-            'defaultUkuran' => $defaultUkuran,
         ]);
     }
 }
