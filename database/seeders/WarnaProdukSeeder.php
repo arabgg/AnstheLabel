@@ -20,28 +20,58 @@ class WarnaProdukSeeder extends Seeder
             'created_at' => now(),
             ],
             [
+            'warna_id' => 2,
+            'produk_id' => 1,
+            'created_at' => now(),
+            ],
+            [
+            'warna_id' => 3,
+            'produk_id' => 1,
+            'created_at' => now(),
+            ],
+            [
+            'warna_id' => 4,
+            'produk_id' => 1,
+            'created_at' => now(),
+            ],
+            [
             'warna_id' => 1,
             'produk_id' => 2,
             'created_at' => now(),
             ],
             [
             'warna_id' => 2,
-            'produk_id' => 1,
+            'produk_id' => 2,
+            'created_at' => now(),
+            ],
+            [
+            'warna_id' => 3,
+            'produk_id' => 2,
+            'created_at' => now(),
+            ],
+            [
+            'warna_id' => 4,
+            'produk_id' => 2,
+            'created_at' => now(),
+            ],
+            [
+            'warna_id' => 1,
+            'produk_id' => 3,
             'created_at' => now(),
             ],
             [
             'warna_id' => 2,
-            'produk_id' => 2,
+            'produk_id' => 3,
             'created_at' => now(),
             ],
             [
             'warna_id' => 3,
-            'produk_id' => 1,
+            'produk_id' => 3,
             'created_at' => now(),
             ],
             [
-            'warna_id' => 3,
-            'produk_id' => 2,
+            'warna_id' => 4,
+            'produk_id' => 3,
             'created_at' => now(),
             ],
         ]

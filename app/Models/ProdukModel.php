@@ -41,7 +41,7 @@ class ProdukModel extends Model
         return $this->hasMany(FotoProdukModel::class, 'produk_id', 'produk_id');
     }
 
-    public function warna() :HasMany
+    public function warnaProduk() :HasMany
     {
         return $this->hasMany(WarnaProdukModel::class, 'produk_id', 'produk_id');
     }
