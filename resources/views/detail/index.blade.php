@@ -38,9 +38,9 @@
                     <div class="detail-section-info">
                         <div class="detail-color-wrapper">
                             <p>Colors</p>
-                            @if ($produk->warnaProduk->isNotEmpty())
+                            @if ($produk->warna->isNotEmpty())
                                 <div class="detail-color-dot">
-                                    @foreach ($produk->warnaProduk as $warnaItem)
+                                    @foreach ($produk->warna as $warnaItem)
                                         @if ($warnaItem->warna)
                                             <span class="detail-dot"
                                                 style="background-color: {{ $warnaItem->warna->kode_hex ?? '#000000' }};">
