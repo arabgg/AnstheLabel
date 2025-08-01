@@ -1,118 +1,202 @@
 .bestproduk-section {
-    max-width: 1200px;
-    margin: 100px auto;
-    padding: 0 100px;
+  max-width: 1200px;
+  margin: 100px auto;
+  padding: 0 100px;
 }
 
 .bestproduk-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    padding: 0 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 0 10px;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 .bestproduk-title {
-    font-family: 'Montserrat', sans-serif !important;
-    font-size: 32px;
-    font-weight: 700;
-    margin-bottom: 30px;
-    color: #560024;
+  font-family: 'Montserrat', sans-serif !important;
+  font-size: 32px;
+  font-weight: 700;
+  color: #560024;
 }
 
 .bestproduk-buttons a {
-    font-family: 'Montserrat', sans-serif !important;
-    padding: 10px 40px;
-    font-size: 12px;
-    margin-left: 10px;
-    cursor: pointer;
-    background-color: transparent;
-    color: #560024;
-    border: none;
-    text-decoration: none;
+  font-family: 'Montserrat', sans-serif !important;
+  padding: 10px 40px;
+  font-size: 12px;
+  margin-left: 10px;
+  cursor: pointer;
+  background-color: transparent;
+  color: #560024;
+  border: none;
+  text-decoration: none;
 }
 
 .bestproduk-buttons a:hover {
-    background-color: #dbcbd2;
+  background-color: #dbcbd2;
 }
 
 .bestproduk-grid {
-    font-family: 'Montserrat', sans-serif !important;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px 50px;
+  font-family: 'Montserrat', sans-serif !important;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px 50px;
 }
 
 .bestproduk-card {
-    background-color: #fff;
-    border-radius: 4px;
-    overflow: hidden;
-    position: relative;
+  background-color: #fff;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
 }
 
 .bestproduk-image-wrapper {
-    position: relative;
-    overflow: hidden;
-    height: 438px;
+  position: relative;
+  overflow: hidden;
+  height: 438px;
 }
 
 .bestproduk-image {
-    width: 100%;
-    height: 438px;
-    object-fit: cover;
-    display: block;
-    transition: opacity 0.3s ease;
-    position: absolute;
-    top: 0;
-    left: 0;
+  width: 100%;
+  height: 438px;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.3s ease;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .default-image {
-    z-index: 1;
-    opacity: 1;
+  z-index: 1;
+  opacity: 1;
 }
 
 .hover-image {
-    z-index: 2;
-    opacity: 0;
+  z-index: 2;
+  opacity: 0;
 }
 
 .bestproduk-image-wrapper:hover .default-image {
-    opacity: 0;
+  opacity: 0;
 }
 
 .bestproduk-image-wrapper:hover .hover-image {
-    opacity: 1;
+  opacity: 1;
 }
 
 .bestproduk-favorite-icon {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background-color: #fff;
-    border-radius: 50%;
-    padding: 6px 10px;
-    font-size: 18px;
-    cursor: pointer;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #fff;
+  border-radius: 50%;
+  padding: 6px 10px;
+  font-size: 18px;
+  cursor: pointer;
 }
 
 .bestproduk-info {
-    padding: 12px 10px;
-    text-align: left;
+  padding: 12px 10px;
+  text-align: left;
 }
 
 .bestproduk-name {
-    font-family: 'Montserrat', sans-serif !important;
-    font-size: 20px;
-    font-weight: bold;
+  font-family: 'Montserrat', sans-serif !important;
+  font-size: 20px;
+  font-weight: bold;
 }
 
 .bestproduk-kategori {
-    font-family: 'Montserrat', sans-serif !important;
-    font-size: 15px;
-    margin-bottom: 7px;
+  font-family: 'Montserrat', sans-serif !important;
+  font-size: 15px;
+  margin-bottom: 7px;
 }
 
 .bestproduk-hidden {
-    display: none;
+  display: none;
+}
+
+/* ==============================
+   ✅ Responsive Section
+============================== */
+
+@media screen and (max-width: 1024px) {
+  .bestproduk-section {
+    padding: 0 50px;
+  }
+
+  .bestproduk-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 30px;
+  }
+
+  .bestproduk-image-wrapper {
+    height: 360px;
+  }
+
+  .bestproduk-image {
+    height: 360px;
+  }
+
+  .bestproduk-title {
+    font-size: 28px;
+  }
+
+  .bestproduk-buttons a {
+    padding: 8px 24px;
+  }
+
+  .bestproduk-name {
+    font-size: 18px;
+  }
+
+  .bestproduk-kategori {
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .bestproduk-section {
+    padding: 0 20px;
+    margin: 60px auto;
+  }
+
+  .bestproduk-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .bestproduk-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .bestproduk-image-wrapper {
+    height: 300px;
+  }
+
+  .bestproduk-image {
+    height: 300px;
+  }
+
+  .bestproduk-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  .bestproduk-buttons a {
+    padding: 8px 16px;
+    font-size: 11px;
+  }
+
+  .bestproduk-name {
+    font-size: 16px;
+  }
+
+  .bestproduk-kategori {
+    font-size: 13px;
+  }
 }

@@ -29,7 +29,7 @@
 
 .about-left {
   flex: 1;
-  min-width: 300px;
+  min-width: 280px;
   text-align: center;
 }
 
@@ -40,11 +40,12 @@
 
 .about-right {
   flex: 2;
-  min-width: 300px;
+  min-width: 280px;
   padding: 0 20px;
   font-size: 16px;
   line-height: 1.8;
   color: #333;
+  text-align: justify;
 }
 
 .about-recommend {
@@ -52,7 +53,7 @@
 }
 
 .about-recommend h2 {
-  font-size: 24px;
+  font-size: 28px;
   margin-bottom: 30px;
   font-weight: bold;
 }
@@ -78,8 +79,9 @@
 .recommend-card:hover {
   transform: translateY(-5px);
 }
+
 .recommend-card a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .recommend-card img {
@@ -100,4 +102,85 @@
   font-size: 14px;
   color: #a66;
   margin-bottom: 10px;
+}
+
+/* ========================
+   RESPONSIVE STYLES
+======================== */
+
+@media screen and (max-width: 1024px) {
+  .about-section {
+    padding: 60px 30px;
+  }
+
+  .about-container {
+    padding-bottom: 80px;
+    margin-top: 80px;
+  }
+
+  .about-content {
+    flex-direction: column;
+    margin-bottom: 100px;
+  }
+
+  .about-left,
+  .about-right {
+    padding: 0;
+    text-align: center;
+  }
+
+  .about-right {
+    font-size: 15px;
+    padding: 0 10px;
+  }
+
+  .about-recommend h2 {
+    font-size: 24px;
+  }
+
+  .recommend-card {
+    width: 220px;
+    height: 330px;
+  }
+
+  .recommend-card h3 {
+    font-size: 16px;
+  }
+
+  .recommend-card p {
+    font-size: 13px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .about-section {
+    padding: 40px 20px;
+  }
+
+  .about-container {
+    margin-top: 60px;
+    padding-bottom: 60px;
+  }
+
+  .about-recommend h2 {
+    font-size: 22px;
+  }
+
+  .recommend-card {
+    width: 100%;
+    height: auto;
+  }
+
+  .recommend-card img {
+    height: auto;
+    max-height: 250px;
+  }
+
+  .recommend-card h3 {
+    font-size: 16px;
+  }
+
+  .recommend-card p {
+    font-size: 13px;
+  }
 }
