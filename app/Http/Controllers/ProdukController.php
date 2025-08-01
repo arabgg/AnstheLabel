@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DetailProdukModel;
-use App\Models\KategoriProdukModel;
+use App\Models\KategoriModel;
+use App\Models\BahanModel;
 use App\Models\ProdukModel;
+use App\Models\WarnaProdukModel;
+use App\Models\UkuranProdukModel;
+use App\Models\FotoProdukModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -12,224 +15,132 @@ class ProdukController extends Controller
 {
     public function index()
     {
-        $produk = ProdukModel::all();
-        $kategori = KategoriProdukModel::all();
-        $detail = DetailProdukModel::all();
-    
-        return view('admin.index', [
-            'produk' => $produk,
-            'kategori' => $kategori,
-            'detail' => $detail
-        ]);
+        $produk = ProdukModel::with(['kategori', 'bahan', 'fotoUtama'])->get();
+        return view('produk.index', compact('produk'));
     }
 
-    public function create_ajax()
-    {   
-        $produk = ProdukModel::get();
-        
-        $kategori = KategoriProdukModel::select('kategori_id', 'nama_kategori')->get();
-        $detail = DetailProdukModel::select('detail_produk_id', 'warna', 'ukuran')->get();
-
-        return view('admin.create_ajax')->with([
-            'produk' => $produk,
-            'kategori' => $kategori,
-            'detail' => $detail
-        ]);
-    }
-
-    public function store_ajax(Request $request)
+    public function show($id)
     {
-        if ($request->ajax() || $request->wantsJson()) {
-            $rules = [
-                'kategori_id' => 'required|integer|exists:m_kategori,kategori_id',
-                'detail_produk_id' => 'required|integer|exists:m_detail_produk,detail_produk_id',
-                'nama_produk' => 'required|string|max:200',
-                'harga' => 'required|string|max:100',
-                'foto_produk' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-                'deskripsi' => 'required|string|max:255',
-            ];
+        $produk = ProdukModel::with(['kategori', 'bahan', 'foto', 'warnaProduk', 'ukuran', 'toko'])->findOrFail($id);
+        return view('produk.show', compact('produk'));
+    }
 
-            $validator = Validator::make($request->all(), $rules);
+    public function create()
+    {
+        $kategori = KategoriModel::all();
+        $bahan = BahanModel::all();
+        return view('produk.create', compact('kategori', 'bahan'));
+    }
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Validasi Gagal',
-                    'msgField' => $validator->errors(),
-                ]);
-            }
+    public function upload(Request $request)
+    {
+        $request->validate([
+            'nama_produk' => 'required',
+            'deskripsi' => 'required',
+            'kategori_id' => 'required',
+            'bahan_id' => 'required',
+            'warna' => 'array',
+            'ukuran' => 'array',
+            'foto' => 'image|mimes:jpg,jpeg,png|max:2048',
+        ]);
 
-            try {
-                $data = [
-                    'kategori_id' => $request->kategori_id,
-                    'detail_produk_id' => $request->detail_produk_id,
-                    'nama_produk' => $request->nama_produk,
-                    'harga' => $request->harga,
-                    'deskripsi' => $request->deskripsi,
-                ];
+        $produk = ProdukModel::create($request->only(['kategori_id', 'bahan_id', 'nama_produk', 'deskripsi']));
 
-                // Proses simpan file ke public/storage/foto_produk
-                if ($request->hasFile('foto_produk')) {
-                    $foto = $request->file('foto_produk');
-                    $filename = time() . '_' . $foto->getClientOriginalName();
-                    $path = public_path('storage/foto_produk');
-
-                    // Cek dan buat folder jika belum ada
-                    if (!file_exists($path)) {
-                        mkdir($path, 0755, true);
-                    }
-
-                    // Simpan file ke public/storage/foto_produk
-                    $foto->move($path, $filename);
-
-                    // Simpan path file ke database
-                    $data['foto_produk'] = 'storage/foto_produk/' . $filename;
-                }
-
-                ProdukModel::create($data);
-
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Produk Berhasil Ditambahkan'
-                ]);
-            } catch (\Exception $e) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Terjadi kesalahan saat menyimpan data',
-                    'error' => $e->getMessage()
+        // Simpan warna produk
+        if ($request->has('warna')) {
+            foreach ($request->warna as $kode) {
+                WarnaProdukModel::create([
+                    'produk_id' => $produk->produk_id,
+                    'kode_warna' => $kode,
                 ]);
             }
         }
 
-        return redirect('/home');
-    }
-
-    public function edit_ajax(string $id)
-    {   
-        $produk = ProdukModel::find($id);
-        $kategori = KategoriProdukModel::select('kategori_id', 'nama_kategori')->get();
-        $detail = DetailProdukModel::select('detail_produk_id', 'warna', 'ukuran')->get();
-
-        return view('admin.edit_ajax', [
-            'produk' => $produk,
-            'kategori' => $kategori,
-            'detail' => $detail
-        ]);
-    }
-
-    public function update_ajax(Request $request, $id)
-    {
-        if ($request->ajax() || $request->wantsJson()) {
-            $rules = [
-                'kategori_id' => 'required|integer|exists:m_kategori,kategori_id',
-                'detail_produk_id' => 'required|integer|exists:m_detail_produk,detail_produk_id',
-                'nama_produk' => 'required|string|max:200',
-                'harga' => 'required|string|max:100',
-                'foto_produk' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-                'deskripsi' => 'required|string|max:255',
-            ];
-
-            $validator = Validator::make($request->all(), $rules);
-
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Validasi gagal.',
-                    'msgField' => $validator->errors()
-                ]);
-            }
-
-            $produk = ProdukModel::find($id);
-            if (!$produk) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Data tidak ditemukan.'
-                ]);
-            }
-
-            try {
-                $data = [
-                    'kategori_id' => $request->kategori_id,
-                    'detail_produk_id' => $request->detail_produk_id,
-                    'nama_produk' => $request->nama_produk,
-                    'harga' => $request->harga,
-                    'deskripsi' => $request->deskripsi,
-                ];
-
-                // Proses update foto jika ada file baru dikirim
-                if ($request->hasFile('foto_produk')) {
-                    // Hapus foto lama jika ada
-                    if ($produk->foto_produk && file_exists(public_path($produk->foto_produk))) {
-                        unlink(public_path($produk->foto_produk));
-                    }
-
-                    $foto = $request->file('foto_produk');
-                    $filename = time() . '_' . $foto->getClientOriginalName();
-                    $path = public_path('storage/foto_produk');
-
-                    // Buat folder jika belum ada
-                    if (!file_exists($path)) {
-                        mkdir($path, 0755, true);
-                    }
-
-                    // Pindahkan file baru
-                    $foto->move($path, $filename);
-
-                    // Set path foto baru
-                    $data['foto_produk'] = 'storage/foto_produk/' . $filename;
-                }
-
-                // Update data
-                $produk->update($data);
-
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Data berhasil diupdate.'
-                ]);
-            } catch (\Exception $e) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Terjadi kesalahan saat update.',
-                    'error' => $e->getMessage()
+        // Simpan ukuran produk
+        if ($request->has('ukuran')) {
+            foreach ($request->ukuran as $ukuran) {
+                UkuranProdukModel::create([
+                    'produk_id' => $produk->produk_id,
+                    'ukuran' => $ukuran,
                 ]);
             }
         }
 
-        return redirect('/home');
+        // Simpan foto utama
+        if ($request->hasFile('foto')) {
+            $path = $request->file('foto')->store('produk', 'public');
+
+            FotoProdukModel::create([
+                'produk_id' => $produk->produk_id,
+                'nama_file' => $path,
+                'status_foto' => 1,
+            ]);
+        }
+
+        return redirect('/produk')->with('success', 'Produk berhasil ditambahkan');
     }
 
-    public function confirm_ajax(string $id)
-    {   
-        $produk = ProdukModel::find($id);
-
-        return view('admin.confirm_ajax', [
-            'produk' => $produk
-        ]);
-    }
-
-    public function delete_ajax(Request $request, string $id)
+    public function edit($id)
     {
-        if ($request->ajax() || $request->wantsJson()) {
-            $produk = ProdukModel::find($id);
+        $produk = ProdukModel::with(['warnaProduk', 'ukuran'])->findOrFail($id);
+        $kategori = KategoriModel::all();
+        $bahan = BahanModel::all();
+        return view('produk.edit', compact('produk', 'kategori', 'bahan'));
+    }
 
-            if ($produk) {
-                // Hapus semua data terkait
-                $produk->kategori()->delete();
-                $produk->detail()->delete();
-                $produk->delete();
+    public function update(Request $request, $id)
+    {
+        $produk = ProdukModel::findOrFail($id);
+        $produk->update($request->only(['kategori_id', 'bahan_id', 'nama_produk', 'deskripsi']));
 
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Data berhasil dihapus'
-                ]);
-            } else {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Data tidak ditemukan'
+        // Update warna dan ukuran - sederhana: hapus lalu insert ulang
+        WarnaProdukModel::where('produk_id', $id)->delete();
+        UkuranProdukModel::where('produk_id', $id)->delete();
+
+        if ($request->has('warna')) {
+            foreach ($request->warna as $kode) {
+                WarnaProdukModel::create([
+                    'produk_id' => $id,
+                    'kode_warna' => $kode,
                 ]);
             }
         }
 
-        return redirect('/home');
+        if ($request->has('ukuran')) {
+            foreach ($request->ukuran as $ukuran) {
+                UkuranProdukModel::create([
+                    'produk_id' => $id,
+                    'ukuran' => $ukuran,
+                ]);
+            }
+        }
+
+        return redirect('/produk')->with('success', 'Produk berhasil diperbarui');
+    }
+
+    public function confirm($id)
+    {
+        $produk = ProdukModel::findOrFail($id);
+        return view('produk.confirm', compact('produk'));
+    }
+
+    public function delete($id)
+    {
+        $produk = ProdukModel::findOrFail($id);
+
+        // Hapus relasi terlebih dahulu
+        WarnaProdukModel::where('produk_id', $id)->delete();
+        UkuranProdukModel::where('produk_id', $id)->delete();
+        FotoProdukModel::where('produk_id', $id)->delete();
+
+        $produk->delete();
+
+        return redirect('/produk')->with('success', 'Produk berhasil dihapus');
+    }
+
+    public function list()
+    {
+        $produk = ProdukModel::with(['kategori', 'bahan', 'fotoUtama'])->get();
+        return response()->json($produk);
     }
 }

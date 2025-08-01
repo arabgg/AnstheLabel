@@ -32,13 +32,11 @@ Route::get('/detail/{id}', [HomeController::class, 'show_produk'])->name('detail
 
 
 //Route Login
-// Guest-only routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/login', [AuthController::class, 'postLogin']);
 });
 
-// Authenticated-only routes
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
