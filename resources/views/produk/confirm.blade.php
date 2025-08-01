@@ -1,4 +1,4 @@
-@extends('admin.index')
+@extends('admin.layouts.app')
 
 @section('content')
     <h1>Konfirmasi Hapus Produk</h1>

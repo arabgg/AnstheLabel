@@ -1,4 +1,4 @@
-@extends('admin.index')
+@extends('admin.layouts.app')
 @section('content')
 <div class="p-4">
     <h1 class="text-xl font-bold mb-4">Daftar Produk</h1>
@@ -25,9 +25,9 @@
                         @endif
                     </td>
                     <td class="p-2 space-x-2">
-                        <a href="{{ url('/produk/' . $p->produk_id) }}" class="text-blue-600">Lihat</a>
-                        <a href="{{ url('/produk/' . $p->produk_id . '/edit') }}" class="text-yellow-600">Edit</a>
-                        <a href="{{ url('/produk/' . $p->produk_id . '/confirm') }}" class="text-red-600">Hapus</a>
+                        <a href="{{ url('/produk/show/' . $p->produk_id) }}" class="text-blue-600">Lihat</a>
+                        <a href="{{ url('/produk/edit/' . $p->produk_id . '/edit') }}" class="text-yellow-600">Edit</a>
+                        <a href="{{ url('/produk/delete/' . $p->produk_id . '/confirm') }}" class="text-red-600">Hapus</a>
                     </td>
                 </tr>
             @endforeach

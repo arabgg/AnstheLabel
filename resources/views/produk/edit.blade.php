@@ -1,4 +1,4 @@
-@extends('admin.index')
+@extends('admin.layouts.index')
 
 @section('content')
     <h1>Edit Produk</h1>
