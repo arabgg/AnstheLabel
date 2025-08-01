@@ -82,7 +82,7 @@ class HomeController extends Controller
                 'kategori',
                 'bahan',
                 'foto',
-                'warnaProduk.warna', // sesuai nama relasi
+                'warna.warna', // sesuai nama relasi
                 'ukuran.ukuran',
                 'toko.toko'
             ])

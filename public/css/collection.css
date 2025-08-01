@@ -543,7 +543,7 @@ input[type="number"] {
 .detail-dot {
     width: 20px;
     height: 20px;
-    border-radius: 50%;
+    /* border-radius: 50%; */
     border: 1px solid #aaa;
 }
 

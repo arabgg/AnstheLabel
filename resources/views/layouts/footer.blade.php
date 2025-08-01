@@ -1,8 +1,8 @@
 <footer class="footer-section">
   <nav class="footer-section-menu">
-    <a href="#">Home</a>
-    <a href="#">Collection</a>
-    <a href="#">About Us</a>
+    <a href="{{ route('page') }}" class="nav-item {{ request()->is('page') ? 'active' : '' }}">Home</a>
+    <a href="{{ route('collection') }}" class="nav-item {{ request()->is('collection') ? 'active' : '' }}">Collection</a>
+    <a href="{{ route('about') }}" class="nav-item {{ request()->is('about') ? 'active' : '' }}">About Us</a>
     <a href="#">Contact Us</a>
     <a href="#">Follow Us</a>
   </nav>

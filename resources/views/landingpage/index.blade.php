@@ -10,7 +10,7 @@
         </div>
 
         <!-- Tombol Buy Now -->
-        <a href="#" target="_blank" class="buy-now-btn">BUY NOW</a>
+        {{-- <a href="#" target="_blank" class="buy-now-btn">BUY NOW</a> --}}
     </div>
 
     @include('landingpage.bestproduk')
