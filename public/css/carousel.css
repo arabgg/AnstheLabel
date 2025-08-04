@@ -1,3 +1,17 @@
+.ansthelabel-hashtag {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 0;
+  margin-bottom: 30px;
+}
+
+.ansthelabel-hashtag h1 {
+  font-size: 32px;
+  color: #560024;
+  margin: 0;
+}
+
 .custom-carousel {
   position: relative;
   width: 100%;

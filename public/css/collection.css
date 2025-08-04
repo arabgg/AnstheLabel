@@ -2,8 +2,8 @@
 .collection-section {
     max-width: 100%;
     margin: 18px auto;
-    margin-bottom: 100px;
-    /* padding: 0 100px !important; */
+    margin-bottom: 150px;
+    /* border-bottom: 1px solid #ded1d1; */
 }
 
 .collection-title {
@@ -21,6 +21,7 @@
     grid-template-rows: repeat(3, 250px);
     position: relative;
     gap: 15px;
+    margin-bottom: 28px;
 }
 
 .item {

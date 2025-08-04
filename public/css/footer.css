@@ -2,7 +2,7 @@
   background-color: #4a002a;
   background-image: url('/storage/images/footer.png');
   color: white;
-  padding: 50px 20px;
+  padding: 30px 20px;
   text-align: center;
 }
 
@@ -10,7 +10,7 @@
   display: flex;
   justify-content: center;
   gap: 40px;
-  margin-bottom: 80px;
+  margin-bottom: 60px;
   flex-wrap: wrap;
 }
 

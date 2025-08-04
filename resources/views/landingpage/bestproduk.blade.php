@@ -1,10 +1,6 @@
 <div class="bestproduk-section">
     <div class="bestproduk-header">
-        <h1 class="bestproduk-title">NEW ARRIVAL</h1>
-        
-        <div class="bestproduk-buttons">
-            <a href="{{ route('collection') }}" class="view-all-link">VIEW ALL</a>  
-        </div>
+        <h1 class="bestproduk-title">New Arrival</h1>
     </div>
 
     <div class="bestproduk-grid" id="katalogGrid">
@@ -31,5 +27,9 @@
                 </div>
             </div>
         @endforeach
+    </div>
+    
+    <div class="bestproduk-buttons">
+        <a href="{{ route('collection') }}" class="view-all-link">VIEW ALL</a>  
     </div>
 </div>

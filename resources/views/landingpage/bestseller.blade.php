@@ -1,25 +1,21 @@
-<div class="bestproduk-section">
-    <div class="bestproduk-header">
-        <h1 class="bestproduk-title">BEST SELLER</h1>
-        
-        <div class="bestproduk-buttons">
-            <a href="{{ route('collection') }}" class="view-all-link">VIEW ALL</a>  
-        </div>
+<div class="bestseller-section">
+    <div class="bestseller-header">
+        <h1 class="bestseller-title">Best Seller</h1>
     </div>
 
-    <div class="bestproduk-grid" id="katalogGrid">
+    <div class="bestseller-grid" id="katalogGrid">
         @foreach ($bestproduk as $index => $item)
-            <div class="bestproduk-card">
-                <div class="bestproduk-image-wrapper">
-                    <img src="{{ asset('storage/images/bestproduk/' . $item['image']) }}" alt="{{ $item['nama'] }}" class="bestproduk-image default-image">
+            <div class="bestseller-card">
+                <div class="bestseller-image-wrapper">
+                    <img src="{{ asset('storage/images/bestproduk/' . $item['image']) }}" alt="{{ $item['nama'] }}" class="bestseller-image default-image">
                     @if (!empty($item['image_hover']))
-                        <img src="{{ asset('storage/images/bestproduk/' . $item['image_hover']) }}" alt="{{ $item['nama'] }}" class="bestproduk-image hover-image">
+                        <img src="{{ asset('storage/images/bestproduk/' . $item['image_hover']) }}" alt="{{ $item['nama'] }}" class="bestseller-image hover-image">
                     @endif
                 </div>
                 
-                <div class="bestproduk-info">
-                    <div class="bestproduk-name">{{ $item['nama'] }}</div>
-                    <div class="bestproduk-price">
+                <div class="bestseller-info">
+                    <div class="bestseller-name">{{ $item['nama'] }}</div>
+                    <div class="bestseller-price">
                         @if (!empty($item['harga_diskon']))
                             <span class="price-discounted">{{ $item['harga'] }}</span>
                             <span class="price-now">{{ $item['harga_diskon'] }}</span>
@@ -27,7 +23,7 @@
                             <span class="price-now">{{ $item['harga'] }}</span>
                         @endif
                     </div>
-                    <div class="bestproduk-kategori">{{ $item['kategori'] }}</div>
+                    <div class="bestseller-kategori">{{ $item['kategori'] }}</div>
                 </div>
             </div>
         @endforeach
