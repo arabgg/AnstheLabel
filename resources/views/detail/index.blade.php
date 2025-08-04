@@ -2,7 +2,7 @@
 
 @section('breadcrumb')
     <div class="breadcrumb">
-        <a href="{{ route('page') }}">Home</a> / 
+        <a href="{{ route('home') }}">Home</a> / 
         <a href="{{ route('collection') }}">Collection</a> / 
         <span>{{ $produk->nama_produk }}</span>
     </div>
@@ -32,12 +32,12 @@
                 <div class="detail-product-info">
                     <div class="detail-section">
                         <h2 class="detail-product-name">{{ $produk->nama_produk }}</h2>
-                        <p class="detail-product-kategori">{{ $produk->deskripsi }}</p>
+                        <p class="detail-product-kategori">{{ $produk->kategori->nama_kategori }}</p>
                     </div>
                     
                     <div class="detail-section-info">
                         <div class="detail-color-wrapper">
-                            <p>Colors</p>
+                            <p>Color Available</p>
                             @if ($produk->warna->isNotEmpty())
                                 <div class="detail-color-dot">
                                     @foreach ($produk->warna as $warnaItem)
@@ -52,7 +52,7 @@
                         </div>
 
                         <div class="detail-size-wrapper">    
-                            <p>Size Guide</p>
+                            <p>Size Available</p>
                             @if ($produk->ukuran->isNotEmpty())
                                 <div class="detail-size">
                                     @foreach ($produk->ukuran as $sizeItem)
@@ -66,21 +66,34 @@
                             @endif
                         </div>
 
-                        <div class="detail-toko-wrapper">    
-                            <p>Link Shop</p>
+                        <div class="detail-toko-wrapper">
+                            <div class="detail-buy-header">BUY NOW</div>
+
                             @if ($produk->toko->isNotEmpty())
-                                <div class="detail-toko">
-                                    @foreach ($produk->toko as $tokoItem)
-                                        @if ($tokoItem->produk)
-                                        <a href="{{ $tokoItem->url_toko }}">
-                                            <img src="{{ asset('storage/icon/' . $tokoItem->toko->icon_toko) }}" 
-                                            alt="{{ $tokoItem->toko->nama_toko }}">
-                                        </a>
+                                @foreach ($produk->toko as $tokoItem)
+                                    <a href="{{ $tokoItem->url_toko }}" class="detail-toko" target="_blank">
+                                        @if (!empty($tokoItem->toko->icon_toko))
+                                            <img src="{{ asset('storage/icon/' . $tokoItem->toko->icon_toko) }}" alt="{{ $tokoItem->toko->nama_toko }}">
                                         @endif
-                                    @endforeach
-                                </div>
+                                        {{ $tokoItem->toko->nama_toko }}
+                                    </a>
+                                @endforeach
+                            @else
+                                <div class="detail-toko">Toko tidak tersedia</div>
                             @endif
                         </div>
+                    </div>
+
+                    <div class="detail-deskripsi-wrapper">
+                        <div class="detail-deskripsi-produk"></div>
+                        <div class="detail-deskripsi-bahan"></div>
+                        <div class="detail-deskripsi-ukuran"></div>
+                        <p>Deskripsi Produk</p>
+                        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Expedita tempora laudantium esse saepe sed vel, quaerat voluptates quasi itaque nam distinctio labore a, est unde. Expedita velit commodi dicta debitis!</p>
+                        <p>Deskripsi Ukuran</p>
+                        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Expedita tempora laudantium esse saepe sed vel, quaerat voluptates quasi itaque nam distinctio labore a, est unde. Expedita velit commodi dicta debitis!</p>
+                        <p>Deskripsi Bahan</p>
+                        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Expedita tempora laudantium esse saepe sed vel, quaerat voluptates quasi itaque nam distinctio labore a, est unde. Expedita velit commodi dicta debitis!</p>
                     </div>
                 </div>
             </div>

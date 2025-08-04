@@ -1,6 +1,6 @@
 <div class="bestproduk-section">
     <div class="bestproduk-header">
-        <h1 class="bestproduk-title">NEW ARRIVAL</h1>
+        <h1 class="bestproduk-title">BEST SELLER</h1>
         
         <div class="bestproduk-buttons">
             <a href="{{ route('collection') }}" class="view-all-link">VIEW ALL</a>  

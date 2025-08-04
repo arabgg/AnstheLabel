@@ -19,6 +19,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Loading Spinner -->
+    <div id="loading-screen">
+        <div class="spinner"></div>
+    </div>
+    
     @include('layouts.header')
 
     {{-- Breadcrumb --}}
@@ -30,6 +35,33 @@
     @yield('content')
 
     @include('layouts.footer')
+
+    <script>
+        window.addEventListener('load', function () {
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen) {
+                loadingScreen.style.display = 'none';
+            }
+        });
+
+        // Header Scroll Effect
+        let lastScrollTop = 0;
+        const header = document.getElementById("mainHeader");
+
+        window.addEventListener("scroll", function () {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (scrollTop > lastScrollTop) {
+                // Scroll ke bawah
+                header.classList.add("hidden");
+            } else {
+                // Scroll ke atas
+                header.classList.remove("hidden");
+            }
+
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // Mencegah nilai negatif
+        });
+    </script>
 
     @stack('scripts')
 </body>

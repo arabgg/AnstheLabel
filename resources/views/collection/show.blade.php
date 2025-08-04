@@ -59,7 +59,7 @@
         {{-- Tombol Load More di bawah produk --}}
         @if (count($produk) > 2)
             <div class="produk-buttons" style="text-align: center; margin-top: 30px;">
-                <button id="viewAllButton" onclick="showAllKatalog()">Load More</button>
+                <button id="viewAllButton" onclick="showAllKatalog()">More</button>
                 <button id="hideButton" onclick="hideExtraKatalog()" style="display: none;">Hide</button>
             </div>
         @endif

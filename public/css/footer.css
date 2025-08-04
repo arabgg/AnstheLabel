@@ -1,5 +1,6 @@
 .footer-section {
   background-color: #4a002a;
+  background-image: url('/storage/images/footer.png');
   color: white;
   padding: 50px 20px;
   text-align: center;
@@ -27,7 +28,7 @@
 .footer-section-social {
   display: flex;
   justify-content: center;
-  gap: 30px;
+  gap: 50px;
   margin-bottom: 30px;
   align-items: center;
   flex-wrap: wrap;

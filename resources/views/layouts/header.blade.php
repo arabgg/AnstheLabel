@@ -4,17 +4,26 @@
         <div class="top-center">
             Enjoy Free Shipping On All Orders
         </div>
+
+        <div class="top-right">
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-tiktok"></i></a> 
+            <a href="#"><i class="fab fa-whatsapp"></i></a>
+            <a href="#"><i class="fab fa-facebook"></i></a>
+        </div>
     </div>
 </div>
 
 <!-- Navigation Bar -->
-<header class="main-header">
+<header class="main-header" id="mainHeader">
     <div class="container nav-content">
         <div class="logo">
-            <img src="{{ asset('storage/images/ansthelabel.png') }}" alt="Ansthelabel Logo">
+            <a href="{{ route('home') }}" class="produk-card-link">
+                <img src="{{ asset('storage/images/ansthelabel.png') }}" alt="Ansthelabel Logo">
+            </a>
         </div>
         <nav class="nav-links">
-            <a href="{{ route('page') }}" class="nav-item {{ request()->is('page') ? 'active' : '' }}">Home</a>
+            <a href="{{ route('home') }}" class="nav-item {{ request()->is('home') ? 'active' : '' }}">Home</a>
             <a href="{{ route('collection') }}" class="nav-item {{ request()->is('collection') ? 'active' : '' }}">Collection</a>
             <a href="{{ route('about') }}" class="nav-item {{ request()->is('about') ? 'active' : '' }}">About Us</a>
         </nav>

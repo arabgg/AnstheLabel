@@ -1,7 +1,7 @@
 .bestproduk-section {
   max-width: 1200px;
-  margin: 100px auto;
-  padding: 0 100px;
+  margin: 50px auto;
+  padding: 0 80px;
 }
 
 .bestproduk-header {
@@ -15,33 +15,54 @@
 }
 
 .bestproduk-title {
-  font-family: 'Montserrat', sans-serif !important;
-  font-size: 32px;
+  font-size: 24px;
   font-weight: 700;
   color: #560024;
 }
 
-.bestproduk-buttons a {
-  font-family: 'Montserrat', sans-serif !important;
+.view-all-link {
+  text-decoration: none;
+  color: #560024;
+}
+
+.bestproduk-buttons {
+  position: relative;
   padding: 10px 40px;
   font-size: 12px;
-  margin-left: 10px;
-  cursor: pointer;
-  background-color: transparent;
+  font-weight: bold;
+  border: 2px solid #A65A6A;
   color: #560024;
-  border: none;
   text-decoration: none;
+  overflow: hidden;
+  z-index: 1;
+  transition: color 0.3s ease;
 }
 
-.bestproduk-buttons a:hover {
-  background-color: #dbcbd2;
+.bestproduk-buttons::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  background-color: #A65A6A;
+  z-index: -1;
+  transition: width 0.4s ease;
 }
+
+.bestproduk-buttons:hover::before {
+  width: 100%;
+}
+
+.bestproduk-buttons:hover {
+  color: white;
+}
+
 
 .bestproduk-grid {
-  font-family: 'Montserrat', sans-serif !important;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px 50px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px 20px;
 }
 
 .bestproduk-card {
@@ -54,12 +75,12 @@
 .bestproduk-image-wrapper {
   position: relative;
   overflow: hidden;
-  height: 438px;
+  height: 288px;
 }
 
 .bestproduk-image {
   width: 100%;
-  height: 438px;
+  height: 288px;
   object-fit: cover;
   display: block;
   transition: opacity 0.3s ease;
@@ -98,18 +119,17 @@
 }
 
 .bestproduk-info {
-  padding: 12px 10px;
+  padding: 12px 0px;
   text-align: left;
 }
 
 .bestproduk-name {
-  font-family: 'Montserrat', sans-serif !important;
+  padding: 8px 0;
   font-size: 20px;
   font-weight: bold;
 }
 
 .bestproduk-kategori {
-  font-family: 'Montserrat', sans-serif !important;
   font-size: 15px;
   margin-bottom: 7px;
 }
@@ -117,6 +137,327 @@
 .bestproduk-hidden {
   display: none;
 }
+
+.bestproduk-price {
+  margin-bottom: 6px;
+}
+
+.price-discounted {
+    color: #a09999;
+    text-decoration: line-through;
+    text-decoration-color: rgb(216, 19, 19);
+    margin-right: 8px;
+}
+
+.price-now {
+    color: #560024;
+    /* font-weight: bold; */
+}
+
+/* VISCOSE */
+.viscose-section {
+  max-width: 100%;
+  margin: 50px auto;
+  padding: 0 20px;
+}
+
+.viscose-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.viscose-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #560024;
+}
+
+.view-all-link {
+  text-decoration: none;
+  color: #560024;
+}
+
+.viscose-buttons {
+  position: relative;
+  padding: 10px 40px;
+  font-size: 12px;
+  font-weight: bold;
+  border: 2px solid #A65A6A;
+  color: #560024;
+  text-decoration: none;
+  overflow: hidden;
+  z-index: 1;
+  transition: color 0.3s ease;
+}
+
+.viscose-buttons::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  background-color: #A65A6A;
+  z-index: -1;
+  transition: width 0.4s ease;
+}
+
+.viscose-buttons:hover::before {
+  width: 100%;
+}
+
+.viscose-buttons:hover {
+  color: white;
+}
+
+
+.viscose-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px 10px;
+}
+
+.viscose-card {
+  background-color: #fff;
+  /* border-radius: 4px; */
+  overflow: hidden;
+  position: relative;
+}
+
+.viscose-image-wrapper {
+  position: relative;
+  overflow: hidden;
+  height: 400px;
+}
+
+.viscose-image {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.3s ease;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.default-image {
+  z-index: 1;
+  opacity: 1;
+}
+
+.hover-image {
+  z-index: 2;
+  opacity: 0;
+}
+
+.viscose-image-wrapper:hover .default-image {
+  opacity: 0;
+}
+
+.viscose-image-wrapper:hover .hover-image {
+  opacity: 1;
+}
+
+.viscose-favorite-icon {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #fff;
+  border-radius: 50%;
+  padding: 6px 10px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.viscose-info {
+  padding: 12px 0px;
+  text-align: left;
+}
+
+.viscose-name {
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 4px;
+}
+
+.viscose-kategori {
+  font-size: 12px;
+  margin-bottom: 20px;
+  margin-left: 4px;
+}
+
+.viscose-series {
+  border: 1px solid #560024;
+  text-align: center;
+  padding: 6px;
+  font-size: 12px;
+  margin-bottom: 7px;
+}
+
+.viscose-hidden {
+  display: none;
+}
+
+.viscose-color-dot {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 12px;
+}
+
+.viscose-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid #aaa;
+}
+
+
+/* COOLTECH */
+.cooltech-section {
+  max-width: 1200px;
+  margin: 50px auto;
+  padding: 0 80px;
+}
+
+.cooltech-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 0 10px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.cooltech-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #560024;
+}
+
+.view-all-link {
+  text-decoration: none;
+  color: #560024;
+}
+
+.cooltech-buttons {
+  position: relative;
+  padding: 10px 40px;
+  font-size: 12px;
+  font-weight: bold;
+  border: 2px solid #A65A6A;
+  color: #560024;
+  text-decoration: none;
+  overflow: hidden;
+  z-index: 1;
+  transition: color 0.3s ease;
+}
+
+.cooltech-buttons::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  background-color: #A65A6A;
+  z-index: -1;
+  transition: width 0.4s ease;
+}
+
+.cooltech-buttons:hover::before {
+  width: 100%;
+}
+
+.cooltech-buttons:hover {
+  color: white;
+}
+
+
+.cooltech-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px 20px;
+}
+
+.cooltech-card {
+  background-color: #fff;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.cooltech-image-wrapper {
+  position: relative;
+  overflow: hidden;
+  height: 288px;
+}
+
+.cooltech-image {
+  width: 100%;
+  height: 288px;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.3s ease;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.default-image {
+  z-index: 1;
+  opacity: 1;
+}
+
+.hover-image {
+  z-index: 2;
+  opacity: 0;
+}
+
+.cooltech-image-wrapper:hover .default-image {
+  opacity: 0;
+}
+
+.cooltech-image-wrapper:hover .hover-image {
+  opacity: 1;
+}
+
+.cooltech-favorite-icon {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #fff;
+  border-radius: 50%;
+  padding: 6px 10px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.cooltech-info {
+  padding: 12px 0px;
+  text-align: left;
+}
+
+.cooltech-name {
+  padding: 8px 0;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.cooltech-kategori {
+  font-size: 15px;
+  margin-bottom: 7px;
+}
+
+.cooltech-hidden {
+  display: none;
+}
+
+
 
 /* ==============================
    ✅ Responsive Section
@@ -153,6 +494,72 @@
   }
 
   .bestproduk-kategori {
+    font-size: 14px;
+  }
+
+  .viscose-section {
+    padding: 0 50px;
+  }
+
+  .viscose-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 30px;
+  }
+
+  .viscose-image-wrapper {
+    height: 360px;
+  }
+
+  .viscose-image {
+    height: 360px;
+  }
+
+  .viscose-title {
+    font-size: 28px;
+  }
+
+  .viscose-buttons a {
+    padding: 8px 24px;
+  }
+
+  .viscose-name {
+    font-size: 18px;
+  }
+
+  .viscose-kategori {
+    font-size: 14px;
+  }
+
+  .cooltech-section {
+    padding: 0 50px;
+  }
+
+  .cooltech-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 30px;
+  }
+
+  .cooltech-image-wrapper {
+    height: 360px;
+  }
+
+  .cooltech-image {
+    height: 360px;
+  }
+
+  .cooltech-title {
+    font-size: 28px;
+  }
+
+  .cooltech-buttons a {
+    padding: 8px 24px;
+  }
+
+  .cooltech-name {
+    font-size: 18px;
+  }
+
+  .cooltech-kategori {
     font-size: 14px;
   }
 }
@@ -197,6 +604,90 @@
   }
 
   .bestproduk-kategori {
+    font-size: 13px;
+  }
+
+  .viscose-section {
+    padding: 0 20px;
+    margin: 60px auto;
+  }
+
+  .viscose-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .viscose-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .viscose-image-wrapper {
+    height: 300px;
+  }
+
+  .viscose-image {
+    height: 300px;
+  }
+
+  .viscose-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  .viscose-buttons a {
+    padding: 8px 16px;
+    font-size: 11px;
+  }
+
+  .viscose-name {
+    font-size: 16px;
+  }
+
+  .viscose-kategori {
+    font-size: 13px;
+  }
+
+  .cooltech-section {
+    padding: 0 20px;
+    margin: 60px auto;
+  }
+
+  .cooltech-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .cooltech-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .cooltech-image-wrapper {
+    height: 300px;
+  }
+
+  .cooltech-image {
+    height: 300px;
+  }
+
+  .cooltech-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  .cooltech-buttons a {
+    padding: 8px 16px;
+    font-size: 11px;
+  }
+
+  .cooltech-name {
+    font-size: 16px;
+  }
+
+  .cooltech-kategori {
     font-size: 13px;
   }
 }
