@@ -125,11 +125,27 @@ class ProdukController extends Controller
         return redirect('/produk')->with('success', 'Produk berhasil diperbarui');
     }
 
-    public function confirm($id)
+    public function destroy($id)
     {
-        $produk = ProdukModel::findOrFail($id);
-        return view('produk.confirm', compact('produk'));
+        try {
+            // Cari data produk
+            $produk = ProdukModel::findOrFail($id);
+
+            // Hapus relasi dulu
+            $produk->toko()->delete();          // t_toko_produk
+            $produk->warnaProduk()->delete();   // t_warna_produk
+            $produk->ukuran()->delete();        // t_ukuran_produk
+            $produk->foto()->delete();          // t_foto_produk
+
+            // Setelah semua relasi dihapus, baru hapus produk utamanya
+            $produk->delete();
+
+            return redirect('/produk')->with('success', 'Produk berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect('/produk')->with('error', 'Gagal menghapus produk: ' . $e->getMessage());
+        }
     }
+
 
     public function delete($id)
     {
