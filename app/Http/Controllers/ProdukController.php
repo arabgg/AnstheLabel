@@ -6,6 +6,7 @@ use App\Models\KategoriModel;
 use App\Models\BahanModel;
 use App\Models\ProdukModel;
 use App\Models\WarnaProdukModel;
+use App\Models\WarnaModel;
 use App\Models\UkuranProdukModel;
 use App\Models\FotoProdukModel;
 use Illuminate\Http\Request;
@@ -15,7 +16,10 @@ class ProdukController extends Controller
 {
     public function index()
     {
-        $produk = ProdukModel::with(['kategori', 'bahan', 'fotoUtama'])->get();
+        $produk = ProdukModel::whereHas('fotoUtama') // hanya produk yang punya foto utama
+            ->with(['kategori', 'bahan', 'fotoUtama'])
+            ->get();
+
         return view('produk.index', compact('produk'));
     }
 
@@ -46,13 +50,16 @@ class ProdukController extends Controller
 
         $produk = ProdukModel::create($request->only(['kategori_id', 'bahan_id', 'nama_produk', 'deskripsi']));
 
-        // Simpan warna produk
         if ($request->has('warna')) {
             foreach ($request->warna as $kode) {
-                WarnaProdukModel::create([
-                    'produk_id' => $produk->produk_id,
-                    'kode_warna' => $kode,
-                ]);
+                $warna = WarnaModel::where('kode_hex', $kode)->first();
+                if ($warna) {
+                    WarnaProdukModel::create([
+                        'produk_id' => $produk->produk_id,
+                        'warna_id' => $warna->warna_id, // tambahkan ini
+                        'kode_warna' => $kode,
+                    ]);
+                }
             }
         }
 
@@ -61,7 +68,7 @@ class ProdukController extends Controller
             foreach ($request->ukuran as $ukuran) {
                 UkuranProdukModel::create([
                     'produk_id' => $produk->produk_id,
-                    'ukuran' => $ukuran,
+                    'ukuran_id' => $ukuran,
                 ]);
             }
         }
