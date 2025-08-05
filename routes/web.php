@@ -32,22 +32,33 @@ Route::get('/detail/{id}', [HomeController::class, 'show_produk'])->name('detail
 
 
 //Route Login
-// Guest-only routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/login', [AuthController::class, 'postLogin']);
 });
 
-// Authenticated-only routes
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('/admin', [AdminController::class, 'index']);
 
     Route::prefix('produk')->group(function () {
-        Route::get('/', [ProdukController::class, 'index']);
-        Route::post('/list', [ProdukController::class, 'list']);
-        Route::get('/create_ajax', [ProdukController::class, 'create_ajax']);
-        Route::post('/ajax', [ProdukController::class, 'store_ajax']);
+        // List
+        Route::get('/', [ProdukController::class, 'index']); 
+        // Route::post('/list', [ProdukController::class, 'list']); 
+        // Show
+        Route::get('/{id}/show', [ProdukController::class, 'show']);
+
+        // Create
+        Route::get('/create', [ProdukController::class, 'create']); 
+        Route::post('/upload', [ProdukController::class, 'upload']); 
+
+        // Edit
+        Route::get('/{id}/edit', [ProdukController::class, 'edit']); 
+        Route::put('/{id}/update', [ProdukController::class, 'update']);
+
+        // Delete
+        Route::get('/{id}/delete', [ProdukController::class, 'destroy']); 
+        Route::delete('/{id}/delete', [ProdukController::class, 'delete']); 
     });
 });

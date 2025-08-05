@@ -12,12 +12,11 @@ class AuthController extends Controller
 {
     public function login()
     {
-        // Jika sudah login, langsung redirect ke halaman admin
         if (Auth::check()) {
-            return redirect('/admin');
+            return redirect('/produk');
         }
 
-        return view('auth.login'); // Tampilkan form login
+        return view('auth.login'); 
     }
 
     public function postLogin(Request $request)
@@ -28,21 +27,18 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        // Cari user berdasarkan username
         $user = UserModel::where('username', $request->username)->first();
 
-        // Periksa apakah user ditemukan dan password cocok
         if ($user && Hash::check($request->password, $user->password)) {
             Auth::login($user);
 
             return response()->json([
                 'status' => true,
                 'message' => 'Login berhasil',
-                'redirect' => url('/admin')
+                'redirect' => url('/produk')
             ]);
         }
 
-        // Login gagal
         return response()->json([
             'status' => false,
             'message' => 'Username atau password salah'
