@@ -44,22 +44,21 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('produk')->group(function () {
         // List
-        Route::get('/', [ProdukController::class, 'index']); // Halaman utama
-        Route::post('/list', [ProdukController::class, 'list']); // List data produk
-
+        Route::get('/', [ProdukController::class, 'index']); 
+        // Route::post('/list', [ProdukController::class, 'list']); 
         // Show
-        Route::get('/{id}/show', [ProdukController::class, 'show']); // Detail produk
+        Route::get('/{id}/show', [ProdukController::class, 'show']);
 
         // Create
-        Route::get('/create', [ProdukController::class, 'create']); // Tampilkan form
-        Route::post('/upload', [ProdukController::class, 'upload']); // Simpan data baru
+        Route::get('/create', [ProdukController::class, 'create']); 
+        Route::post('/upload', [ProdukController::class, 'upload']); 
 
         // Edit
-        Route::get('/{id}/edit', [ProdukController::class, 'edit']); // Tampilkan form edit
-        Route::put('/{id}/update', [ProdukController::class, 'update']); // Update data
+        Route::get('/{id}/edit', [ProdukController::class, 'edit']); 
+        Route::put('/{id}/update', [ProdukController::class, 'update']);
 
         // Delete
-        Route::get('/{id}/delete', [ProdukController::class, 'confirm']); // Konfirmasi hapus
-        Route::delete('/{id}/delete', [ProdukController::class, 'delete']); // Hapus data
+        Route::get('/{id}/delete', [ProdukController::class, 'destroy']); 
+        Route::delete('/{id}/delete', [ProdukController::class, 'delete']); 
     });
 });
