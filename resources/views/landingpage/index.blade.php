@@ -22,7 +22,7 @@
         <img src="{{ asset('storage/images/hero/hero8.png') }}" class="carousel-image" alt="Hero 8">
     </div>
 
-    @include('landingpage.viscose')    
+    @include('landingpage.swiperarrival')
 
     <div id="heroCarouselCustom2" class="custom-carousel">
         <img src="{{ asset('storage/images/hero/hero5.png') }}" class="carousel-image active" alt="Hero 5">
@@ -40,8 +40,7 @@
         <img src="{{ asset('storage/images/hero/hero8.png') }}" class="carousel-image" alt="Hero 8">
     </div>
 
-    @include('landingpage.cooltech') 
-
+    @include('landingpage.viscose')    
     
     <div id="heroCarouselCustom2" class="custom-carousel">
         <img src="{{ asset('storage/images/hero/hero5.png') }}" class="carousel-image active" alt="Hero 5">
@@ -55,6 +54,21 @@
 
 @push('scripts')
 <script>
+    let arrivalIndex = 0;
+
+    function moveArrivalCarousel(direction) {
+        const carousel = document.getElementById('arrival-carousel');
+        const items = carousel.querySelectorAll('.arrival-carousel-item');
+        const totalItems = items.length;
+        const itemWidth = items[0].offsetWidth;
+
+        arrivalIndex += direction;
+        if (arrivalIndex < 0) arrivalIndex = totalItems - 1;
+        if (arrivalIndex >= totalItems) arrivalIndex = 0;
+
+        carousel.style.transform = `translateX(-${arrivalIndex * itemWidth}px)`;
+    }
+
     document.querySelectorAll('.custom-carousel').forEach(carousel => {
         const images = carousel.querySelectorAll('.carousel-image');
         let currentIndex = 0;

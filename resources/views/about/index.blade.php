@@ -15,25 +15,25 @@
                 </div>
                 <div class="about-right">
                     <p>
-                        Lorem Ipsum Dolor Sit Amet, Consectetur Adipisicing Elit, Sed Do Eiusmod Tempor Incididunt Ut Labore Et Dolore Magna Aliqua. Ut Enim Ad Minim Veniam, Quis Nostrud Exercitation Ullamco Laboris Nisi Ut Aliquip Ex Ea Commodo Consequat. Duis Aute Irure Dolor In Reprehenderit In Voluptate Velit Esse Cillum Dolore Eu Fugiat Nulla Pariatur. Excepteur Sint Occaecat Cupidatat Non Proident, Sunt In Culpa Qui Officia Deserunt Mollit Anim Id Est Laborum.
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                     </p>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="about-recommend">
-            <h2>You May Also Like</h2>
-            <div class="recommend-grid">
-                @foreach ($rekomendasi as $item)
-                <div class="recommend-card">
-                    <a href="{{ route('detail.show', $item->produk_id) }}">
-                        <img src="{{ asset('storage/foto_produk/' . $item->fotoUtama->foto_produk) }}" alt="{{ $item->nama_produk }}">
-                        <h3>{{ $item->nama_produk }}</h3>
-                        <p>{{ $item->kategori->nama_kategori }}</p>
-                    </a>
-                </div>
-                @endforeach
+    <div class="about-recommend">
+        <h2>You May Also Like</h2>
+        <div class="recommend-grid">
+            @foreach ($rekomendasi as $item)
+            <div class="recommend-card">
+                <a href="{{ route('detail.show', $item->produk_id) }}">
+                    <img src="{{ asset('storage/foto_produk/' . $item->fotoUtama->foto_produk) }}" alt="{{ $item->nama_produk }}">
+                    <h3>{{ $item->nama_produk }}</h3>
+                    <p>{{ $item->kategori->nama_kategori }}</p>
+                </a>
             </div>
+            @endforeach
         </div>
     </div>
 @endsection

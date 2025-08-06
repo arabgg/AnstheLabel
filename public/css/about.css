@@ -1,61 +1,52 @@
 .about-section {
-  background: linear-gradient(
-    to top right,
-    #ffffff 0%,
-    #fbe9eb 25%,
-    #f4d6cc 50%,
-    #a65a6a 75%,
-    #560024 100%
-  );
+  background: url("/storage/images/about.png") no-repeat center center;
+  background-size: cover;
   color: #333;
-  padding: 80px 40px;
+  padding: 50px 40px;
 }
 
 .about-container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding-bottom: 100px;
-  margin-top: 100px;
-}
-
-.about-content {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 40px;
-  margin-bottom: 200px;
+  flex-direction: column;
+  align-items: center;         /* Horizontal center */
+  justify-content: center;     /* Vertical center */
+  padding: 70px;
+  text-align: center;
 }
 
 .about-left {
   flex: 1;
   min-width: 280px;
-  text-align: center;
+  margin-bottom: 60px;
 }
 
 .about-logo {
   width: 100%;
-  max-width: 250px;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
 .about-right {
   flex: 2;
-  min-width: 280px;
+  width: 100%;
+  max-width: 620px;
   padding: 0 20px;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.8;
   color: #333;
-  text-align: justify;
+  text-align: center;
 }
 
 .about-recommend {
-  text-align: center;
+  text-align: left;
+  margin: 50px 0;
 }
 
 .about-recommend h2 {
   font-size: 28px;
   margin-bottom: 30px;
   font-weight: bold;
+  margin-left: 100px;
 }
 
 .recommend-grid {
@@ -66,10 +57,10 @@
 }
 
 .recommend-card {
-  background: white;
+  background: transparent;
   padding: 15px;
-  width: 250px;
-  height: 350px;
+  width: 270px;
+  height: 360px;
   border-radius: 6px;
   text-align: left;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);

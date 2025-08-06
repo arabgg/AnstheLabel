@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ansthelabel</title>
 
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
+
     {{-- Custom CSS --}}
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/carousel.css') }}">
@@ -60,6 +63,21 @@
             }
 
             lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // Mencegah nilai negatif
+        });
+    </script>
+
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+    <script>
+        const swiper = new Swiper('.swiper', {
+            slidesPerView: 'auto',         // Ukuran slide menyesuaikan lebar konten
+            centeredSlides: true,          // Slide aktif selalu di tengah
+            spaceBetween: 0,               // Tidak ada jarak antar slide
+            loop: true,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
         });
     </script>
 
