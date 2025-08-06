@@ -117,7 +117,7 @@ class HomeController extends Controller
             $filterKategori = [$filterKategori];
         }
 
-        $produk = ProdukModel::with('kategori', 'bahan', 'fotoUtama', 'foto', 'warna', 'ukuran', 'toko');
+        $produk = ProdukModel::with(['kategori', 'bahan', 'fotoUtama', 'foto', 'warna.warna', 'ukuran', 'toko']);
 
         if (!empty($filterKategori)) {
             $produk->whereIn('kategori_id', $filterKategori);

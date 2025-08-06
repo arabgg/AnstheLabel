@@ -1,6 +1,6 @@
 <div class="viscose-section">
     <div class="viscose-header">
-        <h1 class="viscose-title">Viscose Series</h1>
+        <h1 class="viscose-title">Viscose Edition</h1>
     </div>
 
     <div class="viscose-grid" id="katalogGrid">
@@ -22,7 +22,7 @@
 
                     <div class="viscose-name">{{ $item['nama'] }}</div>
                     <div class="viscose-kategori">{{ $item['kategori'] }}</div>
-                    <div class="viscose-series">VISCOSE SERIES</div>
+                    <div class="viscose-series">VISCOSE EDITION</div>
                 </div>
             </div>
         @endforeach

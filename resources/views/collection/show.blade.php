@@ -47,17 +47,26 @@
         <div class="produk-product-grid">
             @foreach ($produk as $index => $item)
                 <a href="{{ route('detail.show', $item->produk_id) }}" class="produk-card-link">
-                    <div class="produk-card bestproduk-card {{ $index >= 2 ? 'bestproduk-hidden' : '' }}">
+                    <div class="produk-card bestproduk-card {{ $index >= 6 ? 'bestproduk-hidden' : '' }}">
                         <img src="{{ asset('storage/foto_produk/' . $item->fotoUtama->foto_produk) }}" alt="{{ $item->nama_produk }}">
+                        <div class="produk-color-dot">
+                            @foreach ($item->warna as $warnaItem)
+                                @if ($warnaItem->warna)
+                                    <span class="produk-dot"
+                                        style="background-color: {{ $warnaItem->warna->kode_hex ?? '#000000' }};">
+                                    </span>
+                                @endif
+                            @endforeach
+                        </div>
                         <h3>{{ $item->nama_produk }}</h3>
-                        <p>{{ $item->deskripsi }}</p>
+                        <p>{{ $item->kategori->nama_kategori }}</p>
                     </div>
                 </a>
             @endforeach
         </div>
 
         {{-- Tombol Load More di bawah produk --}}
-        @if (count($produk) > 2)
+        @if (count($produk) > 6)
             <div class="produk-buttons" style="text-align: center; margin-top: 30px;">
                 <button id="viewAllButton" onclick="showAllKatalog()">More</button>
                 <button id="hideButton" onclick="hideExtraKatalog()" style="display: none;">Hide</button>
