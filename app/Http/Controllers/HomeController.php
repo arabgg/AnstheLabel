@@ -140,7 +140,7 @@ class HomeController extends Controller
         $rekomendasi = ProdukModel::with('kategori')
         ->get()
         ->unique(fn ($item) => $item->kategori_id)
-        ->take(3); 
+        ->take(4); 
 
         return view('about.index', [
             'produk' => $produk,
@@ -166,7 +166,7 @@ class HomeController extends Controller
         $rekomendasi = ProdukModel::with('kategori')
             ->get()
             ->unique(fn ($item) => $item->kategori_id)
-            ->take(3);
+            ->take(4);
 
         return view('detail.index', [
             'produk' => $produk,

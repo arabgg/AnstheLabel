@@ -401,7 +401,8 @@ input[type="checkbox"]:checked::before {
 .detail-section-info {
     border-bottom: 1px solid #ccc;
     padding: 5px 0;
-    padding-bottom: 20px;
+    padding-bottom: 30px;
+    margin-bottom: 30px;
 }
 
 .detail-section:last-child {
@@ -479,7 +480,7 @@ input[type="number"] {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 30px;
+  gap: 20px;
 }
 
 .detail-recommend-card {
@@ -529,51 +530,48 @@ input[type="number"] {
 
 .detail-color-dot {
     display: flex;
-    gap: 8px;
+    gap: 4px;
     margin-bottom: 6px;
     padding-left: 5px;
 }
 
 .detail-dot {
-    width: 20px;
-    height: 20px;
-    /* border-radius: 50%; */
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
     border: 1px solid #aaa;
 }
 
 .detail-size-wrapper {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .detail-size-wrapper p {
     margin-bottom: 5px;
     font-size: 12px;
     color: #7d5f37;
-    text-align: right;
+    text-align: left;
 }
 
 .detail-size {
     display: flex;
     flex-wrap: wrap;
     margin-top: 10px;
-    padding-left: 0;
-    border: 1px solid #FBE9EB; 
-    background-color: #FBE9EB;       
+    padding-left: 5px;
     height: 25px; 
+    gap: 6px;
 }
 
 .detail-size-nama {
     display: flex;
-    /* width: 40px;
-    height: 24px; */
     padding: 0 16px;
     align-items: center;
     justify-content: center;     
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 800;
     color: #560024;
-    border-right: 1px solid #560024;
-    /* background-color: #FBE9EB;  */
+    border: 1px solid #FBE9EB; 
+    background-color: #FBE9EB; 
 }
 
 .detail-toko-wrapper {
@@ -619,6 +617,53 @@ input[type="number"] {
 
 .detail-toko:hover {
     background-color: #eccac0;
+}
+
+.detail-deskripsi-wrapper {
+    padding: 0px 10px;
+}
+
+.detail-deskripsi-wrapper h3 {
+    color: #333;
+    font-size: 16px; 
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.detail-deskripsi-wrapper p {
+    padding-left: 5px;
+    color: #5a5757;
+    font-size: 12px; 
+    line-height: 1.7;
+    margin: 0;
+}
+
+.detail-deskripsi-wrapper h5 {
+    color: #333;
+    font-size: 12px; 
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.detail-deskripsi-wrapper h6 {
+    color: #333;
+    font-size: 12px; 
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.detail-deskripsi-wrapper p {
+    padding-left: 5px;
+    color: #5a5757;
+    font-size: 12px; 
+    line-height: 1.7;
+    margin: 0;
+}
+
+.detail-deskripsi-produk,
+.detail-deskripsi-bahan,
+.detail-deskripsi-ukuran {
+    margin-bottom: 20px;
 }
 
 

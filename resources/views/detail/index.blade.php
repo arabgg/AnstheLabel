@@ -85,15 +85,28 @@
                     </div>
 
                     <div class="detail-deskripsi-wrapper">
-                        <div class="detail-deskripsi-produk"></div>
-                        <div class="detail-deskripsi-bahan"></div>
-                        <div class="detail-deskripsi-ukuran"></div>
-                        <p>Deskripsi Produk</p>
-                        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Expedita tempora laudantium esse saepe sed vel, quaerat voluptates quasi itaque nam distinctio labore a, est unde. Expedita velit commodi dicta debitis!</p>
-                        <p>Deskripsi Ukuran</p>
-                        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Expedita tempora laudantium esse saepe sed vel, quaerat voluptates quasi itaque nam distinctio labore a, est unde. Expedita velit commodi dicta debitis!</p>
-                        <p>Deskripsi Bahan</p>
-                        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Expedita tempora laudantium esse saepe sed vel, quaerat voluptates quasi itaque nam distinctio labore a, est unde. Expedita velit commodi dicta debitis!</p>
+                        <h3>Detail Produk</h3>
+                        <div class="detail-deskripsi-produk">
+                            {{-- <h3>Deskripsi Produk</h3> --}}
+                            <p>{{ $produk->deskripsi }}</p>
+                        </div>
+
+                        @if ($produk->ukuran->isNotEmpty())
+                            <div class="detail-deskripsi-bahan">
+                                <h5>Ukuran yang tersedia pada produk</h5>
+                                @foreach ($produk->ukuran as $sizeItem)
+                                    @if ($sizeItem->produk)
+                                        <p>{{ $sizeItem->ukuran->nama_ukuran }} - {{ $sizeItem->ukuran->deskripsi }}</p>
+                                    @endif
+                                @endforeach
+                            </div>
+                        @endif
+
+                        <div class="detail-deskripsi-ukuran">
+                            <h5>Penjelasan Bahan</h5>
+                            <h6>Jenis Bahan : {{ $produk->bahan->nama_bahan }}</h6>
+                            <p>{{ $produk->bahan->deskripsi }}</p>
+                        </div>
                     </div>
                 </div>
             </div>

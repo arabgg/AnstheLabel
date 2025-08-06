@@ -238,6 +238,19 @@
   height: 380px;
 }
 
+.viscose-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    border: 1px solid black;
+    color: black;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 4px 8px;
+    z-index: 10;
+    text-transform: uppercase;
+}
+
 .viscose-image {
   width: 100%;
   height: 380px;
