@@ -24,6 +24,11 @@ class TokoSeeder extends Seeder
             'icon_toko' => 'tokped.png',
             'created_at' => now(),
             ],
+            [
+            'nama_toko' => 'Tiktok',
+            'icon_toko' => 'tokped.png',
+            'created_at' => now(),
+            ],
         ]);
     }
 }

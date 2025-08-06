@@ -1,17 +1,17 @@
 /* COLLECTION LANDING PAGE */
 .collection-section {
-    max-width: 1200px;
-    margin-top: 100px;
-    margin-bottom: 100px;
-    padding: 0 100px !important;
+    max-width: 100%;
+    margin: 18px auto;
+    margin-bottom: 150px;
+    /* border-bottom: 1px solid #ded1d1; */
 }
 
 .collection-title {
     font-family: 'Montserrat', sans-serif !important;
-    font-size: 32px;
+    text-align: center;
+    font-size: 26px;
     font-weight: 700;
     margin-bottom: 40px;
-    padding: 0 10px;
     color: #560024;
 }
 
@@ -20,7 +20,8 @@
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(3, 250px);
     position: relative;
-    gap: 20px;
+    gap: 15px;
+    margin-bottom: 28px;
 }
 
 .item {
@@ -99,7 +100,7 @@
 /* PRODUK HALAMAN COLLECTION */
 .produk-section {
     font-family: 'Montserrat', sans-serif !important;
-    max-width: 1150px;
+    max-width: 1100px;
     margin: 100px auto;
     padding: 0 50px;
     
@@ -247,37 +248,40 @@ input[type="checkbox"]:checked::before {
 
 .produk-card img {
     width: 100%;
-    height: 380px;
+    height: 320px;
     object-fit: cover;
+    margin-bottom: 12px;
     /* border-radius: 5px; */
 }
 
 .produk-card h3 {
-    margin-top: 10px;
     text-align: left;
+    margin-bottom: 12px;
     padding-left: 10px;
     font-weight: bold;
+    font-size: 16px;
 }
 
 .produk-card p {
-    margin-top: 10px;
-    text-align: left;
-    padding-left: 10px;
-    margin-bottom: 15px;
-    font-size: 14px;
-    color: #666;
+    border: 1px solid #560024;
+    text-align: center;
+    text-transform: uppercase;
+    padding: 6px;
+    font-size: 12px;
+    margin-bottom: 7px;
 }
 
-.produk-color-dots {
-    margin-top: 10px;
+.produk-color-dot {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 12px;
 }
 
 .produk-dot {
-    width: 15px;
-    height: 15px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
-    display: inline-block;
-    margin-right: 8px;
+    border: 1px solid #aaa;
 }
 
 .produk-black {
@@ -346,7 +350,7 @@ input[type="checkbox"]:checked::before {
 .detail-product-page {
     margin: 0 200px;
     padding: 60px 0;
-    margin-bottom: 150px;
+    margin-bottom: 50px;
 }
 
 .detail-container {
@@ -368,24 +372,18 @@ input[type="checkbox"]:checked::before {
 
 .detail-main-image {
     width: 100%;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     object-fit: cover;
 }
 
 .detail-thumbnail-wrapper {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    gap: 15px;
 }
 
 .detail-thumbnail-wrapper img {
     width: 100%;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.detail-thumbnail-wrapper img:hover {
-    opacity: 0.7;
 }
 
 .detail-product-info {
@@ -403,7 +401,7 @@ input[type="checkbox"]:checked::before {
 .detail-section-info {
     border-bottom: 1px solid #ccc;
     padding: 5px 0;
-    padding-left: 10px;
+    padding-bottom: 20px;
 }
 
 .detail-section:last-child {
@@ -411,12 +409,8 @@ input[type="checkbox"]:checked::before {
 }
 
 .detail-product-name {
-    font-size: 36px;
-    margin-bottom: 10px;
-}
-
-.detail-product-data {
-    padding-left: 10px;
+    font-size: 26px;
+    margin-bottom: 5px;
 }
 
 .detail-product-kategori {
@@ -524,7 +518,7 @@ input[type="number"] {
 }
 
 .detail-color-wrapper {
-    margin-bottom: 25px;
+    margin-bottom: 15px;
 }
 
 .detail-color-wrapper p {
@@ -543,8 +537,12 @@ input[type="number"] {
 .detail-dot {
     width: 20px;
     height: 20px;
-    border-radius: 50%;
+    /* border-radius: 50%; */
     border: 1px solid #aaa;
+}
+
+.detail-size-wrapper {
+    margin-bottom: 20px;
 }
 
 .detail-size-wrapper p {
@@ -557,21 +555,241 @@ input[type="number"] {
 .detail-size {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
     margin-top: 10px;
-    padding-left: 5px;
+    padding-left: 0;
     border: 1px solid #FBE9EB; 
     background-color: #FBE9EB;       
-    height: 30px; 
+    height: 25px; 
 }
 
 .detail-size-nama {
     display: flex;
-    padding-left: 20px;
+    /* width: 40px;
+    height: 24px; */
+    padding: 0 16px;
     align-items: center;
     justify-content: center;     
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 800;
     color: #560024;
+    border-right: 1px solid #560024;
+    /* background-color: #FBE9EB;  */
+}
+
+.detail-toko-wrapper {
+    background-color: #f4d6cc;
+    width: 100%;
+    margin: 0 auto;
+    overflow: hidden;
     text-align: center;
+    color: #4b0010;
+}
+
+.detail-buy-header {
+    font-weight: bold;
+    padding: 7px 0;
+    font-family: 'Montserrat', sans-serif !important;
+    font-size: 14px;
+    text-transform: uppercase;
+    border-bottom: 1px solid #4b0010;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.detail-toko {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 7px 0;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #4b0010;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+.detail-toko img {
+    width: 17px;
+    height: 17px;
+    object-fit: contain;
+}
+
+.detail-toko:hover {
+    background-color: #eccac0;
+}
+
+
+/* ============================= */
+/* RESPONSIVE - TABLET (<= 1024px) */
+/* ============================= */
+@media (max-width: 1024px) {
+
+    .collection-section {
+        padding: 0 40px !important;
+    }
+
+    .produk-section {
+        flex-direction: column;
+        padding: 0 30px;
+        gap: 30px;
+    }
+
+    .produk-sidebar {
+        width: 100%;
+        margin-right: 0;
+    }
+
+    .produk-filter-box {
+        width: 100%;
+    }
+
+    .produk-product-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .detail-product-page {
+        margin: 0 50px;
+    }
+
+    .detail-product-wrapper {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .detail-product-images,
+    .detail-product-info {
+        width: 100%;
+    }
+
+    .detail-recommend-grid {
+        justify-content: center;
+        margin: 0 40px;
+    }
+}
+
+
+/* ============================= */
+/* RESPONSIVE - MOBILE (<= 768px) */
+/* ============================= */
+@media (max-width: 768px) {
+
+    .collection-section {
+        margin-top: 60px;
+        margin-bottom: 60px;
+        padding: 0 20px !important;
+    }
+
+    .collection-title {
+        font-size: 24px;
+        text-align: center;
+    }
+
+    .collection-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+
+    .produk-section {
+        padding: 0 20px;
+    }
+
+    .produk-title {
+        font-size: 20px;
+        text-align: center;
+    }
+
+    .produk-product-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .produk-tag {
+        font-size: 12px;
+        min-width: auto;
+        max-width: 100%;
+        justify-content: space-between;
+    }
+
+    .produk-card img {
+        height: 300px;
+    }
+
+    .produk-buttons button {
+        font-size: 10px;
+        padding: 8px 20px;
+    }
+
+    .detail-product-page {
+        margin: 0 20px;
+        padding: 40px 0;
+    }
+
+    .detail-product-name {
+        font-size: 28px;
+        text-align: center;
+    }
+
+    .detail-size {
+        height: auto;
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .buy-now-btn {
+        right: 20px;
+        padding: 10px 30px;
+        font-size: 14px;
+    }
+
+    .detail-recommend h2 {
+        font-size: 20px;
+    }
+
+    .detail-recommend-card {
+        width: 100%;
+        height: auto;
+    }
+
+    .carousel-image {
+        height: 70vh;
+    }
+}
+
+
+/* ============================= */
+/* RESPONSIVE - EXTRA SMALL (<= 480px) */
+/* ============================= */
+@media (max-width: 480px) {
+
+    .produk-card img {
+        height: 250px;
+    }
+
+    .produk-tag {
+        font-size: 10px;
+    }
+
+    .produk-buttons {
+        flex-direction: column;
+    }
+
+    .detail-product-name {
+        font-size: 22px;
+    }
+
+    .detail-product-description {
+        font-size: 13px;
+    }
+
+    .carousel-image {
+        height: 60vh;
+    }
+
+    .buy-now-btn {
+        font-size: 12px;
+        padding: 8px 20px;
+        right: 10px;
+    }
 }

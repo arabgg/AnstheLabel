@@ -1,5 +1,5 @@
 <div class="collection-section container">
-    <h1 class="collection-title">New Arrival</h1>
+    {{-- <h1 class="collection-title">BEST PRODUCT</h1> --}}
     <div class="collection-grid">
         <div class="item item-blouses">
             <img src="{{ asset('storage/images/collection/blouse.png') }}" alt="Blouses">

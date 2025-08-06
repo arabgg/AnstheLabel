@@ -50,6 +50,96 @@ class TokoProdukSeeder extends Seeder
             'url_toko' => 'https://www.tokopedia.com/',
             'created_at' => now(),
             ],
+            [
+            'produk_id' => 4,
+            'toko_id' => 1,
+            'url_toko' => 'https://shopee.co.id/',
+            'created_at' => now(),
+            ],
+            [
+            'produk_id' => 4,
+            'toko_id' => 2,
+            'url_toko' => 'https://www.tokopedia.com/',
+            'created_at' => now(),
+            ],
+            [
+            'produk_id' => 5,
+            'toko_id' => 1,
+            'url_toko' => 'https://shopee.co.id/',
+            'created_at' => now(),
+            ],
+            [
+            'produk_id' => 5,
+            'toko_id' => 2,
+            'url_toko' => 'https://www.tokopedia.com/',
+            'created_at' => now(),
+            ],
+            [
+            'produk_id' => 6,
+            'toko_id' => 1,
+            'url_toko' => 'https://shopee.co.id/',
+            'created_at' => now(),
+            ],
+            [
+            'produk_id' => 6,
+            'toko_id' => 2,
+            'url_toko' => 'https://www.tokopedia.com/',
+            'created_at' => now(),
+            ],
+            [
+            'produk_id' => 7,
+            'toko_id' => 1,
+            'url_toko' => 'https://shopee.co.id/',
+            'created_at' => now(),
+            ],
+            [
+            'produk_id' => 7,
+            'toko_id' => 2,
+            'url_toko' => 'https://www.tokopedia.com/',
+            'created_at' => now(),
+            ],
+            [
+            'produk_id' => 8,
+            'toko_id' => 1,
+            'url_toko' => 'https://shopee.co.id/',
+            'created_at' => now(),
+            ],
+            [
+            'produk_id' => 8,
+            'toko_id' => 2,
+            'url_toko' => 'https://www.tokopedia.com/',
+            'created_at' => now(),
+            ],
+            [
+            'produk_id' => 9,
+            'toko_id' => 1,
+            'url_toko' => 'https://shopee.co.id/',
+            'created_at' => now(),
+            ],
+            [
+            'produk_id' => 9,
+            'toko_id' => 2,
+            'url_toko' => 'https://www.tokopedia.com/',
+            'created_at' => now(),
+            ],
+            [
+            'produk_id' => 10,
+            'toko_id' => 1,
+            'url_toko' => 'https://shopee.co.id/',
+            'created_at' => now(),
+            ],
+            [
+            'produk_id' => 10,
+            'toko_id' => 2,
+            'url_toko' => 'https://www.tokopedia.com/',
+            'created_at' => now(),
+            ],
+            [
+            'produk_id' =>10,
+            'toko_id' => 3,
+            'url_toko' => 'https://www.tiktok.com/',
+            'created_at' => now(),
+            ],
         ]
         );
     }

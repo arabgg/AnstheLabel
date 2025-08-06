@@ -14,8 +14,11 @@ class KategoriSeeder extends Seeder
     public function run(): void
     {
         DB::table('m_kategori')->insert([
-            ['nama_kategori' => 'Hijab', 'created_at' => now()],
+            ['nama_kategori' => 'Scarf', 'created_at' => now()],
+            ['nama_kategori' => 'Pashmina', 'created_at' => now()],
+            ['nama_kategori' => 'Bergo', 'created_at' => now()],
             ['nama_kategori' => 'Dress', 'created_at' => now()],
+            ['nama_kategori' => 'Outer', 'created_at' => now()],
         ]);
     }
 }

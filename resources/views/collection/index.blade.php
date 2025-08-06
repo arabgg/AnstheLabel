@@ -45,7 +45,7 @@
     function hideExtraKatalog() {
         const cards = document.querySelectorAll('.bestproduk-card');
         cards.forEach((card, index) => {
-            if (index >= 2) {
+            if (index >= 6) {
                 card.classList.add('bestproduk-hidden');
             }
         });

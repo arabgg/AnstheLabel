@@ -1,10 +1,6 @@
 <div class="bestproduk-section">
     <div class="bestproduk-header">
-        <h1 class="bestproduk-title">Best Product</h1>
-        
-        <div class="bestproduk-buttons">
-            <a href="{{ route('collection') }}" class="view-all-link">View All</a>  
-        </div>
+        <h1 class="bestproduk-title">New Arrival</h1>
     </div>
 
     <div class="bestproduk-grid" id="katalogGrid">
@@ -19,9 +15,21 @@
                 
                 <div class="bestproduk-info">
                     <div class="bestproduk-name">{{ $item['nama'] }}</div>
+                    <div class="bestproduk-price">
+                        @if (!empty($item['harga_diskon']))
+                            <span class="price-discounted">{{ $item['harga'] }}</span>
+                            <span class="price-now">{{ $item['harga_diskon'] }}</span>
+                        @else
+                            <span class="price-now">{{ $item['harga'] }}</span>
+                        @endif
+                    </div>
                     <div class="bestproduk-kategori">{{ $item['kategori'] }}</div>
                 </div>
             </div>
         @endforeach
+    </div>
+    
+    <div class="bestproduk-buttons">
+        <a href="{{ route('collection') }}" class="view-all-link">VIEW ALL</a>  
     </div>
 </div>
