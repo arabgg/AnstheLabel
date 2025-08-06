@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\WarnaModel;
 
 class ProdukModel extends Model
 {
@@ -43,6 +44,7 @@ class ProdukModel extends Model
 
     public function warna() :HasMany
     {
+        return $this->hasMany(WarnaModel::class, 'produk_id');
         return $this->hasMany(WarnaProdukModel::class, 'produk_id', 'produk_id');
     }
 

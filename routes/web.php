@@ -31,7 +31,6 @@ Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/detail/{id}', [HomeController::class, 'show_produk'])->name('detail.show');
 
 
-<<<<<<< HEAD
 //Route Login
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'login'])->name('login');
@@ -63,23 +62,4 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{id}/delete', [ProdukController::class, 'delete']); 
     });
 });
-=======
-// //Route Login
-// Route::get('login', [AuthController::class, 'login'])->name('login');
-// Route::post('login', [AuthController::class, 'postlogin']);
-// Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
 
-// Route::middleware(['auth'])->group(function () {
-//     Route::get('/home', [WelcomeController::class, 'index']);
-
-//     Route::group(['prefix' => 'produk'], function () {
-//         Route::get('/', [ProdukController::class, 'index']);
-//         Route::get('/create_ajax', [ProdukController::class, 'create_ajax']);
-//         Route::post('/ajax', [ProdukController::class, 'store_ajax']);
-//         Route::get('/{id}/edit_ajax', [ProdukController::class, 'edit_ajax']);
-//         Route::put('/{id}/update_ajax', [ProdukController::class, 'update_ajax']);
-//         Route::get('/{id}/delete_ajax', [ProdukController::class, 'confirm_ajax']);
-//         Route::delete('/{id}/delete_ajax', [ProdukController::class, 'delete_ajax']);
-//     });    
-// });
->>>>>>> 1a09c80f57e1d83fbf80dd14be55c1e0a056ff9f
