@@ -7,23 +7,31 @@
         @foreach ($bestproduk as $index => $item)
             <div class="bestproduk-card">
                 <div class="bestproduk-image-wrapper">
-                    <img src="{{ asset('storage/images/bestproduk/' . $item['image']) }}" alt="{{ $item['nama'] }}" class="bestproduk-image default-image">
-                    @if (!empty($item['image_hover']))
-                        <img src="{{ asset('storage/images/bestproduk/' . $item['image_hover']) }}" alt="{{ $item['nama'] }}" class="bestproduk-image hover-image">
+                    {{-- Gambar utama dengan status_foto = 1 --}}
+                    @if ($item->fotoUtama)
+                        <img src="{{ asset('storage/foto_produk/' . $item->fotoUtama->foto_produk) }}" alt="{{ $item->nama_produk }}" class="bestproduk-image default-image">
+                    @endif
+
+                    {{-- Gambar hover: salah satu dari foto dengan status_foto = 0 --}}
+                    @php
+                        $hoverFoto = $item->foto->firstWhere('status_foto', 0);
+                    @endphp
+                    @if ($hoverFoto)
+                        <img src="{{ asset('storage/foto_produk/' . $hoverFoto->foto_produk) }}" alt="{{ $item->nama_produk }}" class="bestproduk-image hover-image">
                     @endif
                 </div>
-                
+
                 <div class="bestproduk-info">
-                    <div class="bestproduk-name">{{ $item['nama'] }}</div>
+                    <div class="bestproduk-name">{{ $item->nama_produk }}</div>
                     <div class="bestproduk-price">
-                        @if (!empty($item['harga_diskon']))
-                            <span class="price-discounted">{{ $item['harga'] }}</span>
-                            <span class="price-now">{{ $item['harga_diskon'] }}</span>
+                        @if (!empty($item->harga_diskon))
+                            <span class="price-discounted">Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
+                            <span class="price-now">Rp {{ number_format($item->harga_diskon, 0, ',', '.') }}</span>
                         @else
-                            <span class="price-now">{{ $item['harga'] }}</span>
+                            <span class="price-now">Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
                         @endif
                     </div>
-                    <div class="bestproduk-kategori">{{ $item['kategori'] }}</div>
+                    <div class="bestproduk-kategori">{{ $item->kategori->nama_kategori ?? '-' }}</div>
                 </div>
             </div>
         @endforeach

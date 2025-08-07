@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('bahan_id')->index();
 
             $table->string('nama_produk', 200);
+            $table->string('harga', 200);
             $table->text('deskripsi');
 
             $table->timestamp('created_at')->useCurrent();

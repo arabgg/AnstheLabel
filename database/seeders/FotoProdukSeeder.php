@@ -22,13 +22,13 @@ class FotoProdukSeeder extends Seeder
             ],
             [
             'produk_id' => 1,
-            'foto_produk' => 'produk1.jpg',
+            'foto_produk' => 'produk2.jpg',
             'status_foto' => 0,
             'created_at' => now(),
             ],
             [
             'produk_id' => 1,
-            'foto_produk' => 'produk1.jpg',
+            'foto_produk' => 'produk2.jpg',
             'status_foto' => 0,
             'created_at' => now(),
             ],

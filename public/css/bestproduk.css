@@ -71,7 +71,7 @@
 
 .bestproduk-card {
   background-color: #fff;
-  border-radius: 4px;
+  /* border-radius: 4px; */
   overflow: hidden;
   position: relative;
 }
@@ -87,7 +87,7 @@
   height: 250px;
   object-fit: cover;
   display: block;
-  transition: opacity 0.3s ease;
+  transition: opacity 1s ease;
   position: absolute;
   top: 0;
   left: 0;
