@@ -13,7 +13,7 @@
         {{-- <a href="#" target="_blank" class="buy-now-btn">BUY NOW</a> --}}
     </div>
 
-    @include('landingpage.bestproduk')
+    @include('landingpage.newarrival')
 
     <div id="heroCarouselCustom2" class="custom-carousel">
         <img src="{{ asset('storage/images/hero/hero5.png') }}" class="carousel-image active" alt="Hero 5">
@@ -22,7 +22,7 @@
         <img src="{{ asset('storage/images/hero/hero8.png') }}" class="carousel-image" alt="Hero 8">
     </div>
 
-    @include('landingpage.swiperarrival')
+    @include('landingpage.bestproduk')
 
     <div id="heroCarouselCustom2" class="custom-carousel">
         <img src="{{ asset('storage/images/hero/hero5.png') }}" class="carousel-image active" alt="Hero 5">

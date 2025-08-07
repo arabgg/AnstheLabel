@@ -18,6 +18,14 @@ class HomeController extends Controller
         ->take(4)
         ->get();
 
+        $bestseller = ProdukModel::with([
+            'kategori',
+            'foto' => fn($q) => $q->orderByDesc('status_foto'),
+            'fotoUtama'
+        ])
+        ->orderByDesc('harga') // urutkan berdasarkan harga tertinggi
+        ->take(4) // ambil 4 produk teratas
+        ->get();
 
         $viscose = [
             [
@@ -50,37 +58,10 @@ class HomeController extends Controller
             ],
         ];
 
-        $cooltech = [
-            [
-                'nama' => 'Hijab',
-                'image' => 'c01.png',
-                'image_hover' => 'c01_hover.png',
-                'warna' => ['#000000', '#FFFFFF', '#FF6C6C'],
-            ],
-            [
-                'nama' => 'Hijab',
-                'image' => 'c01.png',
-                'image_hover' => 'c01_hover.png',
-                'warna' => ['#000000', '#FFFFFF', '#FF6C6C'],
-            ],
-            [
-                'nama' => 'Hijab',
-                'image' => 'c01.png',
-                'image_hover' => 'c01_hover.png',
-                'warna' => ['#000000', '#FFFFFF', '#FF6C6C'],
-            ],
-            [
-                'nama' => 'Hijab',
-                'image' => 'c01.png',
-                'image_hover' => 'c01_hover.png',
-                'warna' => ['#000000', '#FFFFFF', '#FF6C6C'],
-            ],
-        ];
-
         return view('landingpage.index', [
             'bestproduk' => $bestproduk,
+            'bestseller' => $bestseller,
             'viscose' => $viscose,
-            'cooltech' => $cooltech,
         ]);
     }
 
