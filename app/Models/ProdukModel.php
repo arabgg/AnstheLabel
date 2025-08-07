@@ -44,7 +44,6 @@ class ProdukModel extends Model
 
     public function warna() :HasMany
     {
-        return $this->hasMany(WarnaModel::class, 'produk_id');
         return $this->hasMany(WarnaProdukModel::class, 'produk_id', 'produk_id');
     }
 
