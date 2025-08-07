@@ -5,7 +5,7 @@
 
         {{-- Aktif Filter Ditampilkan --}}
         @if (!empty($filterkategori))
-            <div class="produk-tags" id="katalog">
+            <div class="produk-tags">
                 @foreach ($filterkategori as $kategoriId)
                     @php
                         $kategoriNama = $kategori->firstWhere('kategori_id', $kategoriId)?->nama_kategori ?? 'Unknown';
@@ -68,8 +68,8 @@
         {{-- Tombol Load More di bawah produk --}}
         @if (count($produk) > 6)
             <div class="produk-buttons" style="text-align: center; margin-top: 30px;">
-                <button id="viewAllButton" onclick="showAllKatalog()">More</button>
-                <button id="hideButton" onclick="hideExtraKatalog()" style="display: none;">Hide</button>
+                <button id="viewAllButton" onclick="showAllKatalog()" class="more-link">More</button>
+                <button id="hideButton" onclick="hideExtraKatalog()" class="more-link" style="display: none;">Hide</button>
             </div>
         @endif
     </div>

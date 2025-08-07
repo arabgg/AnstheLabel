@@ -100,12 +100,12 @@
 /* PRODUK HALAMAN COLLECTION */
 .produk-section {
     font-family: 'Montserrat', sans-serif !important;
-    max-width: 1100px;
-    margin: 100px auto;
+    max-width: 1360px;
+    margin: 50px auto;
     padding: 0 50px;
     
     display: flex; /* menjadikan sidebar & grid sejajar */
-    gap: 50px; /* jarak antar sidebar dan produk grid */
+    gap: 20px; /* jarak antar sidebar dan produk grid */
 }
 
 .produk-sidebar {
@@ -157,7 +157,7 @@
 }
 
 .produk-filter-box {
-    width: 300px;
+    width: 260px;
     height: auto;
     border: 1px solid #560024;
     padding: 15px;
@@ -235,7 +235,7 @@ input[type="checkbox"]:checked::before {
 /* Product Grid */
 .produk-product-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 kolom */
+    grid-template-columns: repeat(3, 1fr); /* 2 kolom */
     gap: 30px 20px; /* vertical dan horizontal spacing */
     flex: 1;
 }
@@ -326,7 +326,7 @@ input[type="checkbox"]:checked::before {
     cursor: pointer;
     background-color: transparent;
     color: #560024;
-    border: none;
+    border: 1px solid #560024;
     text-decoration: none;
 }
 
@@ -344,6 +344,43 @@ input[type="checkbox"]:checked::before {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     transform: translateY(-2px);
     transition: 0.3s;
+}
+
+/* Tombolnya */
+.more-link {
+  position: relative;
+  width: fit-content;
+  text-align: center;
+  padding: 8px 32px;
+  font-size: 12px;
+  font-weight: bold;
+  border: 2px solid #A65A6A;
+  color: #560024;
+  text-decoration: none;
+  overflow: hidden;
+  z-index: 1;
+  transition: color 0.3s ease;
+}
+
+/* Efek transisi dari kiri ke kanan */
+.more-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  background-color: #A65A6A;
+  z-index: -1;
+  transition: width 0.4s ease;
+}
+
+.more-link:hover::before {
+  width: 100%;
+}
+
+.more-link:hover {
+  color: white;
 }
 
 /* DETAIL PRODUK */

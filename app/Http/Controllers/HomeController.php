@@ -9,42 +9,15 @@ use App\Models\ProdukModel;
 class HomeController extends Controller
 {
     public function index() {
-        $bestproduk = [
-            [
-                'nama' => 'Hijab',
-                'kategori' => 'Pakaian Muslim Wanita',
-                'image' => 'bp01.png',
-                'harga' => 'Rp. 259.000',
-                'image_hover' => 'bp01_hover.png',
-                'warna' => ['#000000', '#FFFFFF', '#FF6C6C'],
-            ],
-            [
-                'nama' => 'Dress',
-                'kategori' => 'Pakaian Muslim Wanita',
-                'image' => 'bp02.png',
-                'harga' => 'Rp. 399.000',
-                'image_hover' => 'bp02_hover.png',
-                'warna' => ['#000000', '#FFFFFF', '#FF6C6C'],
-            ],
-            [
-                'nama' => 'Mukena',
-                'kategori' => 'Pakaian Muslim Wanita',
-                'image' => 'bp03.png',
-                'harga' => 'Rp. 259.000',
-                'harga_diskon' => 'Rp. 199.000',
-                'image_hover' => 'bp03_hover.png',
-                'warna' => ['#000000', '#FFFFFF', '#FF6C6C'],
-            ],
-            [
-                'nama' => 'Mukena',
-                'kategori' => 'Pakaian Muslim Wanita',
-                'image' => 'bp03.png',
-                'harga' => 'Rp. 259.000',
-                'harga_diskon' => 'Rp. 199.000',
-                'image_hover' => 'bp03_hover.png',
-                'warna' => ['#000000', '#FFFFFF', '#FF6C6C'],
-            ],
-        ];
+        $bestproduk = ProdukModel::with([
+            'kategori',
+            'foto' => fn($q) => $q->orderByDesc('status_foto'),
+            'fotoUtama'
+        ])
+        ->latest('produk_id') // atau ->orderByDesc('id')
+        ->take(4)
+        ->get();
+
 
         $viscose = [
             [
