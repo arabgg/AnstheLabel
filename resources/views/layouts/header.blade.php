@@ -6,10 +6,9 @@
         </div>
 
         <div class="top-right">
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-tiktok"></i></a> 
-            <a href="#"><i class="fab fa-whatsapp"></i></a>
-            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.tiktok.com/"><i class="fab fa-tiktok"></i></a> 
+            <a href="https://web.facebook.com/"><i class="fab fa-facebook"></i></a>
         </div>
     </div>
 </div>

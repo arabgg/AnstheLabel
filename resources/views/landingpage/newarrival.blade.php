@@ -8,6 +8,10 @@
             <div class="bestproduk-card">
                 <a href="{{ route('detail.show', $item->produk_id) }}">
                     <div class="bestproduk-image-wrapper">
+                        @if (!empty($item->diskon))
+                            <span class="diskon-label">- {{ $item->diskon_persen }}%</span>
+                        @endif
+                        
                         {{-- Gambar utama dengan status_foto = 1 --}}
                         @if ($item->fotoUtama)
                             <img src="{{ asset('storage/foto_produk/' . $item->fotoUtama->foto_produk) }}" alt="{{ $item->nama_produk }}" class="bestproduk-image default-image">

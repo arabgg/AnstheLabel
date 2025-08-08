@@ -123,7 +123,7 @@
 }
 
 .swiper-slide img {
-  width: auto;  /* Tetap 300px */
+  width: 500px;  /* Tetap 300px */
   height: 560px; /* Tetap 480px */
   object-fit: cover;
   display: block;

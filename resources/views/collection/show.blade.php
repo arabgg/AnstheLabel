@@ -48,6 +48,9 @@
             @foreach ($produk as $index => $item)
                 <a href="{{ route('detail.show', $item->produk_id) }}" class="produk-card-link">
                     <div class="produk-card bestproduk-card {{ $index >= 6 ? 'bestproduk-hidden' : '' }}">
+                        @if (!empty($item->diskon))
+                            <span class="diskon-label-collection">- {{ $item->diskon_persen }}%</span>
+                        @endif
                         <img src="{{ asset('storage/foto_produk/' . $item->fotoUtama->foto_produk) }}" alt="{{ $item->nama_produk }}">
                         <div class="produk-color-dot">
                             @foreach ($item->warna as $warnaItem)
@@ -59,6 +62,14 @@
                             @endforeach
                         </div>
                         <h3>{{ $item->nama_produk }}</h3>
+                        <div class="collection-price">
+                            @if (!empty($item->diskon))
+                                <span class="price-discounted">Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
+                                <span class="price-now">Rp {{ number_format($item->harga_diskon, 0, ',', '.') }}</span>
+                            @else
+                                <span class="price-now">Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
+                            @endif
+                        </div>
                         <p>{{ $item->kategori->nama_kategori }}</p>
                     </div>
                 </a>

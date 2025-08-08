@@ -142,6 +142,13 @@
   display: none;
 }
 
+.collection-price {
+  margin-bottom: 20px;
+  font-size: 12px;
+  text-align: left;
+  padding-left: 10px;
+}
+
 .bestproduk-price {
   margin-bottom: 6px;
   font-size: 12px;
@@ -242,8 +249,8 @@
     position: absolute;
     top: 10px;
     left: 10px;
-    border: 1px solid black;
-    color: black;
+    border: 1px solid #560024;
+    color: #560024;
     font-size: 12px;
     font-weight: bold;
     padding: 4px 8px;
@@ -494,15 +501,14 @@
     position: absolute;
     top: 10px;
     left: 10px;
-    border: 1px solid red;
-    color: red;
+    background-color: red;
+    color: white;
     font-size: 12px;
     font-weight: bold;
-    padding: 4px 8px;
+    padding: 4px 6px;
     z-index: 10;
     text-transform: uppercase;
 }
-
 
 /* ==============================
    ✅ Responsive Section

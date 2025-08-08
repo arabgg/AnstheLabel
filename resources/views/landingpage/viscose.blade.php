@@ -25,7 +25,7 @@
 
                     <div class="viscose-name">{{ $item['nama'] }}</div>
                     <div class="viscose-kategori">{{ $item['kategori'] }}</div>
-                    <div class="viscose-series">VISCOSE EDITION</div>
+                    <div class="viscose-series">VISCOSE MATERIAL</div>
                 </div>
             </div>
         @endforeach

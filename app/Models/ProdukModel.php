@@ -36,8 +36,6 @@ class ProdukModel extends Model
         return max($harga - $diskon, 0);
     }
 
-
-
     public function getDiskonPersenAttribute()
     {
         $harga = (float) ($this->harga ?? 0);

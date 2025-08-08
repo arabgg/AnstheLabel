@@ -9,7 +9,7 @@
                 <a href="{{ route('detail.show', $item->produk_id) }}">
                     <div class="bestseller-image-wrapper">
                         @if (!empty($item->diskon))
-                            <span class="diskon-label">Premium</span>
+                            <span class="diskon-label">- {{ $item->diskon_persen }}%</span>
                         @endif
                         {{-- Gambar utama dengan status_foto = 1 --}}
                         @if ($item->fotoUtama)
