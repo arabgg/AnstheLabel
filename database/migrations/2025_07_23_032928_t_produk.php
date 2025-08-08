@@ -20,6 +20,7 @@ return new class extends Migration
 
             $table->string('nama_produk', 200);
             $table->string('harga', 200);
+            $table->string('diskon', 200)->nullable();
             $table->text('deskripsi');
 
             $table->timestamp('created_at')->useCurrent();

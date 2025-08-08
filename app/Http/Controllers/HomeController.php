@@ -18,69 +18,50 @@ class HomeController extends Controller
         ->take(4)
         ->get();
 
+        $bestseller = ProdukModel::with([
+            'kategori',
+            'foto' => fn($q) => $q->orderByDesc('status_foto'),
+            'fotoUtama'
+        ])
+        ->orderByDesc('harga') // urutkan berdasarkan harga tertinggi
+        ->take(4) // ambil 4 produk teratas
+        ->get();
 
         $viscose = [
             [
-                'nama' => 'Hijab',
-                'kategori' => 'Pakaian Muslim Wanita',
-                'image' => 'bp01.png',
-                'image_hover' => 'bp01_hover.png',
+                'nama' => 'Sleveless Round Neck',
+                'kategori' => 'Dress',
+                'image' => 'vs01.png',
+                'image_hover' => 'vs01_hover.png',
                 'warna' => ['#000000', '#FF6C6C', '#2c7851ff', '#8d5858ff', '#ca8888ff', '#936c6cff', '#FFFFFF',],
             ],
             [
-                'nama' => 'Hijab',
-                'kategori' => 'Pakaian Muslim Wanita',
-                'image' => 'bp01.png',
-                'image_hover' => 'bp01_hover.png',
+                'nama' => 'Sleveless Turtle Neck',
+                'kategori' => 'Dress',
+                'image' => 'vs02.png',
+                'image_hover' => 'vs02_hover.png',
                 'warna' => ['#000000', '#8d5858ff', '#ca8888ff', '#FF6C6C', '#2c7851ff', '#936c6cff', '#FFFFFF',],
             ],
             [
-                'nama' => 'Hijab',
-                'kategori' => 'Pakaian Muslim Wanita',
-                'image' => 'bp01.png',
-                'image_hover' => 'bp01_hover.png',
+                'nama' => 'Kutton Strip Knitwear',
+                'kategori' => 'Outer',
+                'image' => 'vs03.png',
+                'image_hover' => 'vs03_hover.png',
                 'warna' => ['#FF6C6C', '#2c7851ff', '#8d5858ff', '#ca8888ff', '#936c6cff', '#000000', '#FFFFFF'],
             ],
             [
-                'nama' => 'Hijab',
-                'kategori' => 'Pakaian Muslim Wanita',
-                'image' => 'bp01.png',
-                'image_hover' => 'bp01_hover.png',
+                'nama' => 'Savana Cardigan',
+                'kategori' => 'Outer',
+                'image' => 'vs04.png',
+                'image_hover' => 'vs04_hover.png',
                 'warna' => ['#000000', '#FF6C6C', '#8d5858ff', '#ca8888ff','#2c7851ff', '#936c6cff', '#FFFFFF',],
-            ],
-        ];
-
-        $cooltech = [
-            [
-                'nama' => 'Hijab',
-                'image' => 'c01.png',
-                'image_hover' => 'c01_hover.png',
-                'warna' => ['#000000', '#FFFFFF', '#FF6C6C'],
-            ],
-            [
-                'nama' => 'Hijab',
-                'image' => 'c01.png',
-                'image_hover' => 'c01_hover.png',
-                'warna' => ['#000000', '#FFFFFF', '#FF6C6C'],
-            ],
-            [
-                'nama' => 'Hijab',
-                'image' => 'c01.png',
-                'image_hover' => 'c01_hover.png',
-                'warna' => ['#000000', '#FFFFFF', '#FF6C6C'],
-            ],
-            [
-                'nama' => 'Hijab',
-                'image' => 'c01.png',
-                'image_hover' => 'c01_hover.png',
-                'warna' => ['#000000', '#FFFFFF', '#FF6C6C'],
             ],
         ];
 
         return view('landingpage.index', [
             'bestproduk' => $bestproduk,
+            'bestseller' => $bestseller,
             'viscose' => $viscose,
-            'cooltech' => $cooltech,
         ]);
     }
 

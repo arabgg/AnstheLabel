@@ -19,6 +19,8 @@ class ProdukModel extends Model
         'kategori_id',
         'bahan_id',
         'nama_produk',
+        'harga',
+        'diskon',
         'deskripsi',
     ];
 
@@ -26,6 +28,27 @@ class ProdukModel extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    public function getHargaDiskonAttribute()
+    {
+        $harga = (float) ($this->harga ?? 0);
+        $diskon = (float) ($this->diskon ?? 0);
+        
+        return max($harga - $diskon, 0);
+    }
+
+    public function getDiskonPersenAttribute()
+    {
+        $harga = (float) ($this->harga ?? 0);
+        $diskon = (float) ($this->diskon ?? 0);
+
+        if ($harga > 0 && $diskon > 0) {
+            return round(($diskon / $harga) * 100);
+        }
+
+        return 0;
+    }
+
 
     public function kategori() :BelongsTo
     {
