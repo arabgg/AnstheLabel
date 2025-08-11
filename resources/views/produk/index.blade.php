@@ -14,7 +14,7 @@
             @foreach ($produk as $p)
                 <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-200">
                     <a href="{{ url('/produk/' . $p->produk_id . '/show') }}">
-                        <div class="aspect-[3/4] bg-grey-100">
+                        <div class="aspect-[4/5] bg-grey-100">
                             <img src="{{ asset('storage/foto_produk/' . $p->fotoUtama->foto_produk) }}"
                                 alt="{{ $p->nama_produk }}" class="w-full h-full object-cover">
                         </div>
@@ -26,13 +26,13 @@
                         </p>
                         <div class="flex justify-between items-center mt-4 text-sm">
                             <a href="{{ url('/produk/' . $p->produk_id . '/edit') }}"
-                                class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition duration-200">
+                                class="px-4 py-2 bg-white text-black border border-black rounded hover:bg-yellow-600 transition duration-200">
                                 Edit
                             </a>
 
                             <button
                                 onclick="document.getElementById('modal-{{ $p->produk_id }}').classList.remove('hidden')"
-                                class="px-4 py-2 bg-black text-white rounded hover:bg-red-700 transition duration-200">
+                                class="px-4 py-2 bg-black text-white rounded hover:bg-red-800 transition duration-200">
                                 Hapus
                             </button>
                         </div>
@@ -55,7 +55,7 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
-                                    class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">
+                                    class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-800 transition">
                                     Ya, Hapus
                                 </button>
                             </form>

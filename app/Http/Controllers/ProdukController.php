@@ -31,60 +31,53 @@ class ProdukController extends Controller
 
     public function create()
     {
-        $kategori = KategoriModel::all();
-        $bahan = BahanModel::all();
+        $kategori = \App\Models\KategoriModel::all();
+        $bahan = \App\Models\BahanModel::all();
         return view('produk.create', compact('kategori', 'bahan'));
     }
 
-    public function upload(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
-            'nama_produk' => 'required',
-            'deskripsi' => 'required',
-            'kategori_id' => 'required',
-            'bahan_id' => 'required',
-            'warna' => 'array',
-            'ukuran' => 'array',
-            'foto' => 'image|mimes:jpg,jpeg,png|max:2048',
+            'foto_utama' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'foto_sekunder.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'nama_produk' => 'required|string|max:255',
+            'deskripsi' => 'required|string',
+            'kategori_id' => 'required|integer',
+            'bahan_id' => 'required|integer',
         ]);
 
-        $produk = ProdukModel::create($request->only(['kategori_id', 'bahan_id', 'nama_produk', 'deskripsi']));
+        // Simpan produk
+        $produk = ProdukModel::create([
+            'nama_produk' => $request->nama_produk,
+            'deskripsi' => $request->deskripsi,
+            'kategori_id' => $request->kategori_id,
+            'bahan_id' => $request->bahan_id,
+        ]);
 
-        if ($request->has('warna')) {
-            foreach ($request->warna as $kode) {
-                $warna = WarnaModel::where('kode_hex', $kode)->first();
-                if ($warna) {
-                    WarnaProdukModel::create([
-                        'produk_id' => $produk->produk_id,
-                        'warna_id' => $warna->warna_id, // tambahkan ini
-                        'kode_warna' => $kode,
-                    ]);
-                }
-            }
+        // Foto utama
+        if ($request->hasFile('foto_utama')) {
+            $path = $request->file('foto_utama')->store('produk', 'public');
+            FotoProdukModel::create([
+                'produk_id' => $produk->produk_id,
+                'path' => $path,
+                'status_foto' => 1 // 1 = foto utama
+            ]);
         }
 
-        // Simpan ukuran produk
-        if ($request->has('ukuran')) {
-            foreach ($request->ukuran as $ukuran) {
-                UkuranProdukModel::create([
+        // Foto sekunder
+        if ($request->hasFile('foto_sekunder')) {
+            foreach ($request->file('foto_sekunder') as $foto) {
+                $path = $foto->store('produk', 'public');
+                FotoProdukModel::create([
                     'produk_id' => $produk->produk_id,
-                    'ukuran_id' => $ukuran,
+                    'path' => $path,
+                    'status_foto' => 0 // 0 = foto biasa
                 ]);
             }
         }
 
-        // Simpan foto utama
-        if ($request->hasFile('foto')) {
-            $path = $request->file('foto')->store('produk', 'public');
-
-            FotoProdukModel::create([
-                'produk_id' => $produk->produk_id,
-                'nama_file' => $path,
-                'status_foto' => 1,
-            ]);
-        }
-
-        return redirect('/produk')->with('success', 'Produk berhasil ditambahkan');
+        return redirect()->route('produk.create')->with('success', 'Produk berhasil disimpan!');
     }
 
     public function edit($id)

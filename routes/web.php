@@ -50,15 +50,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/{id}/show', [ProdukController::class, 'show']);
 
         // Create
-        Route::get('/create', [ProdukController::class, 'create']); 
-        Route::post('/upload', [ProdukController::class, 'upload']); 
+        Route::get('/create', [ProdukController::class, 'create'])->name('produk.create'); 
+        Route::post('/store', [ProdukController::class, 'store'])->name('produk.store'); 
 
         // Edit
-        Route::get('/{id}/edit', [ProdukController::class, 'edit']); 
-        Route::put('/{id}/update', [ProdukController::class, 'update']);
+        Route::get('/{id}/edit', [ProdukController::class, 'edit'])->name('produk.edit'); 
+        Route::put('/{id}/update', [ProdukController::class, 'update'])->name('produk.update');
 
         // Delete
-        Route::get('/{id}/delete', [ProdukController::class, 'destroy']); 
-        Route::delete('/{id}/delete', [ProdukController::class, 'delete']); 
+        Route::get('/{id}/delete', [ProdukController::class, 'destroy'])->name('produk.destroy');   
+        Route::delete('/{id}/delete', [ProdukController::class, 'delete'])->name('produk.delete'); 
     });
 });
