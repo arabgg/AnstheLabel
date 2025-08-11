@@ -14,84 +14,99 @@
         </div>
     @endif
 
-    <form action="{{ url('/produk/upload') }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded shadow-md space-y-6">
+    <form action="{{ route('produk.store') }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded shadow-md space-y-6">
         @csrf
 
-        {{-- Foto --}}
+        {{-- Foto Utama --}}
         <div>
             <label class="block font-medium mb-1">Foto Utama</label>
-            <input type="file" name="foto" accept="image/*" onchange="previewImage(event)" class="block w-full text-sm border rounded px-3 py-2">
-            <img id="preview" class="mt-4 max-h-60" src="https://via.placeholder.com/300x300?text=Preview" alt="Preview">
+            <input type="file" id="foto-utama" accept="image/*" class="hidden">
+            <label for="foto-utama" class="w-60 aspect-[4/5] border-2 border-dashed flex items-center justify-center cursor-pointer rounded">
+                <img id="preview-utama" src="https://via.placeholder.com/200?text=+" class="object-cover w-full h-full" alt="Preview Utama">
+            </label>
+            <input type="hidden" name="foto_utama" id="foto-utama-hidden">
         </div>
 
-        {{-- Nama Produk --}}
-        <div>
-            <label class="block font-medium mb-1">Nama Produk</label>
-            <input type="text" name="nama_produk" required class="block w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-blue-400">
-        </div>
-
-        {{-- Deskripsi --}}
-        <div>
-            <label class="block font-medium mb-1">Deskripsi</label>
-            <textarea name="deskripsi" rows="3" required class="block w-full border rounded px-3 py-2 focus:outline-none focus:ring focus:ring-purple-400"></textarea>
-        </div>
-
-        {{-- Kategori --}}
-        <div>
-            <label class="block font-medium mb-1">Kategori</label>
-            <select name="kategori_id" class="block w-full border rounded px-3 py-2">
-                @foreach ($kategori as $k)
-                    <option value="{{ $k->kategori_id }}">{{ $k->nama_kategori }}</option>
-                @endforeach
-            </select>
-        </div>
-
-        {{-- Bahan --}}
-        <div>
-            <label class="block font-medium mb-1">Bahan</label>
-            <select name="bahan_id" class="block w-full border rounded px-3 py-2">
-                @foreach ($bahan as $b)
-                    <option value="{{ $b->bahan_id }}">{{ $b->nama_bahan }}</option>
-                @endforeach
-            </select>
-        </div>
-
-        {{-- Warna (multiple) --}}
-        <div>
-            <label class="block font-medium mb-1">Warna Produk</label>
-            <div class="flex flex-wrap gap-2">
-                <input type="color" name="warna[]" class="w-12 h-12 rounded border">
-                <input type="color" name="warna[]" class="w-12 h-12 rounded border">
-                <input type="color" name="warna[]" class="w-12 h-12 rounded border">
-            </div>
-        </div>
-
-        {{-- Ukuran (multiple) --}}
-        <div>
-            <label class="block font-medium mb-1">Ukuran Produk</label>
-            <div class="flex flex-wrap gap-2">
-                <input type="text" name="ukuran[]" placeholder="S" class="w-20 border rounded px-2 py-1">
-                <input type="text" name="ukuran[]" placeholder="M" class="w-20 border rounded px-2 py-1">
-                <input type="text" name="ukuran[]" placeholder="L" class="w-20 border rounded px-2 py-1">
-            </div>
-        </div>
-
-        {{-- Submit --}}
-        <div>
-            <button type="submit" class="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 transition duration-200 font-semibold">
-                Simpan Produk
-            </button>
-        </div>
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Simpan</button>
     </form>
 </div>
 
+{{-- Modal Crop --}}
+<div id="crop-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+    <div class="bg-white p-4 rounded shadow-lg">
+        <div class="w-[400px] h-[300px]">
+            <img id="image-to-crop" class="max-w-full" />
+        </div>
+        <div class="flex justify-end gap-2 mt-4">
+            <button id="cancel-crop" class="px-4 py-2 bg-gray-400 text-white rounded">Batal</button>
+            <button id="save-crop" class="px-4 py-2 bg-blue-600 text-white rounded">Simpan</button>
+        </div>
+    </div>
+</div>
+
+{{-- Cropper.js CSS & JS --}}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
 <script>
-    function previewImage(event) {
-        const reader = new FileReader();
-        reader.onload = function(){
-            document.getElementById('preview').src = reader.result;
+let cropper;
+const fotoUtamaInput = document.getElementById('foto-utama');
+const cropModal = document.getElementById('crop-modal');
+const imageToCrop = document.getElementById('image-to-crop');
+const previewUtama = document.getElementById('preview-utama');
+const fotoUtamaHidden = document.getElementById('foto-utama-hidden');
+
+// Saat pilih gambar
+fotoUtamaInput.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        imageToCrop.src = event.target.result;
+        cropModal.classList.remove('hidden');
+        cropModal.classList.add('flex');
+
+        // Hancurkan cropper sebelumnya jika ada
+        if (cropper) {
+            cropper.destroy();
         }
-        reader.readAsDataURL(event.target.files[0]);
+
+        // Inisialisasi cropper dengan rasio 3:4
+        cropper = new Cropper(imageToCrop, {
+            aspectRatio: 4 / 5,
+            viewMode: 1,
+            autoCropArea: 1
+        });
     }
+    reader.readAsDataURL(file);
+});
+
+// Simpan hasil crop
+document.getElementById('save-crop').addEventListener('click', function() {
+    const canvas = cropper.getCroppedCanvas({
+        width: 600, // resolusi akhir
+        height: 800
+    });
+
+    // Tampilkan preview
+    previewUtama.src = canvas.toDataURL('image/jpeg');
+
+    // Simpan base64 ke input hidden
+    fotoUtamaHidden.value = canvas.toDataURL('image/jpeg');
+
+    // Tutup modal
+    cropModal.classList.add('hidden');
+    cropModal.classList.remove('flex');
+
+    cropper.destroy();
+});
+
+// Batal crop
+document.getElementById('cancel-crop').addEventListener('click', function() {
+    cropModal.classList.add('hidden');
+    cropModal.classList.remove('flex');
+    cropper.destroy();
+});
 </script>
 @endsection
