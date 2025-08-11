@@ -20,7 +20,6 @@
                 <a href="/">
                     <img src="{{ asset('storage/images/ansthelabel.png') }}" class="h-10" alt="AnstheLabel Logo">
                 </a>
-                <a href="/produk" class="text-black-600 hover:text-blue-500">Produk</a>
             </div>
 
             {{-- Kanan: Dropdown User --}}
