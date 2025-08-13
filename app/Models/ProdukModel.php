@@ -32,29 +32,28 @@ class ProdukModel extends Model
     public function getHargaDiskonAttribute()
     {
         $harga = (string) ($this->harga ?? '0.00');
-$diskon = (string) ($this->diskon ?? '0.00');
+        $diskon = (string) ($this->diskon ?? '0.00');
 
-// Kurangi dengan presisi 2 digit desimal
-$total = bcsub($harga, $diskon, 2);
+        // Kurangi dengan presisi 2 digit desimal
+        $total = bcsub($harga, $diskon, 2);
 
-// Pastikan tidak negatif
-return max((float) $total, 0);
+        // Pastikan tidak negatif
+        return max((float) $total, 0);
     }
 
     public function getDiskonPersenAttribute()
-{
-    $harga = (string) ($this->harga ?? '0.00');
-    $diskon = (string) ($this->diskon ?? '0.00');
+    {
+        $harga = (string) ($this->harga ?? '0.00');
+        $diskon = (string) ($this->diskon ?? '0.00');
 
-    if (bccomp($harga, '0.00', 2) === 1 && bccomp($diskon, '0.00', 2) === 1) {
-        // (diskon / harga) * 100 dengan presisi 2 digit
-        $persen = bcmul(bcdiv($diskon, $harga, 4), '100', 0);
-        return (float) $persen;
+        if (bccomp($harga, '0.00', 2) === 1 && bccomp($diskon, '0.00', 2) === 1) {
+            // (diskon / harga) * 100 dengan presisi 2 digit
+            $persen = bcmul(bcdiv($diskon, $harga, 4), '100', 0);
+            return (float) $persen;
+        }
+
+        return 0;
     }
-
-    return 0;
-}
-
 
     public function kategori() :BelongsTo
     {
