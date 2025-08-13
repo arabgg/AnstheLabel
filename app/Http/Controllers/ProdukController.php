@@ -30,6 +30,8 @@ class ProdukController extends Controller
         return view('produk.show', compact('produk'));
     }
 
+    // jjhfhjkhv
+
     public function create()
     {
         $kategori = KategoriModel::all();
@@ -46,8 +48,13 @@ class ProdukController extends Controller
             'foto_sekunder.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'nama_produk' => 'required|string|max:255',
             'deskripsi' => 'required|string',
+            'harga' => 'required|string',
             'kategori_id' => 'required|integer',
             'bahan_id' => 'required|integer',
+            'ukuran_id' => 'required|array|min:1',
+            'ukuran_id.*' => 'string|max:50', // validasi setiap elemen array
+            'warna_id' => 'required|array|min:1',
+            'warna_id.*' => 'string|max:50', // validasi setiap elemen array
         ], [
             'foto_utama.required' => 'Foto utama wajib diunggah.',
             'foto_utama.image' => 'File harus berupa gambar.',
@@ -59,16 +66,21 @@ class ProdukController extends Controller
         $produk = ProdukModel::create([
             'nama_produk' => $request->nama_produk,
             'deskripsi' => $request->deskripsi,
+            'harga' => $request->harga,
             'kategori_id' => $request->kategori_id,
             'bahan_id' => $request->bahan_id,
         ]);
 
         // Foto utama
         if ($request->hasFile('foto_utama')) {
-            $path = $request->file('foto_utama')->store('foto_produk', 'public');
+            $fotoUtama = $request->file('foto_utama');
+            $filename = time() . '_' . $fotoUtama->getClientOriginalName();
+            $path = public_path('storage/foto_produk'); // Path tujuan langsung di folder public
+            $fotoUtama->move($path, $filename); // Memindahkan file ke path tujuan
+
             FotoProdukModel::create([
                 'produk_id' => $produk->produk_id,
-                'path' => $path,
+                'foto_produk' => $path,
                 'status_foto' => 1 // 1 = foto utama
             ]);
         }
@@ -76,31 +88,37 @@ class ProdukController extends Controller
         // Foto sekunder
         if ($request->hasFile('foto_sekunder')) {
             foreach ($request->file('foto_sekunder') as $foto) {
-                $path = $foto->store('foto_produk', 'public');
+                $filename = time() . '_' . $foto->getClientOriginalName();
+                $path = public_path('storage/foto_produk'); // Path tujuan di folder public
+                
+                // Pindahkan file
+                $foto->move($path, $filename);
+
                 FotoProdukModel::create([
                     'produk_id' => $produk->produk_id,
-                    'path' => $path,
+                    'foto_produk' => 'foto_produk/' . $filename, // Simpan relative path
                     'status_foto' => 0 // 0 = foto biasa
                 ]);
             }
         }
 
+
         // Ukuran
         if ($request->has('ukuran')) {
-            foreach ($request->ukuran as $ukuran) {
+            foreach ($request->ukuran_id as $ukuran) {
                 UkuranProdukModel::create([
                     'produk_id' => $produk->produk_id,
-                    'ukuran' => $ukuran,
+                    'ukuran_id' => $ukuran,
                 ]);
             }
         }
         
         // Warna
         if ($request->has('warna')) {
-            foreach ($request->warna as $kode) {
+            foreach ($request->warna_id as $kode) {
                 WarnaProdukModel::create([
                     'produk_id' => $produk->produk_id,
-                    'kode_warna' => $kode,
+                    'warna_id' => $kode,
                 ]);
             }
         }

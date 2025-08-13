@@ -44,7 +44,7 @@ class HomeController extends Controller
             $filterKategori = [$filterKategori];
         }
 
-        $produk = ProdukModel::with('kategori', 'bahan', 'fotoUtama', 'foto', 'warna', 'ukuran', 'toko');
+        $produk = ProdukModel::with('kategori', 'bahan', 'fotoUtama', 'foto', 'warna', 'ukuran');
 
         if (!empty($filterKategori)) {
             $produk->whereIn('kategori_id', $filterKategori);
@@ -84,7 +84,6 @@ class HomeController extends Controller
                 'foto',
                 'warnaProduk.warna', // sesuai nama relasi
                 'ukuran.ukuran',
-                'toko'
             ])
             ->where('produk_id', $id)
             ->first();

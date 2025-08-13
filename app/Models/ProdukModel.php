@@ -19,6 +19,8 @@ class ProdukModel extends Model
         'bahan_id',
         'nama_produk',
         'deskripsi',
+        'harga',
+        'diskon',
     ];
 
     protected $casts = [
@@ -59,7 +61,7 @@ class ProdukModel extends Model
     public function fotoUtama()
     {
         return $this->hasOne(FotoProdukModel::class, 'produk_id', 'produk_id')
-            ->where('status_foto', 1);
+            ->where('status_foto', 1);  
     }
 
 }
