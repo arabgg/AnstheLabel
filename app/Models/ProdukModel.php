@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Ramsey\Uuid\Type\Decimal;
 
 class ProdukModel extends Model
 {
@@ -30,23 +31,29 @@ class ProdukModel extends Model
 
     public function getHargaDiskonAttribute()
     {
-        $harga = (float) ($this->harga ?? 0);
-        $diskon = (float) ($this->diskon ?? 0);
-        
-        return max($harga - $diskon, 0);
+        $harga = (string) ($this->harga ?? '0.00');
+$diskon = (string) ($this->diskon ?? '0.00');
+
+// Kurangi dengan presisi 2 digit desimal
+$total = bcsub($harga, $diskon, 2);
+
+// Pastikan tidak negatif
+return max((float) $total, 0);
     }
 
     public function getDiskonPersenAttribute()
-    {
-        $harga = (float) ($this->harga ?? 0);
-        $diskon = (float) ($this->diskon ?? 0);
+{
+    $harga = (string) ($this->harga ?? '0.00');
+    $diskon = (string) ($this->diskon ?? '0.00');
 
-        if ($harga > 0 && $diskon > 0) {
-            return round(($diskon / $harga) * 100);
-        }
-
-        return 0;
+    if (bccomp($harga, '0.00', 2) === 1 && bccomp($diskon, '0.00', 2) === 1) {
+        // (diskon / harga) * 100 dengan presisi 2 digit
+        $persen = bcmul(bcdiv($diskon, $harga, 4), '100', 0);
+        return (float) $persen;
     }
+
+    return 0;
+}
 
 
     public function kategori() :BelongsTo

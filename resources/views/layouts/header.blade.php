@@ -24,7 +24,13 @@
         <nav class="nav-links">
             <a href="{{ route('home') }}" class="nav-item {{ request()->is('home') ? 'active' : '' }}">Home</a>
             <a href="{{ route('collection') }}" class="nav-item {{ request()->is('collection') ? 'active' : '' }}">Collection</a>
+            <a href="{{ route('collection') }}" class="nav-item {{ request()->is('collection') ? 'active' : '' }}">Cek Transaksi</a>
             <a href="{{ route('about') }}" class="nav-item {{ request()->is('about') ? 'active' : '' }}">About Us</a>
         </nav>
+        <div class="nav-icons">
+            <a href="#">
+                <i class="fas fa-cart-shopping"></i>
+            </a>
+        </div>
     </div>
 </header>

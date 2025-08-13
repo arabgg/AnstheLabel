@@ -1,9 +1,26 @@
+{{-- Header Title & Search --}}
+<div class="produk-header">
+    <h1>Back In Stock</h1>
+    <div class="produk-search-wrapper">
+        <form method="GET" action="{{ route('collection') }}" class="produk-search-form">
+            <input type="text" name="search" placeholder="Search" value="{{ request('search') }}">
+            <button type="submit">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
+
+
+
 <div class="produk-section">
     {{-- Sidebar Filter --}}
     <div class="produk-sidebar">
-        <h2 class="produk-title">Filters</h2>
+        <h2 class="produk-title">Filter:</h2>
 
         {{-- Aktif Filter Ditampilkan --}}
+        <h2>Kategori:</h2>
         @if (!empty($filterkategori))
             <div class="produk-tags">
                 @foreach ($filterkategori as $kategoriId)
@@ -49,7 +66,7 @@
                 <a href="{{ route('detail.show', $item->produk_id) }}" class="produk-card-link">
                     <div class="produk-card bestproduk-card {{ $index >= 6 ? 'bestproduk-hidden' : '' }}">
                         @if (!empty($item->diskon))
-                            <span class="diskon-label-collection">- {{ $item->diskon_persen }}%</span>
+                            <span class="diskon-label-collection">Save {{ $item->diskon_persen }} %</span>
                         @endif
                         <img src="{{ asset('storage/foto_produk/' . $item->fotoUtama->foto_produk) }}" alt="{{ $item->nama_produk }}">
                         <div class="produk-color-dot">

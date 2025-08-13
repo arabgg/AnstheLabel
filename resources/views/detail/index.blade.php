@@ -32,68 +32,85 @@
                 <div class="detail-product-info">
                     <div class="detail-section">
                         <h2 class="detail-product-name">{{ $produk->nama_produk }}</h2>
-                        <p class="detail-product-kategori">{{ $produk->kategori->nama_kategori }}</p>
+                        <p>{{ $produk->kategori->nama_kategori }}</p>
                     </div>
-                    
+
                     <div class="detail-section-info">
-                        <div class="detail-color-wrapper">
-                            <p>Color Available</p>
-                            @if ($produk->warna->isNotEmpty())
-                                <div class="detail-color-dot">
-                                    @foreach ($produk->warna as $warnaItem)
-                                        @if ($warnaItem->warna)
-                                            <span class="detail-dot"
-                                                style="background-color: {{ $warnaItem->warna->kode_hex ?? '#000000' }};">
-                                            </span>
-                                        @endif
-                                    @endforeach
-                                </div>
-                            @endif
-                        </div>
-
-                        <div class="detail-size-wrapper">    
-                            <p>Size Available</p>
-                            @if ($produk->ukuran->isNotEmpty())
-                                <div class="detail-size">
-                                    @foreach ($produk->ukuran as $sizeItem)
-                                        @if ($sizeItem->produk)
-                                            <span class="detail-size-nama">
-                                                {{ $sizeItem->ukuran->nama_ukuran }}
-                                            </span>
-                                        @endif
-                                    @endforeach
-                                </div>
-                            @endif
-                        </div>
-
-                        <div class="detail-toko-wrapper">
-                            <div class="detail-buy-header">BUY NOW</div>
-
-                            @if ($produk->toko->isNotEmpty())
-                                @foreach ($produk->toko as $tokoItem)
-                                    <a href="{{ $tokoItem->url_toko }}" class="detail-toko" target="_blank">
-                                        @if (!empty($tokoItem->toko->icon_toko))
-                                            <img src="{{ asset('storage/icon/' . $tokoItem->toko->icon_toko) }}" alt="{{ $tokoItem->toko->nama_toko }}">
-                                        @endif
-                                        {{ $tokoItem->toko->nama_toko }}
-                                    </a>
-                                @endforeach
+                        <div class="detail-price">
+                            @if (!empty($produk->diskon))
+                                <span class="detail-price-discounted">Rp {{ number_format($produk->harga, 0, ',', '.') }}</span>
+                                <span class="detail-price-now">Rp {{ number_format($produk->harga_diskon, 0, ',', '.') }}</span>
                             @else
-                                <div class="detail-toko">Toko tidak tersedia</div>
+                                <span class="detail-price-now">Rp {{ number_format($produk->harga, 0, ',', '.') }}</span>
                             @endif
                         </div>
+
+                        <form action="{{ route('cart.add') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="produk_id" value="{{ $produk->produk_id }}">
+
+                            <div class="detail-color-wrapper">
+                                <p>Color Available</p>
+                                @if ($produk->warna->isNotEmpty())
+                                    <div class="detail-color-dot">
+                                        @foreach ($produk->warna as $warnaItem)
+                                            @if ($warnaItem->warna)
+                                                <label style="cursor: pointer;">
+                                                    <input type="checkbox" name="warna[]" value="{{ $warnaItem->warna->id }}" style="display:none;" />
+                                                    <span class="detail-dot" 
+                                                        style="background-color: {{ $warnaItem->warna->kode_hex ?? '#000000' }};">
+                                                    </span>
+                                                </label>
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div class="detail-size-wrapper">    
+                                <p>Size Available</p>
+                                @if ($produk->ukuran->isNotEmpty())
+                                    <div class="detail-size">
+                                        @foreach ($produk->ukuran as $sizeItem)
+                                            @if ($sizeItem->produk)
+                                                <label style="cursor:pointer; margin-right: 8px; user-select:none;">
+                                                    <input type="checkbox" name="ukuran[]" value="{{ $sizeItem->ukuran->id }}" style="display:none;" />
+                                                    <span class="detail-size-nama">
+                                                        {{ $sizeItem->ukuran->nama_ukuran }}
+                                                    </span>
+                                                </label>
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
+
+                            <p class="detail-quantity-label" for="quantity">Quantity:</p>
+                            <div class="detail-quantity-wrapper" style="margin-top: 10px;">
+                                <input type="number" name="quantity" value="1" min="1" required>
+                            </div>
+
+                            <div class="detail-buy-wrapper" style="margin-top: 15px;">
+                                <button type="submit" name="action" value="buy_now" class="btn-buy-now">Buy Now</button>
+                            </div>
+
+                            <div class="detail-cart-wrapper" style="margin-top: 10px;">
+                                <button type="submit" name="action" value="add_to_cart" class="btn-add-cart">
+                                    <i class="fa fa-cart-shopping" style="margin-right: 8px"></i> Add to Cart
+                                </button>
+                            </div>
+                        </form>
+
                     </div>
 
-                    <div class="detail-deskripsi-wrapper">
+                    <div class="detail-deskripsi-wrapper" style="margin-top: 20px;">
                         <h3>Detail Produk</h3>
                         <div class="detail-deskripsi-produk">
-                            {{-- <h3>Deskripsi Produk</h3> --}}
                             <p>{{ $produk->deskripsi }}</p>
                         </div>
 
                         @if ($produk->ukuran->isNotEmpty())
                             <div class="detail-deskripsi-bahan">
-                                <h5>Ukuran yang tersedia pada produk</h5>
                                 @foreach ($produk->ukuran as $sizeItem)
                                     @if ($sizeItem->produk)
                                         <p>{{ $sizeItem->ukuran->nama_ukuran }} - {{ $sizeItem->ukuran->deskripsi }}</p>
@@ -103,7 +120,6 @@
                         @endif
 
                         <div class="detail-deskripsi-ukuran">
-                            <h5>Penjelasan Bahan</h5>
                             <h6>Jenis Bahan : {{ $produk->bahan->nama_bahan }}</h6>
                             <p>{{ $produk->bahan->deskripsi }}</p>
                         </div>
@@ -113,7 +129,7 @@
         </div>
     </div>
 
-    <div class="detail-recommend">
+    <div class="detail-recommend" style="margin-top: 30px;">
         <h2>You May Also Like</h2>
         <div class="detail-recommend-grid">
             @foreach ($rekomendasi as $item)
@@ -130,4 +146,33 @@
 @endsection
 
 @push('scripts')
+<script>
+document.getElementById('btn-add-to-cart').addEventListener('click', function() {
+    const form = document.getElementById('cart-form');
+    const formData = new FormData(form);
+
+    formData.set('action', 'add_to_cart');
+
+    fetch(form.action, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json',
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            alert('Produk berhasil ditambahkan ke cart!');
+        } else {
+            alert('Gagal menambahkan produk ke cart!');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan.');
+    });
+});
+</script>
 @endpush

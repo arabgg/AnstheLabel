@@ -65,25 +65,41 @@ class HomeController extends Controller
         ]);
     }
 
-    public function collection(Request $request) {
+    public function collection(Request $request)
+    {
+        // Ambil filter kategori
         $filterKategori = $request->input('filter', []);
         if (!is_array($filterKategori)) {
             $filterKategori = [$filterKategori];
         }
 
-        $produk = ProdukModel::with(['kategori', 'bahan', 'fotoUtama', 'foto', 'warna.warna', 'ukuran', 'toko']);
+        // Ambil keyword pencarian
+        $searchQuery = $request->input('search', '');
 
+        // Query produk dengan relasi
+        $produk = ProdukModel::with(['kategori', 'bahan', 'fotoUtama', 'foto', 'warna.warna', 'ukuran']);
+
+        // Filter kategori
         if (!empty($filterKategori)) {
             $produk->whereIn('kategori_id', $filterKategori);
         }
 
+        // Filter search (pencarian nama produk)
+        if (!empty($searchQuery)) {
+            $produk->where('nama_produk', 'like', '%' . $searchQuery . '%');
+        }
+
+        // Ambil data produk
         $produk = $produk->get();
+
+        // Ambil semua kategori
         $kategori = KategoriModel::all();
 
         return view('collection.index', [
             'produk' => $produk,
             'kategori' => $kategori,
-            'filterkategori' => $filterKategori
+            'filterkategori' => $filterKategori,
+            'searchQuery' => $searchQuery
         ]);
     }
 
@@ -111,7 +127,6 @@ class HomeController extends Controller
                 'foto',
                 'warna.warna', // sesuai nama relasi
                 'ukuran.ukuran',
-                'toko.toko'
             ])
             ->where('produk_id', $id)
             ->first();
@@ -126,5 +141,52 @@ class HomeController extends Controller
             'produk' => $produk,
             'rekomendasi' => $rekomendasi,
         ]);
+    }
+
+    public function addToCart(Request $request)
+    {
+        $action = $request->input('action');
+
+        $request->validate([
+            'produk_id' => 'required|exists:t_produk,produk_id',
+            'warna' => 'required|string',
+            'ukuran' => 'required|string',
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $produk = ProdukModel::findOrFail($request->produk_id);
+
+        // Simulasi menyimpan cart di session (bisa modifikasi sesuai kebutuhan)
+        $cart = session()->get('cart', []);
+
+        $cartKey = $request->produk_id.'-'.$request->warna.'-'.$request->ukuran;
+
+        if(isset($cart[$cartKey])){
+            $cart[$cartKey]['quantity'] += $request->quantity;
+        } else {
+            $cart[$cartKey] = [
+                'produk_id' => $produk->produk_id,
+                'nama_produk' => $produk->nama_produk,
+                'warna' => $request->warna,
+                'ukuran' => $request->ukuran,
+                'quantity' => $request->quantity,
+                'harga' => $produk->harga_diskon ?? $produk->harga,
+                'foto' => $produk->fotoUtama ? asset('storage/foto_produk/' . $produk->fotoUtama->foto_produk) : '',
+            ];
+        }
+
+        session()->put('cart', $cart);
+
+        if ($action === 'buy_now') {
+            return redirect()->route('cart.index')->with('success', 'Produk berhasil ditambahkan dan siap dibeli.');
+        } else {
+            return response()->json(['success' => true]);
+        }
+    }
+
+    public function cart()
+    {
+        $cart = session()->get('cart', []);
+        return view('cart.index', compact('cart'));
     }
 }

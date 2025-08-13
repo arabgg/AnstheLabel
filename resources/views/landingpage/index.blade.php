@@ -3,10 +3,10 @@
 @section('content')
     <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
         <div id="heroCarouselCustom" class="custom-carousel">
-            <img src="{{ asset('storage/images/hero/hero1.png') }}" class="carousel-image active" alt="Hero 1">
-            <img src="{{ asset('storage/images//hero/hero2.png') }}" class="carousel-image" alt="Hero 2">
-            <img src="{{ asset('storage/images/hero/hero3.png') }}" class="carousel-image" alt="Hero 3">
-            <img src="{{ asset('storage/images/hero/hero4.png') }}" class="carousel-image" alt="Hero 4">
+            <img src="{{ asset('storage/images/hero/hero1.avif') }}" class="carousel-image active" alt="Hero 1">
+            <img src="{{ asset('storage/images//hero/hero2.avif') }}" class="carousel-image" alt="Hero 2">
+            <img src="{{ asset('storage/images/hero/hero3.avif') }}" class="carousel-image" alt="Hero 3">
+            <img src="{{ asset('storage/images/hero/hero4.avif') }}" class="carousel-image" alt="Hero 4">
         </div>
 
         <!-- Tombol Buy Now -->
@@ -16,37 +16,37 @@
     @include('landingpage.newarrival')
 
     <div id="heroCarouselCustom2" class="custom-carousel">
-        <img src="{{ asset('storage/images/hero/hero5.png') }}" class="carousel-image active" alt="Hero 5">
-        <img src="{{ asset('storage/images/hero/hero6.png') }}" class="carousel-image" alt="Hero 6">
-        <img src="{{ asset('storage/images/hero/hero7.png') }}" class="carousel-image" alt="Hero 7">
-        <img src="{{ asset('storage/images/hero/hero8.png') }}" class="carousel-image" alt="Hero 8">
+        <img src="{{ asset('storage/images/hero/hero5.avif') }}" class="carousel-image active" alt="Hero 5">
+        <img src="{{ asset('storage/images/hero/hero6.avif') }}" class="carousel-image" alt="Hero 6">
+        <img src="{{ asset('storage/images/hero/hero7.avif') }}" class="carousel-image" alt="Hero 7">
+        <img src="{{ asset('storage/images/hero/hero8.avif') }}" class="carousel-image" alt="Hero 8">
     </div>
 
     @include('landingpage.bestproduk')
 
     <div id="heroCarouselCustom2" class="custom-carousel">
-        <img src="{{ asset('storage/images/hero/hero5.png') }}" class="carousel-image active" alt="Hero 5">
-        <img src="{{ asset('storage/images/hero/hero6.png') }}" class="carousel-image" alt="Hero 6">
-        <img src="{{ asset('storage/images/hero/hero7.png') }}" class="carousel-image" alt="Hero 7">
-        <img src="{{ asset('storage/images/hero/hero8.png') }}" class="carousel-image" alt="Hero 8">
+        <img src="{{ asset('storage/images/hero/hero5.avif') }}" class="carousel-image active" alt="Hero 5">
+        <img src="{{ asset('storage/images/hero/hero6.avif') }}" class="carousel-image" alt="Hero 6">
+        <img src="{{ asset('storage/images/hero/hero7.avif') }}" class="carousel-image" alt="Hero 7">
+        <img src="{{ asset('storage/images/hero/hero8.avif') }}" class="carousel-image" alt="Hero 8">
     </div>
 
     @include('landingpage.bestseller')    
 
     <div id="heroCarouselCustom2" class="custom-carousel">
-        <img src="{{ asset('storage/images/hero/hero5.png') }}" class="carousel-image active" alt="Hero 5">
-        <img src="{{ asset('storage/images/hero/hero6.png') }}" class="carousel-image" alt="Hero 6">
-        <img src="{{ asset('storage/images/hero/hero7.png') }}" class="carousel-image" alt="Hero 7">
-        <img src="{{ asset('storage/images/hero/hero8.png') }}" class="carousel-image" alt="Hero 8">
+        <img src="{{ asset('storage/images/hero/hero5.avif') }}" class="carousel-image active" alt="Hero 5">
+        <img src="{{ asset('storage/images/hero/hero6.avif') }}" class="carousel-image" alt="Hero 6">
+        <img src="{{ asset('storage/images/hero/hero7.avif') }}" class="carousel-image" alt="Hero 7">
+        <img src="{{ asset('storage/images/hero/hero8.avif') }}" class="carousel-image" alt="Hero 8">
     </div>
 
     @include('landingpage.viscose')    
     
     <div id="heroCarouselCustom2" class="custom-carousel">
-        <img src="{{ asset('storage/images/hero/hero5.png') }}" class="carousel-image active" alt="Hero 5">
-        <img src="{{ asset('storage/images/hero/hero6.png') }}" class="carousel-image" alt="Hero 6">
-        <img src="{{ asset('storage/images/hero/hero7.png') }}" class="carousel-image" alt="Hero 7">
-        <img src="{{ asset('storage/images/hero/hero8.png') }}" class="carousel-image" alt="Hero 8">
+        <img src="{{ asset('storage/images/hero/hero5.avif') }}" class="carousel-image active" alt="Hero 5">
+        <img src="{{ asset('storage/images/hero/hero6.avif') }}" class="carousel-image" alt="Hero 6">
+        <img src="{{ asset('storage/images/hero/hero7.avif') }}" class="carousel-image" alt="Hero 7">
+        <img src="{{ asset('storage/images/hero/hero8.avif') }}" class="carousel-image" alt="Hero 8">
     </div>
 
     @include('landingpage.collection')

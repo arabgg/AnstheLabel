@@ -9,12 +9,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
 
     {{-- Custom CSS --}}
-    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
+    {{-- <link rel="stylesheet" href="{{ asset('css/header.css') }}">
     <link rel="stylesheet" href="{{ asset('css/carousel.css') }}">
     <link rel="stylesheet" href="{{ asset('css/bestproduk.css') }}">
     <link rel="stylesheet" href="{{ asset('css/collection.css') }}">
     <link rel="stylesheet" href="{{ asset('css/about.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/footer.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/footer.css') }}"> --}}
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
     {{-- Font --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">

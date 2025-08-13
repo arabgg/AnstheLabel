@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('m_toko', function (Blueprint $table) {
-            $table->id('toko_id');
-            $table->string('nama_toko', 200);
-            $table->string('icon_toko');
+        Schema::create('m_metode_pembayaran', function (Blueprint $table) {
+            $table->id('metode_id');
+            $table->string('nama_metode', 100);
             $table->timestamp('created_at')->useCurrent();
         });
     }
@@ -24,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('m_toko_produk');
+        Schema::dropIfExists('m_metode_pembayaran');
     }
 };

@@ -14,7 +14,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
-            TokoSeeder::class,
             KategoriSeeder::class,
             WarnaSeeder::class,
             UkuranSeeder::class,
@@ -23,7 +22,6 @@ class DatabaseSeeder extends Seeder
             UkuranProdukSeeder::class,
             WarnaProdukSeeder::class,
             FotoProdukSeeder::class,
-            TokoProdukSeeder::class,
         ]);
     }
 }

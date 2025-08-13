@@ -8,10 +8,10 @@
 
 @section('content')
     <div id="heroCarouselCustom2" class="custom-carousel-collection">
-        <img src="{{ asset('storage/images/hero/hero5.png') }}" class="carousel-image active" alt="Hero 5">
-        <img src="{{ asset('storage/images/hero/hero6.png') }}" class="carousel-image" alt="Hero 6">
-        <img src="{{ asset('storage/images/hero/hero7.png') }}" class="carousel-image" alt="Hero 7">
-        <img src="{{ asset('storage/images/hero/hero8.png') }}" class="carousel-image" alt="Hero 8">
+        <img src="{{ asset('storage/images/hero/hero5.avif') }}" class="carousel-image active" alt="Hero 5">
+        <img src="{{ asset('storage/images/hero/hero6.avif') }}" class="carousel-image" alt="Hero 6">
+        <img src="{{ asset('storage/images/hero/hero7.avif') }}" class="carousel-image" alt="Hero 7">
+        <img src="{{ asset('storage/images/hero/hero8.avif') }}" class="carousel-image" alt="Hero 8">
     </div>
 
     @include('collection.show')
