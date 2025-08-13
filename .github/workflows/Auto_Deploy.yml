@@ -1,0 +1,20 @@
+name: Auto deploy web AnsTheLebel to Cpanel
+on: 
+  push:
+    branches:
+      - dev
+jobs: 
+  FTP-Deploy-Action:
+    name: FTP-Deploy-Action
+    runs-on: ubuntu-latest
+    steps:
+    - uses: action/checkout@v2.1.0
+      with:
+          fetch-depth: 2
+    - name: FTP-Deploy-Action
+      uses: SamKirkland/FTP-Deploy-Action@v2.1.1
+      with: 
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+          
