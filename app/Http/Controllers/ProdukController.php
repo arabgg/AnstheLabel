@@ -74,13 +74,16 @@ class ProdukController extends Controller
         // Foto utama
         if ($request->hasFile('foto_utama')) {
             $fotoUtama = $request->file('foto_utama');
-            $filename = time() . '_' . $fotoUtama->getClientOriginalName();
+            $filename = $fotoUtama->getClientOriginalName();
+
+            // Bersihkan karakter berbahaya agar aman untuk URL
+            $filename = preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $filename);
             $path = public_path('storage/foto_produk'); // Path tujuan langsung di folder public
             $fotoUtama->move($path, $filename); // Memindahkan file ke path tujuan
 
             FotoProdukModel::create([
                 'produk_id' => $produk->produk_id,
-                'foto_produk' => $path,
+                'foto_produk' => $filename,
                 'status_foto' => 1 // 1 = foto utama
             ]);
         }
@@ -88,7 +91,10 @@ class ProdukController extends Controller
         // Foto sekunder
         if ($request->hasFile('foto_sekunder')) {
             foreach ($request->file('foto_sekunder') as $foto) {
-                $filename = time() . '_' . $foto->getClientOriginalName();
+                $filename = $fotoUtama->getClientOriginalName();
+
+                // Bersihkan karakter berbahaya agar aman untuk URL
+                $filename = preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $filename);
                 $path = public_path('storage/foto_produk'); // Path tujuan di folder public
                 
                 // Pindahkan file
@@ -96,7 +102,7 @@ class ProdukController extends Controller
 
                 FotoProdukModel::create([
                     'produk_id' => $produk->produk_id,
-                    'foto_produk' => 'foto_produk/' . $filename, // Simpan relative path
+                    'foto_produk' => $filename, // Simpan relative path
                     'status_foto' => 0 // 0 = foto biasa
                 ]);
             }
