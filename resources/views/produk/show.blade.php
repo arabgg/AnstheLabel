@@ -12,7 +12,7 @@
             @else
                 <img src="{{ asset('images/default.jpg') }}"
                     alt="Default Image"
-                    class="w-full h-[500px] object-cover rounded-md shadow">
+                    class="w-full h-[500px] aspect object-cover rounded-md shadow">
             @endif
 
             {{-- Thumbnail Foto Tambahan --}}

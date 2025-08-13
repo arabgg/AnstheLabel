@@ -25,7 +25,7 @@ class ProdukController extends Controller
 
     public function show($id)
     {
-        $produk = ProdukModel::with(['kategori', 'bahan', 'foto', 'warnaProduk', 'ukuran', 'toko'])->findOrFail($id);
+        $produk = ProdukModel::with(['kategori', 'bahan', 'foto', 'warna', 'ukuran', 'toko'])->findOrFail($id);
         return view('produk.show', compact('produk'));
     }
 
