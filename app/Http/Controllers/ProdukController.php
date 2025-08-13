@@ -7,6 +7,7 @@ use App\Models\BahanModel;
 use App\Models\ProdukModel;
 use App\Models\WarnaProdukModel;
 use App\Models\WarnaModel;
+use App\Models\UkuranModel;
 use App\Models\UkuranProdukModel;
 use App\Models\FotoProdukModel;
 use Illuminate\Http\Request;
@@ -31,9 +32,11 @@ class ProdukController extends Controller
 
     public function create()
     {
-        $kategori = \App\Models\KategoriModel::all();
-        $bahan = \App\Models\BahanModel::all();
-        return view('produk.create', compact('kategori', 'bahan'));
+        $kategori = KategoriModel::all();
+        $bahan = BahanModel::all();
+        $ukuran = UkuranModel::all();
+        $warna = WarnaModel::all();
+        return view('produk.create', compact('kategori', 'bahan', 'ukuran', 'warna'));
     }
 
     public function store(Request $request)
@@ -45,6 +48,11 @@ class ProdukController extends Controller
             'deskripsi' => 'required|string',
             'kategori_id' => 'required|integer',
             'bahan_id' => 'required|integer',
+        ], [
+            'foto_utama.required' => 'Foto utama wajib diunggah.',
+            'foto_utama.image' => 'File harus berupa gambar.',
+            'foto_utama.mimes' => 'Format gambar hanya boleh jpeg, png, atau jpg.',
+            'foto_utama.max' => 'Ukuran gambar maksimal 2 MB.',
         ]);
 
         // Simpan produk
@@ -57,7 +65,7 @@ class ProdukController extends Controller
 
         // Foto utama
         if ($request->hasFile('foto_utama')) {
-            $path = $request->file('foto_utama')->store('produk', 'public');
+            $path = $request->file('foto_utama')->store('foto_produk', 'public');
             FotoProdukModel::create([
                 'produk_id' => $produk->produk_id,
                 'path' => $path,
@@ -68,7 +76,7 @@ class ProdukController extends Controller
         // Foto sekunder
         if ($request->hasFile('foto_sekunder')) {
             foreach ($request->file('foto_sekunder') as $foto) {
-                $path = $foto->store('produk', 'public');
+                $path = $foto->store('foto_produk', 'public');
                 FotoProdukModel::create([
                     'produk_id' => $produk->produk_id,
                     'path' => $path,
@@ -76,6 +84,28 @@ class ProdukController extends Controller
                 ]);
             }
         }
+
+        // Ukuran
+        if ($request->has('ukuran')) {
+            foreach ($request->ukuran as $ukuran) {
+                UkuranProdukModel::create([
+                    'produk_id' => $produk->produk_id,
+                    'ukuran' => $ukuran,
+                ]);
+            }
+        }
+        
+        // Warna
+        if ($request->has('warna')) {
+            foreach ($request->warna as $kode) {
+                WarnaProdukModel::create([
+                    'produk_id' => $produk->produk_id,
+                    'kode_warna' => $kode,
+                ]);
+            }
+        }
+
+
 
         return redirect()->route('produk.create')->with('success', 'Produk berhasil disimpan!');
     }
