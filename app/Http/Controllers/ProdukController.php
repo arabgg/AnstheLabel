@@ -65,12 +65,13 @@ class ProdukController extends Controller
             'nama_produk' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'harga' => 'required|string',
+            'diskon' => 'required|string',
             'kategori_id' => 'required|integer',
             'bahan_id' => 'required|integer',
             'ukuran_id' => 'required|array|min:1',
-            'ukuran_id.*' => 'string|max:50', // validasi setiap elemen array
+            'ukuran_id.*' => 'string|max:50', 
             'warna_id' => 'required|array|min:1',
-            'warna_id.*' => 'string|max:50', // validasi setiap elemen array
+            'warna_id.*' => 'string|max:50', 
         ], [
             'foto_utama.required' => 'Foto utama wajib diunggah.',
             'foto_utama.image' => 'File harus berupa gambar.',
@@ -83,6 +84,7 @@ class ProdukController extends Controller
             'nama_produk' => $request->nama_produk,
             'deskripsi' => $request->deskripsi,
             'harga' => $request->harga,
+            'diskon' => $request->diskon,
             'kategori_id' => $request->kategori_id,
             'bahan_id' => $request->bahan_id,
         ]);
@@ -96,7 +98,7 @@ class ProdukController extends Controller
 
             FotoProdukModel::create([
                 'produk_id' => $produk->produk_id,
-                'foto_produk' => $path,
+                'foto_produk' => $filename,
                 'status_foto' => 1 // 1 = foto utama
             ]);
         }
@@ -112,7 +114,7 @@ class ProdukController extends Controller
 
                 FotoProdukModel::create([
                     'produk_id' => $produk->produk_id,
-                    'foto_produk' => 'foto_produk/' . $filename, // Simpan relative path
+                    'foto_produk' =>  $filename,
                     'status_foto' => 0 // 0 = foto biasa
                 ]);
             }
@@ -120,7 +122,7 @@ class ProdukController extends Controller
 
 
         // Ukuran
-        if ($request->has('ukuran')) {
+        if ($request->has('ukuran_id')) {
             foreach ($request->ukuran_id as $ukuran) {
                 UkuranProdukModel::create([
                     'produk_id' => $produk->produk_id,
@@ -130,7 +132,7 @@ class ProdukController extends Controller
         }
 
         // Warna
-        if ($request->has('warna')) {
+        if ($request->has('warna_id')) {
             foreach ($request->warna_id as $kode) {
                 WarnaProdukModel::create([
                     'produk_id' => $produk->produk_id,
@@ -139,9 +141,7 @@ class ProdukController extends Controller
             }
         }
 
-
-
-        return redirect()->route('produk.create')->with('success', 'Produk berhasil disimpan!');
+        return redirect()->route('produk.index')->with('success', 'Produk berhasil disimpan!');
     }
 
     public function edit($id)
