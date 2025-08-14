@@ -43,9 +43,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin', [AdminController::class, 'index']);
 
     Route::prefix('produk')->group(function () {
+        // Filter
+        Route::get('/filter', [ProdukController::class, 'filter'])->name('produk.filter');
+
         // List
         Route::get('/', [ProdukController::class, 'index']); 
-        // Route::post('/list', [ProdukController::class, 'list']); 
+
         // Show
         Route::get('/{id}/show', [ProdukController::class, 'show']);
 

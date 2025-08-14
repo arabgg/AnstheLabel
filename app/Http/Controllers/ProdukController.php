@@ -15,13 +15,29 @@ use Illuminate\Support\Facades\Validator;
 
 class ProdukController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+
+        // Ambil filter dari request
+        $search = $request->input('search');
+        $kategoriFilter = $request->input('kategori');
+
         $produk = ProdukModel::whereHas('fotoUtama') // hanya produk yang punya foto utama
             ->with(['kategori', 'bahan', 'fotoUtama'])
+            ->when($kategoriFilter, function ($query, $kategoriFilter) {
+                return $query->whereHas('kategori', function ($q) use ($kategoriFilter) {
+                    $q->where('kategori_id', $kategoriFilter);
+                });
+            })
+            ->when(request('search'), function ($query) {
+                $query->where('nama_produk', 'like', '%' . request('search') . '%');
+            })
             ->get();
 
-        return view('produk.index', compact('produk'));
+        // Ambil data filter
+        $kategoriList = KategoriModel::all();
+
+        return view('produk.index', compact('produk', 'kategoriList'));
     }
 
     public function show($id)
@@ -90,7 +106,7 @@ class ProdukController extends Controller
             foreach ($request->file('foto_sekunder') as $foto) {
                 $filename = time() . '_' . $foto->getClientOriginalName();
                 $path = public_path('storage/foto_produk'); // Path tujuan di folder public
-                
+
                 // Pindahkan file
                 $foto->move($path, $filename);
 
@@ -112,7 +128,7 @@ class ProdukController extends Controller
                 ]);
             }
         }
-        
+
         // Warna
         if ($request->has('warna')) {
             foreach ($request->warna_id as $kode) {

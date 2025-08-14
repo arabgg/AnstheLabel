@@ -1,39 +1,38 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <div class="p-6 bg-white rounded-lg">
-        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6 gap-4">
+    <div class="p-2 bg-white rounded-xl">
+        <div class="flex bg-[#560024] py-4 justify-center mb-4 rounded-xl">
+            <h1 class="text-2xl font-bold font-montserrat text-white">Daftar Produk</h1>
+        </div>
 
-            {{-- Judul Halaman & Filter --}}
-            <div class="flex flex-col sm:flex-row sm:items-center gap-3 w-full md:w-auto">
-                <h1 class="text-2xl font-bold">Daftar Produk</h1>
+        <div class="flex flex-col md:flex-row md:justify-center mb-4 gap-7">
+            {{-- Filter & Search --}}
+            <form method="GET" action="{{ url('/produk') }}"
+                class="flex flex-col sm:flex-row sm:items-center gap-3 w-full md:w-auto bg-white p-3 rounded-lg shadow">
 
                 {{-- Filter Kategori --}}
-                <select
-                    class="border border-gray-500 rounded-lg px-3 py-2 text-sm w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-pink-300">
-                    <option value="">Kategori</option>
-                    <option value="atasan">Atasan</option>
-                    <option value="bawahan">Bawahan</option>
+                <select name="kategori"
+                    class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-pink-300">
+                    <option value="">All</option>
+                    @foreach ($kategoriList as $kategori)
+                        <option value="{{ $kategori->kategori_id }}"
+                            {{ request('kategori') == $kategori->kategori_id ? 'selected' : '' }}>
+                            {{ $kategori->nama_kategori }}
+                        </option>
+                    @endforeach
                 </select>
 
-                {{-- Filter Ukuran --}}
-                <select
-                    class="border border-gray-500 rounded-lg px-3 py-2 text-sm w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-pink-300">
-                    <option value="">Ukuran</option>
-                    <option value="S">S</option>
-                    <option value="M">M</option>
-                    <option value="L">L</option>
-                </select>
+                {{-- Search Bar --}}
+                <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden w-full sm:w-auto">
+                    <input type="text" name="search" placeholder="Cari nama produk..." value="{{ request('search') }}"
+                        class="w-full px-4 py-2 text-gray-700 focus:outline-none">
+                    <button type="submit" class="px-4 py-2 bg-black text-white hover:bg-gray-700 transition duration-200">
+                        Cari
+                    </button>
+                </div>
+            </form>
 
-                {{-- Filter Warna --}}
-                <select
-                    class="border border-gray-500 rounded-lg px-3 py-2 text-sm w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-pink-300">
-                    <option value="">Warna</option>
-                    <option value="hitam">Hitam</option>
-                    <option value="putih">Putih</option>
-                    <option value="merah">Merah</option>
-                </select>
-            </div>
 
             {{-- Tombol Tambah --}}
             <a href="{{ url('/produk/create') }}"
@@ -46,30 +45,31 @@
             </a>
         </div>
 
-        <div class="grid gap-5 grid-cols-[repeat(auto-fit,minmax(220px,1fr))]">
+        <div class="grid gap-5 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
             @foreach ($produk as $p)
-                <div class="p-2 bg-[#F0F4F9] rounded-xl shadow-md overflow-hidden hover:bg-[#DFE3E7] transition duration-200">
+                <div
+                    class="p-2 bg-[#F0F4F9] rounded-xl shadow-md overflow-hidden hover:bg-[#DFE3E7] transition duration-200">
                     <a href="{{ url('/produk/' . $p->produk_id . '/show') }}">
-                        <div class="aspect-[1/1] rounded-xl overflow-hidden">
+                        <div class="aspect-[4/5] rounded-xl overflow-hidden">
                             <img src="{{ asset('storage/foto_produk/' . $p->fotoUtama->foto_produk) }}"
                                 alt="{{ $p->nama_produk }}" class="w-full h-full object-cover">
                         </div>
                     </a>
-                    <div class="p-4">
+                    <div class="p-2">
                         <div>
                             <h2 class="text-lg font-semibold font-montserrat truncate">{{ $p->nama_produk }}</h2>
                         </div>
-                        <div class="flex pl-4 pr-4 justify-between space-x-7 items-center mt-4">
-                            <a href="{{ url('/produk/' . $p->produk_id . '/edit') }}"
-                                class="px-4 py-2 bg-black text-base text-white border rounded-xl hover:bg-gray-700 transition duration-200">
-                                Edit
-                            </a>
-
+                        <div class="flex P-4 justify-between items-center mt-4">
                             <button
                                 onclick="document.getElementById('modal-{{ $p->produk_id }}').classList.remove('hidden')"
                                 class="px-4 py-2 bg-white text-base border border-gray-300 text-black rounded-xl hover:bg-red-500 transition duration-200">
                                 Hapus
                             </button>
+
+                            <a href="{{ url('/produk/' . $p->produk_id . '/edit') }}"
+                                class="px-4 py-2 bg-black text-base text-white border rounded-xl hover:bg-gray-700 transition duration-200">
+                                Edit
+                            </a>
                         </div>
                     </div>
                 </div>

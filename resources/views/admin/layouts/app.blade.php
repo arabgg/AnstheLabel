@@ -11,7 +11,7 @@
     @stack('head')
 </head>
 
-<body class="bg-gray-100 min-h-screen flex flex-col">
+<body class="bg-gray-00 min-h-screen flex flex-col">
 
     {{-- Navbar Mobile --}}
     @include('admin.layouts.navbar-mobile')
@@ -21,7 +21,7 @@
         @include('admin.layouts.sidebar')
 
         {{-- Konten Utama --}}
-        <main class="flex-1 p-4">
+        <main class="flex-1 p-2">
             @yield('content')
         </main>
     </div>
