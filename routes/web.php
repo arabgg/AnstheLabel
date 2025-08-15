@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,24 +34,3 @@ Route::get('/cart', [HomeController::class, 'cart'])->name('cart.index');
 Route::post('/cart/update', [HomeController::class, 'update_cart'])->name('cart.update');
 Route::post('/cart/remove', [HomeController::class, 'remove_cart'])->name('cart.remove');
 Route::get('/checkout', [HomeController::class, 'checkout'])->name('checkout.index');
-
-
-
-// //Route Login
-// Route::get('login', [AuthController::class, 'login'])->name('login');
-// Route::post('login', [AuthController::class, 'postlogin']);
-// Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
-
-// Route::middleware(['auth'])->group(function () {
-//     Route::get('/home', [WelcomeController::class, 'index']);
-
-//     Route::group(['prefix' => 'produk'], function () {
-//         Route::get('/', [ProdukController::class, 'index']);
-//         Route::get('/create_ajax', [ProdukController::class, 'create_ajax']);
-//         Route::post('/ajax', [ProdukController::class, 'store_ajax']);
-//         Route::get('/{id}/edit_ajax', [ProdukController::class, 'edit_ajax']);
-//         Route::put('/{id}/update_ajax', [ProdukController::class, 'update_ajax']);
-//         Route::get('/{id}/delete_ajax', [ProdukController::class, 'confirm_ajax']);
-//         Route::delete('/{id}/delete_ajax', [ProdukController::class, 'delete_ajax']);
-//     });    
-// });
