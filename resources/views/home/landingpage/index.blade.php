@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('home.layouts.app')
 
 @section('content')
     <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
@@ -13,7 +13,7 @@
         {{-- <a href="#" target="_blank" class="buy-now-btn">BUY NOW</a> --}}
     </div>
 
-    @include('landingpage.newarrival')
+    @include('home.landingpage.newarrival')
 
     <div id="heroCarouselCustom2" class="custom-carousel">
         <img src="{{ asset('storage/images/hero/hero5.avif') }}" class="carousel-image active" alt="Hero 5">
@@ -22,7 +22,7 @@
         <img src="{{ asset('storage/images/hero/hero8.avif') }}" class="carousel-image" alt="Hero 8">
     </div>
 
-    @include('landingpage.bestproduk')
+    @include('home.landingpage.bestproduk')
 
     <div id="heroCarouselCustom2" class="custom-carousel">
         <img src="{{ asset('storage/images/hero/hero5.avif') }}" class="carousel-image active" alt="Hero 5">
@@ -31,7 +31,7 @@
         <img src="{{ asset('storage/images/hero/hero8.avif') }}" class="carousel-image" alt="Hero 8">
     </div>
 
-    @include('landingpage.bestseller')    
+    @include('home.landingpage.bestseller')    
 
     <div id="heroCarouselCustom2" class="custom-carousel">
         <img src="{{ asset('storage/images/hero/hero5.avif') }}" class="carousel-image active" alt="Hero 5">
@@ -40,7 +40,7 @@
         <img src="{{ asset('storage/images/hero/hero8.avif') }}" class="carousel-image" alt="Hero 8">
     </div>
 
-    @include('landingpage.viscose')    
+    @include('home.landingpage.viscose')    
     
     <div id="heroCarouselCustom2" class="custom-carousel">
         <img src="{{ asset('storage/images/hero/hero5.avif') }}" class="carousel-image active" alt="Hero 5">
@@ -49,7 +49,7 @@
         <img src="{{ asset('storage/images/hero/hero8.avif') }}" class="carousel-image" alt="Hero 8">
     </div>
 
-    @include('landingpage.collection')
+    @include('home.landingpage.collection')
 @endsection
 
 @push('scripts')

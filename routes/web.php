@@ -28,9 +28,11 @@ Route::get('home', [HomeController::class, 'index'])->name('home');
 Route::get('/collection', [HomeController::class, 'collection'])->name('collection');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/detail/{id}', [HomeController::class, 'show_produk'])->name('detail.show');
-Route::get('/detail/{id}', [HomeController::class, 'show_produk'])->name('detail.show');
-Route::post('/cart/add', [HomeController::class, 'addToCart'])->name('cart.add');
+Route::post('/cart/add', [HomeController::class, 'add_cart'])->name('cart.add');
 Route::get('/cart', [HomeController::class, 'cart'])->name('cart.index');
+Route::post('/cart/update', [HomeController::class, 'update_cart'])->name('cart.update');
+Route::post('/cart/remove', [HomeController::class, 'remove_cart'])->name('cart.remove');
+Route::get('/checkout', [HomeController::class, 'checkout'])->name('checkout.index');
 
 
 

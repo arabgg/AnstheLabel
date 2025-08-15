@@ -58,7 +58,7 @@ class HomeController extends Controller
             ],
         ];
 
-        return view('landingpage.index', [
+        return view('home.landingpage.index', [
             'bestproduk' => $bestproduk,
             'bestseller' => $bestseller,
             'viscose' => $viscose,
@@ -95,7 +95,7 @@ class HomeController extends Controller
         // Ambil semua kategori
         $kategori = KategoriModel::all();
 
-        return view('collection.index', [
+        return view('home.collection.index', [
             'produk' => $produk,
             'kategori' => $kategori,
             'filterkategori' => $filterKategori,
@@ -112,7 +112,7 @@ class HomeController extends Controller
         ->unique(fn ($item) => $item->kategori_id)
         ->take(4); 
 
-        return view('about.index', [
+        return view('home.about.index', [
             'produk' => $produk,
             'rekomendasi' => $rekomendasi,
         ]);
@@ -137,56 +137,95 @@ class HomeController extends Controller
             ->unique(fn ($item) => $item->kategori_id)
             ->take(4);
 
-        return view('detail.index', [
+        return view('home.detail.index', [
             'produk' => $produk,
             'rekomendasi' => $rekomendasi,
         ]);
     }
 
-    public function addToCart(Request $request)
+    public function cart()
     {
-        $action = $request->input('action');
+        $cart = session()->get('cart', []);
+        $total = 0;
 
-        $request->validate([
-            'produk_id' => 'required|exists:t_produk,produk_id',
-            'warna' => 'required|string',
-            'ukuran' => 'required|string',
-            'quantity' => 'required|integer|min:1',
-        ]);
+        foreach ($cart as $item) {
+            $total += $item['harga'] * $item['quantity'];
+        }
 
+        $grandTotal = $total;
+
+        $rekomendasi = ProdukModel::with('kategori')
+            ->get()
+            ->unique(fn ($item) => $item->kategori_id)
+            ->take(4);
+
+        return view('home.cart.index', compact('cart', 'total', 'grandTotal', 'rekomendasi'));
+    }
+
+    public function add_cart(Request $request)
+    {
         $produk = ProdukModel::findOrFail($request->produk_id);
 
-        // Simulasi menyimpan cart di session (bisa modifikasi sesuai kebutuhan)
+        $warnaData = \App\Models\WarnaModel::find($request->warna);
+        $ukuranData = \App\Models\UkuranModel::find($request->ukuran);
+
         $cart = session()->get('cart', []);
 
-        $cartKey = $request->produk_id.'-'.$request->warna.'-'.$request->ukuran;
-
-        if(isset($cart[$cartKey])){
-            $cart[$cartKey]['quantity'] += $request->quantity;
-        } else {
-            $cart[$cartKey] = [
-                'produk_id' => $produk->produk_id,
-                'nama_produk' => $produk->nama_produk,
-                'warna' => $request->warna,
-                'ukuran' => $request->ukuran,
-                'quantity' => $request->quantity,
-                'harga' => $produk->harga_diskon ?? $produk->harga,
-                'foto' => $produk->fotoUtama ? asset('storage/foto_produk/' . $produk->fotoUtama->foto_produk) : '',
-            ];
-        }
+        $cart[] = [
+            'id' => $produk->produk_id,
+            'nama' => $produk->nama_produk,
+            'harga' => $produk->diskon > 0 ? $produk->harga_diskon : $produk->harga,
+            'warna_id' => $warnaData?->warna_id,
+            'warna_nama' => $warnaData?->nama_warna ?? '-', 
+            'ukuran_id' => $ukuranData?->ukuran_id,
+            'ukuran_nama' => $ukuranData?->nama_ukuran ?? '-',
+            'quantity' => (int) $request->quantity,
+            'foto' => $produk->fotoUtama ? $produk->fotoUtama->foto_produk : null
+        ];
 
         session()->put('cart', $cart);
 
-        if ($action === 'buy_now') {
-            return redirect()->route('cart.index')->with('success', 'Produk berhasil ditambahkan dan siap dibeli.');
+        if ($request->action === 'buy_now') {
+            return redirect()->route('cart.index');
         } else {
             return response()->json(['success' => true]);
         }
     }
 
-    public function cart()
+
+    public function update_cart(Request $request)
     {
         $cart = session()->get('cart', []);
-        return view('cart.index', compact('cart'));
+        if (isset($cart[$request->index])) {
+            $cart[$request->index]['quantity'] = (int) $request->quantity;
+            session()->put('cart', $cart);
+        }
+        return redirect()->route('cart.index');
+    }
+
+    public function remove_cart(Request $request)
+    {
+        $cart = session()->get('cart', []);
+        if (isset($cart[$request->index])) {
+            unset($cart[$request->index]);
+            session()->put('cart', array_values($cart));
+        }
+        return redirect()->route('cart.index');
+    }
+
+    public function checkout()
+    {
+        return view('home.checkout.index');
+    }
+
+    public function checkoutpp()
+    {
+        session()->forget('cart'); // Kosongkan keranjang
+        return redirect()->route('cart.success');
+    }
+
+    public function success()
+    {
+        return view('cart.success');
     }
 }

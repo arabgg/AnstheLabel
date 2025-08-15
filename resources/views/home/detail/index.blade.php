@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('home.layouts.app')
 
 @section('breadcrumb')
     <div class="breadcrumb">
@@ -45,10 +45,11 @@
                             @endif
                         </div>
 
-                        <form action="{{ route('cart.add') }}" method="POST">
+                        <form id="cart-form" action="{{ route('cart.add') }}" method="POST">
                             @csrf
                             <input type="hidden" name="produk_id" value="{{ $produk->produk_id }}">
 
+                            <!-- Warna -->
                             <div class="detail-color-wrapper">
                                 <p>Color Available</p>
                                 @if ($produk->warna->isNotEmpty())
@@ -56,7 +57,7 @@
                                         @foreach ($produk->warna as $warnaItem)
                                             @if ($warnaItem->warna)
                                                 <label style="cursor: pointer;">
-                                                    <input type="checkbox" name="warna[]" value="{{ $warnaItem->warna->id }}" style="display:none;" />
+                                                    <input type="radio" name="warna" value="{{ $warnaItem->warna->warna_id }}" style="display:none;" required/>
                                                     <span class="detail-dot" 
                                                         style="background-color: {{ $warnaItem->warna->kode_hex ?? '#000000' }};">
                                                     </span>
@@ -67,6 +68,7 @@
                                 @endif
                             </div>
 
+                            <!-- Ukuran -->
                             <div class="detail-size-wrapper">    
                                 <p>Size Available</p>
                                 @if ($produk->ukuran->isNotEmpty())
@@ -74,7 +76,7 @@
                                         @foreach ($produk->ukuran as $sizeItem)
                                             @if ($sizeItem->produk)
                                                 <label style="cursor:pointer; margin-right: 8px; user-select:none;">
-                                                    <input type="checkbox" name="ukuran[]" value="{{ $sizeItem->ukuran->id }}" style="display:none;" />
+                                                    <input type="radio" name="ukuran" value="{{ $sizeItem->ukuran->ukuran_id }}" style="display:none;" required/>
                                                     <span class="detail-size-nama">
                                                         {{ $sizeItem->ukuran->nama_ukuran }}
                                                     </span>
@@ -85,7 +87,7 @@
                                 @endif
                             </div>
 
-                            <p class="detail-quantity-label" for="quantity">Quantity:</p>
+                            <p class="detail-quantity-label">Quantity:</p>
                             <div class="detail-quantity-wrapper" style="margin-top: 10px;">
                                 <input type="number" name="quantity" value="1" min="1" required>
                             </div>
@@ -95,12 +97,11 @@
                             </div>
 
                             <div class="detail-cart-wrapper" style="margin-top: 10px;">
-                                <button type="submit" name="action" value="add_to_cart" class="btn-add-cart">
+                                <button type="button" id="btn-add-to-cart" class="btn-add-cart">
                                     <i class="fa fa-cart-shopping" style="margin-right: 8px"></i> Add to Cart
                                 </button>
                             </div>
                         </form>
-
                     </div>
 
                     <div class="detail-deskripsi-wrapper" style="margin-top: 20px;">
@@ -147,13 +148,14 @@
 
 @push('scripts')
 <script>
-document.getElementById('btn-add-to-cart').addEventListener('click', function() {
+document.getElementById('btn-add-to-cart').addEventListener('click', function (e) {
+    e.preventDefault(); // cegah submit form default / redirect
+
     const form = document.getElementById('cart-form');
     const formData = new FormData(form);
+    formData.append('action', 'add_to_cart');
 
-    formData.set('action', 'add_to_cart');
-
-    fetch(form.action, {
+    fetch("{{ route('cart.add') }}", {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -161,17 +163,30 @@ document.getElementById('btn-add-to-cart').addEventListener('click', function() 
         },
         body: formData
     })
-    .then(response => response.json())
+    .then(res => res.json())
     .then(data => {
-        if(data.success) {
-            alert('Produk berhasil ditambahkan ke cart!');
+        if (data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: 'Barang berhasil ditambahkan ke cart!',
+                timer: 2000,
+                showConfirmButton: false
+            });
         } else {
-            alert('Gagal menambahkan produk ke cart!');
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: 'Gagal menambahkan barang ke cart.',
+            });
         }
     })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Terjadi kesalahan.');
+    .catch(() => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops!',
+            text: 'Terjadi kesalahan saat menambahkan ke cart.',
+        });
     });
 });
 </script>

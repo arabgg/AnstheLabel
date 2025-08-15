@@ -28,7 +28,7 @@
             <a href="{{ route('about') }}" class="nav-item {{ request()->is('about') ? 'active' : '' }}">About Us</a>
         </nav>
         <div class="nav-icons">
-            <a href="#">
+            <a href="{{ route('cart.index') }}" class="nav-icon">
                 <i class="fas fa-cart-shopping"></i>
             </a>
         </div>

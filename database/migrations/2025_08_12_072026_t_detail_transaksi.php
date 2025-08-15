@@ -16,15 +16,14 @@ return new class extends Migration
 
             // Relasi ke tabel lain
             $table->unsignedBigInteger('transaksi_id');
-            $table->unsignedBigInteger('pembayaran_id');
             $table->unsignedBigInteger('produk_id');
             $table->unsignedBigInteger('ukuran_id')->nullable();
             $table->unsignedBigInteger('warna_id')->nullable();
             
+            $table->string('jumlah', 10);
             $table->timestamps();
 
             $table->foreign('transaksi_id')->references('transaksi_id')->on('t_transaksi');
-            $table->foreign('pembayaran_id')->references('pembayaran_id')->on('t_pembayaran');
             $table->foreign('produk_id')->references('produk_id')->on('t_produk');
             $table->foreign('ukuran_id')->references('ukuran_id')->on('m_ukuran');
             $table->foreign('warna_id')->references('warna_id')->on('m_warna');

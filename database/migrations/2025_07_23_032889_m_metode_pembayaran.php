@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('m_metode_pembayaran', function (Blueprint $table) {
             $table->id('metode_id');
             $table->string('nama_metode', 100);
+            $table->string('kode_bayar')->unique();
             $table->timestamp('created_at')->useCurrent();
         });
     }

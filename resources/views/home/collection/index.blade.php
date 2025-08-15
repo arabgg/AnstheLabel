@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('home.layouts.app')
 
 @section('breadcrumb')
     <div class="breadcrumb">
@@ -14,7 +14,7 @@
         <img src="{{ asset('storage/images/hero/hero8.avif') }}" class="carousel-image" alt="Hero 8">
     </div>
 
-    @include('collection.show')
+    @include('home.collection.show')
 @endsection
 
 @push('scripts')

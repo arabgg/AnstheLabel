@@ -3,18 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>Ansthelabel</title>
 
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
 
-    {{-- Custom CSS --}}
-    {{-- <link rel="stylesheet" href="{{ asset('css/header.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/carousel.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/bestproduk.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/collection.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/about.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/footer.css') }}"> --}}
+    <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
     {{-- Font --}}
@@ -28,7 +24,7 @@
         <div class="spinner"></div>
     </div>
     
-    @include('layouts.header')
+    @include('home.layouts.header')
 
     {{-- Breadcrumb --}}
     <div class="container">
@@ -38,7 +34,9 @@
     {{-- Content Halaman --}}
     @yield('content')
 
-    @include('layouts.footer')
+    @include('home.layouts.footer')
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         window.addEventListener('load', function () {
