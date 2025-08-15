@@ -2,7 +2,7 @@ name: Auto deploy web AnsTheLabel to Cpanel
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "staging" ]
 
 jobs:
   ftp-deploy:
