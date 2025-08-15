@@ -106,22 +106,23 @@
 @endsection
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.quantity-form').forEach(function(form) {
-            const input = form.querySelector('input[name="quantity"]');
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.quantity-form').forEach(function(form) {
+        const input = form.querySelector('input[name="quantity"]');
 
-            form.querySelector('.btn-increase').addEventListener('click', function() {
-                input.value = parseInt(input.value) + 1;
-                form.submit(); // langsung submit
-            });
+        form.querySelector('.btn-increase').addEventListener('click', function() {
+            input.value = parseInt(input.value) + 1;
+            form.submit();
+        });
 
-            form.querySelector('.btn-decrease').addEventListener('click', function() {
-                if (parseInt(input.value) > 1) {
-                    input.value = parseInt(input.value) - 1;
-                    form.submit(); // langsung submit
-                }
-            });
+        form.querySelector('.btn-decrease').addEventListener('click', function() {
+            let currentValue = parseInt(input.value);
+            if (currentValue > 0) {
+                input.value = currentValue - 1;
+                form.submit();
+            }
         });
     });
+});
 </script>
 @endpush

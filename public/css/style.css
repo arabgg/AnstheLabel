@@ -287,12 +287,12 @@ html,body {width:100%;font-family:'Montserrat',sans-serif!important;}
 
 /* COLLECTION STYLE */
 .collection-section { max-width: 100%; margin: 18px auto; margin-bottom: 150px; }
-.collection-title { font-family: 'Montserrat', sans-serif !important; text-align: center; font-size: 26px; font-weight: 700; margin-bottom: 40px; color: #560024; }
+.collection-title { text-align: center; font-size: 26px; font-weight: 700; margin-bottom: 40px; color: #560024; }
 .collection-grid { display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(3, 250px); position: relative; gap: 15px; margin-bottom: 28px; }
 .item { position: relative; overflow: hidden; }
 .item img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.label { font-family: 'Montserrat', sans-serif !important; font-size: 12px; position: absolute; bottom: 10px; right: 10px; background: rgba(255,255,255,0.85); padding: 6px 20px; font-weight: 500; }
-.label-pants { font-family: 'Montserrat', sans-serif !important; font-size: 12px; position: absolute; bottom: 10px; left: 10px; background: rgba(255,255,255,0.85); padding: 6px 20px; font-weight: 500; }
+.label { font-size: 12px; position: absolute; bottom: 10px; right: 10px; background: rgba(255,255,255,0.85); padding: 6px 20px; font-weight: 500; }
+.label-pants { font-size: 12px; position: absolute; bottom: 10px; left: 10px; background: rgba(255,255,255,0.85); padding: 6px 20px; font-weight: 500; }
 .item-blouses { grid-column: 1 / 2; grid-row: 1 / 3; }
 .item-dresses { grid-column: 1 / 2; grid-row: 3 / 9; }
 .item-pants { grid-column: 2 / 3; grid-row: 1 / 7; }
@@ -334,7 +334,7 @@ input[type="checkbox"]:checked::before { content: ""; display: block; width: 100
 .produk-pink { background-color: #f58da3; }
 .produk-filter-title { font-weight: bold; padding: 0 8px; color: #000; font-size: 16px; position: absolute; top: -12px; left: 15px; background: #fff; }
 .produk-buttons { text-align: center; margin-top: 30px; width: 100%; }
-.produk-buttons button { font-family: 'Montserrat', sans-serif !important; padding: 10px 40px; font-size: 12px; margin-left: 10px; cursor: pointer; background-color: transparent; color: #560024; border: 1px solid #560024; text-decoration: none; }
+.produk-buttons button { padding: 10px 40px; font-size: 12px; margin-left: 10px; cursor: pointer; background-color: transparent; color: #560024; border: 1px solid #560024; text-decoration: none; }
 .produk-buttons button:hover { background-color: #dbcbd2; }
 .produk-card-link { text-decoration: none; color: inherit; display: inline-block; }
 .produk-card-link:hover .produk-card { box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); transform: translateY(-2px); transition: 0.3s; }
@@ -457,14 +457,16 @@ input[type="radio"]:checked + .detail-size-nama {
 .checkout-form { flex: 1; }
 .checkout-kontak { margin-bottom: 50px; }
 .checkout-summary { flex: 1; background: #f9f9f9; padding: 20px; }
-h3 { margin-bottom: 10px; font-size: 16px; font-weight: bold; }
-input, select { width: 100%; padding: 10px; margin-bottom: 15px; border: 2px solid #6b0f2e; border-radius: 6px; }
-.name-group, .city-group { display: flex; gap: 10px; }
-.payment-btn { width: 100%; background-color: #6b0f2e; color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; margin-top: 50px; }
-.product-item { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; gap: 10px; }
-.product-item img { width: 100px; height: 120px; border-radius: 4px; }
-.product-item p { margin: 4px; font-size: 12px; color: #333; }
-.product-price { white-space: nowrap; }
-.total-section { margin-top: 40px; }
-.subtotal, .total { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 16px; }
-.total-price { font-size: 16px; font-weight: bold; }
+.checkout-kontak-title { margin-bottom: 10px; font-size: 16px; font-weight: bold; }
+.checkout-pengantaran-title { margin-bottom: 10px; font-size: 16px; font-weight: bold; }
+.checkout-kontak-data { width: 100%; padding: 10px; margin-bottom: 15px; border: 2px solid #6b0f2e; border-radius: 6px; }
+.checkout-pengantaran-data { width: 100%; padding: 10px; margin-bottom: 15px; border: 2px solid #6b0f2e; border-radius: 6px; }
+.checkout-name-group, .city-group { display: flex; gap: 10px; }
+.checkout-payment-btn { width: 100%; background-color: #6b0f2e; color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; margin-top: 50px; }
+.checkout-product-item { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; gap: 10px; }
+.checkout-product-item img { width: 100px; height: 120px; border-radius: 4px; }
+.checkout-product-item p { margin: 4px; font-size: 12px; color: #333; }
+.checkout-product-price { white-space: nowrap; }
+.checkout-total-section { margin-top: 40px; }
+.checkout-subtotal, .checkout-total { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 16px; }
+.checkout-total-price { font-size: 16px; font-weight: bold; }
