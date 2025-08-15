@@ -148,10 +148,37 @@
 
 @push('scripts')
 <script>
+function validasiWarnaUkuran(form) {
+    const warnaDipilih = form.querySelector('input[name="warna"]:checked');
+    const ukuranDipilih = form.querySelector('input[name="ukuran"]:checked');
+
+    if (!warnaDipilih) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Pilih Warna',
+            text: 'Silakan pilih warna terlebih dahulu!',
+        });
+        return false;
+    }
+
+    if (!ukuranDipilih) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Pilih Ukuran',
+            text: 'Silakan pilih ukuran terlebih dahulu!',
+        });
+        return false;
+    }
+
+    return true;
+}
+
 document.getElementById('btn-add-to-cart').addEventListener('click', function (e) {
-    e.preventDefault(); // cegah submit form default / redirect
+    e.preventDefault();
 
     const form = document.getElementById('cart-form');
+    if (!validasiWarnaUkuran(form)) return;
+
     const formData = new FormData(form);
     formData.append('action', 'add_to_cart');
 
@@ -188,6 +215,14 @@ document.getElementById('btn-add-to-cart').addEventListener('click', function (e
             text: 'Terjadi kesalahan saat menambahkan ke cart.',
         });
     });
+});
+
+// Buy Now
+document.querySelector('.btn-buy-now').addEventListener('click', function (e) {
+    const form = document.getElementById('cart-form');
+    if (!validasiWarnaUkuran(form)) {
+        e.preventDefault(); // hentikan submit jika belum pilih warna/ukuran
+    }
 });
 </script>
 @endpush

@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('t_transaksi', function (Blueprint $table) {
             $table->id('transaksi_id');
 
-            $table->string('kode_transaksi', 50)->unique();
+            $table->string('kode_invoice', 50)->unique();
             $table->string('nama_customer');
             $table->string('no_telp', 20);
             $table->string('email');
             $table->string('alamat');
-            $table->timestamp('tanggal_transaksi')->useCurrent();
+            $table->enum('status_transaksi', ['pesanan dibuat', 'dikemas', 'dikirim', 'selesai', 'batal'])->default('pesanan dibuat');
             $table->timestamps();
         });
 

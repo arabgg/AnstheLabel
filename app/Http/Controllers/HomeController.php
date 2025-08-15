@@ -177,9 +177,9 @@ class HomeController extends Controller
             'nama' => $produk->nama_produk,
             'harga' => $produk->diskon > 0 ? $produk->harga_diskon : $produk->harga,
             'warna_id' => $warnaData?->warna_id,
-            'warna_nama' => $warnaData?->nama_warna ?? '-', 
+            'warna_nama' => $warnaData?->nama_warna, 
             'ukuran_id' => $ukuranData?->ukuran_id,
-            'ukuran_nama' => $ukuranData?->nama_ukuran ?? '-',
+            'ukuran_nama' => $ukuranData?->nama_ukuran,
             'quantity' => (int) $request->quantity,
             'foto' => $produk->fotoUtama ? $produk->fotoUtama->foto_produk : null
         ];
@@ -197,10 +197,21 @@ class HomeController extends Controller
     public function update_cart(Request $request)
     {
         $cart = session()->get('cart', []);
+
         if (isset($cart[$request->index])) {
-            $cart[$request->index]['quantity'] = (int) $request->quantity;
+            $quantity = (int) $request->quantity;
+
+            if ($quantity <= 0) {
+                // Hapus item dari cart
+                unset($cart[$request->index]);
+            } else {
+                // Update quantity
+                $cart[$request->index]['quantity'] = $quantity;
+            }
+
             session()->put('cart', $cart);
         }
+
         return redirect()->route('cart.index');
     }
 
