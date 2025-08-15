@@ -5,6 +5,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\UkuranController;
+use App\Http\Controllers\WarnaController;
 use App\Http\Controllers\AdminController;
 
 /*
@@ -62,5 +65,71 @@ Route::middleware('auth')->group(function () {
 
         // Delete
         Route::delete('/{id}/destroy', [ProdukController::class, 'destroy'])->name('produk.destroy');   
+    });
+    
+    Route::prefix('kategori')->group(function () {
+        // Filter
+        Route::get('/filter', [KategoriController::class, 'filter'])->name('kategori.filter');
+
+        // List
+        Route::get('/', [KategoriController::class, 'index'])->name('kategori.index');
+
+        // Show
+        Route::get('/{id}/show', [KategoriController::class, 'show'])->name('kategori.show');
+
+        // Create
+        Route::get('/create', [KategoriController::class, 'create'])->name('kategori.create'); 
+        Route::post('/store', [KategoriController::class, 'store'])->name('kategori.store'); 
+
+        // Edit
+        Route::get('/{id}/edit', [KategoriController::class, 'edit'])->name('kategori.edit'); 
+        Route::put('/{id}/update', [KategoriController::class, 'update'])->name('kategori.update');
+
+        // Delete
+        Route::delete('/{id}/destroy', [KategoriController::class, 'destroy'])->name('kategori.destroy');   
+    });
+
+    Route::prefix('ukuran')->group(function () {
+        // Filter
+        Route::get('/filter', [UkuranController::class, 'filter'])->name('ukuran.filter');
+
+        // List
+        Route::get('/', [UkuranController::class, 'index'])->name('ukuran.index');
+
+        // Show
+        Route::get('/{id}/show', [UkuranController::class, 'show'])->name('ukuran.show');
+
+        // Create
+        Route::get('/create', [UkuranController::class, 'create'])->name('ukuran.create'); 
+        Route::post('/store', [UkuranController::class, 'store'])->name('ukuran.store'); 
+
+        // Edit
+        Route::get('/{id}/edit', [UkuranController::class, 'edit'])->name('ukuran.edit'); 
+        Route::put('/{id}/update', [UkuranController::class, 'update'])->name('ukuran.update');
+
+        // Delete
+        Route::delete('/{id}/destroy', [UkuranController::class, 'destroy'])->name('ukuran.destroy');   
+    });
+
+    Route::prefix('warna')->group(function () {
+        // Filter
+        Route::get('/filter', [WarnaController::class, 'filter'])->name('warna.filter');
+
+        // List
+        Route::get('/', [WarnaController::class, 'index'])->name('warna.index');
+
+        // Show
+        Route::get('/{id}/show', [WarnaController::class, 'show'])->name('warna.show');
+
+        // Create
+        Route::get('/create', [WarnaController::class, 'create'])->name('warna.create'); 
+        Route::post('/store', [WarnaController::class, 'store'])->name('warna.store'); 
+
+        // Edit
+        Route::get('/{id}/edit', [WarnaController::class, 'edit'])->name('warna.edit'); 
+        Route::put('/{id}/update', [WarnaController::class, 'update'])->name('warna.update');
+
+        // Delete
+        Route::delete('/{id}/destroy', [WarnaController::class, 'destroy'])->name('warna.destroy');   
     });
 });

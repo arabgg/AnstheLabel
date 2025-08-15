@@ -25,8 +25,8 @@
         <nav class="flex-1 space-y-2 p-2 overflow-y-auto">
             <!-- Dashboard -->
             <a href="/dashboard"
-                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-pink-100 transition"
-                :class="{{ request()->is('dashboard*') ? "'font-bold bg-pink-100'" : "''" }}">
+                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-pink-400 transition"
+                :class="{{ request()->is('dashboard*') ? "'font-bold bg-pink-400'" : "''" }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -49,8 +49,8 @@
 
             <!-- Kategori -->
             <a href="/kategori"
-                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-pink-100 transition"
-                :class="{{ request()->is('kategori*') ? "'font-bold bg-pink-100'" : "''" }}">
+                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-pink-400 transition"
+                :class="{{ request()->is('kategori*') ? "'font-bold bg-pink-400'" : "''" }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -61,8 +61,8 @@
 
             <!-- Ukuran -->
             <a href="/ukuran"
-                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-pink-100 transition"
-                :class="{{ request()->is('ukuran*') ? "'font-bold bg-pink-100'" : "''" }}">
+                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-pink-400 transition"
+                :class="{{ request()->is('ukuran*') ? "'font-bold bg-pink-400'" : "''" }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -73,8 +73,8 @@
 
             <!-- Warna -->
             <a href="/warna"
-                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-pink-100 transition"
-                :class="{{ request()->is('warna*') ? "'font-bold bg-pink-100'" : "''" }}">
+                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-pink-400 transition"
+                :class="{{ request()->is('warna*') ? "'font-bold bg-pink-400'" : "''" }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -85,8 +85,8 @@
 
             <!-- Metode Pembayaran -->
             <a href="/metode_pembayaran"
-                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-pink-100 transition"
-                :class="{{ request()->is('metode_pembayaran*') ? "'font-bold bg-pink-100'" : "''" }}">
+                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-pink-400 transition"
+                :class="{{ request()->is('metode_pembayaran*') ? "'font-bold bg-pink-400'" : "''" }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -97,8 +97,8 @@
 
             <!-- Transaksi -->
             <a href="/transaksi"
-                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-pink-100 transition"
-                :class="{{ request()->is('transaksi*') ? "'font-bold bg-pink-100'" : "''" }}">
+                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-pink-400 transition"
+                :class="{{ request()->is('transaksi*') ? "'font-bold bg-pink-400'" : "''" }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
