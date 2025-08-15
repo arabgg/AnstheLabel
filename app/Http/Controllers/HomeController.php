@@ -75,6 +75,7 @@ class HomeController extends Controller
 
         // Ambil keyword pencarian
         $searchQuery = $request->input('search', '');
+        $produk = ProdukModel::with('kategori', 'bahan', 'fotoUtama', 'foto', 'warna', 'ukuran');
 
         // Query produk dengan relasi
         $produk = ProdukModel::with(['kategori', 'bahan', 'fotoUtama', 'foto', 'warna.warna', 'ukuran']);
