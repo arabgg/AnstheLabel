@@ -47,7 +47,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/filter', [ProdukController::class, 'filter'])->name('produk.filter');
 
         // List
-        Route::get('/', [ProdukController::class, 'index']); 
+        Route::get('/', [ProdukController::class, 'index'])->name('produk.index'); 
 
         // Show
         Route::get('/{id}/show', [ProdukController::class, 'show']);

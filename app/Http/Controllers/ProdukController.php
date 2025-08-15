@@ -78,10 +78,43 @@ class ProdukController extends Controller
             'warna_id' => 'required|array|min:1',
             'warna_id.*' => 'string|max:50',
         ], [
-            'foto_utama.required' => 'Foto utama wajib diunggah.',
-            'foto_utama.image' => 'File harus berupa gambar.',
-            'foto_utama.mimes' => 'Format gambar hanya boleh jpeg, png, atau jpg.',
-            'foto_utama.max' => 'Ukuran gambar maksimal 2 MB.',
+            // Pesan khusus bahasa Indonesia
+            'foto_utama.image' => 'Foto utama harus berupa gambar.',
+            'foto_utama.mimes' => 'Format foto utama hanya boleh jpeg, png, atau jpg.',
+            'foto_utama.max' => 'Ukuran foto utama maksimal 2 MB.',
+
+            'foto_sekunder.*.image' => 'Foto sekunder harus berupa gambar.',
+            'foto_sekunder.*.mimes' => 'Format foto sekunder hanya boleh jpeg, png, atau jpg.',
+            'foto_sekunder.*.max' => 'Ukuran foto sekunder maksimal 2 MB.',
+
+            'nama_produk.required' => 'Kolom Nama Produk wajib diisi.',
+            'nama_produk.string' => 'Nama Produk harus berupa teks.',
+            'nama_produk.max' => 'Nama Produk maksimal 255 karakter.',
+
+            'deskripsi.required' => 'Kolom Deskripsi wajib diisi.',
+            'deskripsi.string' => 'Deskripsi harus berupa teks.',
+
+            'harga.required' => 'Kolom Harga wajib diisi.',
+            'harga.string' => 'Harga harus berupa teks.',
+
+            'diskon.required' => 'Kolom Diskon wajib diisi.',
+            'diskon.string' => 'Diskon harus berupa teks.',
+
+            'kategori_id.required' => 'Kolom Kategori wajib dipilih.',
+            'kategori_id.integer' => 'Kategori tidak valid.',
+
+            'bahan_id.required' => 'Kolom Bahan wajib dipilih.',
+            'bahan_id.integer' => 'Bahan tidak valid.',
+
+            'ukuran_id.required' => 'Setidaknya pilih satu Ukuran.',
+            'ukuran_id.array' => 'Ukuran tidak valid.',
+            'ukuran_id.*.string' => 'Ukuran harus berupa teks.',
+            'ukuran_id.*.max' => 'Ukuran maksimal 50 karakter.',
+
+            'warna_id.required' => 'Setidaknya pilih satu Warna.',
+            'warna_id.array' => 'Warna tidak valid.',
+            'warna_id.*.string' => 'Warna harus berupa teks.',
+            'warna_id.*.max' => 'Warna maksimal 50 karakter.',
         ]);
 
         // Simpan produk
@@ -151,50 +184,135 @@ class ProdukController extends Controller
 
     public function edit($id)
     {
-        $produk = ProdukModel::with(['warnaProduk', 'ukuran'])->findOrFail($id);
+        $produk = ProdukModel::with(['warna', 'ukuran', 'foto'])->findOrFail($id);
         $kategori = KategoriModel::all();
         $bahan = BahanModel::all();
-        return view('produk.edit', compact('produk', 'kategori', 'bahan'));
+        $ukuran = UkuranModel::all();
+        $warna = WarnaModel::all();
+
+        return view('produk.edit', compact('produk', 'kategori', 'bahan', 'ukuran', 'warna'));
     }
 
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'foto_utama' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'foto_sekunder.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'nama_produk' => 'required|string|max:255',
+            'deskripsi' => 'required|string',
+            'harga' => 'required|string',
+            'diskon' => 'required|string',
+            'kategori_id' => 'required|integer',
+            'bahan_id' => 'required|integer',
+            'ukuran_id' => 'required|array|min:1',
+            'ukuran_id.*' => 'string|max:50',
+            'warna_id' => 'required|array|min:1',
+            'warna_id.*' => 'string|max:50',
+        ], [
+            // Pesan khusus bahasa Indonesia
+            'foto_utama.image' => 'Foto utama harus berupa gambar.',
+            'foto_utama.mimes' => 'Format foto utama hanya boleh jpeg, png, atau jpg.',
+            'foto_utama.max' => 'Ukuran foto utama maksimal 2 MB.',
+
+            'foto_sekunder.*.image' => 'Foto sekunder harus berupa gambar.',
+            'foto_sekunder.*.mimes' => 'Format foto sekunder hanya boleh jpeg, png, atau jpg.',
+            'foto_sekunder.*.max' => 'Ukuran foto sekunder maksimal 2 MB.',
+
+            'nama_produk.required' => 'Kolom Nama Produk wajib diisi.',
+            'nama_produk.string' => 'Nama Produk harus berupa teks.',
+            'nama_produk.max' => 'Nama Produk maksimal 255 karakter.',
+
+            'deskripsi.required' => 'Kolom Deskripsi wajib diisi.',
+            'deskripsi.string' => 'Deskripsi harus berupa teks.',
+
+            'harga.required' => 'Kolom Harga wajib diisi.',
+            'harga.string' => 'Harga harus berupa teks.',
+
+            'diskon.required' => 'Kolom Diskon wajib diisi.',
+            'diskon.string' => 'Diskon harus berupa teks.',
+
+            'kategori_id.required' => 'Kolom Kategori wajib dipilih.',
+            'kategori_id.integer' => 'Kategori tidak valid.',
+
+            'bahan_id.required' => 'Kolom Bahan wajib dipilih.',
+            'bahan_id.integer' => 'Bahan tidak valid.',
+
+            'ukuran_id.required' => 'Setidaknya pilih satu Ukuran.',
+            'ukuran_id.array' => 'Ukuran tidak valid.',
+            'ukuran_id.*.string' => 'Ukuran harus berupa teks.',
+            'ukuran_id.*.max' => 'Ukuran maksimal 50 karakter.',
+
+            'warna_id.required' => 'Setidaknya pilih satu Warna.',
+            'warna_id.array' => 'Warna tidak valid.',
+            'warna_id.*.string' => 'Warna harus berupa teks.',
+            'warna_id.*.max' => 'Warna maksimal 50 karakter.',
+        ]);
+
         $produk = ProdukModel::findOrFail($id);
-        $produk->update($request->only(['kategori_id', 'bahan_id', 'nama_produk', 'deskripsi']));
 
-        // Update warna dan ukuran - sederhana: hapus lalu insert ulang
-        WarnaProdukModel::where('produk_id', $id)->delete();
+        // Update data produk
+        $produk->update($request->only(['nama_produk', 'deskripsi', 'harga', 'diskon', 'kategori_id', 'bahan_id']));
+
+        // Update foto utama
+        if ($request->hasFile('foto_utama')) {
+            // Hapus foto utama lama
+            FotoProdukModel::where('produk_id', $id)->where('status_foto', 1)->delete();
+
+            $fotoUtama = $request->file('foto_utama');
+            $filename = time() . '_' . $fotoUtama->getClientOriginalName();
+            $path = public_path('storage/foto_produk');
+            $fotoUtama->move($path, $filename);
+
+            FotoProdukModel::create([
+                'produk_id' => $id,
+                'foto_produk' => $filename,
+                'status_foto' => 1
+            ]);
+        }
+
+        // Upload foto sekunder
+        if ($request->hasFile('foto_sekunder')) {
+            foreach ($request->file('foto_sekunder') as $foto) {
+                $filename = time() . '_' . $foto->getClientOriginalName();
+                $foto->move(public_path('storage/foto_produk'), $filename);
+
+                FotoProdukModel::create([
+                    'produk_id' => $id,
+                    'foto_produk' => $filename,
+                    'status_foto' => 0
+                ]);
+            }
+        }
+
+        // Update ukuran
         UkuranProdukModel::where('produk_id', $id)->delete();
-
-        if ($request->has('warna')) {
-            foreach ($request->warna as $kode) {
-                WarnaProdukModel::create([
-                    'produk_id' => $id,
-                    'kode_warna' => $kode,
-                ]);
-            }
+        foreach ($request->ukuran_id as $ukuran) {
+            UkuranProdukModel::create([
+                'produk_id' => $id,
+                'ukuran_id' => $ukuran
+            ]);
         }
 
-        if ($request->has('ukuran')) {
-            foreach ($request->ukuran as $ukuran) {
-                UkuranProdukModel::create([
-                    'produk_id' => $id,
-                    'ukuran' => $ukuran,
-                ]);
-            }
+        // Update warna
+        WarnaProdukModel::where('produk_id', $id)->delete();
+        foreach ($request->warna_id as $warnaKode) {
+            WarnaProdukModel::create([
+                'produk_id' => $id,
+                'warna_id' => $warnaKode
+            ]);
         }
 
-        return redirect('/produk')->with('success', 'Produk berhasil diperbarui');
+        return redirect()->route('produk.index')->with('success', 'Produk berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
         $produk = ProdukModel::findOrFail($id);
 
-        $produk->foto()->delete();         
-        $produk->warnaProduk()->delete();  
-        $produk->ukuran()->delete();       
-        $produk->toko()->delete();        
+        $produk->foto()->delete();
+        $produk->warnaProduk()->delete();
+        $produk->ukuran()->delete();
+        $produk->toko()->delete();
 
         $produk->delete();
 

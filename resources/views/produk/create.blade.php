@@ -139,13 +139,13 @@
             </div>
 
             <div class="pt-4 flex justify-between items-center gap-4">
-                <!-- Tombol Batal -->
+                {{-- Tombol Batal --}}
                 <a href="{{ url('/produk') }}"
                     class="flex-[1] text-center px-4 py-4 bg-gray-200 text-gray-800 rounded-xl font-medium hover:bg-gray-300 transition duration-300 shadow-sm">
                     Batal
                 </a>
 
-                <!-- Tombol Simpan -->
+                {{-- Tombol Simpan --}}
                 <button type="submit"
                     class="flex-[2] text-center py-4 bg-[#560024] text-white rounded-xl font-medium hover:bg-[#7a0033] transition duration-300 shadow-sm">
                     Simpan
