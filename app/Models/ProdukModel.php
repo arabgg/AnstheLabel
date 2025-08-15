@@ -70,6 +70,12 @@ class ProdukModel extends Model
         return $this->hasMany(FotoProdukModel::class, 'produk_id', 'produk_id');
     }
 
+    public function fotoUtama()
+    {
+        return $this->hasOne(FotoProdukModel::class, 'produk_id', 'produk_id')
+            ->where('status_foto', 1);
+    }
+
     public function warna() :HasMany
     {
         return $this->hasMany(WarnaProdukModel::class, 'produk_id', 'produk_id');
@@ -80,15 +86,8 @@ class ProdukModel extends Model
         return $this->hasMany(UkuranProdukModel::class, 'produk_id', 'produk_id');
     }
 
-    public function toko() :HasMany
+    public function detailTransaksi() :HasMany
     {
-        return $this->hasMany(TokoProdukModel::class, 'produk_id', 'produk_id');
+        return $this->hasMany(DetailTransaksiModel::class, 'produk_id', 'produk_id');
     }
-
-    public function fotoUtama()
-    {
-        return $this->hasOne(FotoProdukModel::class, 'produk_id', 'produk_id')
-            ->where('status_foto', 1);
-    }
-
 }

@@ -15,16 +15,13 @@ return new class extends Migration
             $table->id('pembayaran_id');
 
             // Relasi ke tabel lain
-            $table->unsignedBigInteger('transaksi_id');
-            $table->unsignedBigInteger('detail_transaksi_id');
             $table->unsignedBigInteger('metode_id');
 
             $table->enum('status_pembayaran', ['pending', 'lunas', 'gagal'])->default('pending');
+            $table->integer('jumlah_produk');
             $table->string('total_harga');
             $table->timestamps();
-
-            $table->foreign('transaksi_id')->references('transaksi_id')->on('t_transaksi');
-            $table->foreign('detail_transaksi_id')->references('detail_transaksi_id')->on('t_detail_transaksi');
+            
             $table->foreign('metode_id')->references('metode_id')->on('m_metode_pembayaran');
         });
     }
