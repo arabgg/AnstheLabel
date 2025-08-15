@@ -61,7 +61,6 @@ Route::middleware('auth')->group(function () {
         Route::put('/{id}/update', [ProdukController::class, 'update'])->name('produk.update');
 
         // Delete
-        Route::get('/{id}/delete', [ProdukController::class, 'destroy'])->name('produk.destroy');   
-        Route::delete('/{id}/delete', [ProdukController::class, 'delete'])->name('produk.delete'); 
+        Route::delete('/{id}/destroy', [ProdukController::class, 'destroy'])->name('produk.destroy');   
     });
 });

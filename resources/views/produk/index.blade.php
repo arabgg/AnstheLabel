@@ -76,13 +76,18 @@
 
                 {{-- Modal --}}
                 <div id="modal-{{ $p->produk_id }}"
-                    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
+                    onclick="if(event.target === this) this.classList.add('hidden')">
+
                     <div class="bg-white rounded-lg p-6 w-96 shadow-lg">
                         <h2 class="text-lg font-semibold mb-4">Konfirmasi Hapus</h2>
-                        <p class="mb-6">Apakah Anda yakin ingin menghapus produk <strong>{{ $p->nama_produk }}</strong>?
+                        <p class="mb-6">
+                            Apakah Anda yakin ingin menghapus produk
+                            <strong>{{ $p->nama_produk }}</strong>?
                         </p>
+
                         <div class="flex justify-center space-x-10">
-                            <form method="POST" action="{{ url('/produk/' . $p->produk_id . '/delete') }}">
+                            <form method="POST" action="{{ route('produk.destroy', $p->produk_id) }}">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
@@ -90,7 +95,9 @@
                                     Ya, Hapus
                                 </button>
                             </form>
-                            <button onclick="document.getElementById('modal-{{ $p->produk_id }}').classList.add('hidden')"
+
+                            <button type="button"
+                                onclick="document.getElementById('modal-{{ $p->produk_id }}').classList.add('hidden')"
                                 class="flex px-4 py-2 bg-gray-300 text-gray-900 rounded hover:bg-gray-400 transition">
                                 Batal
                             </button>

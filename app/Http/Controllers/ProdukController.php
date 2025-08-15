@@ -42,11 +42,16 @@ class ProdukController extends Controller
 
     public function show($id)
     {
-        $produk = ProdukModel::with(['kategori', 'bahan', 'foto', 'warna', 'ukuran', 'toko'])->findOrFail($id);
+        $produk = ProdukModel::with([
+            'fotoUtama',
+            'foto',
+            'ukuran.ukuran',
+            'warna.warna'
+        ])->findOrFail($id);
+
         return view('produk.show', compact('produk'));
     }
 
-    // jjhfhjkhv
 
     public function create()
     {
@@ -69,9 +74,9 @@ class ProdukController extends Controller
             'kategori_id' => 'required|integer',
             'bahan_id' => 'required|integer',
             'ukuran_id' => 'required|array|min:1',
-            'ukuran_id.*' => 'string|max:50', 
+            'ukuran_id.*' => 'string|max:50',
             'warna_id' => 'required|array|min:1',
-            'warna_id.*' => 'string|max:50', 
+            'warna_id.*' => 'string|max:50',
         ], [
             'foto_utama.required' => 'Foto utama wajib diunggah.',
             'foto_utama.image' => 'File harus berupa gambar.',
@@ -184,43 +189,15 @@ class ProdukController extends Controller
 
     public function destroy($id)
     {
-        try {
-            // Cari data produk
-            $produk = ProdukModel::findOrFail($id);
-
-            // Hapus relasi dulu
-            $produk->toko()->delete();          // t_toko_produk
-            $produk->warnaProduk()->delete();   // t_warna_produk
-            $produk->ukuran()->delete();        // t_ukuran_produk
-            $produk->foto()->delete();          // t_foto_produk
-
-            // Setelah semua relasi dihapus, baru hapus produk utamanya
-            $produk->delete();
-
-            return redirect('/produk')->with('success', 'Produk berhasil dihapus.');
-        } catch (\Exception $e) {
-            return redirect('/produk')->with('error', 'Gagal menghapus produk: ' . $e->getMessage());
-        }
-    }
-
-
-    public function delete($id)
-    {
         $produk = ProdukModel::findOrFail($id);
 
-        // Hapus relasi terlebih dahulu
-        WarnaProdukModel::where('produk_id', $id)->delete();
-        UkuranProdukModel::where('produk_id', $id)->delete();
-        FotoProdukModel::where('produk_id', $id)->delete();
+        $produk->foto()->delete();         
+        $produk->warnaProduk()->delete();  
+        $produk->ukuran()->delete();       
+        $produk->toko()->delete();        
 
         $produk->delete();
 
-        return redirect('/produk')->with('success', 'Produk berhasil dihapus');
-    }
-
-    public function list()
-    {
-        $produk = ProdukModel::with(['kategori', 'bahan', 'fotoUtama'])->get();
-        return response()->json($produk);
+        return redirect('/produk')->with('success', 'Produk berhasil diperbarui');
     }
 }
