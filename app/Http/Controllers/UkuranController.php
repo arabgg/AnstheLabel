@@ -2,63 +2,64 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UkuranModel;
 use Illuminate\Http\Request;
 
 class UkuranController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $ukuran = UkuranModel::all();
+        return view('ukuran.index', compact('ukuran'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('ukuran.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'nama_ukuran' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string',
+        ]);
+
+        UkuranModel::create($request->all());
+
+        return redirect()->route('ukuran.index')->with('success', 'Ukuran berhasil ditambahkan!');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        //
+        $ukuran = UkuranModel::findOrFail($id);
+        return view('ukuran.show', compact('ukuran'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
-        //
+        $ukuran = UkuranModel::findOrFail($id);
+        return view('ukuran.edit', compact('ukuran'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'nama_ukuran' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string',
+        ]);
+
+        $ukuran = UkuranModel::findOrFail($id);
+        $ukuran->update($request->all());
+
+        return redirect()->route('ukuran.index')->with('success', 'Ukuran berhasil diupdate!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        //
+        $ukuran = UkuranModel::findOrFail($id);
+        $ukuran->delete();
+
+        return redirect()->route('ukuran.index')->with('success', 'Ukuran berhasil dihapus!');
     }
 }

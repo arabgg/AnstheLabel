@@ -2,63 +2,60 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\WarnaModel;
 use Illuminate\Http\Request;
 
 class WarnaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $warna = WarnaModel::all();
+        return view('warna.index', compact('warna'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('warna.create');   
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'kode_hex' => 'required|string|max:7',
+            'nama_warna' => 'required|string|max:255',
+        ]);
+        WarnaModel::create($request->all());
+        return redirect()->route('warna.index')->with('success', 'Warna berhasil ditambahkan!');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        //
+        $warna = WarnaModel::findOrFail($id);
+        return view('warna.show', compact('warna'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
-        //
+        $warna = WarnaModel::findOrFail($id);
+        return view('warna.edit', compact('warna'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'kode_hex' => 'required|string|max:7',
+            'nama_warna' => 'required|string|max:255',
+        ]);
+        $warna = WarnaModel::findOrFail($id);
+        $warna->update($request->all());
+        return redirect()->route('warna.index')->with('success', 'Warna berhasil diperbarui!');
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
+    
     public function destroy(string $id)
     {
-        //
+        $warna = WarnaModel::findOrFail($id);
+        $warna->delete();
+        return redirect()->route('warna.index')->with('success', 'Warna berhasil dihapus!');
     }
 }

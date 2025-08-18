@@ -47,8 +47,7 @@
                     {{-- Diskon --}}
                     <div>
                         <label class="block font-medium mb-1">Diskon</label>
-                        <input type="text" name="diskon" class="border border-gray-300 rounded-xl px-3 py-2 w-full"
-                            required>
+                        <input type="text" name="diskon" class="border border-gray-300 rounded-xl px-3 py-2 w-full">
                     </div>
 
                     {{-- Kategori --}}
