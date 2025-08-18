@@ -14,12 +14,13 @@ class WarnaModel extends Model
     protected $primaryKey = 'warna_id';
     
     protected $fillable = [
+        'kode_hex',
         'nama_warna',
-        'deskripsi',
     ];
 
     protected $casts = [
         'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function warna() :HasMany
