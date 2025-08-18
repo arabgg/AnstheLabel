@@ -2,213 +2,162 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DetailTransaksiModel;
 use App\Models\KategoriModel;
+use App\Models\MetodeModel;
+use App\Models\PembayaranModel;
 use Illuminate\Http\Request;
 use App\Models\ProdukModel;
+use App\Models\TransaksiModel;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
-    public function index() {
-        $bestproduk = ProdukModel::with([
-            'kategori',
-            'foto' => fn($q) => $q->orderByDesc('status_foto'),
-            'fotoUtama'
-        ])
-        ->latest('produk_id') // atau ->orderByDesc('id')
-        ->take(4)
-        ->get();
+    public function index()
+    {
+        $newarrival = Cache::remember('newarrival', 600, function () {
+            return ProdukModel::select('produk_id', 'nama_produk', 'harga', 'diskon')
+                ->with([
+                    'kategori:kategori_id,nama_kategori',
+                    'fotoUtama'
+                ])
+                ->latest('produk_id')
+                ->take(4)
+                ->get();
+        });
 
-        $bestseller = ProdukModel::with([
-            'kategori',
-            'foto' => fn($q) => $q->orderByDesc('status_foto'),
-            'fotoUtama'
-        ])
-        ->orderByDesc('harga') // urutkan berdasarkan harga tertinggi
-        ->take(4) // ambil 4 produk teratas
-        ->get();
+        $bestseller = Cache::remember('bestseller', 600, function () {
+            return ProdukModel::select('produk_id', 'nama_produk', 'harga', 'diskon')
+                ->with([
+                    'kategori:kategori_id,nama_kategori',
+                    'fotoUtama'
+                ])
+                ->orderByDesc('harga')
+                ->take(4)
+                ->get();
+        });
 
-        $viscose = [
-            [
-                'nama' => 'Sleveless Round Neck',
-                'kategori' => 'Dress',
-                'image' => 'vs01.png',
-                'image_hover' => 'vs01_hover.png',
-                'warna' => ['#000000', '#FF6C6C', '#2c7851ff', '#8d5858ff', '#ca8888ff', '#936c6cff', '#FFFFFF',],
-            ],
-            [
-                'nama' => 'Sleveless Turtle Neck',
-                'kategori' => 'Dress',
-                'image' => 'vs02.png',
-                'image_hover' => 'vs02_hover.png',
-                'warna' => ['#000000', '#8d5858ff', '#ca8888ff', '#FF6C6C', '#2c7851ff', '#936c6cff', '#FFFFFF',],
-            ],
-            [
-                'nama' => 'Kutton Strip Knitwear',
-                'kategori' => 'Outer',
-                'image' => 'vs03.png',
-                'image_hover' => 'vs03_hover.png',
-                'warna' => ['#FF6C6C', '#2c7851ff', '#8d5858ff', '#ca8888ff', '#936c6cff', '#000000', '#FFFFFF'],
-            ],
-            [
-                'nama' => 'Savana Cardigan',
-                'kategori' => 'Outer',
-                'image' => 'vs04.png',
-                'image_hover' => 'vs04_hover.png',
-                'warna' => ['#000000', '#FF6C6C', '#8d5858ff', '#ca8888ff','#2c7851ff', '#936c6cff', '#FFFFFF',],
-            ],
-        ];
+        $viscose = config('viscose');
 
-        return view('home.landingpage.index', [
-            'bestproduk' => $bestproduk,
-            'bestseller' => $bestseller,
-            'viscose' => $viscose,
-        ]);
+        return view('home.landingpage.index', compact('newarrival', 'bestseller', 'viscose'));
     }
 
     public function collection(Request $request)
     {
-        // Ambil filter kategori
-        $filterKategori = $request->input('filter', []);
-        if (!is_array($filterKategori)) {
-            $filterKategori = [$filterKategori];
-        }
-
-        // Ambil keyword pencarian
+        $filterKategori = (array) $request->input('filter', []);
         $searchQuery = $request->input('search', '');
 
-        // Query produk dengan relasi
-        $produk = ProdukModel::with(['kategori', 'bahan', 'fotoUtama', 'foto', 'warna.warna', 'ukuran']);
+        $produk = ProdukModel::select('produk_id', 'nama_produk', 'harga', 'diskon', 'kategori_id')
+            ->with(['kategori:kategori_id,nama_kategori', 'fotoUtama']);
 
-        // Filter kategori
         if (!empty($filterKategori)) {
             $produk->whereIn('kategori_id', $filterKategori);
         }
 
-        // Filter search (pencarian nama produk)
         if (!empty($searchQuery)) {
-            $produk->where('nama_produk', 'like', '%' . $searchQuery . '%');
+            $produk->where('nama_produk', 'like', "%{$searchQuery}%");
         }
 
-        // Ambil data produk
-        $produk = $produk->get();
+        // Gunakan paginate untuk meringankan
+        $produk = $produk->paginate(12)->withQueryString();
 
-        // Ambil semua kategori
-        $kategori = KategoriModel::all();
+        $kategori = Cache::remember('kategori', 600, fn() => KategoriModel::select('kategori_id', 'nama_kategori')->get());
 
-        return view('home.collection.index', [
-            'produk' => $produk,
-            'kategori' => $kategori,
-            'filterkategori' => $filterKategori,
-            'searchQuery' => $searchQuery
-        ]);
+        return view('home.collection.index', compact('produk', 'kategori', 'filterKategori', 'searchQuery'));
     }
 
+    public function about()
+    {
+        $rekomendasi = ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
+            ->with('kategori:kategori_id,nama_kategori')
+            ->inRandomOrder()
+            ->take(4)
+            ->get();
 
-    public function about() {
-        $produk = ProdukModel::all();
-
-        $rekomendasi = ProdukModel::with('kategori')
-        ->get()
-        ->unique(fn ($item) => $item->kategori_id)
-        ->take(4); 
-
-        return view('home.about.index', [
-            'produk' => $produk,
-            'rekomendasi' => $rekomendasi,
-        ]);
+        return view('home.about.index', compact('rekomendasi'));
     }
-        
+
     public function show_produk($id)
     {
-        // Memuat produk beserta relasi yang sesuai
         $produk = ProdukModel::with([
-                'kategori',
-                'bahan',
-                'foto',
-                'warna.warna', // sesuai nama relasi
-                'ukuran.ukuran',
+                'kategori:kategori_id,nama_kategori',
+                'bahan:bahan_id,nama_bahan,deskripsi',
+                'foto:foto_produk_id',
+                'warna.warna:warna_id,kode_hex',
+                'ukuran.ukuran:ukuran_id,nama_ukuran,deskripsi',
             ])
-            ->where('produk_id', $id)
-            ->first();
+            ->select('produk_id', 'nama_produk', 'harga', 'diskon', 'deskripsi', 'kategori_id', 'bahan_id')
+            ->findOrFail($id);
 
-        // Produk rekomendasi berdasarkan kategori yang berbeda
-        $rekomendasi = ProdukModel::with('kategori')
-            ->get()
-            ->unique(fn ($item) => $item->kategori_id)
-            ->take(4);
+        $rekomendasi = ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
+            ->with('kategori:kategori_id,nama_kategori')
+            ->inRandomOrder()
+            ->take(4)
+            ->get();
 
-        return view('home.detail.index', [
-            'produk' => $produk,
-            'rekomendasi' => $rekomendasi,
-        ]);
+        return view('home.detail.index', compact('produk', 'rekomendasi'));
     }
 
     public function cart()
     {
         $cart = session()->get('cart', []);
-        $total = 0;
+        $total = collect($cart)->sum(fn($item) => $item['harga'] * $item['quantity']);
 
-        foreach ($cart as $item) {
-            $total += $item['harga'] * $item['quantity'];
-        }
+        $rekomendasi = ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
+            ->with('kategori:kategori_id,nama_kategori')
+            ->inRandomOrder()
+            ->take(4)
+            ->get();
 
-        $grandTotal = $total;
-
-        $rekomendasi = ProdukModel::with('kategori')
-            ->get()
-            ->unique(fn ($item) => $item->kategori_id)
-            ->take(4);
-
-        return view('home.cart.index', compact('cart', 'total', 'grandTotal', 'rekomendasi'));
+        return view('home.cart.index', compact('cart', 'total', 'rekomendasi'))
+            ->with('grandTotal', $total);
     }
 
     public function add_cart(Request $request)
     {
-        $produk = ProdukModel::findOrFail($request->produk_id);
+        $produk = ProdukModel::select('produk_id', 'nama_produk', 'harga', 'diskon')
+            ->with('fotoUtama')
+            ->findOrFail($request->produk_id);
 
-        $warnaData = \App\Models\WarnaModel::find($request->warna);
-        $ukuranData = \App\Models\UkuranModel::find($request->ukuran);
+        $warnaData = \App\Models\WarnaModel::select('warna_id', 'nama_warna')->find($request->warna);
+        $ukuranData = \App\Models\UkuranModel::select('ukuran_id', 'nama_ukuran')->find($request->ukuran);
 
         $cart = session()->get('cart', []);
 
         $cart[] = [
-            'id' => $produk->produk_id,
+            'produk_id' => $produk->produk_id,
             'nama' => $produk->nama_produk,
             'harga' => $produk->diskon > 0 ? $produk->harga_diskon : $produk->harga,
             'warna_id' => $warnaData?->warna_id,
-            'warna_nama' => $warnaData?->nama_warna, 
+            'warna_nama' => $warnaData?->nama_warna,
             'ukuran_id' => $ukuranData?->ukuran_id,
             'ukuran_nama' => $ukuranData?->nama_ukuran,
             'quantity' => (int) $request->quantity,
-            'foto' => $produk->fotoUtama ? $produk->fotoUtama->foto_produk : null
+            'foto' => $produk->fotoUtama->foto_produk ?? null,
         ];
 
         session()->put('cart', $cart);
 
-        if ($request->action === 'buy_now') {
-            return redirect()->route('cart.index');
-        } else {
-            return response()->json(['success' => true]);
-        }
+        return $request->action === 'buy_now'
+            ? redirect()->route('cart.index')
+            : response()->json(['success' => true]);
     }
-
 
     public function update_cart(Request $request)
     {
         $cart = session()->get('cart', []);
 
         if (isset($cart[$request->index])) {
-            $quantity = (int) $request->quantity;
+            $quantity = max(0, (int) $request->quantity);
 
-            if ($quantity <= 0) {
-                // Hapus item dari cart
+            if ($quantity === 0) {
                 unset($cart[$request->index]);
             } else {
-                // Update quantity
                 $cart[$request->index]['quantity'] = $quantity;
             }
 
-            session()->put('cart', $cart);
+            session()->put('cart', array_values($cart));
         }
 
         return redirect()->route('cart.index');
@@ -224,19 +173,110 @@ class HomeController extends Controller
         return redirect()->route('cart.index');
     }
 
-    public function checkout()
+    public function checkoutForm()
     {
-        return view('home.checkout.index');
+        $cart = session()->get('cart', []);
+        $total = collect($cart)->sum(fn($item) => $item['harga'] * $item['quantity']);
+
+        if (empty($cart)) {
+            return redirect()->route('cart.index')->with('error', 'Keranjang kosong.');
+        }
+
+        return view('home.checkout.form', compact('cart', 'total'));
     }
 
-    public function checkoutpp()
+    public function saveCheckout(Request $request)
     {
-        session()->forget('cart'); // Kosongkan keranjang
-        return redirect()->route('cart.success');
+        $request->validate([
+            'nama' => 'required|string',
+            'telepon' => 'required|string',
+            'email' => 'required|email',
+            'alamat' => 'required|string',
+            'kota' => 'required|string',
+            'kecamatan' => 'required|string',
+        ]);
+
+        $fullAddress = $request->alamat . ', ' . $request->kota . ', ' . $request->kecamatan;
+
+        session()->put('checkout_data', [
+            'nama'    => $request->nama,
+            'telepon' => $request->telepon,
+            'email'   => $request->email,
+            'alamat'  => $fullAddress,
+        ]);
+
+        return redirect()->route('checkout.payment');
     }
 
-    public function success()
+    public function paymentForm()
     {
-        return view('cart.success');
+        $cart = session()->get('cart', []);
+        $checkoutData = session()->get('checkout_data');
+        $total = collect($cart)->sum(fn($item) => $item['harga'] * $item['quantity']);
+
+        if (!$checkoutData || empty($cart)) {
+            return redirect()->route('cart.index')->with('error', 'Data checkout tidak valid.');
+        }
+
+        $paymentMethods = MetodeModel::select('metode_id', 'nama_metode');
+
+        return view('home.checkout.payment', compact('cart', 'checkoutData', 'paymentMethods', 'total'));
+    }
+
+    public function processPayment(Request $request)
+    {
+        $request->validate([
+            'metode_id' => 'required|exists:m_metode_pembayaran,metode_id'
+        ]);
+
+        $cart = session()->get('cart', []);
+        $checkoutData = session()->get('checkout_data');
+
+        if (!$checkoutData || empty($cart)) {
+            return redirect()->route('cart.index')->with('error', 'Data tidak valid.');
+        }
+
+        DB::transaction(function () use ($cart, $checkoutData, $request) {
+            // 1️⃣ Simpan transaksi
+            $transaksi = TransaksiModel::create([
+                'nama_customer'     => $checkoutData['nama'],
+                'no_telp'           => $checkoutData['telepon'],
+                'email'             => $checkoutData['email'],
+                'alamat'            => $checkoutData['alamat'],
+                'status_transaksi'  => 'pending',
+            ]);
+
+            // kode invoice
+            $kodeInvoice = TransaksiModel::generateInvoiceNumber($transaksi->transaksi_id);
+            $transaksi->update(['kode_invoice' => $kodeInvoice]);
+
+            // 2️⃣ Simpan pembayaran
+            $total = collect($cart)->sum(fn($item) => $item['harga'] * $item['quantity']);
+            $pembayaran = PembayaranModel::create([
+                'metode_id'         => $request->metode_id,
+                'status_pembayaran' => 'belum_bayar',
+                'jumlah_produk'     => count($cart),
+                'total_harga'       => $total,
+                'alamat'            => $checkoutData['alamat'],
+                'status_transaksi'  => 'pending',
+            ]);
+
+            // 3️⃣ Simpan detail transaksi
+            foreach ($cart as $item) {
+                DetailTransaksiModel::create([
+                    'transaksi_id'   => $transaksi->transaksi_id,
+                    'pembayaran_id'  => $pembayaran->pembayaran_id,
+                    'produk_id'      => $item['produk_id'],
+                    'ukuran_id'      => $item['ukuran_id'],
+                    'warna_id'       => $item['warna_id'],
+                    'jumlah'         => $item['quantity'],
+                    'harga'          => $item['harga'],
+                ]);
+            }
+        });
+
+        session()->forget(['cart', 'checkout_data']);
+
+        return redirect()->route('cart.index')->with('success', 'Transaksi berhasil dibuat!');
     }
 }

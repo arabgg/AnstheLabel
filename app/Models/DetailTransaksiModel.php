@@ -38,16 +38,16 @@ class DetailTransaksiModel extends Model
 
     public function produk() :BelongsTo
     {
-        return $this->belongsTo(TransaksiModel::class, 'transaksi_id', 'transaksi_id');
+        return $this->belongsTo(ProdukModel::class, 'produk_id', 'produk_id');
     }
 
     public function ukuran() :BelongsTo
     {
-        return $this->belongsTo(TransaksiModel::class, 'transaksi_id', 'transaksi_id');
+        return $this->belongsTo(UkuranModel::class, 'ukuran_id', 'ukuran_id');
     }
 
     public function warna() :BelongsTo
     {
-        return $this->belongsTo(TransaksiModel::class, 'transaksi_id', 'transaksi_id');
+        return $this->belongsTo(WarnaModel::class, 'warna_id', 'warna_id');
     }
 }

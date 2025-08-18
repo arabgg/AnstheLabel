@@ -32,7 +32,10 @@ Route::post('/cart/add', [HomeController::class, 'add_cart'])->name('cart.add');
 Route::get('/cart', [HomeController::class, 'cart'])->name('cart.index');
 Route::post('/cart/update', [HomeController::class, 'update_cart'])->name('cart.update');
 Route::post('/cart/remove', [HomeController::class, 'remove_cart'])->name('cart.remove');
-Route::get('/checkout', [HomeController::class, 'checkout'])->name('checkout.index');
+Route::get('/checkout', [HomeController::class, 'checkoutForm'])->name('checkout.form');
+Route::post('/checkout/save', [HomeController::class, 'saveCheckout'])->name('checkout.save');
+Route::get('/checkout/payment', [HomeController::class, 'paymentForm'])->name('checkout.payment');
+Route::post('/checkout/process', [HomeController::class, 'processPayment'])->name('checkout.process');
 
 
 

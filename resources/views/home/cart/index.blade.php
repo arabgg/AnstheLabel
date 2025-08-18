@@ -82,7 +82,7 @@
                 </span>
             </div>
             <div class="summary-buttons">
-                <a href="{{ route('checkout.index') }}" class="cart-checkout">Continue To Payment</a>
+                <a href="{{ route('checkout.form') }}" class="cart-checkout">Continue To Payment</a>
                 <a href="{{ route('home') }}" class="cart-back">Back To Home</a>
             </div>
         </div>
