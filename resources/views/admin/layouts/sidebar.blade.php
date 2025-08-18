@@ -1,7 +1,7 @@
 <div x-data="{ sidebarOpen: true }" class="flex">
     <!-- Sidebar -->
     <div :class="sidebarOpen ? 'w-64' : 'w-16'"
-        class="hidden md:flex flex-col fixed top-0 left-0 h-screen bg-[#FBE9EB] shadow-md transition-all duration-300">
+        class="hidden md:flex flex-col fixed top-0 left-0 h-screen bg-gray-100 shadow-md transition-all duration-300">
 
         {{-- Logo + Tombol Toggle --}}
         <div class="p-4 flex items-center justify-center relative">
@@ -25,8 +25,8 @@
         <nav class="flex-1 space-y-2 p-2 overflow-y-auto">
             <!-- Dashboard -->
             <a href="/dashboard"
-                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-pink-400 transition"
-                :class="{{ request()->is('dashboard*') ? "'font-bold bg-pink-400'" : "''" }}">
+                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-red-300 transition"
+                :class="{{ request()->is('dashboard*') ? "'font-bold text-white bg-[#560024]'" : "''" }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -37,8 +37,8 @@
 
             <!-- Produk -->
             <a href="/produk"
-                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-pink-400 transition"
-                :class="{{ request()->is('produk*') ? "'font-bold bg-pink-400'" : "''" }}">
+                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-red-300 transition"
+                :class="{{ request()->is('produk*') ? "'font-bold text-white bg-[#560024]'" : "''" }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -49,8 +49,8 @@
 
             <!-- Kategori -->
             <a href="/kategori"
-                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-pink-400 transition"
-                :class="{{ request()->is('kategori*') ? "'font-bold bg-pink-400'" : "''" }}">
+                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-red-300 transition"
+                :class="{{ request()->is('kategori*') ? "'font-bold text-white bg-[#560024]'" : "''" }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -61,8 +61,8 @@
 
             <!-- Ukuran -->
             <a href="/ukuran"
-                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-pink-400 transition"
-                :class="{{ request()->is('ukuran*') ? "'font-bold bg-pink-400'" : "''" }}">
+                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-red-300 transition"
+                :class="{{ request()->is('ukuran*') ? "'font-bold text-white bg-[#560024]'" : "''" }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -73,8 +73,8 @@
 
             <!-- Warna -->
             <a href="/warna"
-                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-pink-400 transition"
-                :class="{{ request()->is('warna*') ? "'font-bold bg-pink-400'" : "''" }}">
+                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-red-300 transition"
+                :class="{{ request()->is('warna*') ? "'font-bold text-white bg-[#560024]'" : "''" }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -85,8 +85,8 @@
 
             <!-- Metode Pembayaran -->
             <a href="/metode_pembayaran"
-                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-pink-400 transition"
-                :class="{{ request()->is('metode_pembayaran*') ? "'font-bold bg-pink-400'" : "''" }}">
+                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-red-300 transition"
+                :class="{{ request()->is('metode_pembayaran*') ? "'font-bold text-white bg-[#560024]'" : "''" }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -97,8 +97,8 @@
 
             <!-- Transaksi -->
             <a href="/transaksi"
-                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-pink-400 transition"
-                :class="{{ request()->is('transaksi*') ? "'font-bold bg-pink-400'" : "''" }}">
+                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-red-300 transition"
+                :class="{{ request()->is('transaksi*') ? "'font-bold text-white bg-[#560024]'" : "''" }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

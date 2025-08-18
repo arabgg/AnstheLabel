@@ -58,7 +58,7 @@
                                 @if ($wp->warna)
                                     <div class="w-6 h-6 rounded-full border"
                                         style="background-color: {{ $wp->warna->kode_hex }};"
-                                        title="{{ $wp->warna->nama_warna }}">
+                                        title="{{ $wp->warna->nama_warna}}">
                                     </div>
                                 @endif
                             @endforeach

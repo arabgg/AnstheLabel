@@ -4,6 +4,7 @@
     <div class="flex bg-[#560024] py-4 justify-center mb-4 rounded-xl">
         <h1 class="text-2xl font-bold font-montserrat text-white">Tambah Produk</h1>
     </div>
+
     <div class="max-w-6xl mx-auto px-4 py-6">
         @if ($errors->any())
             <div class="mb-4 p-4 bg-red-100 text-red-600 rounded-xl">
@@ -19,10 +20,10 @@
             class="bg-white p-6 rounded-xl shadow-md space-y-6">
             @csrf
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {{-- Grid 2 Kolom --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-                {{-- Kolom Kiri --}}
-
+                {{-- Bagian Kiri --}}
                 <div class="space-y-6">
                     {{-- Nama Produk --}}
                     <div>
@@ -37,18 +38,17 @@
                         <textarea name="deskripsi" rows="4" class="border border-gray-300 rounded-xl px-3 py-2 w-full" required></textarea>
                     </div>
 
-                    {{-- Harga --}}
-                    <div>
-                        <label class="block font-medium mb-1">Harga</label>
-                        <input type="text" name="harga" class="border border-gray-300 rounded-xl px-3 py-2 w-full"
-                            required>
-                    </div>
-
-                    {{-- Diskon --}}
-                    <div>
-                        <label class="block font-medium mb-1">Diskon</label>
-                        <input type="text" name="diskon" class="border border-gray-300 rounded-xl px-3 py-2 w-full"
-                            required>
+                    {{-- Harga & Diskon --}}
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block font-medium mb-1">Harga</label>
+                            <input type="text" name="harga" class="border border-gray-300 rounded-xl px-3 py-2 w-full"
+                                required>
+                        </div>
+                        <div>
+                            <label class="block font-medium mb-1">Diskon</label>
+                            <input type="text" name="diskon" class="border border-gray-300 rounded-xl px-3 py-2 w-full">
+                        </div>
                     </div>
 
                     {{-- Kategori --}}
@@ -60,6 +60,18 @@
                                 <option value="{{ $k->kategori_id }}">{{ $k->nama_kategori }}</option>
                             @endforeach
                         </select>
+
+                        {{-- Input manual --}}
+                        <div class="mt-2">
+                            <button type="button" class="text-xs text-gray-600 hover:underline"
+                                onclick="document.getElementById('kategori-manual-wrap').classList.toggle('hidden')">
+                                + Tambah kategori baru (opsional)
+                            </button>
+                            <div id="kategori-manual-wrap" class="hidden mt-2">
+                                <input type="text" name="kategori_manual" placeholder="Ketik nama kategori baru…"
+                                    class="border border-gray-300 rounded-xl px-3 py-2 w-full">
+                            </div>
+                        </div>
                     </div>
 
                     {{-- Bahan --}}
@@ -71,6 +83,18 @@
                                 <option value="{{ $b->bahan_id }}">{{ $b->nama_bahan }}</option>
                             @endforeach
                         </select>
+
+                        {{-- Input manual --}}
+                        <div class="mt-2">
+                            <button type="button" class="text-xs text-gray-600 hover:underline"
+                                onclick="document.getElementById('bahan-manual-wrap').classList.toggle('hidden')">
+                                + Tambah bahan baru (opsional)
+                            </button>
+                            <div id="bahan-manual-wrap" class="hidden mt-2">
+                                <input type="text" name="bahan_manual" placeholder="Ketik nama bahan baru…"
+                                    class="border border-gray-300 rounded-xl px-3 py-2 w-full">
+                            </div>
+                        </div>
                     </div>
 
                     {{-- Ukuran --}}
@@ -83,6 +107,23 @@
                                     {{ $itemUkuran->nama_ukuran }}
                                 </label>
                             @endforeach
+                        </div>
+
+                        {{-- Input manual --}}
+                        <div class="mt-3">
+                            <button type="button" class="text-xs text-gray-600 hover:underline"
+                                onclick="document.getElementById('ukuran-manual-wrap').classList.toggle('hidden')">
+                                + Tambah ukuran baru (opsional)
+                            </button>
+                            <div id="ukuran-manual-wrap" class="hidden mt-2">
+                                <div class="flex gap-2">
+                                    <input type="text" id="ukuran-manual-input" placeholder="Misal: XXL"
+                                        class="border border-gray-300 rounded-xl px-3 py-2 w-full">
+                                    <button type="button" class="px-3 py-2 bg-gray-800 text-white rounded-xl"
+                                        onclick="tambahUkuranManual()">Tambah</button>
+                                </div>
+                                <div id="ukuran-manual-list" class="flex flex-wrap gap-2 mt-2"></div>
+                            </div>
                         </div>
                     </div>
 
@@ -99,17 +140,36 @@
                                 </label>
                             @endforeach
                         </div>
+                        {{-- Color picker --}}
+                        <div class="mt-3">
+                            <button type="button" class="text-xs text-gray-600 hover:underline"
+                                onclick="document.getElementById('warna-manual-wrap').classList.toggle('hidden')">
+                                + Tambah warna baru (opsional)
+                            </button>
+                            <div id="warna-manual-wrap" class="hidden mt-2">
+                                <div class="flex items-center gap-2">
+                                    <input type="color" id="warna-picker" class="w-10 h-10 p-0 border rounded-xl">
+                                    <input type="text" id="warna-hex" placeholder="#RRGGBB"
+                                        class="border border-gray-300 rounded-xl px-3 py-2 w-full"
+                                        oninput="sinkronHexKePicker(this.value)">
+                                    <button type="button" class="px-3 py-2 bg-gray-800 text-white rounded-xl"
+                                        onclick="tambahWarnaManual()">Tambah</button>
+                                </div>
+                                <div id="warna-manual-list" class="flex flex-wrap gap-2 mt-2"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                {{-- Kolom Kanan --}}
+                {{-- Bagian Kanan --}}
                 <div class="space-y-6">
                     {{-- Foto Utama --}}
                     <div>
                         <label class="block font-medium mb-1">Foto Utama</label>
                         <input type="file" name="foto_utama" id="foto-utama" accept="image/*"
                             class="border border-gray-300 rounded-xl px-3 py-2 w-full" required>
-                        <div class="mt-3 w-60 aspect-[4/5] border flex items-center justify-center rounded-xl overflow-hidden">
+                        <div
+                            class="mt-3 w-60 aspect-[4/5] border flex items-center justify-center rounded-xl overflow-hidden">
                             <img id="preview-utama" src="https://via.placeholder.com/200?text=+"
                                 class="object-cover w-full h-full" alt="Preview Utama">
                         </div>
@@ -127,36 +187,122 @@
                                         data-preview="preview-sekunder-{{ $i }}">
                                     <div class="mt-2 flex justify-center">
                                         <img id="preview-sekunder-{{ $i }}"
-                                            class="hidden border rounded-xl object-cover" style="width:80px; height:100px;"
-                                            alt="Preview">
+                                            class="hidden border rounded-xl object-cover"
+                                            style="width:80px; height:100px;" alt="Preview">
                                     </div>
                                 </div>
                             @endfor
                         </div>
                     </div>
-
                 </div>
             </div>
 
-            <div class="pt-4 flex justify-between items-center gap-4">
-                {{-- Tombol Batal --}}
+            {{-- Tombol Aksi --}}
+            <div class="pt-6 flex justify-between items-center gap-4">
                 <a href="{{ url('/produk') }}"
                     class="flex-[1] text-center px-4 py-4 bg-gray-200 text-gray-800 rounded-xl font-medium hover:bg-gray-300 transition duration-300 shadow-sm">
                     Batal
                 </a>
-
-                {{-- Tombol Simpan --}}
                 <button type="submit"
                     class="flex-[2] text-center py-4 bg-[#560024] text-white rounded-xl font-medium hover:bg-[#7a0033] transition duration-300 shadow-sm">
                     Simpan
                 </button>
             </div>
-
         </form>
     </div>
 
     {{-- Preview Foto --}}
     <script>
+        // UKURAN MANUAL
+        function tambahUkuranManual() {
+            const input = document.getElementById('ukuran-manual-input');
+            const val = (input.value || '').trim();
+            if (!val) return;
+
+            const wrap = document.getElementById('ukuran-manual-list');
+
+            // badge tampilan
+            const tag = document.createElement('span');
+            tag.className = 'inline-flex items-center gap-2 px-3 py-1 rounded-xl border';
+            tag.textContent = val;
+
+            // tombol hapus badge
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'text-xs text-red-600';
+            btn.textContent = '×';
+            btn.onclick = () => {
+                wrap.removeChild(tag);
+            };
+            tag.appendChild(btn);
+
+            // hidden input untuk submit
+            const hidden = document.createElement('input');
+            hidden.type = 'hidden';
+            hidden.name = 'ukuran_baru[]';
+            hidden.value = val;
+            tag.appendChild(hidden);
+
+            wrap.appendChild(tag);
+            input.value = '';
+        }
+
+        // WARNA MANUAL
+        const picker = document.getElementById('warna-picker');
+        const hexInput = document.getElementById('warna-hex');
+
+        if (picker && hexInput) {
+            picker.addEventListener('input', () => {
+                hexInput.value = picker.value.toUpperCase();
+            });
+        }
+
+        function sinkronHexKePicker(val) {
+            // normalisasi ke format #RRGGBB
+            if (/^#?[0-9A-Fa-f]{6}$/.test(val)) {
+                const fixed = val.startsWith('#') ? val : ('#' + val);
+                picker.value = fixed;
+            }
+        }
+
+        function tambahWarnaManual() {
+            const val = (hexInput.value || picker.value || '').trim();
+            if (!/^#?[0-9A-Fa-f]{6}$/.test(val)) return;
+            const hex = val.startsWith('#') ? val.toUpperCase() : ('#' + val.toUpperCase());
+
+            const wrap = document.getElementById('warna-manual-list');
+
+            // badge tampilan dengan bulatan warna
+            const tag = document.createElement('span');
+            tag.className = 'inline-flex items-center gap-2 px-3 py-1 rounded-xl border';
+
+            const dot = document.createElement('span');
+            dot.className = 'w-4 h-4 rounded-full border';
+            dot.style.backgroundColor = hex;
+
+            const label = document.createElement('span');
+            label.textContent = hex;
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'text-xs text-red-600';
+            btn.textContent = '×';
+            btn.onclick = () => {
+                wrap.removeChild(tag);
+            };
+
+            // hidden input untuk submit (array warna_baru[])
+            const hidden = document.createElement('input');
+            hidden.type = 'hidden';
+            hidden.name = 'warna_baru[]';
+            hidden.value = hex;
+
+            tag.appendChild(dot);
+            tag.appendChild(label);
+            tag.appendChild(btn);
+            tag.appendChild(hidden);
+            wrap.appendChild(tag);
+        }
         // Preview Foto Utama
         document.getElementById('foto-utama').addEventListener('change', function(e) {
             const file = e.target.files[0];
