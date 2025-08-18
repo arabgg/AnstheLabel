@@ -74,12 +74,22 @@ class ProdukController extends Controller
             'deskripsi' => 'required|string',
             'harga' => 'required|string',
             'diskon' => 'nullable|string',
+
+            // Dropdown database
             'kategori_id' => 'required|integer',
             'bahan_id' => 'required|integer',
             'ukuran_id' => 'required|array|min:1',
             'ukuran_id.*' => 'string|max:50',
             'warna_id' => 'required|array|min:1',
             'warna_id.*' => 'string|max:50',
+
+            // Input manual
+            'kategori_manual' => 'nullable|string|max:255',
+            'bahan_manual' => 'nullable|string|max:255',
+            'ukuran_manual' => 'nullable|array',
+            'ukuran_manual.*' => 'string|max:50',
+            'warna_manual' => 'nullable|array',
+            'warna_manual.*' => 'string|max:50',
         ], [
             'foto_utama.image' => 'Foto utama harus berupa gambar.',
             'foto_utama.mimes' => 'Format foto utama hanya boleh jpeg, png, atau jpg.',
@@ -118,6 +128,24 @@ class ProdukController extends Controller
             'warna_id.*.string' => 'Warna harus berupa teks.',
             'warna_id.*.max' => 'Warna maksimal 50 karakter.',
         ]);
+
+        // Kategori manual
+        if ($request->filled('kategori_manual')) {
+            $k = KategoriModel::firstOrCreate(
+                ['nama_kategori' => $request->kategori_manual],
+                []
+            );
+            $request->merge(['kategori_id' => $k->kategori_id]);
+        }
+
+        // Bahan manual
+        if ($request->filled('bahan_manual')) {
+            $b = BahanModel::firstOrCreate(
+                ['nama_bahan' => $request->bahan_manual],
+                []
+            );
+            $request->merge(['bahan_id' => $b->bahan_id]);
+        }
 
         // Simpan produk
         $produk = ProdukModel::create([
@@ -172,12 +200,37 @@ class ProdukController extends Controller
             }
         }
 
+        // Ukuran manual
+        if ($request->has('ukuran_baru')) {
+            foreach ($request->ukuran_baru as $namaUkuranBaru) {
+                $u = UkuranModel::firstOrCreate(['nama_ukuran' => $namaUkuranBaru], []);
+                UkuranProdukModel::firstOrCreate([
+                    'produk_id' => $produk->produk_id,
+                    'ukuran_id' => $u->ukuran_id,
+                ]);
+            }
+        }
+
         // Warna
         if ($request->has('warna_id')) {
             foreach ($request->warna_id as $kode) {
                 WarnaProdukModel::create([
                     'produk_id' => $produk->produk_id,
                     'warna_id' => $kode,
+                ]);
+            }
+        }
+
+        // Warna manual
+        if ($request->has('warna_baru')) {
+            foreach ($request->warna_baru as $hex) {
+                $w = WarnaModel::firstOrCreate(
+                    ['kode_hex' => strtoupper($hex)],
+                    ['nama_warna' => strtoupper($hex)]
+                );
+                WarnaProdukModel::firstOrCreate([
+                    'produk_id' => $produk->produk_id,
+                    'warna_id'  => $w->warna_id,
                 ]);
             }
         }
@@ -320,7 +373,7 @@ class ProdukController extends Controller
         $produk = ProdukModel::findOrFail($id);
 
         $produk->foto()->delete();
-        $produk->warnaProduk()->delete();
+        $produk->warna()->delete();
         $produk->ukuran()->delete();
         $produk->toko()->delete();
 
