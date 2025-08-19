@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             BahanSeeder::class,
             ProdukSeeder::class,
             UkuranProdukSeeder::class,
-            UkuranProdukSeeder::class,
+            WarnaProdukSeeder::class,
             FotoProdukSeeder::class,
             TokoProdukSeeder::class,
         ]);

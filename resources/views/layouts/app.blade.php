@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ asset('css/carousel.css') }}">
     <link rel="stylesheet" href="{{ asset('css/bestproduk.css') }}">
     <link rel="stylesheet" href="{{ asset('css/collection.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/about.css') }}">
     <link rel="stylesheet" href="{{ asset('css/footer.css') }}">
 
     {{-- Font --}}

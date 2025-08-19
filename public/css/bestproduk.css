@@ -101,19 +101,6 @@
     text-align: left;
 }
 
-.bestproduk-color-dots {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 6px;
-}
-
-.bestproduk-dot {
-    width: 17px;
-    height: 17px;
-    border-radius: 50%;
-    border: 1px solid #aaa;
-}
-
 .bestproduk-name {
     font-family: 'Montserrat', sans-serif !important;
     font-size: 20px;

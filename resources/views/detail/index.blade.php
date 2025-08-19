@@ -2,9 +2,9 @@
 
 @section('breadcrumb')
     <div class="breadcrumb">
-        <a href="{{ route('page') }}">Home</a> / 
+        <a href="{{ route('home') }}">Home</a> / 
         <a href="{{ route('collection') }}">Collection</a> / 
-        <span>{{ $show->produk->nama_produk }}</span>
+        <span>{{ $produk->nama_produk }}</span>
     </div>
 @endsection
 
@@ -14,53 +14,91 @@
             <div class="detail-product-wrapper">
                 <!-- Left: Product Images -->
                 <div class="detail-product-images">
-                    <img class="detail-main-image" src="{{ asset('storage/foto_produk/foto_hijab1.jpg') }}" alt="Rumila Scarf">
+                    {{-- Foto Utama --}}
+                    <img class="detail-main-image"
+                        src="{{ asset('storage/foto_produk/' . $produk->fotoUtama->foto_produk) }}"
+                        alt="{{ $produk->nama_produk }}">
+
+                    {{-- Foto Thumbnail --}}
                     <div class="detail-thumbnail-wrapper">
-                        <img src="{{ asset('storage/foto_produk/foto_hijab1.jpg') }}" alt="Thumb 1">
-                        <img src="{{ asset('storage/foto_produk/foto_hijab1.jpg') }}" alt="Thumb 2">
-                        <img src="{{ asset('storage/foto_produk/foto_hijab1.jpg') }}" alt="Thumb 3">
-                        <img src="{{ asset('storage/foto_produk/foto_hijab1.jpg') }}" alt="Thumb 4">
-                        <img src="{{ asset('storage/foto_produk/foto_hijab1.jpg') }}" alt="Thumb 5">
+                        @foreach ($produk->foto->where('status_foto', 0) as $foto)
+                            <img src="{{ asset('storage/foto_produk/' . $foto->foto_produk) }}"
+                                alt="Thumbnail {{ $loop->iteration }}">
+                        @endforeach
                     </div>
                 </div>
 
                 <!-- Right: Product Info -->
                 <div class="detail-product-info">
-                    <h2 class="detail-product-name">Rumila Scarf</h2>
-                    <p class="detail-product-price">Rp 198.000</p>
-
-                    <form>
-                        <label>Color: <b>Rumila</b></label>
-                        <div class="detail-size-wrapper">
-                            <label for="size">Size:</label>
-                            <select id="size" name="size">
-                                <option>One Size</option>
-                            </select>
+                    <div class="detail-section">
+                        <h2 class="detail-product-name">{{ $produk->nama_produk }}</h2>
+                        <p class="detail-product-kategori">{{ $produk->deskripsi }}</p>
+                    </div>
+                    
+                    <div class="detail-section-info">
+                        <div class="detail-color-wrapper">
+                            <p>Colors</p>
+                            @if ($produk->warna->isNotEmpty())
+                                <div class="detail-color-dot">
+                                    @foreach ($produk->warna as $warnaItem)
+                                        @if ($warnaItem->warna)
+                                            <span class="detail-dot"
+                                                style="background-color: {{ $warnaItem->warna->kode_hex ?? '#000000' }};">
+                                            </span>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            @endif
                         </div>
 
-                        <div class="detail-quantity-wrapper">
-                            <label>Quantity:</label>
-                            <input type="number" value="1" min="1">
+                        <div class="detail-size-wrapper">    
+                            <p>Size Guide</p>
+                            @if ($produk->ukuran->isNotEmpty())
+                                <div class="detail-size">
+                                    @foreach ($produk->ukuran as $sizeItem)
+                                        @if ($sizeItem->produk)
+                                            <span class="detail-size-nama">
+                                                {{ $sizeItem->ukuran->nama_ukuran }}
+                                            </span>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            @endif
                         </div>
 
-                        <button type="button" class="detail-btn-soldout">Sold Out</button>
-                        <button type="button" class="detail-btn-wishlist">Add to Wishlist</button>
-                    </form>
-
-                    <div class="detail-product-description">
-                        <p>
-                            Dapatkan tampilan memukau dengan Rumila Scarf hijab printed yang
-                            didesain dengan kesan kuat dan tegas yang mudah untuk menarik
-                            perhatian mulai langsung dari motif sampai rona pada bagian tepi.
-                        </p>
-                        <ul>
-                            <li>Bahan: Voal</li>
-                            <li>Size: 115x115 cm</li>
-                            <li>*Terdapat sedikit perbedaan warna akibat cahaya/screen</li>
-                        </ul>
+                        <div class="detail-toko-wrapper">    
+                            <p>Link Shop</p>
+                            @if ($produk->toko->isNotEmpty())
+                                <div class="detail-toko">
+                                    @foreach ($produk->toko as $tokoItem)
+                                        @if ($tokoItem->produk)
+                                        <a href="{{ $tokoItem->url_toko }}">
+                                            <img src="{{ asset('storage/icon/' . $tokoItem->toko->icon_toko) }}" 
+                                            alt="{{ $tokoItem->toko->nama_toko }}">
+                                        </a>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="detail-recommend">
+        <h2>You May Also Like</h2>
+        <div class="detail-recommend-grid">
+            @foreach ($rekomendasi as $item)
+            <div class="detail-recommend-card">
+                <a href="{{ route('detail.show', $item->produk_id) }}">
+                    <img src="{{ asset('storage/foto_produk/' . $item->fotoUtama->foto_produk) }}" alt="{{ $item->nama_produk }}">
+                    <h3>{{ $item->nama_produk }}</h3>
+                    <p>{{ $item->kategori->nama_kategori }}</p>
+                </a>
+            </div>
+            @endforeach
         </div>
     </div>
 @endsection

@@ -14,8 +14,10 @@ class WarnaSeeder extends Seeder
     public function run(): void
     {
         DB::table('m_warna')->insert([
-            ['nama_warna' => 'Hitam', 'created_at' => now()],
-            ['nama_warna' => 'Putih', 'created_at' => now()],
+            ['kode_hex' => '#2c7851ff', 'created_at' => now()],
+            ['kode_hex' => '#8d5858ff', 'created_at' => now()],
+            ['kode_hex' => '#ca8888ff', 'created_at' => now()],
+            ['kode_hex' => '#936c6cff', 'created_at' => now()],
         ]);
     }
 }

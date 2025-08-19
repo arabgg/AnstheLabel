@@ -1,0 +1,103 @@
+.about-section {
+  background: linear-gradient(
+    to top right,
+    #ffffff 0%,
+    #fbe9eb 25%,
+    #f4d6cc 50%,
+    #a65a6a 75%,
+    #560024 100%
+  );
+  color: #333;
+  padding: 80px 40px;
+}
+
+.about-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding-bottom: 100px;
+  margin-top: 100px;
+}
+
+.about-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  margin-bottom: 200px;
+}
+
+.about-left {
+  flex: 1;
+  min-width: 300px;
+  text-align: center;
+}
+
+.about-logo {
+  width: 100%;
+  max-width: 250px;
+}
+
+.about-right {
+  flex: 2;
+  min-width: 300px;
+  padding: 0 20px;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #333;
+}
+
+.about-recommend {
+  text-align: center;
+}
+
+.about-recommend h2 {
+  font-size: 24px;
+  margin-bottom: 30px;
+  font-weight: bold;
+}
+
+.recommend-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.recommend-card {
+  background: white;
+  padding: 15px;
+  width: 250px;
+  height: 350px;
+  border-radius: 6px;
+  text-align: left;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+}
+
+.recommend-card:hover {
+  transform: translateY(-5px);
+}
+.recommend-card a {
+    text-decoration: none;
+}
+
+.recommend-card img {
+  width: 100%;
+  height: 80%;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.recommend-card h3 {
+  font-size: 18px;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.recommend-card p {
+  font-size: 14px;
+  color: #a66;
+  margin-bottom: 10px;
+}
