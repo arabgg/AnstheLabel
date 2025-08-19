@@ -4,7 +4,7 @@
     </div>
 
     <div class="bestproduk-grid" id="katalogGrid">
-        @foreach ($bestproduk as $index => $item)
+        @foreach ($newarrival as $index => $item)
             <div class="bestproduk-card">
                 <a href="{{ route('detail.show', $item->produk_id) }}">
                     <div class="bestproduk-image-wrapper">
