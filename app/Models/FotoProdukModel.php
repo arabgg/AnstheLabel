@@ -14,6 +14,7 @@ class FotoProdukModel extends Model
     protected $primaryKey = 'foto_produk_id';
     
     protected $fillable = [
+        'produk_id',
         'foto_produk',
         'status_foto',
     ];

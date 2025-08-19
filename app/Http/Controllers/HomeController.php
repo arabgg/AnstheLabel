@@ -9,54 +9,98 @@ use App\Models\ProdukModel;
 class HomeController extends Controller
 {
     public function index() {
-        $bestproduk = [
+        $bestproduk = ProdukModel::with([
+            'kategori',
+            'foto' => fn($q) => $q->orderByDesc('status_foto'),
+            'fotoUtama'
+        ])
+        ->latest('produk_id') // atau ->orderByDesc('id')
+        ->take(4)
+        ->get();
+
+        $bestseller = ProdukModel::with([
+            'kategori',
+            'foto' => fn($q) => $q->orderByDesc('status_foto'),
+            'fotoUtama'
+        ])
+        ->orderByDesc('harga') // urutkan berdasarkan harga tertinggi
+        ->take(4) // ambil 4 produk teratas
+        ->get();
+
+        $viscose = [
             [
-                'nama' => 'Hijab',
-                'kategori' => 'Pakaian Muslim Wanita',
-                'image' => 'bp01.png',
-                'image_hover' => 'bp01_hover.png',
-                'warna' => ['#000000', '#FFFFFF', '#FF6C6C'],
+                'nama' => 'Sleveless Round Neck',
+                'kategori' => 'Dress',
+                'image' => 'vs01.png',
+                'image_hover' => 'vs01_hover.png',
+                'warna' => ['#000000', '#FF6C6C', '#2c7851ff', '#8d5858ff', '#ca8888ff', '#936c6cff', '#FFFFFF',],
             ],
             [
-                'nama' => 'Mukena',
-                'kategori' => 'Pakaian Muslim Wanita',
-                'image' => 'bp02.png',
-                'image_hover' => 'bp02_hover.png',
-                'warna' => ['#000000', '#FFFFFF', '#FF6C6C'],
+                'nama' => 'Sleveless Turtle Neck',
+                'kategori' => 'Dress',
+                'image' => 'vs02.png',
+                'image_hover' => 'vs02_hover.png',
+                'warna' => ['#000000', '#8d5858ff', '#ca8888ff', '#FF6C6C', '#2c7851ff', '#936c6cff', '#FFFFFF',],
             ],
             [
-                'nama' => 'Dress',
-                'kategori' => 'Pakaian Muslim Wanita',
-                'image' => 'bp03.png',
-                'image_hover' => 'bp03_hover.png',
-                'warna' => ['#000000', '#FFFFFF', '#FF6C6C'],
+                'nama' => 'Kutton Strip Knitwear',
+                'kategori' => 'Outer',
+                'image' => 'vs03.png',
+                'image_hover' => 'vs03_hover.png',
+                'warna' => ['#FF6C6C', '#2c7851ff', '#8d5858ff', '#ca8888ff', '#936c6cff', '#000000', '#FFFFFF'],
+            ],
+            [
+                'nama' => 'Savana Cardigan',
+                'kategori' => 'Outer',
+                'image' => 'vs04.png',
+                'image_hover' => 'vs04_hover.png',
+                'warna' => ['#000000', '#FF6C6C', '#8d5858ff', '#ca8888ff','#2c7851ff', '#936c6cff', '#FFFFFF',],
             ],
         ];
 
-        return view('landingpage.index', [
-            'bestproduk' => $bestproduk
+        return view('home.landingpage.index', [
+            'bestproduk' => $bestproduk,
+            'bestseller' => $bestseller,
+            'viscose' => $viscose,
         ]);
     }
 
-    public function collection(Request $request) {
+    public function collection(Request $request)
+    {
+        // Ambil filter kategori
         $filterKategori = $request->input('filter', []);
         if (!is_array($filterKategori)) {
             $filterKategori = [$filterKategori];
         }
 
-        $produk = ProdukModel::with('kategori', 'bahan', 'fotoUtama', 'foto', 'warna', 'ukuran', 'toko');
+        // Ambil keyword pencarian
+        $searchQuery = $request->input('search', '');
+        $produk = ProdukModel::with('kategori', 'bahan', 'fotoUtama', 'foto', 'warna', 'ukuran');
 
+        // Query produk dengan relasi
+        $produk = ProdukModel::with(['kategori', 'bahan', 'fotoUtama', 'foto', 'warna.warna', 'ukuran']);
+
+        // Filter kategori
         if (!empty($filterKategori)) {
             $produk->whereIn('kategori_id', $filterKategori);
         }
 
+        // Filter search (pencarian nama produk)
+        if (!empty($searchQuery)) {
+            $produk->where('nama_produk', 'like', '%' . $searchQuery . '%');
+        }
+
+        // Ambil data produk
         $produk = $produk->get();
+
+        // Ambil semua kategori
         $kategori = KategoriModel::all();
 
-        return view('collection.index', [
+        return view('home.collection.index', [
             'produk' => $produk,
             'kategori' => $kategori,
-            'filterkategori' => $filterKategori
+            'filterkategori' => $filterKategori,
+            'searchQuery' => $searchQuery
         ]);
     }
 
@@ -67,9 +111,9 @@ class HomeController extends Controller
         $rekomendasi = ProdukModel::with('kategori')
         ->get()
         ->unique(fn ($item) => $item->kategori_id)
-        ->take(3); 
+        ->take(4); 
 
-        return view('about.index', [
+        return view('home.about.index', [
             'produk' => $produk,
             'rekomendasi' => $rekomendasi,
         ]);
@@ -82,9 +126,8 @@ class HomeController extends Controller
                 'kategori',
                 'bahan',
                 'foto',
-                'warnaProduk.warna', // sesuai nama relasi
+                'warna.warna', // sesuai nama relasi
                 'ukuran.ukuran',
-                'toko.toko'
             ])
             ->where('produk_id', $id)
             ->first();
@@ -93,11 +136,108 @@ class HomeController extends Controller
         $rekomendasi = ProdukModel::with('kategori')
             ->get()
             ->unique(fn ($item) => $item->kategori_id)
-            ->take(3);
+            ->take(4);
 
-        return view('detail.index', [
+        return view('home.detail.index', [
             'produk' => $produk,
             'rekomendasi' => $rekomendasi,
         ]);
+    }
+
+    public function cart()
+    {
+        $cart = session()->get('cart', []);
+        $total = 0;
+
+        foreach ($cart as $item) {
+            $total += $item['harga'] * $item['quantity'];
+        }
+
+        $grandTotal = $total;
+
+        $rekomendasi = ProdukModel::with('kategori')
+            ->get()
+            ->unique(fn ($item) => $item->kategori_id)
+            ->take(4);
+
+        return view('home.cart.index', compact('cart', 'total', 'grandTotal', 'rekomendasi'));
+    }
+
+    public function add_cart(Request $request)
+    {
+        $produk = ProdukModel::findOrFail($request->produk_id);
+
+        $warnaData = \App\Models\WarnaModel::find($request->warna);
+        $ukuranData = \App\Models\UkuranModel::find($request->ukuran);
+
+        $cart = session()->get('cart', []);
+
+        $cart[] = [
+            'id' => $produk->produk_id,
+            'nama' => $produk->nama_produk,
+            'harga' => $produk->diskon > 0 ? $produk->harga_diskon : $produk->harga,
+            'warna_id' => $warnaData?->warna_id,
+            'warna_nama' => $warnaData?->nama_warna, 
+            'ukuran_id' => $ukuranData?->ukuran_id,
+            'ukuran_nama' => $ukuranData?->nama_ukuran,
+            'quantity' => (int) $request->quantity,
+            'foto' => $produk->fotoUtama ? $produk->fotoUtama->foto_produk : null
+        ];
+
+        session()->put('cart', $cart);
+
+        if ($request->action === 'buy_now') {
+            return redirect()->route('cart.index');
+        } else {
+            return response()->json(['success' => true]);
+        }
+    }
+
+
+    public function update_cart(Request $request)
+    {
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$request->index])) {
+            $quantity = (int) $request->quantity;
+
+            if ($quantity <= 0) {
+                // Hapus item dari cart
+                unset($cart[$request->index]);
+            } else {
+                // Update quantity
+                $cart[$request->index]['quantity'] = $quantity;
+            }
+
+            session()->put('cart', $cart);
+        }
+
+        return redirect()->route('cart.index');
+    }
+
+    public function remove_cart(Request $request)
+    {
+        $cart = session()->get('cart', []);
+        if (isset($cart[$request->index])) {
+            unset($cart[$request->index]);
+            session()->put('cart', array_values($cart));
+        }
+        return redirect()->route('cart.index');
+    }
+
+    public function checkout()
+    {
+        return view('home.checkout.index');
+    }
+
+    public function checkoutpp()
+    {
+        session()->forget('cart'); // Kosongkan keranjang
+        return redirect()->route('cart.success');
+    }
+
+    public function success()
+    {
+        return view('cart.success');
     }
 }
