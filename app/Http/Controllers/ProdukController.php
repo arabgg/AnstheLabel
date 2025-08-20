@@ -382,7 +382,6 @@ class ProdukController extends Controller
         $produk->foto()->delete();
         $produk->warna()->delete();
         $produk->ukuran()->delete();
-        $produk->toko()->delete();
 
         $produk->delete();
 
