@@ -45,11 +45,15 @@ class ProdukModel extends Model
 
     public function getDiskonPersenAttribute()
     {
-        $harga  = (string) ($this->harga ?? '0.00');
-        $diskon = (string) ($this->diskon ?? '0.00');
+        $harga  = (float) ($this->harga ?? 0);
+        $diskon = (float) ($this->diskon ?? 0);
 
-        if ($harga !== '0.00' && $diskon !== '0.00') {
-            return (float) bcmul(bcdiv($diskon, $harga, 4), '100', 0);
+        if ($harga > 0 && $diskon > 0) {
+            return (float) bcmul(
+                bcdiv((string) $diskon, (string) $harga, 4),
+                '100',
+                0
+            );
         }
 
         return 0;
