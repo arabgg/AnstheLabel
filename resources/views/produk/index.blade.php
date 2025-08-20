@@ -108,5 +108,3 @@
         </div>
     </div>
 @endsection
-
-<h1>Coba upload file baru menggunakan github Action</h1>
