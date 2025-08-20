@@ -22,6 +22,8 @@ class ProdukModel extends Model
         'harga',
         'diskon',
         'deskripsi',
+        'harga',
+        'diskon',
     ];
 
     protected $casts = [
@@ -43,15 +45,13 @@ class ProdukModel extends Model
 
     public function getDiskonPersenAttribute()
     {
-        $harga  = (float) ($this->harga ?? 0);
-        $diskon = (float) ($this->diskon ?? 0);
+        $harga = (string) ($this->harga ?? '0.00');
+        $diskon = (string) ($this->diskon ?? '0.00');
 
-        if ($harga > 0 && $diskon > 0) {
-            return (float) bcmul(
-                bcdiv((string) $diskon, (string) $harga, 4),
-                '100',
-                0
-            );
+        if (bccomp($harga, '0.00', 2) === 1 && bccomp($diskon, '0.00', 2) === 1) {
+            // (diskon / harga) * 100 dengan presisi 2 digit
+            $persen = bcmul(bcdiv($diskon, $harga, 4), '100', 0);
+            return (float) $persen;
         }
 
         return 0;
