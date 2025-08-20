@@ -28,9 +28,14 @@
             <a href="{{ route('about') }}" class="nav-item {{ request()->is('about') ? 'active' : '' }}">About Us</a>
         </nav>
         <div class="nav-icons">
-            <a href="{{ route('cart.index') }}" class="nav-icon">
-                <i class="fas fa-cart-shopping"></i>
-            </a>
-        </div>
+    <a href="{{ route('cart.index') }}" class="nav-icon relative">
+        <i class="fas fa-cart-shopping"></i>
+        @if($cartCount > 0)
+            <span class="cart-badge">{{ $cartCount }}</span>
+        @endif
+    </a>
+</div>
+
+
     </div>
 </header>

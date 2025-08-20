@@ -4,21 +4,24 @@
 <div class="checkout-container">
     {{-- Bagian Form --}}
     <div class="checkout-form">
-        <div class="checkout-kontak">
-            <h3 class="checkout-kontak-title">Kontak</h3>
-            <input class="checkout-kontak-data" type="email" placeholder="Email">
-        </div>
+        <form action="{{ route('checkout.save') }}" method="POST">
+            @csrf
+            <div class="checkout-kontak">
+                <h3 class="checkout-kontak-title">Kontak</h3>
+                <input class="checkout-kontak-data" type="email" name="email" placeholder="Email" required>
+            </div>
 
-        <div class="checkout-pengantaran">
-            <h3 class="checkout-pengantaran-title">Pengantaran</h3>
-            <input class="checkout-pengantaran-data" type="text" placeholder="Nama Lengkap">
-            <input class="checkout-pengantaran-data" type="text" placeholder="Alamat">
-            <input class="checkout-pengantaran-data" type="text" placeholder="Kota">
-            <input class="checkout-pengantaran-data" type="text" placeholder="Kecamatan">
-            <input class="checkout-pengantaran-data" type="text" placeholder="Telepon">
-        </div>
+            <div class="checkout-pengantaran">
+                <h3 class="checkout-pengantaran-title">Pengantaran</h3>
+                <input class="checkout-pengantaran-data" type="text" name="nama" placeholder="Nama Lengkap" required>
+                <input class="checkout-pengantaran-data" type="text" name="alamat" placeholder="Alamat" required>
+                <input class="checkout-pengantaran-data" type="text" name="kota" placeholder="Kota" required>
+                <input class="checkout-pengantaran-data" type="text" name="kecamatan" placeholder="Kecamatan" required>
+                <input class="checkout-pengantaran-data" type="text" name="telepon" placeholder="Telepon" required>
+            </div>
 
-        <button class="checkout-payment-btn">Payment</button>
+            <button type="submit" class="checkout-payment-btn">Payment</button>
+        </form>
     </div>
 
     {{-- Bagian Ringkasan --}}

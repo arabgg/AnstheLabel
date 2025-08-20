@@ -11,9 +11,6 @@
     </div>
 </div>
 
-
-
-
 <div class="produk-section">
     {{-- Sidebar Filter --}}
     <div class="produk-sidebar">
@@ -21,12 +18,12 @@
 
         {{-- Aktif Filter Ditampilkan --}}
         <h2>Kategori:</h2>
-        @if (!empty($filterkategori))
+        @if (!empty($filterKategori))
             <div class="produk-tags">
-                @foreach ($filterkategori as $kategoriId)
+                @foreach ($filterKategori as $kategoriId)
                     @php
                         $kategoriNama = $kategori->firstWhere('kategori_id', $kategoriId)?->nama_kategori ?? 'Unknown';
-                        $remainingFilters = array_diff($filterkategori, [$kategoriId]);
+                        $remainingFilters = array_diff($filterKategori, [$kategoriId]);
                     @endphp
                     <span class="produk-tag">
                         {{ ucfirst($kategoriNama) }}
@@ -48,7 +45,7 @@
                                 name="filter[]" 
                                 value="{{ $item->kategori_id }}"
                                 onchange="document.getElementById('filterForm').submit()"
-                                {{ in_array($item->kategori_id, $filterkategori) ? 'checked' : '' }}>
+                                {{ in_array($item->kategori_id, $filterKategori) ? 'checked' : '' }}>
                             {{ ucfirst($item->nama_kategori) }}
                         </label>
                     @endforeach
