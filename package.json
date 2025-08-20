@@ -5,30 +5,14 @@
     "description": "Project Laravel Ansthelabel",
     "main": "vite.config.js",
     "scripts": {
-        "dev": "npx mix",
-        "watch": "npx mix watch",
-        "prod": "npx mix --production",
-        "vite-dev": "vite",
-        "vite-build": "vite build"
+        "dev": "vite",
+        "build": "vite build",
     },
     "devDependencies": {
         "axios": "^1.6.4",
         "laravel-mix": "^6.0.49",
         "laravel-vite-plugin": "^1.0.0",
+        "tailwindcss": "^4.1.11",
         "vite": "^5.0.0"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/arabgg/AnstheLabel.git"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/arabgg/AnstheLabel/issues"
-    },
-    "homepage": "https://github.com/arabgg/AnstheLabel#readme",
-    "directories": {
-        "test": "tests"
     }
 }
