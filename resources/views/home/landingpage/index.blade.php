@@ -7,8 +7,8 @@
         </div>
 
         <div id="heroCarouselCustom" class="custom-carousel skeleton-target" style="display:none;">
-            <img src="{{ asset('storage/images/hero/hero1.avif') }}" class="carousel-image active" alt="Hero 1">
-            <img src="{{ asset('storage/images//hero/hero2.avif') }}" class="carousel-image" alt="Hero 2">
+            <img src="{{ asset('storage/images/hero/hero1.jpg') }}" class="carousel-image active" alt="Hero 1">
+            <img src="{{ asset('storage/images//hero/hero2.jpg') }}" class="carousel-image" alt="Hero 2">
             <img src="{{ asset('storage/images/hero/hero3.avif') }}" class="carousel-image" alt="Hero 3">
             <img src="{{ asset('storage/images/hero/hero4.avif') }}" class="carousel-image" alt="Hero 4">
         </div>
