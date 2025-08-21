@@ -36,7 +36,6 @@
         {{-- Filter Form --}}
         <form method="GET" action="{{ route('collection') }}" id="filterForm">
             <fieldset class="produk-filter-box">
-                <legend class="produk-filter-title">Sort By</legend>
                 <div class="produk-checkbox-group">
                     @foreach ($kategori as $item)
                         <label class="produk-checkbox">
