@@ -62,33 +62,45 @@
             @foreach ($produk as $index => $item)
                 <a href="{{ route('detail.show', $item->produk_id) }}" class="produk-card-link">
                     <div class="produk-card bestproduk-card {{ $index >= 6 ? 'bestproduk-hidden' : '' }}">
-                        @if (!empty($item->diskon))
-                            <span class="diskon-label-collection">Save {{ $item->diskon_persen }} %</span>
-                        @endif
-                        <img src="{{ asset('storage/foto_produk/' . $item->fotoUtama->foto_produk) }}" alt="{{ $item->nama_produk }}">
-                        <div class="produk-color-dot">
-                            @foreach ($item->warna as $warnaItem)
-                                @if ($warnaItem->warna)
-                                    <span class="produk-dot"
-                                        style="background-color: {{ $warnaItem->warna->kode_hex ?? '#000000' }};">
-                                    </span>
-                                @endif
-                            @endforeach
+                        {{-- Skeleton Wrapper --}}
+                        <div class="skeleton-wrapper produk-skeleton">
+                            <div class="skeleton skeleton-img"></div>
                         </div>
-                        <h3>{{ $item->nama_produk }}</h3>
-                        <div class="collection-price">
+
+                        {{-- Konten Asli--}}
+                        <div class="skeleton-target" style="display:none;">
                             @if (!empty($item->diskon))
-                                <span class="price-discounted">Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
-                                <span class="price-now">Rp {{ number_format($item->harga_diskon, 0, ',', '.') }}</span>
-                            @else
-                                <span class="price-now">Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
+                                <span class="diskon-label-collection">Save {{ $item->diskon_persen }} %</span>
                             @endif
+                            
+                            <img src="{{ asset('storage/foto_produk/' . $item->fotoUtama->foto_produk) }}" alt="{{ $item->nama_produk }}">
+                            
+                            <div class="produk-color-dot">
+                                @foreach ($item->warna as $warnaItem)
+                                    @if ($warnaItem->warna)
+                                        <span class="produk-dot"
+                                            style="background-color: {{ $warnaItem->warna->kode_hex ?? '#000000' }};">
+                                        </span>
+                                    @endif
+                                @endforeach
+                            </div>
+
+                            <h3>{{ $item->nama_produk }}</h3>
+                            <div class="collection-price">
+                                @if (!empty($item->diskon))
+                                    <span class="price-discounted">Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
+                                    <span class="price-now">Rp {{ number_format($item->harga_diskon, 0, ',', '.') }}</span>
+                                @else
+                                    <span class="price-now">Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
+                                @endif
+                            </div>
+                            <p>{{ $item->kategori->nama_kategori }}</p>
                         </div>
-                        <p>{{ $item->kategori->nama_kategori }}</p>
                     </div>
                 </a>
             @endforeach
         </div>
+
 
         {{-- Tombol Load More di bawah produk --}}
         @if (count($produk) > 6)

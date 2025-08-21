@@ -1,17 +1,44 @@
 <div class="collection-section container">
-    {{-- <h1 class="collection-title">BEST PRODUCT</h1> --}}
     <div class="collection-grid">
         <div class="item item-blouses">
-            <img src="{{ asset('storage/images/collection/blouse.png') }}" alt="Blouses">
+            <!-- Skeleton -->
+            <div class="skeleton-wrapper">
+                <div class="skeleton skeleton-img"></div>
+            </div>
+
+            <div class="skeleton-target" style="display:none;">
+                <img src="{{ asset('storage/images/collection/blouse.png') }}" alt="Blouses">
+            </div>
         </div>
         <div class="item item-pants">
-            <img src="{{ asset('storage/images/collection/pants.png') }}" alt="Pants">
+            <!-- Skeleton -->
+            <div class="skeleton-wrapper">
+                <div class="skeleton skeleton-img"></div>
+            </div>
+
+            <div class="skeleton-target" style="display:none;">
+                <img src="{{ asset('storage/images/collection/pants.png') }}" alt="Pants">
+            </div>
         </div>
         <div class="item item-dresses">
-            <img src="{{ asset('storage/images/collection/dress.png') }}" alt="Dresses">
+            <!-- Skeleton -->
+            <div class="skeleton-wrapper">
+                <div class="skeleton skeleton-img"></div>
+            </div>
+
+            <div class="skeleton-target" style="display:none;">
+                <img src="{{ asset('storage/images/collection/dress.png') }}" alt="Dresses">
+            </div>
         </div>
         <div class="item item-outwear">
-            <img src="{{ asset('storage/images/collection/outwear.png') }}" alt="Outwear">
+            <!-- Skeleton -->
+            <div class="skeleton-wrapper">
+                <div class="skeleton skeleton-img"></div>
+            </div>
+
+            <div class="skeleton-target" style="display:none;">
+                <img src="{{ asset('storage/images/collection/outwear.png') }}" alt="Outwear">
+            </div>
         </div>
     </div>
 </div>

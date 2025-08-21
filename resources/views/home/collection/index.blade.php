@@ -7,11 +7,16 @@
 @endsection
 
 @section('content')
-    <div id="heroCarouselCustom2" class="custom-carousel-collection">
-        <img src="{{ asset('storage/images/hero/hero5.avif') }}" class="carousel-image active" alt="Hero 5">
-        <img src="{{ asset('storage/images/hero/hero6.avif') }}" class="carousel-image" alt="Hero 6">
-        <img src="{{ asset('storage/images/hero/hero7.avif') }}" class="carousel-image" alt="Hero 7">
-        <img src="{{ asset('storage/images/hero/hero8.avif') }}" class="carousel-image" alt="Hero 8">
+    <div id="heroCarousel" class="custom-carousel-collection">
+        <div class="skeleton-wrapper hero-collection-skeleton">
+            <div class="skeleton skeleton-img"></div>
+        </div>
+        <div class="custom-carousel-collection skeleton-target" style="display:none;">
+            <img src="{{ asset('storage/images/hero/hero5.avif') }}" class="carousel-image active" alt="Hero 5">
+            <img src="{{ asset('storage/images/hero/hero6.avif') }}" class="carousel-image" alt="Hero 6">
+            <img src="{{ asset('storage/images/hero/hero7.avif') }}" class="carousel-image" alt="Hero 7">
+            <img src="{{ asset('storage/images/hero/hero8.avif') }}" class="carousel-image" alt="Hero 8">
+        </div>
     </div>
 
     @include('home.collection.show')

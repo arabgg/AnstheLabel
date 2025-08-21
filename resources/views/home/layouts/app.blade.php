@@ -19,10 +19,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Loading Spinner -->
-    <div id="loading-screen">
-        <div class="spinner"></div>
-    </div>
     
     @include('home.layouts.header')
 
@@ -39,11 +35,39 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        window.addEventListener('load', function () {
-            const loadingScreen = document.getElementById('loading-screen');
-            if (loadingScreen) {
-                loadingScreen.style.display = 'none';
-            }
+        // Loading Screen
+        document.addEventListener("DOMContentLoaded", function () {
+            const skeletonWrappers = document.querySelectorAll('.skeleton-wrapper');
+
+            skeletonWrappers.forEach(wrapper => {
+                const parent = wrapper.parentElement;
+                const target = parent.querySelector('.skeleton-target');
+                const images = parent.querySelectorAll('img');
+
+                if (!images.length) {
+                    wrapper.style.display = "none";
+                    if (target) target.style.display = "block";
+                    return;
+                }
+
+                let loadedCount = 0;
+                const checkLoaded = () => {
+                    loadedCount++;
+                    if (loadedCount === images.length) {
+                        wrapper.style.display = "none";
+                        if (target) target.style.display = "block";
+                    }
+                };
+
+                images.forEach(img => {
+                    if (img.complete) {
+                        checkLoaded();
+                    } else {
+                        img.addEventListener('load', checkLoaded);
+                        img.addEventListener('error', checkLoaded);
+                    }
+                });
+            });
         });
 
         // Header Scroll Effect
@@ -54,14 +78,12 @@
             let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
             if (scrollTop > lastScrollTop) {
-                // Scroll ke bawah
                 header.classList.add("hidden");
             } else {
-                // Scroll ke atas
                 header.classList.remove("hidden");
             }
 
-            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // Mencegah nilai negatif
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
         });
     </script>
 
@@ -69,9 +91,9 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
     <script>
         const swiper = new Swiper('.swiper', {
-            slidesPerView: 'auto',         // Ukuran slide menyesuaikan lebar konten
-            centeredSlides: true,          // Slide aktif selalu di tengah
-            spaceBetween: 0,               // Tidak ada jarak antar slide
+            slidesPerView: 'auto',         
+            centeredSlides: true,          
+            spaceBetween: 0,               
             loop: true,
             navigation: {
                 nextEl: '.swiper-button-next',

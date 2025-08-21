@@ -10,7 +10,7 @@
 .bestproduk-grid {display:grid;grid-template-columns:repeat(4, 1fr);gap:20px 20px;}
 .bestproduk-card {background-color:#fff;overflow:hidden;position:relative;}
 .bestproduk-image-wrapper {position:relative;overflow:hidden;height:250px;}
-.bestproduk-image {width:100%;height:250px;object-fit:cover;display:block;transition:opacity 1s ease;position:absolute;top:0;left:0;}
+.bestproduk-image {width:100%;height:250px;object-fit:cover;transition:opacity 1s ease;position:absolute;top:0;left:0;}
 .default-image {z-index:1;opacity:1;}
 .hover-image {z-index:2;opacity:0;}
 .bestproduk-image-wrapper:hover .default-image {opacity:0;}
@@ -213,9 +213,6 @@
 /* HEADER STYLE */
 * {margin:0;padding:0;box-sizing:border-box;}
 html,body {width:100%;font-family:'Montserrat',sans-serif!important;}
-#loading-screen {position:fixed;width:100%;height:100%;background-color:#fff;z-index:9999;display:flex;justify-content:center;align-items:center;}
-.spinner {border:8px solid #f3f3f3;border-top:8px solid #333;border-radius:50%;width:60px;height:60px;animation:spin 1s linear infinite;}
-@keyframes spin {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
 .container {width:100%;max-width:1200px;margin:0 auto;padding:0 20px;}
 .top-bar {background-color:#560024;color:white;font-size:clamp(10px,1.2vw,13px);padding:10px 0;width:100%;}
 .top-bar-content {position:relative;width:100%;height:100%;}
@@ -470,8 +467,55 @@ input[type="radio"]:checked + .detail-size-nama {
 .checkout-total-section { margin-top: 40px; }
 .checkout-subtotal, .checkout-total { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 16px; }
 .checkout-total-price { font-size: 16px; font-weight: bold; }
+
 /* INDIKATOR CART */
 .nav-icons { display: flex; align-items: center; gap: 15px; position: relative; }
 .nav-icon { position: relative; display: inline-block; color: #333; text-decoration: none; transition: color 0.2s ease-in-out; }
 .nav-icon:hover { color: #3f3e3eff; }
 .cart-badge { position: absolute; top: -8px; right: -10px; background-color: #560024; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 50%; line-height: 1; min-width: 18px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+
+/* ANIMASI SKELETON */
+.skeleton-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.skeleton {
+    animation: skeleton-loading 1.5s infinite alternate;
+}
+
+.skeleton-img {
+    width: 100%;
+    height: 250px;
+}
+
+.produk-skeleton .skeleton-img {
+    width: 100%;
+    height: 320px;
+}
+
+.hero-skeleton .skeleton-img {
+    width: 100%;
+    height: 100vh;
+}
+
+.hero-collection-skeleton .skeleton-img {
+    width: 100%;
+    height: 240px;
+}
+
+.viscose-skeleton .skeleton-img {
+    width: 100%;
+    height: 380px;
+}
+
+.skeleton-main-img {
+    width: 100%;
+    height: 400px;
+}
+
+@keyframes skeleton-loading {
+    from { background-color: hsl(200, 20%, 70%) }
+    to   { background-color: hsl(200, 20%, 95%) }
+}

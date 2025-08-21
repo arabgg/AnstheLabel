@@ -7,13 +7,20 @@
         @foreach ($viscose as $index => $item)
             <div class="viscose-card">
                 <div class="viscose-image-wrapper">
-                    <span class="viscose-label">Premium</span>
+                    {{-- Animasi Skeleton --}}
+                    <div class="skeleton-wrapper viscose-skeleton">
+                        <div class="skeleton skeleton-img"></div>
+                    </div>
 
-                    <img src="{{ asset('storage/images/bestproduk/' . $item['image']) }}" alt="{{ $item['nama'] }}" class="viscose-image default-image">
-                    
-                    @if (!empty($item['image_hover']))
-                        <img src="{{ asset('storage/images/bestproduk/' . $item['image_hover']) }}" alt="{{ $item['nama'] }}" class="viscose-image hover-image">
-                    @endif
+                    {{-- Konten Utama --}}
+                    <div class="skeleton-target" style="display:none;">
+                        <span class="viscose-label">Premium</span>
+                        <img src="{{ asset('storage/images/bestproduk/' . $item['image']) }}" alt="{{ $item['nama'] }}" class="viscose-image default-image">
+                        
+                        @if (!empty($item['image_hover']))
+                            <img src="{{ asset('storage/images/bestproduk/' . $item['image_hover']) }}" alt="{{ $item['nama'] }}" class="viscose-image hover-image">
+                        @endif
+                    </div>
                 </div>
                 
                 <div class="viscose-info">
