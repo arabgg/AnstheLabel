@@ -14,17 +14,24 @@
             <div class="detail-product-wrapper">
                 <!-- Left: Product Images -->
                 <div class="detail-product-images">
-                    {{-- Foto Utama --}}
-                    <img class="detail-main-image"
-                        src="{{ asset('storage/foto_produk/' . $produk->fotoUtama->foto_produk) }}"
-                        alt="{{ $produk->nama_produk }}">
+                    {{-- Skeleton Wrapper --}}
+                    <div class="skeleton-wrapper">
+                        <div class="skeleton skeleton-main-img"></div>
+                    </div>
 
-                    {{-- Foto Thumbnail --}}
-                    <div class="detail-thumbnail-wrapper">
-                        @foreach ($produk->foto->where('status_foto', 0) as $foto)
-                            <img src="{{ asset('storage/foto_produk/' . $foto->foto_produk) }}"
-                                alt="Thumbnail {{ $loop->iteration }}">
-                        @endforeach
+                    <div class="skeleton-target" style="display:none;">
+                        {{-- Foto Utama --}}
+                        <img class="detail-main-image"
+                            src="{{ asset('storage/foto_produk/' . $produk->fotoUtama->foto_produk) }}"
+                            alt="{{ $produk->nama_produk }}">
+    
+                        {{-- Foto Thumbnail --}}
+                        <div class="detail-thumbnail-wrapper">
+                            @foreach ($produk->foto->where('status_foto', 0) as $foto)
+                                <img src="{{ asset('storage/foto_produk/' . $foto->foto_produk) }}"
+                                    alt="Thumbnail {{ $loop->iteration }}">
+                            @endforeach
+                        </div>
                     </div>
                 </div>
 

@@ -8,21 +8,29 @@
             <div class="bestseller-card">
                 <a href="{{ route('detail.show', $item->produk_id) }}">
                     <div class="bestseller-image-wrapper">
-                        @if (!empty($item->diskon))
-                            <span class="diskon-label">Save {{ $item->diskon_persen }} %</span>
-                        @endif
-                        {{-- Gambar utama dengan status_foto = 1 --}}
-                        @if ($item->fotoUtama)
-                            <img src="{{ asset('storage/foto_produk/' . $item->fotoUtama->foto_produk) }}" alt="{{ $item->nama_produk }}" class="bestseller-image default-image">
-                        @endif
+                        {{-- Animasi Skeleton --}}
+                        <div class="skeleton-wrapper">
+                            <div class="skeleton skeleton-img"></div>
+                        </div>
 
-                        {{-- Gambar hover: salah satu dari foto dengan status_foto = 0 --}}
-                        @php
-                            $hoverFoto = $item->foto->firstWhere('status_foto', 0);
-                        @endphp
-                        @if ($hoverFoto)
-                            <img src="{{ asset('storage/foto_produk/' . $hoverFoto->foto_produk) }}" alt="{{ $item->nama_produk }}" class="bestseller-image hover-image">
-                        @endif
+                        {{-- Konten Utama --}}
+                        <div class="skeleton-target" style="display:none;">
+                            @if (!empty($item->diskon))
+                                <span class="diskon-label">Save {{ $item->diskon_persen }} %</span>
+                            @endif
+                            {{-- Gambar utama dengan status_foto = 1 --}}
+                            @if ($item->fotoUtama)
+                                <img src="{{ asset('storage/foto_produk/' . $item->fotoUtama->foto_produk) }}" alt="{{ $item->nama_produk }}" class="bestseller-image default-image">
+                            @endif
+
+                            {{-- Gambar hover: salah satu dari foto dengan status_foto = 0 --}}
+                            @php
+                                $hoverFoto = $item->foto->firstWhere('status_foto', 0);
+                            @endphp
+                            @if ($hoverFoto)
+                                <img src="{{ asset('storage/foto_produk/' . $hoverFoto->foto_produk) }}" alt="{{ $item->nama_produk }}" class="bestseller-image hover-image">
+                            @endif
+                        </div>
                     </div>
                 </a>
 

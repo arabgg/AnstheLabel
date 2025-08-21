@@ -60,8 +60,7 @@ class HomeController extends Controller
             $produk->where('nama_produk', 'like', "%{$searchQuery}%");
         }
 
-        // Gunakan paginate untuk meringankan
-        $produk = $produk->paginate(12)->withQueryString();
+        $produk = $produk->paginate(100)->withQueryString();
 
         $kategori = Cache::remember('kategori', 600, fn() => KategoriModel::select('kategori_id', 'nama_kategori')->get());
 
@@ -84,7 +83,7 @@ class HomeController extends Controller
         $produk = ProdukModel::with([
                 'kategori:kategori_id,nama_kategori',
                 'bahan:bahan_id,nama_bahan,deskripsi',
-                'foto:foto_produk_id',
+                'fotoUtama',
                 'warna.warna:warna_id,kode_hex',
                 'ukuran.ukuran:ukuran_id,nama_ukuran,deskripsi',
             ])
