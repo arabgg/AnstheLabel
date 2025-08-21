@@ -48,18 +48,15 @@ class HomeController extends Controller
         $filterKategori = (array) $request->input('filter', []);
         $searchQuery = $request->input('search', '');
 
-        $produk = ProdukModel::select('produk_id', 'nama_produk', 'harga', 'diskon', 'kategori_id')
-            ->with(['kategori:kategori_id,nama_kategori', 'fotoUtama']);
-
-        if (!empty($filterKategori)) {
-            $produk->whereIn('kategori_id', $filterKategori);
-        }
-
-        if (!empty($searchQuery)) {
-            $produk->where('nama_produk', 'like', "%{$searchQuery}%");
-        }
-
-        $produk = $produk->paginate(100)->withQueryString();
+        $cacheKey = 'produk_' . md5(json_encode($filterKategori) . '_' . $searchQuery);
+        
+        $produk = Cache::remember($cacheKey, 600, function() use ($filterKategori, $searchQuery) {
+            return ProdukModel::select('produk_id', 'nama_produk', 'harga', 'diskon', 'kategori_id')
+                ->with(['kategori:kategori_id,nama_kategori', 'fotoUtama'])
+                ->when(!empty($filterKategori), fn($q) => $q->whereIn('kategori_id', $filterKategori))
+                ->when(!empty($searchQuery), fn($q) => $q->where('nama_produk', 'like', "%{$searchQuery}%"))
+                ->paginate(100);
+        });
 
         $kategori = Cache::remember('kategori', 600, fn() => KategoriModel::select('kategori_id', 'nama_kategori')->get());
 
@@ -68,32 +65,38 @@ class HomeController extends Controller
 
     public function about()
     {
-        $rekomendasi = ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
-            ->with('kategori:kategori_id,nama_kategori')
-            ->inRandomOrder()
-            ->take(4)
-            ->get();
+        $rekomendasi = Cache::remember('rekomendasi', 600, function () {
+            return ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
+                ->with('kategori:kategori_id,nama_kategori')
+                ->inRandomOrder()
+                ->take(4)
+                ->get();
+        });
 
         return view('home.about.index', compact('rekomendasi'));
     }
 
     public function show_produk($id)
     {
-        $produk = ProdukModel::with([
-                'kategori:kategori_id,nama_kategori',
-                'bahan:bahan_id,nama_bahan,deskripsi',
-                'fotoUtama',
-                'warna.warna:warna_id,kode_hex',
-                'ukuran.ukuran:ukuran_id,nama_ukuran,deskripsi',
-            ])
-            ->select('produk_id', 'nama_produk', 'harga', 'diskon', 'deskripsi', 'kategori_id', 'bahan_id')
-            ->findOrFail($id);
+        $produk = Cache::remember('produk', 600, function () use ($id) {
+            return ProdukModel::with([
+                    'kategori:kategori_id,nama_kategori',
+                    'bahan:bahan_id,nama_bahan,deskripsi',
+                    'fotoUtama',
+                    'warna.warna:warna_id,kode_hex',
+                    'ukuran.ukuran:ukuran_id,nama_ukuran,deskripsi',
+                ])
+                ->select('produk_id', 'nama_produk', 'harga', 'diskon', 'deskripsi', 'kategori_id', 'bahan_id')
+                ->findOrFail($id);
+        });
 
-        $rekomendasi = ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
-            ->with('kategori:kategori_id,nama_kategori')
-            ->inRandomOrder()
-            ->take(4)
-            ->get();
+        $rekomendasi = Cache::remember('produk', 600, function () {
+            return ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
+                ->with('kategori:kategori_id,nama_kategori')
+                ->inRandomOrder()
+                ->take(4)
+                ->get();
+        });
 
         return view('home.detail.index', compact('produk', 'rekomendasi'));
     }
@@ -103,11 +106,13 @@ class HomeController extends Controller
         $cart = session()->get('cart', []);
         $total = collect($cart)->sum(fn($item) => $item['harga'] * $item['quantity']);
 
-        $rekomendasi = ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
-            ->with('kategori:kategori_id,nama_kategori')
-            ->inRandomOrder()
-            ->take(4)
-            ->get();
+        $rekomendasi = Cache::remember('produk', 600, function () {
+            return ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
+                ->with('kategori:kategori_id,nama_kategori')
+                ->inRandomOrder()
+                ->take(4)
+                ->get();
+        });
 
         return view('home.cart.index', compact('cart', 'total', 'rekomendasi'))
             ->with('grandTotal', $total);
