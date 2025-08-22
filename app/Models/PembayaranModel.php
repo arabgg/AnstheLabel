@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class PembayaranModel extends Model
 {
@@ -12,20 +13,29 @@ class PembayaranModel extends Model
 
     protected $table = 't_pembayaran';
     protected $primaryKey = 'pembayaran_id';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
         'metode_id',
         'status_pembayaran',
         'jumlah_produk',
         'total_harga',
-        'alamat',
-        'status_transaksi',
     ];
 
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($model) {
+            if (empty($model->pembayaran_id)) {
+                $model->pembayaran_id = (string) Str::uuid();
+            }
+        });
+    }
 
     public function metode() :BelongsTo
     {

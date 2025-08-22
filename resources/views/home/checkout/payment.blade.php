@@ -44,7 +44,7 @@
         @csrf
         <h3 class="font-semibold mb-2">Pilih Metode Pembayaran</h3>
         
-        @foreach($paymentMethods->get() as $method)
+        @foreach($paymentMethods as $method)
             <div class="mb-2">
                 <label class="flex items-center gap-2">
                     <input type="radio" name="metode_id" value="{{ $method->metode_id }}" required>

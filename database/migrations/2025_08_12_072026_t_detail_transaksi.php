@@ -12,16 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('t_detail_transaksi', function (Blueprint $table) {
-            $table->id('detail_transaksi_id');
+            $table->uuid('detail_transaksi_id')->primary();
 
-            // Relasi ke tabel lain
-            $table->unsignedBigInteger('transaksi_id');
-            $table->unsignedBigInteger('pembayaran_id');
+            $table->uuid('transaksi_id');
+            $table->uuid('pembayaran_id');
             $table->unsignedBigInteger('produk_id');
             $table->unsignedBigInteger('ukuran_id');
             $table->unsignedBigInteger('warna_id');
             
-            $table->timestamps();
+            $table->integer('jumlah');
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
 
             $table->foreign('transaksi_id')->references('transaksi_id')->on('t_transaksi');
             $table->foreign('pembayaran_id')->references('pembayaran_id')->on('t_pembayaran');

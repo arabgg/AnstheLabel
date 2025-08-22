@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class DetailTransaksiModel extends Model
 {
@@ -12,6 +13,8 @@ class DetailTransaksiModel extends Model
 
     protected $table = 't_detail_transaksi';
     protected $primaryKey = 'detail_transaksi_id';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
         'transaksi_id',
@@ -19,12 +22,22 @@ class DetailTransaksiModel extends Model
         'produk_id',
         'ukuran_id',
         'warna_id',
+        'jumlah',
     ];
 
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($model) {
+            if (empty($model->detail_transaksi_id)) {
+                $model->detail_transaksi_id = (string) Str::uuid();
+            }
+        });
+    }
 
     public function transaksi() :BelongsTo
     {

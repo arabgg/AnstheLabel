@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class TransaksiModel extends Model
 {
@@ -12,6 +13,8 @@ class TransaksiModel extends Model
 
     protected $table = 't_transaksi';
     protected $primaryKey = 'transaksi_id';
+    public $incrementing = false;
+    protected $keyType = 'string';
     
     protected $fillable = [
         'kode_invoice',
@@ -27,10 +30,19 @@ class TransaksiModel extends Model
         'updated_at' => 'datetime',
     ];
 
-    public static function generateInvoiceNumber($id)
+    protected static function booted()
     {
-        $prefix = 'ANS';
-        $date = Carbon::now()->format('Ymd');
-        return $prefix . '-' . $date . '-' . $id;
+        // Generate UUID dan kode_invoice sebelum insert
+        static::creating(function ($model) {
+            if (empty($model->transaksi_id)) {
+                $model->transaksi_id = (string) Str::uuid();
+            }
+        });
+
+        // Generate kode_invoice setelah insert (butuh transaksi_id)
+        static::created(function ($model) {
+            $kodeInvoice = 'ANS-' . Carbon::now()->format('Ymd') . '-' . $model->transaksi_id;
+            $model->update(['kode_invoice' => $kodeInvoice]);
+        });
     }
 }
