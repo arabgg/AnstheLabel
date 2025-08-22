@@ -12,15 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('t_pembayaran', function (Blueprint $table) {
-            $table->id('pembayaran_id');
+            $table->uuid('pembayaran_id')->primary();
 
-            // Relasi ke tabel lain
             $table->unsignedBigInteger('metode_id');
 
             $table->enum('status_pembayaran', ['pending', 'lunas', 'gagal'])->default('pending');
             $table->integer('jumlah_produk');
             $table->string('total_harga');
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
             
             $table->foreign('metode_id')->references('metode_id')->on('m_metode_pembayaran');
         });
