@@ -109,7 +109,7 @@
 
             {{-- User Menu --}}
             <div class="p-4 border-t">
-                <a href="{{ url('/user/change-password') }}" class="flex items-center gap-3 text-sm hover:font-bold">
+                <a href="{{ route('auth.change-password.form') }}" class="flex items-center gap-3 text-sm hover:font-bold">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
