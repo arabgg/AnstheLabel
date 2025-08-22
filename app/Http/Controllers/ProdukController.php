@@ -12,54 +12,72 @@ use App\Models\UkuranProdukModel;
 use App\Models\FotoProdukModel;
 use Illuminate\Http\Request;
 use Spatie\ImageOptimizer\OptimizerChainFactory;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class ProdukController extends Controller
 {
+
     public function index(Request $request)
     {
-
-        // Ambil filter dari request
         $search = $request->input('search');
         $kategoriFilter = $request->input('kategori');
+        $paginateLimit = $request->input('paginate', 15);
 
-        $produk = ProdukModel::whereHas('fotoUtama') // hanya produk yang punya foto utama
+        $kategoriList = Cache::remember('kategori_list', 600, function () {
+            return KategoriModel::select('kategori_id', 'nama_kategori')->get();
+        });
+
+        $produk = ProdukModel::whereHas('fotoUtama')
             ->with(['kategori', 'bahan', 'fotoUtama'])
             ->when($kategoriFilter, function ($query, $kategoriFilter) {
                 return $query->whereHas('kategori', function ($q) use ($kategoriFilter) {
                     $q->where('kategori_id', $kategoriFilter);
                 });
             })
-            ->when(request('search'), function ($query) {
-                $query->where('nama_produk', 'like', '%' . request('search') . '%');
+            ->when($search, function ($query, $search) {
+                $query->where('nama_produk', 'like', '%' . $search . '%');
             })
-            ->get();
+            ->when($paginateLimit, function ($query, $paginateLimit) {
+                return $query->paginate($paginateLimit);
+            }, function ($query) use ($paginateLimit) {
+                return $query->paginate($paginateLimit);
+            })
+            ->withQueryString();
 
-        // Ambil data filter
-        $kategoriList = KategoriModel::select('kategori_id', 'nama_kategori')->get();
-
-        return view('produk.index', compact('produk', 'kategoriList'));
+        return view('produk.index', compact('produk', 'kategoriList', 'paginateLimit'));
     }
 
     public function show($id)
     {
-        $produk = ProdukModel::with([
-            'fotoUtama',
-            'foto',
-            'ukuran.ukuran',
-            'warna.warna'
-        ])->findOrFail($id);
+        $produk = Cache::rememberForever('produk_' . $id, function () use ($id) {
+            return ProdukModel::with([
+                'fotoUtama',
+                'foto',
+                'ukuran.ukuran',
+                'warna.warna'
+            ])->findOrFail($id);
+        });
 
         return view('produk.show', compact('produk'));
     }
 
-
     public function create()
     {
-        $kategori = KategoriModel::select('kategori_id', 'nama_kategori')->get();
-        $bahan = BahanModel::select('bahan_id', 'nama_bahan')->get();
-        $ukuran = UkuranModel::select('ukuran_id', 'nama_ukuran')->get();
-        $warna = WarnaModel::select('warna_id', 'kode_hex')->get();
+        $kategori = Cache::remember('create_form_kategori', 600, function () {
+            return KategoriModel::select('kategori_id', 'nama_kategori')->get();
+        });
+        $bahan = Cache::remember('create_form_bahan', 600, function () {
+            return BahanModel::select('bahan_id', 'nama_bahan')->get();
+        });
+        $ukuran = Cache::remember('create_form_ukuran', 600, function () {
+            return UkuranModel::select('ukuran_id', 'nama_ukuran')->get();
+        });
+        $warna = Cache::remember('create_form_warna', 600, function () {
+            return WarnaModel::select('warna_id', 'kode_hex')->get();
+        });
+
         return view('produk.create', compact('kategori', 'bahan', 'ukuran', 'warna'));
     }
 
@@ -74,184 +92,137 @@ class ProdukController extends Controller
             'deskripsi' => 'required|string',
             'harga' => 'required|string',
             'diskon' => 'nullable|string',
-
-            // Dropdown database
             'kategori_id' => 'required|integer',
             'bahan_id' => 'required|integer',
             'ukuran_id' => 'required|array|min:1',
             'ukuran_id.*' => 'string|max:50',
             'warna_id' => 'required|array|min:1',
             'warna_id.*' => 'string|max:50',
-
-            // Input manual
             'kategori_manual' => 'nullable|string|max:255',
             'bahan_manual' => 'nullable|string|max:255',
             'ukuran_manual' => 'nullable|array',
             'ukuran_manual.*' => 'string|max:50',
             'warna_manual' => 'nullable|array',
             'warna_manual.*' => 'string|max:50',
-        ], [
-            'foto_utama.image' => 'Foto utama harus berupa gambar.',
-            'foto_utama.mimes' => 'Format foto utama hanya boleh jpeg, png, atau jpg.',
-            'foto_utama.max' => 'Ukuran foto utama maksimal 2 MB.',
-
-            'foto_sekunder.*.image' => 'Foto sekunder harus berupa gambar.',
-            'foto_sekunder.*.mimes' => 'Format foto sekunder hanya boleh jpeg, png, atau jpg.',
-            'foto_sekunder.*.max' => 'Ukuran foto sekunder maksimal 2 MB.',
-
-            'nama_produk.required' => 'Kolom Nama Produk wajib diisi.',
-            'nama_produk.string' => 'Nama Produk harus berupa teks.',
-            'nama_produk.max' => 'Nama Produk maksimal 255 karakter.',
-
-            'deskripsi.required' => 'Kolom Deskripsi wajib diisi.',
-            'deskripsi.string' => 'Deskripsi harus berupa teks.',
-
-            'harga.required' => 'Kolom Harga wajib diisi.',
-            'harga.string' => 'Harga harus berupa teks.',
-
-            'diskon.required' => 'Kolom Diskon wajib diisi.',
-            'diskon.string' => 'Diskon harus berupa teks.',
-
-            'kategori_id.required' => 'Kolom Kategori wajib dipilih.',
-            'kategori_id.integer' => 'Kategori tidak valid.',
-
-            'bahan_id.required' => 'Kolom Bahan wajib dipilih.',
-            'bahan_id.integer' => 'Bahan tidak valid.',
-
-            'ukuran_id.required' => 'Setidaknya pilih satu Ukuran.',
-            'ukuran_id.array' => 'Ukuran tidak valid.',
-            'ukuran_id.*.string' => 'Ukuran harus berupa teks.',
-            'ukuran_id.*.max' => 'Ukuran maksimal 50 karakter.',
-
-            'warna_id.required' => 'Setidaknya pilih satu Warna.',
-            'warna_id.array' => 'Warna tidak valid.',
-            'warna_id.*.string' => 'Warna harus berupa teks.',
-            'warna_id.*.max' => 'Warna maksimal 50 karakter.',
         ]);
 
-        // Kategori manual
-        if ($request->filled('kategori_manual')) {
-            $k = KategoriModel::firstOrCreate(
-                ['nama_kategori' => $request->kategori_manual],
-                []
-            );
-            $request->merge(['kategori_id' => $k->kategori_id]);
-        }
+        DB::transaction(function () use ($request, $optimizerChain) {
+            if ($request->filled('kategori_manual')) {
+                $k = KategoriModel::firstOrCreate(
+                    ['nama_kategori' => $request->kategori_manual]
+                );
+                $request->merge(['kategori_id' => $k->kategori_id]);
+                Cache::forget('kategori_list');
+                Cache::forget('create_form_kategori');
+            }
 
-        // Bahan manual
-        if ($request->filled('bahan_manual')) {
-            $b = BahanModel::firstOrCreate(
-                ['nama_bahan' => $request->bahan_manual],
-                []
-            );
-            $request->merge(['bahan_id' => $b->bahan_id]);
-        }
+            if ($request->filled('bahan_manual')) {
+                $b = BahanModel::firstOrCreate(
+                    ['nama_bahan' => $request->bahan_manual]
+                );
+                $request->merge(['bahan_id' => $b->bahan_id]);
+                Cache::forget('create_form_bahan');
+            }
 
-        // Simpan produk
-        $produk = ProdukModel::create([
-            'nama_produk' => $request->nama_produk,
-            'deskripsi' => $request->deskripsi,
-            'harga' => $request->harga,
-            'diskon' => $request->diskon,
-            'kategori_id' => $request->kategori_id,
-            'bahan_id' => $request->bahan_id,
-        ]);
-
-        // Foto utama
-        if ($request->hasFile('foto_utama')) {
-            $fotoUtama = $request->file('foto_utama');
-            $filename = $fotoUtama->getClientOriginalName();
-
-            // Bersihkan karakter berbahaya agar aman untuk URL
-            $filename = preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $filename);
-            $path = public_path('storage/foto_produk'); // Path tujuan langsung di folder public
-            $fotoUtama->move($path, $filename); // Memindahkan file ke path tujuan
-
-            $optimizerChain->optimize($path . '/' . $filename);
-
-            FotoProdukModel::create([
-                'produk_id' => $produk->produk_id,
-                'foto_produk' => $filename,
-                'status_foto' => 1 // 1 = foto utama
+            $produk = ProdukModel::create([
+                'nama_produk' => $request->nama_produk,
+                'deskripsi' => $request->deskripsi,
+                'harga' => $request->harga,
+                'diskon' => $request->diskon,
+                'kategori_id' => $request->kategori_id,
+                'bahan_id' => $request->bahan_id,
             ]);
-        }
 
-        // Foto sekunder
-        if ($request->hasFile('foto_sekunder')) {
-            foreach ($request->file('foto_sekunder') as $foto) {
-                $filename = $fotoUtama->getClientOriginalName();
-
-                // Bersihkan karakter berbahaya agar aman untuk URL
-                $filename = preg_replace('/[^A-Za-z0-9_\-\.]/', '_', $filename);
-                $path = public_path('storage/foto_produk'); // Path tujuan di folder public
-                $foto->move($path, $filename); // Pindahkan file
-
+            if ($request->hasFile('foto_utama')) {
+                $fotoUtama = $request->file('foto_utama');
+                $filename = time() . '_' . $fotoUtama->getClientOriginalName();
+                $path = public_path('storage/foto_produk');
+                $fotoUtama->move($path, $filename);
                 $optimizerChain->optimize($path . '/' . $filename);
-
                 FotoProdukModel::create([
                     'produk_id' => $produk->produk_id,
-
-                    'foto_produk' =>  $filename,
-                    'status_foto' => 0 // 0 = foto biasa
+                    'foto_produk' => $filename,
+                    'status_foto' => 1
                 ]);
             }
-        }
 
-        // Ukuran
-        if ($request->has('ukuran_id')) {
-            foreach ($request->ukuran_id as $ukuran) {
-                UkuranProdukModel::create([
-                    'produk_id' => $produk->produk_id,
-                    'ukuran_id' => $ukuran,
-                ]);
+            if ($request->hasFile('foto_sekunder')) {
+                foreach ($request->file('foto_sekunder') as $foto) {
+                    $filename = time() . '_' . $foto->getClientOriginalName();
+                    $path = public_path('storage/foto_produk');
+                    $foto->move($path, $filename);
+                    $optimizerChain->optimize($path . '/' . $filename);
+                    FotoProdukModel::create([
+                        'produk_id' => $produk->produk_id,
+                        'foto_produk' => $filename,
+                        'status_foto' => 0
+                    ]);
+                }
             }
-        }
 
-        // Ukuran manual
-        if ($request->has('ukuran_baru')) {
-            foreach ($request->ukuran_baru as $namaUkuranBaru) {
-                $u = UkuranModel::firstOrCreate(['nama_ukuran' => $namaUkuranBaru], []);
-                UkuranProdukModel::firstOrCreate([
-                    'produk_id' => $produk->produk_id,
-                    'ukuran_id' => $u->ukuran_id,
-                ]);
+            if ($request->has('ukuran_id')) {
+                foreach ($request->ukuran_id as $ukuran) {
+                    UkuranProdukModel::create([
+                        'produk_id' => $produk->produk_id,
+                        'ukuran_id' => $ukuran,
+                    ]);
+                }
             }
-        }
+            if ($request->has('ukuran_manual')) {
+                foreach ($request->ukuran_manual as $namaUkuranBaru) {
+                    $u = UkuranModel::firstOrCreate(['nama_ukuran' => $namaUkuranBaru]);
+                    UkuranProdukModel::firstOrCreate([
+                        'produk_id' => $produk->produk_id,
+                        'ukuran_id' => $u->ukuran_id,
+                    ]);
+                    Cache::forget('create_form_ukuran');
+                }
+            }
 
-        // Warna
-        if ($request->has('warna_id')) {
-            foreach ($request->warna_id as $kode) {
-                WarnaProdukModel::create([
-                    'produk_id' => $produk->produk_id,
-                    'warna_id' => $kode,
-                ]);
+            if ($request->has('warna_id')) {
+                foreach ($request->warna_id as $kode) {
+                    WarnaProdukModel::create([
+                        'produk_id' => $produk->produk_id,
+                        'warna_id' => $kode,
+                    ]);
+                }
             }
-        }
-
-        // Warna manual
-        if ($request->has('warna_baru')) {
-            foreach ($request->warna_baru as $hex) {
-                $w = WarnaModel::firstOrCreate(
-                    ['kode_hex' => strtoupper($hex)],
-                    ['nama_warna' => strtoupper($hex)]
-                );
-                WarnaProdukModel::firstOrCreate([
-                    'produk_id' => $produk->produk_id,
-                    'warna_id'  => $w->warna_id,
-                ]);
+            if ($request->has('warna_manual')) {
+                foreach ($request->warna_manual as $hex) {
+                    $w = WarnaModel::firstOrCreate(
+                        ['kode_hex' => strtoupper($hex)],
+                        ['nama_warna' => strtoupper($hex)]
+                    );
+                    WarnaProdukModel::firstOrCreate([
+                        'produk_id' => $produk->produk_id,
+                        'warna_id' => $w->warna_id,
+                    ]);
+                    Cache::forget('create_form_warna');
+                }
             }
-        }
+        });
 
         return redirect()->route('produk.index')->with('success', 'Produk berhasil disimpan!');
     }
 
     public function edit($id)
     {
-        $produk = ProdukModel::with(['warna', 'ukuran', 'foto'])->findOrFail($id);
-        $kategori = KategoriModel::select('kategori_id', 'nama_kategori')->get();
-        $bahan = BahanModel::select('bahan_id', 'nama_bahan')->get();
-        $ukuran = UkuranModel::select('ukuran_id', 'nama_ukuran')->get();
-        $warna = WarnaModel::select('warna_id', 'kode_hex')->get();
+        $produk = Cache::rememberForever('edit_produk_' . $id, function () use ($id) {
+            return ProdukModel::with(['warna', 'ukuran', 'foto'])->findOrFail($id);
+        });
+
+        $kategori = Cache::remember('create_form_kategori', 600, function () {
+            return KategoriModel::select('kategori_id', 'nama_kategori')->get();
+        });
+        $bahan = Cache::remember('create_form_bahan', 600, function () {
+            return BahanModel::select('bahan_id', 'nama_bahan')->get();
+        });
+        $ukuran = Cache::remember('create_form_ukuran', 600, function () {
+            return UkuranModel::select('ukuran_id', 'nama_ukuran')->get();
+        });
+        $warna = Cache::remember('create_form_warna', 600, function () {
+            return WarnaModel::select('warna_id', 'kode_hex')->get();
+        });
 
         return view('produk.edit', compact('produk', 'kategori', 'bahan', 'ukuran', 'warna'));
     }
@@ -273,119 +244,88 @@ class ProdukController extends Controller
             'ukuran_id.*' => 'string|max:50',
             'warna_id' => 'required|array|min:1',
             'warna_id.*' => 'string|max:50',
-        ], [
-            'foto_utama.image' => 'Foto utama harus berupa gambar.',
-            'foto_utama.mimes' => 'Format foto utama hanya boleh jpeg, png, atau jpg.',
-            'foto_utama.max' => 'Ukuran foto utama maksimal 2 MB.',
-
-            'foto_sekunder.*.image' => 'Foto sekunder harus berupa gambar.',
-            'foto_sekunder.*.mimes' => 'Format foto sekunder hanya boleh jpeg, png, atau jpg.',
-            'foto_sekunder.*.max' => 'Ukuran foto sekunder maksimal 2 MB.',
-
-            'nama_produk.required' => 'Kolom Nama Produk wajib diisi.',
-            'nama_produk.string' => 'Nama Produk harus berupa teks.',
-            'nama_produk.max' => 'Nama Produk maksimal 255 karakter.',
-
-            'deskripsi.required' => 'Kolom Deskripsi wajib diisi.',
-            'deskripsi.string' => 'Deskripsi harus berupa teks.',
-
-            'harga.required' => 'Kolom Harga wajib diisi.',
-            'harga.string' => 'Harga harus berupa teks.',
-
-            'diskon.required' => 'Kolom Diskon wajib diisi.',
-            'diskon.string' => 'Diskon harus berupa teks.',
-
-            'kategori_id.required' => 'Kolom Kategori wajib dipilih.',
-            'kategori_id.integer' => 'Kategori tidak valid.',
-
-            'bahan_id.required' => 'Kolom Bahan wajib dipilih.',
-            'bahan_id.integer' => 'Bahan tidak valid.',
-
-            'ukuran_id.required' => 'Setidaknya pilih satu Ukuran.',
-            'ukuran_id.array' => 'Ukuran tidak valid.',
-            'ukuran_id.*.string' => 'Ukuran harus berupa teks.',
-            'ukuran_id.*.max' => 'Ukuran maksimal 50 karakter.',
-
-            'warna_id.required' => 'Setidaknya pilih satu Warna.',
-            'warna_id.array' => 'Warna tidak valid.',
-            'warna_id.*.string' => 'Warna harus berupa teks.',
-            'warna_id.*.max' => 'Warna maksimal 50 karakter.',
         ]);
 
-        $produk = ProdukModel::findOrFail($id);
+        DB::transaction(function () use ($request, $id, $optimizerChain) {
+            $produk = ProdukModel::findOrFail($id);
 
-        // Update data produk
-        $produk->update($request->only(['nama_produk', 'deskripsi', 'harga', 'diskon', 'kategori_id', 'bahan_id']));
+            $produk->update($request->only(['nama_produk', 'deskripsi', 'harga', 'diskon', 'kategori_id', 'bahan_id']));
 
-        // Update foto utama
-        if ($request->hasFile('foto_utama')) {
-            // Hapus foto utama lama
-            FotoProdukModel::where('produk_id', $id)->where('status_foto', 1)->delete();
-
-            $fotoUtama = $request->file('foto_utama');
-            $filename = time() . '_' . $fotoUtama->getClientOriginalName();
-            $path = public_path('storage/foto_produk');
-            $fotoUtama->move($path, $filename);
-
-            // Optimasi gambar
-            $optimizerChain->optimize($path . '/' . $filename);
-
-            FotoProdukModel::create([
-                'produk_id' => $id,
-                'foto_produk' => $filename,
-                'status_foto' => 1
-            ]);
-        }
-
-        // Upload foto sekunder
-        if ($request->hasFile('foto_sekunder')) {
-            foreach ($request->file('foto_sekunder') as $foto) {
-                $filename = time() . '_' . $foto->getClientOriginalName();
-                $path = public_path('storage/foto_produk'); // Path tujuan langsung di folder public
-                $foto->move($path, $filename);
-
+            if ($request->hasFile('foto_utama')) {
+                FotoProdukModel::where('produk_id', $id)->where('status_foto', 1)->delete();
+                $fotoUtama = $request->file('foto_utama');
+                $filename = time() . '_' . $fotoUtama->getClientOriginalName();
+                $path = public_path('storage/foto_produk');
+                $fotoUtama->move($path, $filename);
                 $optimizerChain->optimize($path . '/' . $filename);
-
                 FotoProdukModel::create([
                     'produk_id' => $id,
                     'foto_produk' => $filename,
-                    'status_foto' => 0
+                    'status_foto' => 1
                 ]);
             }
-        }
 
-        // Update ukuran
-        UkuranProdukModel::where('produk_id', $id)->delete();
-        foreach ($request->ukuran_id as $ukuran) {
-            UkuranProdukModel::create([
-                'produk_id' => $id,
-                'ukuran_id' => $ukuran
-            ]);
-        }
+            if ($request->hasFile('foto_sekunder')) {
+                foreach ($request->file('foto_sekunder') as $foto) {
+                    $filename = time() . '_' . $foto->getClientOriginalName();
+                    $path = public_path('storage/foto_produk');
+                    $foto->move($path, $filename);
+                    $optimizerChain->optimize($path . '/' . $filename);
+                    FotoProdukModel::create([
+                        'produk_id' => $id,
+                        'foto_produk' => $filename,
+                        'status_foto' => 0
+                    ]);
+                }
+            }
 
-        // Update warna
-        WarnaProdukModel::where('produk_id', $id)->delete();
-        foreach ($request->warna_id as $warnaKode) {
-            WarnaProdukModel::create([
-                'produk_id' => $id,
-                'warna_id' => $warnaKode
-            ]);
-        }
+            UkuranProdukModel::where('produk_id', $id)->delete();
+            foreach ($request->ukuran_id as $ukuran) {
+                UkuranProdukModel::create([
+                    'produk_id' => $id,
+                    'ukuran_id' => $ukuran
+                ]);
+            }
+
+            WarnaProdukModel::where('produk_id', $id)->delete();
+            foreach ($request->warna_id as $warnaKode) {
+                WarnaProdukModel::create([
+                    'produk_id' => $id,
+                    'warna_id' => $warnaKode
+                ]);
+            }
+            Cache::forget('produk_' . $id);
+            Cache::forget('edit_produk_' . $id);
+        });
 
         return redirect()->route('produk.index')->with('success', 'Produk berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        $produk = ProdukModel::findOrFail($id);
+        DB::transaction(function () use ($id) {
+            $produk = ProdukModel::findOrFail($id);
 
-        $produk->foto()->delete();
-        $produk->warna()->delete();
-        $produk->ukuran()->delete();
-        $produk->toko()->delete();
+            $fotos = $produk->foto;
 
-        $produk->delete();
+            foreach ($fotos as $foto) {
+                $filePath = public_path('storage/foto_produk/' . $foto->foto_produk);
 
-        return redirect('/produk')->with('success', 'Produk berhasil diperbarui');
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+            }
+
+            $produk->foto()->delete();
+            $produk->warna()->delete();
+            $produk->ukuran()->delete();
+
+            $produk->delete();
+
+            Cache::forget('produk_' . $id);
+            Cache::forget('edit_produk_' . $id);
+        });
+
+        return redirect('/produk')->with('success', 'Produk berhasil dihapus');
     }
 }

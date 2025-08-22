@@ -8,17 +8,27 @@
 
         <div class="flex flex-col md:flex-row md:justify-center mb-4 gap-7">
             {{-- Filter & Search --}}
-            <form method="GET" action="{{ url('/produk') }}"
+            <form id="filterForm" method="GET" action="{{ url('/produk') }}"
                 class="flex flex-col sm:flex-row sm:items-center gap-3 w-full md:w-auto bg-white p-3 rounded-lg shadow">
 
                 {{-- Filter Kategori --}}
-                <select name="kategori"
+                <select name="kategori" id="kategoriFilter"
                     class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-pink-300">
                     <option value="">All</option>
                     @foreach ($kategoriList as $kategori)
                         <option value="{{ $kategori->kategori_id }}"
                             {{ request('kategori') == $kategori->kategori_id ? 'selected' : '' }}>
                             {{ $kategori->nama_kategori }}
+                        </option>
+                    @endforeach
+                </select>
+
+                {{-- Filter Paginate --}}
+                <select name="paginate" id="paginateFilter"
+                    class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-pink-300">
+                    @foreach ([5, 15, 25, 50, 100] as $limit)
+                        <option value="{{ $limit }}" {{ request('paginate', 15) == $limit ? 'selected' : '' }}>
+                            Tampilkan {{ $limit }}
                         </option>
                     @endforeach
                 </select>
@@ -33,7 +43,6 @@
                 </div>
             </form>
 
-
             {{-- Tombol Tambah --}}
             <a href="{{ url('/produk/create') }}"
                 class="inline-flex items-center justify-center text-base bg-black text-white px-6 py-5 rounded-xl shadow-md hover:bg-gray-700 transition w-full md:w-auto">
@@ -45,6 +54,7 @@
             </a>
         </div>
 
+        {{-- Produk Grid --}}
         <div class="grid gap-5 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
             @foreach ($produk as $p)
                 <div
@@ -65,7 +75,6 @@
                                 class="px-4 py-2 bg-white text-base border border-gray-300 text-black rounded-xl hover:bg-red-500 transition duration-200">
                                 Hapus
                             </button>
-
                             <a href="{{ url('/produk/' . $p->produk_id . '/edit') }}"
                                 class="px-4 py-2 bg-black text-base text-white border rounded-xl hover:bg-gray-700 transition duration-200">
                                 Edit
@@ -78,14 +87,12 @@
                 <div id="modal-{{ $p->produk_id }}"
                     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
                     onclick="if(event.target === this) this.classList.add('hidden')">
-
                     <div class="bg-white rounded-lg p-6 w-96 shadow-lg">
                         <h2 class="text-lg font-semibold mb-4">Konfirmasi Hapus</h2>
                         <p class="mb-6">
                             Apakah Anda yakin ingin menghapus produk
                             <strong>{{ $p->nama_produk }}</strong>?
                         </p>
-
                         <div class="flex justify-center space-x-10">
                             <form method="POST" action="{{ route('produk.destroy', $p->produk_id) }}">
                                 @csrf
@@ -95,7 +102,6 @@
                                     Ya, Hapus
                                 </button>
                             </form>
-
                             <button type="button"
                                 onclick="document.getElementById('modal-{{ $p->produk_id }}').classList.add('hidden')"
                                 class="flex px-4 py-2 bg-gray-300 text-gray-900 rounded hover:bg-gray-400 transition">
@@ -106,5 +112,28 @@
                 </div>
             @endforeach
         </div>
+
+        {{-- Pagination Links --}}
+        <div class="mt-8">
+            {{ $produk->appends(request()->except('page'))->links() }}
+        </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const kategoriFilter = document.getElementById('kategoriFilter');
+            const paginateFilter = document.getElementById('paginateFilter');
+            const form = document.getElementById('filterForm');
+
+            // Listen for changes on the category filter
+            kategoriFilter.addEventListener('change', function() {
+                form.submit();
+            });
+
+            // Listen for changes on the paginate filter
+            paginateFilter.addEventListener('change', function() {
+                form.submit();
+            });
+        });
+    </script>
 @endsection

@@ -16,12 +16,11 @@ class AuthController extends Controller
             return redirect('/produk');
         }
 
-        return view('auth.login'); 
+        return view('auth.login');
     }
 
     public function postLogin(Request $request)
     {
-        // Validasi input
         $request->validate([
             'username' => 'required|string',
             'password' => 'required|string',
@@ -43,6 +42,28 @@ class AuthController extends Controller
             'status' => false,
             'message' => 'Username atau password salah'
         ]);
+    }
+
+    public function changePasswordForm()
+    {
+        return view('auth.change-password');
+    }
+
+    public function changePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required|string',
+            'new_password' => 'required|string|min:6|confirmed',
+        ]);
+
+        /** @var \App\Models\UserModel $user */
+        $user = Auth::user();
+
+        if (!$user->changePassword($request->current_password, $request->new_password)) {
+            return back()->withErrors(['current_password' => 'Password lama tidak sesuai']);
+        }
+
+        return redirect()->back()->with('success', 'Password berhasil diubah');
     }
 
     public function logout(Request $request)
