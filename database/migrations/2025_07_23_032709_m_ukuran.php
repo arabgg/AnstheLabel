@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nama_ukuran', 200);
             $table->text('deskripsi');
             $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
     }
 

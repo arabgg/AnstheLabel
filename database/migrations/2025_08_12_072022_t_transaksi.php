@@ -12,17 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('t_transaksi', function (Blueprint $table) {
-            $table->id('transaksi_id');
+            $table->uuid('transaksi_id')->primary();
 
-            $table->string('kode_invoice', 50)->unique();
+            $table->string('kode_invoice', 50)->unique()->nullable();
             $table->string('nama_customer');
-            $table->string('no_telp', 20);
-            $table->string('email');
-            $table->string('alamat');
-            $table->enum('status_transaksi', ['pesanan dibuat', 'dikemas', 'dikirim', 'selesai', 'batal'])->default('pesanan dibuat');
-            $table->timestamps();
+            $table->string('no_telp');
+            $table->string('email')->nullable();
+            $table->string('alamat')->nullable();
+            $table->enum('status_transaksi', ['menunggu pembayaran', 'dikemas', 'dikirim', 'selesai', 'batal'])->default('menunggu pembayaran');
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
-
     }
 
     /**

@@ -78,7 +78,7 @@ class HomeController extends Controller
 
     public function show_produk($id)
     {
-        $produk = Cache::remember('produk', 600, function () use ($id) {
+        $produk = Cache::remember('produk_{$id}', 600, function () use ($id) {
             return ProdukModel::with([
                     'kategori:kategori_id,nama_kategori',
                     'bahan:bahan_id,nama_bahan,deskripsi',
@@ -90,7 +90,7 @@ class HomeController extends Controller
                 ->findOrFail($id);
         });
 
-        $rekomendasi = Cache::remember('produk', 600, function () {
+        $rekomendasi = Cache::remember('rekomendasi', 600, function () {
             return ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
                 ->with('kategori:kategori_id,nama_kategori')
                 ->inRandomOrder()
@@ -106,7 +106,7 @@ class HomeController extends Controller
         $cart = session()->get('cart', []);
         $total = collect($cart)->sum(fn($item) => $item['harga'] * $item['quantity']);
 
-        $rekomendasi = Cache::remember('produk', 600, function () {
+        $rekomendasi = Cache::remember('rekomendasi', 600, function () {
             return ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
                 ->with('kategori:kategori_id,nama_kategori')
                 ->inRandomOrder()
@@ -222,7 +222,7 @@ class HomeController extends Controller
             return redirect()->route('cart.index')->with('error', 'Data checkout tidak valid.');
         }
 
-        $paymentMethods = MetodeModel::select('metode_id', 'nama_metode');
+        $paymentMethods = MetodeModel::select('metode_id', 'nama_metode')->get();
 
         return view('home.checkout.payment', compact('cart', 'checkoutData', 'paymentMethods', 'total'));
     }
@@ -247,22 +247,14 @@ class HomeController extends Controller
                 'no_telp'           => $checkoutData['telepon'],
                 'email'             => $checkoutData['email'],
                 'alamat'            => $checkoutData['alamat'],
-                'status_transaksi'  => 'pending',
             ]);
-
-            // kode invoice
-            $kodeInvoice = TransaksiModel::generateInvoiceNumber($transaksi->transaksi_id);
-            $transaksi->update(['kode_invoice' => $kodeInvoice]);
 
             // 2️⃣ Simpan pembayaran
             $total = collect($cart)->sum(fn($item) => $item['harga'] * $item['quantity']);
             $pembayaran = PembayaranModel::create([
                 'metode_id'         => $request->metode_id,
-                'status_pembayaran' => 'belum_bayar',
                 'jumlah_produk'     => count($cart),
                 'total_harga'       => $total,
-                'alamat'            => $checkoutData['alamat'],
-                'status_transaksi'  => 'pending',
             ]);
 
             // 3️⃣ Simpan detail transaksi
@@ -274,7 +266,6 @@ class HomeController extends Controller
                     'ukuran_id'      => $item['ukuran_id'],
                     'warna_id'       => $item['warna_id'],
                     'jumlah'         => $item['quantity'],
-                    'harga'          => $item['harga'],
                 ]);
             }
         });

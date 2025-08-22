@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nama_warna', 100);
             $table->string('kode_hex', 15);
             $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
     }
 
