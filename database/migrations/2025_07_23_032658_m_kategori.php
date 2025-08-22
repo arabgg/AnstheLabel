@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('kategori_id');
             $table->string('nama_kategori', 200);
             $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
     }
 

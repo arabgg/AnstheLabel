@@ -1,12 +1,20 @@
 {
+    "name": "ansthelabel",
+    "version": "1.0.0",
     "private": true,
-    "type": "module",
+    "description": "Project Laravel Ansthelabel",
+    "main": "vite.config.js",
     "scripts": {
         "dev": "vite",
         "build": "vite build"
     },
     "devDependencies": {
         "axios": "^1.6.4",
-        "tailwindcss": "^3.4.10"
+        "laravel-vite-plugin": "^1.0.0",
+        "tailwindcss": "^3.4.10",
+        "vite": "^5.0.0"
+    },
+    "dependencies": {
+        "@tailwindcss/vite": "^3.4.10"
     }
 }
