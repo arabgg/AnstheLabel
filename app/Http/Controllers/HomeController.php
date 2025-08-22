@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
+    // CONTROLLER LANDING PAGE
     public function index()
     {
         $newarrival = Cache::remember('newarrival', 600, function () {
@@ -47,7 +48,6 @@ class HomeController extends Controller
     {
         $filterKategori = (array) $request->input('filter', []);
         $searchQuery = $request->input('search', '');
-        $produk = ProdukModel::with('kategori', 'bahan', 'fotoUtama', 'foto', 'warna', 'ukuran');
 
         $cacheKey = 'produk_' . md5(json_encode($filterKategori) . '_' . $searchQuery);
         
@@ -79,17 +79,16 @@ class HomeController extends Controller
 
     public function show_produk($id)
     {
-        $produk = Cache::remember('produk_{$id}', 600, function () use ($id) {
-            return ProdukModel::with([
-                    'kategori:kategori_id,nama_kategori',
-                    'bahan:bahan_id,nama_bahan,deskripsi',
-                    'fotoUtama',
-                    'warna.warna:warna_id,kode_hex',
-                    'ukuran.ukuran:ukuran_id,nama_ukuran,deskripsi',
-                ])
-                ->select('produk_id', 'nama_produk', 'harga', 'diskon', 'deskripsi', 'kategori_id', 'bahan_id')
-                ->findOrFail($id);
-        });
+        $produk = ProdukModel::with([
+                'kategori:kategori_id,nama_kategori',
+                'bahan:bahan_id,nama_bahan,deskripsi',
+                'foto:foto_produk_id,produk_id,foto_produk,status_foto',
+                'fotoUtama',
+                'warna.warna:warna_id,kode_hex',
+                'ukuran.ukuran:ukuran_id,nama_ukuran,deskripsi',
+            ])
+            ->select('produk_id', 'nama_produk', 'harga', 'diskon', 'deskripsi', 'kategori_id', 'bahan_id')
+            ->findOrFail($id);
 
         $rekomendasi = Cache::remember('rekomendasi', 600, function () {
             return ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
@@ -102,6 +101,38 @@ class HomeController extends Controller
         return view('home.detail.index', compact('produk', 'rekomendasi'));
     }
 
+    public function invoice()
+    {
+        return view('home.checkout.invoice');
+    }
+
+    public function cekInvoice(Request $request)
+    {
+        $request->validate([
+            'kode_invoice' => 'required|string'
+        ]);
+
+        $transaksi = TransaksiModel::where('kode_invoice', $request->kode_invoice)->first();
+
+        if ($transaksi) {
+            return redirect()->route('transaksi.show', $transaksi->kode_invoice);
+        }
+
+        return back()->with('error', 'Kode Invoice tidak ditemukan');
+    }
+
+    public function transaksi($kode_invoice)
+    {
+        $transaksi = TransaksiModel::select('transaksi_id', 'kode_invoice', 'nama_customer', 'alamat', 'status_transaksi')
+            ->with(['detail.produk', 'detail.ukuran', 'detail.warna', 'detail.pembayaran'])
+            ->where('kode_invoice', $kode_invoice)
+            ->firstOrFail();
+
+        return view('home.checkout.transaksi', compact('transaksi'));
+    }
+
+
+    // CONTROLLER LANDING PAGE
     public function cart()
     {
         $cart = session()->get('cart', []);
@@ -242,7 +273,6 @@ class HomeController extends Controller
         }
 
         DB::transaction(function () use ($cart, $checkoutData, $request) {
-            // 1️⃣ Simpan transaksi
             $transaksi = TransaksiModel::create([
                 'nama_customer'     => $checkoutData['nama'],
                 'no_telp'           => $checkoutData['telepon'],
@@ -250,7 +280,6 @@ class HomeController extends Controller
                 'alamat'            => $checkoutData['alamat'],
             ]);
 
-            // 2️⃣ Simpan pembayaran
             $total = collect($cart)->sum(fn($item) => $item['harga'] * $item['quantity']);
             $pembayaran = PembayaranModel::create([
                 'metode_id'         => $request->metode_id,
@@ -258,7 +287,6 @@ class HomeController extends Controller
                 'total_harga'       => $total,
             ]);
 
-            // 3️⃣ Simpan detail transaksi
             foreach ($cart as $item) {
                 DetailTransaksiModel::create([
                     'transaksi_id'   => $transaksi->transaksi_id,
