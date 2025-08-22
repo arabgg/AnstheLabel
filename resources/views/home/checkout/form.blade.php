@@ -9,6 +9,12 @@
             <div class="checkout-kontak">
                 <h3 class="checkout-kontak-title">Kontak</h3>
                 <input class="checkout-kontak-data" type="email" name="email" placeholder="Email" required>
+                <div class="checkout-newsletter">
+                    <label>
+                        <input type="radio" name="newsletter" value="yes" required>
+                        Email me news and offers
+                    </label>
+                </div>
             </div>
 
             <div class="checkout-pengantaran">

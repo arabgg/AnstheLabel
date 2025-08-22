@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class TransaksiModel extends Model
@@ -41,8 +42,13 @@ class TransaksiModel extends Model
 
         // Generate kode_invoice setelah insert (butuh transaksi_id)
         static::created(function ($model) {
-            $kodeInvoice = 'ANS-' . Carbon::now()->format('Ymd') . '-' . $model->transaksi_id;
+            $kodeInvoice = 'ANS-' . Carbon::now()->format('Ymd') . '-' . substr($model->transaksi_id, 0, 8);
             $model->update(['kode_invoice' => $kodeInvoice]);
         });
+    }
+
+    public function detail() :HasMany
+    {
+        return $this->hasMany(DetailTransaksiModel::class, 'transaksi_id', 'transaksi_id');
     }
 }

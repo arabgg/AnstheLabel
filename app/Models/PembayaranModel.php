@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class PembayaranModel extends Model
@@ -40,5 +41,10 @@ class PembayaranModel extends Model
     public function metode() :BelongsTo
     {
         return $this->belongsTo(MetodeModel::class, 'metode_id', 'metode_id');
+    }
+
+    public function detail() :HasMany
+    {
+        return $this->hasMany(DetailTransaksiModel::class, 'pembayaran_id', 'pembayaran_id');
     }
 }
