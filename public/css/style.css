@@ -388,7 +388,6 @@ input[type="radio"]:checked + .detail-dot,
 input[type="radio"]:checked + .detail-size-nama {
   border-color: #373333ff;
 }
-
 .detail-quantity-wrapper { display: flex; align-items: center; gap: 10px; margin-top: 20px;}
 .detail-quantity-wrapper input[type="number"] { width: 60px; padding: 6px 10px; border: 1px solid #ccc;  border-radius: 5px; font-size: 14px; outline: none; transition: border-color 0.2s; }
 .detail-quantity-label { font-size: 12px; color: #7d5f37; text-align: left; }
@@ -452,7 +451,7 @@ input[type="radio"]:checked + .detail-size-nama {
 /* CHECKOUT STYLE */
 .checkout-container { display: flex; max-width: 1000px; margin: 40px auto; margin-bottom: 80px; padding: 40px; gap: 40px; }
 .checkout-form { flex: 1; }
-.checkout-kontak { margin-bottom: 50px; }
+.checkout-kontak { margin-bottom: 36px; }
 .checkout-summary { flex: 1; background: #f9f9f9; padding: 20px; }
 .checkout-kontak-title { margin-bottom: 10px; font-size: 16px; font-weight: bold; }
 .checkout-pengantaran-title { margin-bottom: 10px; font-size: 16px; font-weight: bold; }
@@ -467,6 +466,9 @@ input[type="radio"]:checked + .detail-size-nama {
 .checkout-total-section { margin-top: 40px; }
 .checkout-subtotal, .checkout-total { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 16px; }
 .checkout-total-price { font-size: 16px; font-weight: bold; }
+.checkout-newsletter input[type="radio"] {appearance: none; -webkit-appearance: none; -moz-appearance: none; width: 14px; height: 14px; border: 2px solid #560024; border-radius: 4px;  margin: 0 4px; cursor: pointer; position: relative; top: 2px;}
+.checkout-newsletter input[type="radio"]:checked { background-color: #560024; border-color: #560024;}
+.checkout-newsletter label { font-size: 14px; font-weight: 200; color: #560024; cursor: pointer;}
 
 /* INDIKATOR CART */
 .nav-icons { display: flex; align-items: center; gap: 15px; position: relative; }
@@ -475,47 +477,156 @@ input[type="radio"]:checked + .detail-size-nama {
 .cart-badge { position: absolute; top: -8px; right: -10px; background-color: #560024; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 50%; line-height: 1; min-width: 18px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
 
 /* ANIMASI SKELETON */
-.skeleton-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.skeleton {
-    animation: skeleton-loading 1.5s infinite alternate;
-}
-
-.skeleton-img {
-    width: 100%;
-    height: 250px;
-}
-
-.produk-skeleton .skeleton-img {
-    width: 100%;
-    height: 320px;
-}
-
-.hero-skeleton .skeleton-img {
-    width: 100%;
-    height: 100vh;
-}
-
-.hero-collection-skeleton .skeleton-img {
-    width: 100%;
-    height: 240px;
-}
-
-.viscose-skeleton .skeleton-img {
-    width: 100%;
-    height: 380px;
-}
-
-.skeleton-main-img {
-    width: 100%;
-    height: 400px;
-}
-
+.skeleton-wrapper { display: flex; flex-direction: column; gap: 10px;}
+.skeleton { animation: skeleton-loading 1.5s infinite alternate;}
+.skeleton-img { width: 100%; height: 250px;}
+.produk-skeleton .skeleton-img { width: 100%; height: 320px;}
+.hero-skeleton .skeleton-img { width: 100%; height: 100vh;}
+.hero-collection-skeleton .skeleton-img { width: 100%; height: 240px;}
+.viscose-skeleton .skeleton-img { width: 100%; height: 380px;}
+.skeleton-main-img { width: 100%; height: 400px; }
 @keyframes skeleton-loading {
-    from { background-color: hsl(200, 20%, 70%) }
-    to   { background-color: hsl(200, 20%, 95%) }
+    from { background-color: hsl(200, 20%, 70%) } to { background-color: hsl(200, 20%, 95%) }
 }
+
+/* Container utama */
+.payment-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+}
+
+/* Judul utama */
+.payment-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* Card section (data diri, ringkasan, form) */
+.payment-section {
+    border: 1px solid #ddd;
+    background: #f9fafb;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 24px;
+}
+
+/* Heading di setiap section */
+.payment-section-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+/* Data diri */
+.payment-user-info p {
+    margin: 4px 0;
+    font-size: 14px;
+}
+
+/* Item produk */
+.payment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.payment-item:last-child {
+    border-bottom: none;
+}
+
+.payment-item-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.payment-item-img {
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    -o-object-fit: cover;
+       object-fit: cover;
+}
+
+.payment-item-info {
+    font-size: 14px;
+}
+
+.payment-item-name {
+    font-weight: 500;
+}
+
+.payment-item-detail {
+    font-size: 12px;
+    color: #666;
+}
+
+/* Total harga */
+.payment-total {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 14px;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+/* Form pembayaran */
+.payment-form label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* Radio button custom */
+.payment-form input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #333;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease-in-out;
+}
+
+.payment-form input[type="radio"]:checked {
+    background-color: #000;
+    border-color: #000;
+}
+
+/* Tombol submit */
+.payment-btn {
+    display: inline-block;
+    margin-top: 16px;
+    background: #2563eb;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s ease-in-out;
+}
+
+.payment-btn:hover {
+    background: #1e40af;
+}
+
+/* Error message */
+.payment-error {
+    color: #dc2626;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
