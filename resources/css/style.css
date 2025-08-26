@@ -444,7 +444,7 @@ input[type="radio"]:checked + .detail-size-nama {
 .checkout-pengantaran-data { width: 100%; padding: 10px; margin-bottom: 15px; border: 2px solid #6b0f2e; border-radius: 6px; }
 .checkout-pengantaran-data::placeholder {font-family: 'Montserrat',sans-serif!important;color: #aaa;font-size: 12px;}
 .checkout-name-group, .city-group { display: flex; gap: 10px; }
-.checkout-payment-btn { width: 100%; background-color: #6b0f2e; color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; margin-top: 50px; }
+.checkout-payment-btn { width: 100%; background-color: #6b0f2e; color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; margin-top: 30px; }
 .checkout-product-item { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; gap: 10px; }
 .checkout-product-item img { width: 100px; height: 120px; border-radius: 4px; }
 .checkout-product-item p { margin: 4px; font-size: 12px; color: #333; }
@@ -477,80 +477,117 @@ input[type="radio"]:checked + .detail-size-nama {
 }
 
 /* PAYMENT STYLE */
-.payment-group {
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
+.checkout-payment-section {
+    margin-top: 20px;
+}
+
+.checkout-payment-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.checkout-payment-group {
+    margin-bottom: 18px;
+    border: 1px solid #a09f9fff;
     border-radius: 8px;
     overflow: hidden;
 }
 
-/* Tombol judul metode (Transfer Bank, E-Wallet, dsb) */
-.toggle-payment {
-    background: #6b0f2e;
-    color: #fff;
+.checkout-payment-toggle {
+    background: #F3E5EB;
+    color: black;
     border: none;
-    padding: 14px 16px;
+    padding: 10px 16px;
     width: 100%;
     text-align: left;
     cursor: pointer;
-    font-weight: bold;
-    font-size: 14px;
+    font-weight: 500;
+    font-size: 12px;
     transition: background 0.3s ease;
+    font-family: 'Montserrat',sans-serif!important;
 }
 
-.toggle-payment:hover {
-    background: #560024;
+.checkout-payment-toggle:hover {
+    background: #F4D6CC;
 }
 
-/* List pilihan metode pembayaran */
-.payment-list {
-    background: #fafafa;
-    padding: 12px 16px;
-    border-top: 1px solid #eee;
+/* Smooth toggle list */
+.checkout-payment-list {
+    max-height: 0;             
+    opacity: 0;                
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-top: 15px;
+    padding: 0;
+    transition: max-height 0.4s ease, opacity 0.4s ease, padding 0.4s ease;
 }
 
-/* Item per metode (contoh: BCA, Mandiri, OVO) */
-.payment-method {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 0;
-    border-bottom: 1px solid #eee;
+.checkout-payment-list.show {
+    max-height: 1000px;        
+    opacity: 1;
+    padding: 10px 10px;
 }
 
-.payment-method:last-child {
-    border-bottom: none;
+.checkout-payment-method {
+    position: relative;
 }
 
-.payment-method input[type="radio"] {
-    accent-color: #6b0f2e; /* warna radio sesuai tema */
-    cursor: pointer;
-}
-
-.payment-method img {
-    width: 32px;
-    height: auto;
-    border-radius: 4px;
-    background: #fff;
-    padding: 2px;
-    border: 1px solid #ddd;
-}
-
-.payment-method span {
-    font-size: 14px;
-    color: #333;
-}
-
-.payment-hidden {
+.checkout-payment-method input[type="radio"] {
     display: none;
 }
+
+.checkout-payment-method label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #fff;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    padding: 20px 15px;
+    text-align: center;
+    cursor: pointer;
+    height: 90px;
+    opacity: 1;
+    transition: all 0.2s ease;
+}
+
+.checkout-payment-method label:hover {
+    border-color: #828080ff;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    opacity: 1;
+}
+
+.checkout-payment-method img {
+    max-width: 100px;
+    max-height: 50px;
+    object-fit: contain;
+    transition: 0.3s;
+}
+
+/* Border tebal & animasi saat dipilih */
+.checkout-payment-method input[type="radio"]:checked + label {
+    border: 2px solid black;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    opacity: 1;
+}
+
+
+
+
+
+
 
 /* PESAN SUKSES STYLE */
 .success-container {
   max-width: 600px;
   margin: 40px auto;
   padding: 20px;
-  font-family: Arial, sans-serif;
+  font-family: 'Montserrat',sans-serif!important;
   text-align: center;
 }
 
@@ -619,7 +656,7 @@ input[type="radio"]:checked + .detail-size-nama {
     background: #fff;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     text-align: center;
-    font-family: Arial, sans-serif;
+    font-family: 'Montserrat',sans-serif!important;
 }
 
 .invoice-title {
@@ -682,7 +719,7 @@ input[type="radio"]:checked + .detail-size-nama {
 /* DATA DETAIL TRANSAKSI */
 .transaksi {
     margin-top: 30px;
-    font-family: Arial, sans-serif;
+    font-family: 'Montserrat',sans-serif!important;
 }
 
 .transaksi-info {

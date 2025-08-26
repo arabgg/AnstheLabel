@@ -11,7 +11,7 @@
         <div class="about-container">
             <div class="about-content">
                 <div class="about-left">
-                    <img src="{{ asset('storage/images/ansthelabel.png') }}" alt="Ansthelabel Logo" class="about-logo">
+                    <img src="{{ route('storage', ['folder' => 'page', 'filename' => 'ansthelabel.png']) }}" alt="Ansthelabel Logo" class="about-logo">
                 </div>
                 <div class="about-right">
                     <p>
@@ -28,7 +28,7 @@
             @foreach ($rekomendasi as $item)
             <div class="recommend-card">
                 <a href="{{ route('detail.show', $item->produk_id) }}">
-                    <img src="{{ asset('storage/foto_produk/' . $item->fotoUtama->foto_produk) }}" alt="{{ $item->nama_produk }}">
+                    <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->fotoUtama->foto_produk]) }}" alt="{{ $item->nama_produk }}">
                     <h3>{{ $item->nama_produk }}</h3>
                     <p>{{ $item->kategori->nama_kategori }}</p>
                 </a>

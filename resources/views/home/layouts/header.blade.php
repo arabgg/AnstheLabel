@@ -18,7 +18,7 @@
     <div class="container nav-content">
         <div class="logo">
             <a href="{{ route('home') }}" class="produk-card-link">
-                <img src="{{ asset('storage/images/ansthelabel.png') }}" alt="Ansthelabel Logo">
+                <img src="{{ route('storage', ['folder' => 'page', 'filename' => 'ansthelabel.png']) }}" alt="Ansthelabel Logo">
             </a>
         </div>
         <nav class="nav-links">

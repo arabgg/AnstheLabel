@@ -10,7 +10,7 @@
 
                 <!-- Konten utama -->
                 <div class="skeleton-target" style="display:none;">
-                    <img src="{{ asset('storage/foto_produk/' . $bestproduk->fotoUtama->foto_produk) }}" alt="{{ $bestproduk->nama_produk }}">
+                    <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $bestproduk->fotoUtama->foto_produk]) }}" alt="{{ $bestproduk->nama_produk }}">
                     <div class="arrival-caption">
                         <h3>{{ $bestproduk->nama_produk }}</h3>
                         <a href="{{ route('collection') }}">
