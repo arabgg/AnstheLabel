@@ -28,7 +28,7 @@ class MetodeModel extends Model
         return $this->hasMany(PembayaranModel::class, 'metode_id', 'metode_id');
     }
 
-    public function mPembayaran() :HasMany
+    public function metode() :HasMany
     {
         return $this->hasMany(MetodePembayaranModel::class, 'metode_id', 'metode_id');
     }

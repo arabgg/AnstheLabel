@@ -17,10 +17,10 @@
                         <div class="skeleton-target" style="display:none;">
                             <div class="edition-label">COLLECTION</div>
                             @if ($item->fotoUtama)
-                                <img src="{{ asset('storage/foto_produk/' . $item->fotoUtama->foto_produk) }}" alt="{{ $item->nama_produk }}" class="edition-image default-image">
+                                <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->fotoUtama->foto_produk]) }}" alt="{{ $item->nama_produk }}" class="edition-image default-image">
                             @endif
                             @if ($item->hoverFoto)
-                                <img src="{{ asset('storage/foto_produk/' . $item->hoverFoto->foto_produk) }}" alt="{{ $item->nama_produk }}" class="edition-image hover-image">
+                                <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->hoverFoto->foto_produk]) }}" alt="{{ $item->nama_produk }}" class="edition-image hover-image">
                             @endif
                         </div>
                     </a>
