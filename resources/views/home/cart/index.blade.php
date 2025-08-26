@@ -9,8 +9,8 @@
 
 @section('content')
 <div class="cart-container">
-    <a href="{{ route('home') }}" class="cart-logo">
-        <img src="{{ asset('storage/images/ansthelabel.png') }}" alt="Ansthelabel Logo">
+    <a href="{{ route('home') }}" class="cart-logo"> 
+        <img src="{{ route('storage', ['folder' => 'page', 'filename' => 'ansthelabel.png']) }}" alt="Ansthelabel Logo">
     </a>
 
     <h2>Your Cart</h2>
@@ -32,7 +32,7 @@
                     <!-- Kolom Produk -->
                     <td class="product-cell">
                         <div class="product-info">
-                            <img src="{{ asset('storage/foto_produk/' . $item['foto']) }}" alt="{{ $item['nama'] }}">
+                            <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item['foto']]) }}" alt="{{ $item['nama'] }}">
                             <div class="product-details">
                                 <div class="product-name">{{ $item['nama'] }}</div>
                                 <div class="product-meta">IDR {{ number_format($item['harga'], 2, ',', '.') }}</div>
@@ -95,7 +95,7 @@
             @foreach ($rekomendasi as $item)
             <div class="detail-recommend-card">
                 <a href="{{ route('detail.show', $item->produk_id) }}">
-                    <img src="{{ asset('storage/foto_produk/' . $item->fotoUtama->foto_produk) }}" alt="{{ $item->nama_produk }}">
+                    <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->fotoUtama->foto_produk]) }}" alt="{{ $item->nama_produk }}">
                     <h3>{{ $item->nama_produk }}</h3>
                     <p>{{ $item->kategori->nama_kategori }}</p>
                 </a>

@@ -242,8 +242,8 @@ class HomeController extends Controller
     {
         $cart = session()->get('cart', []);
         $total = collect($cart)->sum(fn($item) => $item['harga'] * $item['quantity']);
-        $metode = MetodeModel::select('metode_id', 'nama_metode')
-            ->with(['mPembayaran:metode_pembayaran_id,nama_pembayaran,kode_bayar,icon'])
+        $metode = MetodePembayaranModel::select('metode_pembayaran_id', 'metode_id', 'nama_pembayaran', 'kode_bayar', 'icon')
+            ->with(['metode:metode_id,nama_metode'])
             ->get();
 
         if (empty($cart)) {

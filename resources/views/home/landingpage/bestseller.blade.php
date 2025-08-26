@@ -20,10 +20,10 @@
                             @endif
                             {{-- Gambar utama dengan status_foto = 1 --}}
                             @if ($item->fotoUtama)
-                                <img src="{{ asset('storage/foto_produk/' . $item->fotoUtama->foto_produk) }}" alt="{{ $item->nama_produk }}" class="bestseller-image default-image">
+                                <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->fotoUtama->foto_produk]) }}" alt="{{ $item->nama_produk }}" class="bestseller-image default-image">
                             @endif
                             @if ($item->hoverFoto)
-                                <img src="{{ asset('storage/foto_produk/' . $item->hoverFoto->foto_produk) }}" alt="{{ $item->nama_produk }}" class="bestseller-image hover-image">
+                                <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->hoverFoto->foto_produk]) }}" alt="{{ $item->nama_produk }}" class="bestseller-image hover-image">
                             @endif
                         </div>
                     </div>

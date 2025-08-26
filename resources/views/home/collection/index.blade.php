@@ -14,7 +14,7 @@
         <div class="custom-carousel-collection skeleton-target" style="display:none;">
             @foreach ($hero as $item)
                 @if ($item->banner_id >= 5 && $item->banner_id <= 8)
-                    <img src="{{ asset('storage/images/banner/' . $item->foto_banner) }}"
+                    <img src="{{ route('storage', ['folder' => 'banner', 'filename' => $item->foto_banner]) }}"
                         class="carousel-image {{ $item->banner_id === 5 ? 'active' : '' }}"
                         alt="{{ $item->nama_banner }}">
                 @endif

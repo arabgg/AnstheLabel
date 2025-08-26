@@ -22,13 +22,13 @@
                     <div class="skeleton-target" style="display:none;">
                         {{-- Foto Utama --}}
                         <img class="detail-main-image"
-                            src="{{ asset('storage/foto_produk/' . $produk->fotoUtama->foto_produk) }}"
+                            src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $produk->fotoUtama->foto_produk]) }}"
                             alt="{{ $produk->nama_produk }}">
     
                         {{-- Foto Thumbnail --}}
                         <div class="detail-thumbnail-wrapper">
                             @foreach ($produk->foto->where('status_foto', 0) as $foto)
-                                <img src="{{ asset('storage/foto_produk/' . $foto->foto_produk) }}"
+                                <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $foto->foto_produk]) }}"
                                     alt="Thumbnail {{ $loop->iteration }}">
                             @endforeach
                         </div>
@@ -143,7 +143,7 @@
             @foreach ($rekomendasi as $item)
             <div class="detail-recommend-card">
                 <a href="{{ route('detail.show', $item->produk_id) }}">
-                    <img src="{{ asset('storage/foto_produk/' . $item->fotoUtama->foto_produk) }}" alt="{{ $item->nama_produk }}">
+                    <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->fotoUtama->foto_produk]) }}" alt="{{ $item->nama_produk }}">
                     <h3>{{ $item->nama_produk }}</h3>
                     <p>{{ $item->kategori->nama_kategori }}</p>
                 </a>
