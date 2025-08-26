@@ -21,6 +21,7 @@ class ProdukSeeder extends Seeder
                 'harga' => '99000',
                 'diskon' => '',
                 'deskripsi' => 'Scarf hijab polos berbahan ringan dan adem, memberikan kenyamanan sepanjang hari. Desain polos yang elegan cocok untuk tampilan formal maupun kasual.',
+                'is_best' => 0,
                 'created_at' => now(),
             ],
             [
@@ -30,6 +31,7 @@ class ProdukSeeder extends Seeder
                 'harga' => '159000',
                 'diskon' => '',
                 'deskripsi' => 'Scarf hijab bermotif dengan sentuhan bahan lembut dan jatuh. Menampilkan motif elegan yang menambah kesan stylish pada setiap penampilan.',
+                'is_best' => 0,
                 'created_at' => now(),
             ],
             [
@@ -39,6 +41,7 @@ class ProdukSeeder extends Seeder
                 'harga' => '129000',
                 'diskon' => '',
                 'deskripsi' => 'Pashmina polos berbahan adem dan fleksibel. Cocok digunakan untuk gaya sehari-hari dengan berbagai gaya lilit yang simpel namun elegan.',
+                'is_best' => 0,
                 'created_at' => now(),
             ],
             [
@@ -48,6 +51,7 @@ class ProdukSeeder extends Seeder
                 'harga' => '199000',
                 'diskon' => '',
                 'deskripsi' => 'Pashmina dengan motif modern dan menarik, berbahan halus dan jatuh. Menjadikan tampilanmu lebih hidup dan fashionable.',
+                'is_best' => 1,
                 'created_at' => now(),
             ],
             [
@@ -57,6 +61,7 @@ class ProdukSeeder extends Seeder
                 'harga' => '199000',
                 'diskon' => '',
                 'deskripsi' => 'Bergo polos berbahan adem dan ringan dengan pet yang nyaman. Praktis dipakai sehari-hari, cocok untuk tampilan simple dan rapi.',
+                'is_best' => 0,
                 'created_at' => now(),
             ],
             [
@@ -66,6 +71,7 @@ class ProdukSeeder extends Seeder
                 'harga' => '239000',
                 'diskon' => '',
                 'deskripsi' => 'Bergo dengan motif cantik dan elegan, terbuat dari bahan yang jatuh dan nyaman dipakai. Ideal untuk tampilan santai maupun semi-formal.',
+                'is_best' => 1,
                 'created_at' => now(),
             ],
             [
@@ -75,6 +81,7 @@ class ProdukSeeder extends Seeder
                 'harga' => '299000',
                 'diskon' => '99000',
                 'deskripsi' => 'Atasan tanpa lengan dengan potongan round neck. Terbuat dari bahan adem dan fleksibel, cocok untuk cuaca hangat dan tampil kasual.',
+                'is_best' => 1,
                 'created_at' => now(),
             ],
             [
@@ -84,6 +91,7 @@ class ProdukSeeder extends Seeder
                 'harga' => '299000',
                 'diskon' => '',
                 'deskripsi' => 'Atasan sleeveless dengan model turtle neck yang stylish. Didesain dengan bahan lembut dan breathable, ideal untuk layering atau digunakan langsung.',
+                'is_best' => 0,
                 'created_at' => now(),
             ],
             [
@@ -93,6 +101,7 @@ class ProdukSeeder extends Seeder
                 'harga' => '349000',
                 'diskon' => '149000',
                 'deskripsi' => 'Knitwear rajut dengan motif garis yang modern. Menggunakan bahan berkualitas yang nyaman dipakai dan cocok untuk suasana santai maupun semi-formal.',
+                'is_best' => 1,
                 'created_at' => now(),
             ],
             [
@@ -102,6 +111,7 @@ class ProdukSeeder extends Seeder
                 'harga' => '349000',
                 'diskon' => '',
                 'deskripsi' => 'Cardigan dengan model longgar dan bahan lembut, cocok untuk digunakan di berbagai aktivitas. Desainnya elegan dan mudah dipadukan dengan berbagai outfit.',
+                'is_best' => 1,
                 'created_at' => now(),
             ],
         ]);

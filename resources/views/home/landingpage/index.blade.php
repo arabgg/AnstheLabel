@@ -7,10 +7,13 @@
         </div>
 
         <div id="heroCarouselCustom" class="custom-carousel skeleton-target" style="display:none;">
-            <img src="{{ asset('storage/images/hero/hero1.jpg') }}" class="carousel-image active" alt="Hero 1">
-            <img src="{{ asset('storage/images//hero/hero2.jpg') }}" class="carousel-image" alt="Hero 2">
-            <img src="{{ asset('storage/images/hero/hero3.avif') }}" class="carousel-image" alt="Hero 3">
-            <img src="{{ asset('storage/images/hero/hero4.avif') }}" class="carousel-image" alt="Hero 4">
+            @foreach ($hero as $item)
+                @if ($item->banner_id >= 1 && $item->banner_id <= 4)
+                    <img src="{{ asset('storage/images/banner/' . $item->foto_banner) }}"
+                        class="carousel-image {{ $item->banner_id === 1 ? 'active' : '' }}"
+                        alt="{{ $item->nama_banner }}">
+                @endif
+            @endforeach
         </div>
     </div>
 
@@ -22,10 +25,13 @@
         </div>
         
         <div id="heroCarousel" class="custom-carousel skeleton-target" style="display:none;">
-            <img src="{{ asset('storage/images/hero/hero5.avif') }}" class="carousel-image active" alt="Hero 5">
-            <img src="{{ asset('storage/images/hero/hero6.avif') }}" class="carousel-image" alt="Hero 6">
-            <img src="{{ asset('storage/images/hero/hero7.avif') }}" class="carousel-image" alt="Hero 7">
-            <img src="{{ asset('storage/images/hero/hero8.avif') }}" class="carousel-image" alt="Hero 8">
+            @foreach ($hero as $item)
+                @if ($item->banner_id >= 5 && $item->banner_id <= 8)
+                    <img src="{{ asset('storage/images/banner/' . $item->foto_banner) }}"
+                        class="carousel-image {{ $item->banner_id === 5 ? 'active' : '' }}"
+                        alt="{{ $item->nama_banner }}">
+                @endif
+            @endforeach
         </div>
     </div>
 
@@ -37,10 +43,13 @@
         </div>
         
         <div id="heroCarousel" class="custom-carousel skeleton-target" style="display:none;">
-            <img src="{{ asset('storage/images/hero/hero5.avif') }}" class="carousel-image active" alt="Hero 5">
-            <img src="{{ asset('storage/images/hero/hero6.avif') }}" class="carousel-image" alt="Hero 6">
-            <img src="{{ asset('storage/images/hero/hero7.avif') }}" class="carousel-image" alt="Hero 7">
-            <img src="{{ asset('storage/images/hero/hero8.avif') }}" class="carousel-image" alt="Hero 8">
+            @foreach ($hero as $item)
+                @if ($item->banner_id >= 5 && $item->banner_id <= 8)
+                    <img src="{{ asset('storage/images/banner/' . $item->foto_banner) }}"
+                        class="carousel-image {{ $item->banner_id === 5 ? 'active' : '' }}"
+                        alt="{{ $item->nama_banner }}">
+                @endif
+            @endforeach
         </div>
     </div>
 
@@ -52,29 +61,30 @@
         </div>
         
         <div id="heroCarousel" class="custom-carousel skeleton-target" style="display:none;">
-            <img src="{{ asset('storage/images/hero/hero5.avif') }}" class="carousel-image active" alt="Hero 5">
-            <img src="{{ asset('storage/images/hero/hero6.avif') }}" class="carousel-image" alt="Hero 6">
-            <img src="{{ asset('storage/images/hero/hero7.avif') }}" class="carousel-image" alt="Hero 7">
-            <img src="{{ asset('storage/images/hero/hero8.avif') }}" class="carousel-image" alt="Hero 8">
+            @foreach ($hero as $item)
+                @if ($item->banner_id >= 5 && $item->banner_id <= 8)
+                    <img src="{{ asset('storage/images/banner/' . $item->foto_banner) }}"
+                        class="carousel-image {{ $item->banner_id === 5 ? 'active' : '' }}"
+                        alt="{{ $item->nama_banner }}">
+                @endif
+            @endforeach
         </div>
     </div>
 
-    @include('home.landingpage.viscose')    
+    @include('home.landingpage.edition')    
     
-    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
-        <div class="skeleton-wrapper hero-skeleton">
-            <div class="skeleton skeleton-img"></div>
-        </div>
-        
-        <div id="heroCarousel" class="custom-carousel skeleton-target" style="display:none;">
-            <img src="{{ asset('storage/images/hero/hero5.avif') }}" class="carousel-image active" alt="Hero 5">
-            <img src="{{ asset('storage/images/hero/hero6.avif') }}" class="carousel-image" alt="Hero 6">
-            <img src="{{ asset('storage/images/hero/hero7.avif') }}" class="carousel-image" alt="Hero 7">
-            <img src="{{ asset('storage/images/hero/hero8.avif') }}" class="carousel-image" alt="Hero 8">
-        </div>
+    <div class="collection-section container">
+    <div class="hero-grid">
+        @foreach ($hero as $index => $item)
+            @if ($item->banner_id >= 7 && $item->banner_id <= 8)
+                <div class="hero-item {{ $index === 0 ? 'left' : 'right' }}">
+                    <img src="{{ asset('storage/images/banner/' . $item->foto_banner) }}"
+                        alt="{{ $item->nama_banner }}">
+                </div>
+            @endif
+        @endforeach
     </div>
-
-    @include('home.landingpage.collection')
+</div>
 @endsection
 
 @push('scripts')

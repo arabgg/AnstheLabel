@@ -14,7 +14,7 @@
                 <div class="skeleton-target" style="display:none;">
                     <a href="{{ route('detail.show', $item->produk_id) }}">
                         <div class="bestproduk-image-wrapper">
-                            @if (!empty($item->diskon))
+                            @if (!empty($item->diskon && $item->diskon > 0))
                                 <span class="diskon-label">Save {{ $item->diskon_persen }} %</span>
                             @endif
                             
@@ -23,12 +23,8 @@
                                 <img src="{{ asset('storage/foto_produk/' . $item->fotoUtama->foto_produk) }}" alt="{{ $item->nama_produk }}" class="bestproduk-image default-image">
                             @endif
     
-                            {{-- Gambar hover: salah satu dari foto dengan status_foto = 0 --}}
-                            @php
-                                $hoverFoto = $item->foto->firstWhere('status_foto', 0);
-                            @endphp
-                            @if ($hoverFoto)
-                                <img src="{{ asset('storage/foto_produk/' . $hoverFoto->foto_produk) }}" alt="{{ $item->nama_produk }}" class="bestproduk-image hover-image">
+                            @if ($item->hoverFoto)
+                                <img src="{{ asset('storage/foto_produk/' . $item->hoverFoto->foto_produk) }}" alt="{{ $item->nama_produk }}" class="bestproduk-image hover-image">
                             @endif
                         </div>
                     </a>

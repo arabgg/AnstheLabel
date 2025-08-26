@@ -89,18 +89,41 @@
 
     <!-- Swiper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
-    <script>
-        const swiper = new Swiper('.swiper', {
-            slidesPerView: 'auto',         
-            centeredSlides: true,          
-            spaceBetween: 0,               
-            loop: true,
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-        });
-    </script>
+<script>
+    const swiper = new Swiper('.swiper', {
+        slidesPerView: 'auto',
+        centeredSlides: true,
+        spaceBetween: 0,
+        loop: true,
+        grabCursor: true, // aktifkan cursor "grab"
+    });
+
+    // Klik kiri/kanan untuk navigasi
+    swiper.on('click', function (swiper, event) {
+        const clickedIndex = swiper.clickedIndex;
+        const activeIndex = swiper.activeIndex;
+
+        if (clickedIndex > activeIndex) {
+            swiper.slideNext(); // klik kanan
+        } else if (clickedIndex < activeIndex) {
+            swiper.slidePrev(); // klik kiri
+        }
+    });
+
+    // Tambahkan cursor pointer ke slide kiri/kanan
+    function updateCursor() {
+        swiper.slides.forEach(slide => slide.style.cursor = "grab"); // default drag
+        const prevSlide = swiper.slides[swiper.activeIndex - 1] || swiper.slides[swiper.slides.length - 1];
+        const nextSlide = swiper.slides[swiper.activeIndex + 1] || swiper.slides[0];
+        if (prevSlide) prevSlide.style.cursor = "pointer";
+        if (nextSlide) nextSlide.style.cursor = "pointer";
+    }
+
+    swiper.on('slideChange', updateCursor);
+    swiper.on('init', updateCursor);
+
+    swiper.init();
+</script>
 
     <!--Start of Tawk.to Script-->
     <script type="text/javascript">
