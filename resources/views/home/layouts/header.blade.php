@@ -24,18 +24,16 @@
         <nav class="nav-links">
             <a href="{{ route('home') }}" class="nav-item {{ request()->is('home') ? 'active' : '' }}">Home</a>
             <a href="{{ route('collection') }}" class="nav-item {{ request()->is('collection') ? 'active' : '' }}">Collection</a>
-            <a href="{{ route('invoice') }}" class="nav-item {{ request()->is('collection') ? 'active' : '' }}">Cek Transaksi</a>
+            <a href="{{ route('invoice') }}" class="nav-item {{ request()->is('invoice') ? 'active' : '' }}">Transaction</a>
             <a href="{{ route('about') }}" class="nav-item {{ request()->is('about') ? 'active' : '' }}">About Us</a>
         </nav>
         <div class="nav-icons">
-    <a href="{{ route('cart.index') }}" class="nav-icon relative">
-        <i class="fas fa-cart-shopping"></i>
-        @if($cartCount > 0)
-            <span class="cart-badge">{{ $cartCount }}</span>
-        @endif
-    </a>
-</div>
-
-
+            <a href="{{ route('cart.index') }}" class="nav-icon relative">
+                <i class="fas fa-cart-shopping"></i>
+                @if($cartCount > 0)
+                    <span class="cart-badge">{{ $cartCount }}</span>
+                @endif
+            </a>
+        </div>
     </div>
 </header>

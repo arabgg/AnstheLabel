@@ -20,10 +20,16 @@ class MetodeModel extends Model
 
     protected $casts = [
         'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function pembayaran() :HasMany
     {
         return $this->hasMany(PembayaranModel::class, 'metode_id', 'metode_id');
+    }
+
+    public function mPembayaran() :HasMany
+    {
+        return $this->hasMany(MetodePembayaranModel::class, 'metode_id', 'metode_id');
     }
 }

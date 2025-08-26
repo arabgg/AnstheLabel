@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\ProdukController;
@@ -9,7 +8,9 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\BahanController;
 use App\Http\Controllers\UkuranController;
 use App\Http\Controllers\WarnaController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,23 @@ Route::pattern('id', '[0-9]+');
 Route::get('/', function () {
     return redirect()->route('home');
 });
+
+//Route Pemanggilan File Storage
+Route::get('/storage/{folder}/{filename}', function ($folder, $filename) {
+    $allowedFolders = ['foto_produk', 'icons', 'banner', 'page'];
+
+    if (!in_array($folder, $allowedFolders)) {
+        abort(403, 'Folder tidak diizinkan');
+    }
+
+    $path = storage_path("app/public/{$folder}/{$filename}");
+
+    if (!file_exists($path)) {
+        abort(404);
+    }
+
+    return response()->file($path);
+})->name('storage');
 
 //Route Landing Page
 Route::get('home', [HomeController::class, 'index'])->name('home');
@@ -47,6 +65,7 @@ Route::get('/checkout', [HomeController::class, 'checkoutForm'])->name('checkout
 Route::post('/checkout/save', [HomeController::class, 'saveCheckout'])->name('checkout.save');
 Route::get('/checkout/payment', [HomeController::class, 'paymentForm'])->name('checkout.payment');
 Route::post('/checkout/process', [HomeController::class, 'processPayment'])->name('checkout.process');
+Route::get('/checkout/success/{detail_id}', [HomeController::class, 'paymentSuccess'])->name('checkout.success');
 
 
 //Route Login

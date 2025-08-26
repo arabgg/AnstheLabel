@@ -22,8 +22,7 @@ class ProdukModel extends Model
         'harga',
         'diskon',
         'deskripsi',
-        'harga',
-        'diskon',
+        'is_best',
     ];
 
     protected $casts = [
@@ -76,6 +75,12 @@ class ProdukModel extends Model
     {
         return $this->hasOne(FotoProdukModel::class, 'produk_id', 'produk_id')
             ->where('status_foto', 1);
+    }
+
+    public function hoverFoto()
+    {
+        return $this->hasOne(FotoProdukModel::class, 'produk_id', 'produk_id')
+            ->where('status_foto', 0);
     }
 
     public function warna() :HasMany
