@@ -72,16 +72,12 @@ class HomeController extends Controller
         $filterKategori = (array) $request->input('filter', []);
         $searchQuery = $request->input('search', '');
 
-        $cacheKey = 'produk_' . md5(json_encode($filterKategori) . '_' . $searchQuery);
-        
-        $produk = Cache::remember($cacheKey, 600, function() use ($filterKategori, $searchQuery) {
-            return ProdukModel::select('produk_id', 'nama_produk', 'harga', 'diskon', 'kategori_id')
+        $produk = ProdukModel::select('produk_id', 'nama_produk', 'harga', 'diskon', 'kategori_id')
                 ->with(['kategori:kategori_id,nama_kategori', 'fotoUtama'])
                 ->when(!empty($filterKategori), fn($q) => $q->whereIn('kategori_id', $filterKategori))
                 ->when(!empty($searchQuery), fn($q) => $q->where('nama_produk', 'like', "%{$searchQuery}%"))
                 ->paginate(100);
-        });
-
+        
         $kategori = KategoriModel::select('kategori_id', 'nama_kategori')->get();
 
         return view('home.collection.index', compact('produk', 'kategori', 'filterKategori', 'searchQuery', 'hero'));
