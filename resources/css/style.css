@@ -456,6 +456,21 @@ input[type="radio"]:checked + .detail-size-nama {
 .checkout-newsletter input[type="checkbox"]:checked {background-color:#560024; border-color:#560024;}
 .checkout-newsletter input[type="checkbox"]:checked::after {content:""; position:absolute; left:4px; top:0px; width:4px; height:8px; border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg);}
 .checkout-newsletter label {font-size:14px; font-weight:200; color:#560024; cursor:pointer;}
+.checkout-payment-section {margin-top:20px;}
+.checkout-payment-title {font-size:16px;font-weight:bold;margin-bottom:12px;}
+.checkout-payment-group {margin-bottom:18px;border:1px solid #a09f9fff;border-radius:8px;overflow:hidden;}
+.checkout-payment-toggle {background:#F3E5EB;color:black;border:none;padding:10px 16px;width:100%;text-align:left;cursor:pointer;font-weight:500;font-size:12px;font-family:'Montserrat',sans-serif!important;transition:background 0.3s ease;}
+.checkout-payment-toggle:hover {background:#F4D6CC;}
+.checkout-payment-list {max-height:0;opacity:0;overflow:hidden;display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:15px;padding:0;transition:max-height 0.4s ease,opacity 0.4s ease,padding 0.4s ease;}
+.checkout-payment-list.show {max-height:1000px;opacity:1;padding:10px 10px;}
+.checkout-payment-method {position:relative;}
+.checkout-payment-method input[type="radio"] {display:none;}
+.checkout-payment-method label {display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:#fff;border:2px solid #ddd;border-radius:12px;padding:20px 15px;text-align:center;cursor:pointer;height:90px;opacity:1;transition:all 0.2s ease;}
+.checkout-payment-method label:hover {border-color:#828080ff;box-shadow:0 6px 12px rgba(0,0,0,0.1);opacity:1;}
+.checkout-payment-method img {max-width:100px;max-height:50px;object-fit:contain;transition:0.3s;}
+.checkout-payment-method input[type="radio"]:checked + label {border:2px solid black;box-shadow:0 6px 12px rgba(0,0,0,0.1);opacity:1;}
+@media (max-width:992px){.checkout-container{padding:20px;gap:20px;}}
+@media (max-width:768px){.checkout-container{flex-direction:column;padding:15px;gap:15px;}.checkout-payment-list{grid-template-columns:1fr;gap:15px;}}
 
 /* INDIKATOR CART */
 .nav-icons { display: flex; align-items: center; gap: 15px; position: relative; }
@@ -475,112 +490,6 @@ input[type="radio"]:checked + .detail-size-nama {
 @keyframes skeleton-loading {
     from { background-color: hsl(200, 20%, 70%) } to { background-color: hsl(200, 20%, 95%) }
 }
-
-/* PAYMENT STYLE */
-.checkout-payment-section {
-    margin-top: 20px;
-}
-
-.checkout-payment-title {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 12px;
-}
-
-.checkout-payment-group {
-    margin-bottom: 18px;
-    border: 1px solid #a09f9fff;
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.checkout-payment-toggle {
-    background: #F3E5EB;
-    color: black;
-    border: none;
-    padding: 10px 16px;
-    width: 100%;
-    text-align: left;
-    cursor: pointer;
-    font-weight: 500;
-    font-size: 12px;
-    transition: background 0.3s ease;
-    font-family: 'Montserrat',sans-serif!important;
-}
-
-.checkout-payment-toggle:hover {
-    background: #F4D6CC;
-}
-
-/* Smooth toggle list */
-.checkout-payment-list {
-    max-height: 0;             
-    opacity: 0;                
-    overflow: hidden;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    margin-top: 15px;
-    padding: 0;
-    transition: max-height 0.4s ease, opacity 0.4s ease, padding 0.4s ease;
-}
-
-.checkout-payment-list.show {
-    max-height: 1000px;        
-    opacity: 1;
-    padding: 10px 10px;
-}
-
-.checkout-payment-method {
-    position: relative;
-}
-
-.checkout-payment-method input[type="radio"] {
-    display: none;
-}
-
-.checkout-payment-method label {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    background: #fff;
-    border: 2px solid #ddd;
-    border-radius: 12px;
-    padding: 20px 15px;
-    text-align: center;
-    cursor: pointer;
-    height: 90px;
-    opacity: 1;
-    transition: all 0.2s ease;
-}
-
-.checkout-payment-method label:hover {
-    border-color: #828080ff;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-    opacity: 1;
-}
-
-.checkout-payment-method img {
-    max-width: 100px;
-    max-height: 50px;
-    object-fit: contain;
-    transition: 0.3s;
-}
-
-/* Border tebal & animasi saat dipilih */
-.checkout-payment-method input[type="radio"]:checked + label {
-    border: 2px solid black;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-    opacity: 1;
-}
-
-
-
-
-
-
 
 /* PESAN SUKSES STYLE */
 .success-container {
