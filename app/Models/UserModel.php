@@ -23,6 +23,7 @@ class UserModel extends Authenticatable
 
     protected $casts = [
         'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     protected $hidden = [

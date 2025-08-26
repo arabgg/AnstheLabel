@@ -12,10 +12,13 @@
             <div class="skeleton skeleton-img"></div>
         </div>
         <div class="custom-carousel-collection skeleton-target" style="display:none;">
-            <img src="{{ asset('storage/images/hero/hero5.avif') }}" class="carousel-image active" alt="Hero 5">
-            <img src="{{ asset('storage/images/hero/hero6.avif') }}" class="carousel-image" alt="Hero 6">
-            <img src="{{ asset('storage/images/hero/hero7.avif') }}" class="carousel-image" alt="Hero 7">
-            <img src="{{ asset('storage/images/hero/hero8.avif') }}" class="carousel-image" alt="Hero 8">
+            @foreach ($hero as $item)
+                @if ($item->banner_id >= 5 && $item->banner_id <= 8)
+                    <img src="{{ route('storage', ['folder' => 'banner', 'filename' => $item->foto_banner]) }}"
+                        class="carousel-image {{ $item->banner_id === 5 ? 'active' : '' }}"
+                        alt="{{ $item->nama_banner }}">
+                @endif
+            @endforeach
         </div>
     </div>
 

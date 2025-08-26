@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('t_pembayaran', function (Blueprint $table) {
             $table->uuid('pembayaran_id')->primary();
 
-            $table->unsignedBigInteger('metode_id');
+            $table->unsignedBigInteger('metode_pembayaran_id');
 
             $table->enum('status_pembayaran', ['pending', 'lunas', 'gagal'])->default('pending');
             $table->integer('jumlah_produk');
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
             
-            $table->foreign('metode_id')->references('metode_id')->on('m_metode_pembayaran');
+            $table->foreign('metode_pembayaran_id')->references('metode_pembayaran_id')->on('t_metode_pembayaran');
         });
     }
 

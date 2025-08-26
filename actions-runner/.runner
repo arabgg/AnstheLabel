@@ -1,0 +1,11 @@
+﻿{
+  "agentId": 21,
+  "agentName": "RYZEN5600H-PC",
+  "poolId": 1,
+  "poolName": "Default",
+  "serverUrl": "https://pipelinesghubeus3.actions.githubusercontent.com/w5rDYhYcgZJjUNskFcYBaXHQ3UFHpluhc707aR14xXe6tutpdi/",
+  "gitHubUrl": "https://github.com/arabgg/AnstheLabel",
+  "workFolder": "_work",
+  "useV2Flow": true,
+  "serverUrlV2": "https://broker.actions.githubusercontent.com/"
+}

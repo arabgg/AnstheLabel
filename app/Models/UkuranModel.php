@@ -20,6 +20,7 @@ class UkuranModel extends Model
 
     protected $casts = [
         'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function ukuran() :HasMany

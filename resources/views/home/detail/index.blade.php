@@ -22,13 +22,13 @@
                     <div class="skeleton-target" style="display:none;">
                         {{-- Foto Utama --}}
                         <img class="detail-main-image"
-                            src="{{ asset('storage/foto_produk/' . $produk->fotoUtama->foto_produk) }}"
+                            src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $produk->fotoUtama->foto_produk]) }}"
                             alt="{{ $produk->nama_produk }}">
     
                         {{-- Foto Thumbnail --}}
                         <div class="detail-thumbnail-wrapper">
                             @foreach ($produk->foto->where('status_foto', 0) as $foto)
-                                <img src="{{ asset('storage/foto_produk/' . $foto->foto_produk) }}"
+                                <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $foto->foto_produk]) }}"
                                     alt="Thumbnail {{ $loop->iteration }}">
                             @endforeach
                         </div>
@@ -143,7 +143,7 @@
             @foreach ($rekomendasi as $item)
             <div class="detail-recommend-card">
                 <a href="{{ route('detail.show', $item->produk_id) }}">
-                    <img src="{{ asset('storage/foto_produk/' . $item->fotoUtama->foto_produk) }}" alt="{{ $item->nama_produk }}">
+                    <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->fotoUtama->foto_produk]) }}" alt="{{ $item->nama_produk }}">
                     <h3>{{ $item->nama_produk }}</h3>
                     <p>{{ $item->kategori->nama_kategori }}</p>
                 </a>
@@ -155,25 +155,29 @@
 
 @push('scripts')
 <script>
+function showToast(icon, title) {
+    Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: icon,
+        title: title,
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true
+    });
+}
+
 function validasiWarnaUkuran(form) {
     const warnaDipilih = form.querySelector('input[name="warna"]:checked');
     const ukuranDipilih = form.querySelector('input[name="ukuran"]:checked');
 
     if (!warnaDipilih) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Pilih Warna',
-            text: 'Silakan pilih warna terlebih dahulu!',
-        });
+        showToast('warning', 'Silakan pilih warna!');
         return false;
     }
 
     if (!ukuranDipilih) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Pilih Ukuran',
-            text: 'Silakan pilih ukuran terlebih dahulu!',
-        });
+        showToast('warning', 'Silakan pilih ukuran!');
         return false;
     }
 
@@ -200,35 +204,20 @@ document.getElementById('btn-add-to-cart').addEventListener('click', function (e
     .then(res => res.json())
     .then(data => {
         if (data.success) {
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: 'Barang berhasil ditambahkan ke cart!',
-                timer: 2000,
-                showConfirmButton: false
-            });
+            showToast('success', 'Barang ditambahkan ke cart!');
         } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal!',
-                text: 'Gagal menambahkan barang ke cart.',
-            });
+            showToast('error', 'Gagal menambahkan barang ke cart.');
         }
     })
     .catch(() => {
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops!',
-            text: 'Terjadi kesalahan saat menambahkan ke cart.',
-        });
+        showToast('error', 'Terjadi kesalahan saat menambahkan ke cart.');
     });
 });
 
-// Buy Now
 document.querySelector('.btn-buy-now').addEventListener('click', function (e) {
     const form = document.getElementById('cart-form');
     if (!validasiWarnaUkuran(form)) {
-        e.preventDefault(); // hentikan submit jika belum pilih warna/ukuran
+        e.preventDefault();
     }
 });
 </script>
