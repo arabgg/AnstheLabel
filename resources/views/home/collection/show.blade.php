@@ -60,7 +60,7 @@
         <div class="produk-product-grid">
             @foreach ($produk as $index => $item)
                 <a href="{{ route('detail.show', $item->produk_id) }}" class="produk-card-link">
-                    <div class="produk-card bestproduk-card {{ $index >= 6 ? 'bestproduk-hidden' : '' }}">
+                    <div class="produk-card {{ $index >= 6 ? 'produk-hidden' : '' }}">
                         {{-- Skeleton Wrapper --}}
                         <div class="skeleton-wrapper produk-skeleton">
                             <div class="skeleton skeleton-img"></div>
@@ -68,11 +68,11 @@
 
                         {{-- Konten Asli--}}
                         <div class="skeleton-target" style="display:none;">
-                            @if (!empty($item->diskon))
+                            @if (!empty($item->diskon && $item->diskon > 0))
                                 <span class="diskon-label-collection">Save {{ $item->diskon_persen }} %</span>
                             @endif
                             
-                            <img src="{{ asset('storage/foto_produk/' . $item->fotoUtama->foto_produk) }}" alt="{{ $item->nama_produk }}">
+                            <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->fotoUtama->foto_produk]) }}" alt="{{ $item->nama_produk }}">
                             
                             <div class="produk-color-dot">
                                 @foreach ($item->warna as $warnaItem)
@@ -93,7 +93,6 @@
                                     <span class="price-now">Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
                                 @endif
                             </div>
-                            <p>{{ $item->kategori->nama_kategori }}</p>
                         </div>
                     </div>
                 </a>

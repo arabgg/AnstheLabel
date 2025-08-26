@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('harga', 200);
             $table->string('diskon', 200)->nullable();
             $table->text('deskripsi');
+            $table->boolean('is_best')->default(false);
 
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
