@@ -32,6 +32,12 @@ Route::get('home', [HomeController::class, 'index'])->name('home');
 Route::get('/collection', [HomeController::class, 'collection'])->name('collection');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/detail/{id}', [HomeController::class, 'show_produk'])->name('detail.show');
+Route::get('/invoice', [HomeController::class, 'invoice'])->name('invoice');
+Route::post('/invoice', [HomeController::class, 'cekInvoice'])->name('invoice.cek');
+Route::get('/transaksi/{kode_invoice}', [HomeController::class, 'transaksi'])->name('transaksi.show');
+
+
+// Route Checkout
 Route::post('/cart/add', [HomeController::class, 'add_cart'])->name('cart.add');
 Route::get('/cart', [HomeController::class, 'cart'])->name('cart.index');
 Route::post('/cart/update', [HomeController::class, 'update_cart'])->name('cart.update');
