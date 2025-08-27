@@ -19,6 +19,7 @@ return new class extends Migration
 
             $table->string('nama_pembayaran', 200);
             $table->string('kode_bayar', 50);
+            $table->boolean('status_pembayaran')->default(false);
             $table->string('icon')->nullable();
 
             $table->timestamp('created_at')->useCurrent();
