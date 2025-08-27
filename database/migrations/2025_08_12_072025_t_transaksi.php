@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('t_transaksi', function (Blueprint $table) {
             $table->uuid('transaksi_id')->primary();
 
+            $table->uuid('pembayaran_id');
             $table->string('kode_invoice', 50)->unique()->nullable();
             $table->string('nama_customer');
             $table->string('no_telp');
@@ -22,6 +23,8 @@ return new class extends Migration
             $table->enum('status_transaksi', ['menunggu pembayaran', 'dikemas', 'dikirim', 'selesai', 'batal'])->default('menunggu pembayaran');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+
+            $table->foreign('pembayaran_id')->references('pembayaran_id')->on('t_pembayaran');
         });
     }
 

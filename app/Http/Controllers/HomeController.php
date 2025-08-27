@@ -25,9 +25,8 @@ class HomeController extends Controller
         });
 
         $newarrival = Cache::remember('newarrival', 600, function () {
-            return ProdukModel::select('produk_id', 'nama_produk', 'harga', 'diskon')
+            return ProdukModel::select('produk_id', 'kategori_id', 'nama_produk', 'harga', 'diskon')
                 ->with([
-                    'kategori:kategori_id,nama_kategori',
                     'fotoUtama', 'hoverFoto'
                 ])
                 ->latest('produk_id')
@@ -36,9 +35,8 @@ class HomeController extends Controller
         });
 
         $bestseller = Cache::remember('bestseller', 600, function () {
-            return ProdukModel::select('produk_id', 'nama_produk', 'harga', 'diskon')
+            return ProdukModel::select('produk_id', 'kategori_id','nama_produk', 'harga', 'diskon')
                 ->with([
-                    'kategori:kategori_id,nama_kategori',
                     'fotoUtama', 'hoverFoto'
                 ])
                 ->orderByDesc('harga')
@@ -150,7 +148,7 @@ class HomeController extends Controller
 
     public function transaksi($kode_invoice)
     {
-        $transaksi = TransaksiModel::with(['detail.produk', 'detail.ukuran', 'detail.warna', 'detail.pembayaran'])
+        $transaksi = TransaksiModel::with(['detail.produk', 'detail.ukuran', 'detail.warna', 'pembayaran'])
             ->where('kode_invoice', $kode_invoice)
             ->firstOrFail();
 
@@ -272,28 +270,28 @@ class HomeController extends Controller
         $fullAddress = "{$validated['alamat']}, {$validated['kota']}, {$validated['kecamatan']}";
 
         $cart = session()->get('cart', []);
-        $checkoutData = session()->get('checkout_data');
 
-        if (!$checkoutData || empty($cart)) {
+        if (empty($cart)) {
             return redirect()->route('cart.index')->with('error', 'Data tidak valid.');
         }
 
-        $transaksiId = null;
+        $kode_invoice = null;
         
-        DB::transaction(function () use ($cart, $validated, $fullAddress, &$transaksiId) {
-            $transaksi = TransaksiModel::create([
-                'nama_customer'     => $validated['nama'],
-                'no_telp'           => $validated['telepon'],
-                'email'             => $validated['email'],
-                'alamat'            => $fullAddress
-            ]);
-
+        DB::transaction(function () use ($cart, $validated, $fullAddress, &$kode_invoice) {
             $total = collect($cart)->sum(fn($item) => $item['harga'] * $item['quantity']);
 
             $pembayaran = PembayaranModel::create([
                 'metode_pembayaran_id'  => $validated['metode_pembayaran_id'],
                 'jumlah_produk'         => count($cart),
                 'total_harga'           => $total,
+            ]);
+
+            $transaksi = TransaksiModel::create([
+                'pembayaran_id'     => $pembayaran->pembayaran_id,
+                'nama_customer'     => $validated['nama'],
+                'no_telp'           => $validated['telepon'],
+                'email'             => $validated['email'],
+                'alamat'            => $fullAddress
             ]);
 
             foreach ($cart as $item) {
@@ -306,12 +304,12 @@ class HomeController extends Controller
                     'jumlah'         => $item['quantity'],
                 ]);
             }
-            $transaksiId = $transaksi->transaksi_id; 
+            $kode_invoice = $transaksi->kode_invoice; 
         });
 
         session()->forget(['cart', 'checkout_data']);
 
-        return redirect()->route('checkout.success', ['transaksi_id' => $transaksiId]);
+        return redirect()->route('transaksi.show', ['kode_invoice' => $kode_invoice]);
     }
 
     public function paymentForm()
@@ -374,7 +372,7 @@ class HomeController extends Controller
             }
         });
 
-        session()->forget(['cart', 'checkout_data']);
+        session()->forget(['cart']);
 
         return redirect()->route('checkout.success', ['detail_id' => $detailId]);
     }

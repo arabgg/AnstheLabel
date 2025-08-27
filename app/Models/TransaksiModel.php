@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
@@ -18,6 +19,7 @@ class TransaksiModel extends Model
     protected $keyType = 'string';
     
     protected $fillable = [
+        'pembayaran_id',
         'kode_invoice',
         'nama_customer',
         'no_telp',
@@ -50,5 +52,10 @@ class TransaksiModel extends Model
     public function detail() :HasMany
     {
         return $this->hasMany(DetailTransaksiModel::class, 'transaksi_id', 'transaksi_id');
+    }
+
+    public function pembayaran() :BelongsTo
+    {
+        return $this->belongsTo(PembayaranModel::class, 'pembayaran_id', 'pembayaran_id');
     }
 }
