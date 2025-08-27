@@ -626,25 +626,32 @@ input[type="radio"]:checked + .detail-size-nama {
 }
 
 /* DATA DETAIL TRANSAKSI */
-.transaksi {
-    margin-top: 30px;
-    font-family: 'Montserrat',sans-serif!important;
+.transaksi-container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 20px;
 }
 
-.transaksi-info {
+.transaksi-title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.transaksi-subtitle {
+    text-align: center;
     margin-bottom: 30px;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background: #f9f9f9;
+    color: #555;
 }
 
+/* Progress Bar */
 .transaksi-progress {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     position: relative;
-    margin-top: 40px;
-    padding: 0 10px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
 }
 
 .transaksi-progress::before {
@@ -659,70 +666,269 @@ input[type="radio"]:checked + .detail-size-nama {
     z-index: 0;
 }
 
-.transaksi-progress .progress-bar {
+.transaksi-progress-bar {
     position: absolute;
     top: 20px;
-    left: 150px;
-    height: 4px;
-    background: #4caf50;
+    left: 12%;
+    right: 10%;
+    height: 5px;
+    background: #28c76f;
+    border-radius: 5px;
     z-index: 1;
-    border-radius: 2px;
-    transition: width 0.4s ease;
-    width: 0;
 }
 
-.transaksi-progress .progress-bar.batal {
-    background: #f44336; 
+.transaksi-progress-bar.batal {
+    background: #e74c3c;
 }
-.transaksi-step.batal .icon {
-    background: #f44336;
-    color: #fff;
-}
-
 
 .transaksi-step {
-    position: relative;
     text-align: center;
     flex: 1;
-    z-index: 2; 
+    position: relative;
+    z-index: 2;
+    min-width: 120px;
 }
 
-.transaksi-step .icon {
+.transaksi-step-icon {
     width: 40px;
     height: 40px;
-    margin: 0 auto 10px;
-    border-radius: 50%;
     border: 2px solid #ccc;
-    background: #fff;
+    border-radius: 50%;
+    margin: auto;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
-    color: #999;
-    transition: all 0.3s ease;
-    position: relative;
-    z-index: 3;
+    background: #fff;
 }
 
-.transaksi-step.active .icon {
-    border-color: #4caf50;
-    background: #4caf50;
-    color: #fff;
+.transaksi-step.active .transaksi-step-icon {
+    border-color: #28c76f;
+    color: #28c76f;
 }
 
-.transaksi-step.batal .icon {
+.transaksi-step.batal .transaksi-step-icon {
     border-color: #e74c3c;
-    background: #e74c3c;
-    color: #fff;
+    color: #e74c3c;
 }
 
-.step-title {
+.transaksi-step-title {
     font-weight: bold;
-    font-size: 14px;
-    margin-bottom: 4px;
+    margin-top: 8px;
 }
 
-.step-desc {
-    font-size: 12px;
-    color: #666;
+.transaksi-step-desc {
+    font-size: 13px;
+    color: #777;
 }
+
+/* Timer */
+.transaksi-timer {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.transaksi-timer span {
+    background: #f8d7da;
+    padding: 8px 20px;
+    border-radius: 6px;
+    color: #a94442;
+    font-weight: bold;
+}
+
+/* Content layout */
+.transaksi-content {
+    display: flex;
+    gap: 20px;
+}
+
+.transaksi-left {
+    flex: 1;
+    padding: 20px;
+}
+
+.transaksi-right {
+    flex: 1;
+    background: #f9f9f9;
+    padding: 20px;
+    border: 1px solid #eee;
+}
+
+.transaksi-card {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px 30px;
+    width: 90%;
+    max-width: 800px;
+    margin: 20px auto;
+    background: #fff;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Bagian Kiri */
+.transaksi-left {
+    flex: 1;
+    padding-right: 20px;
+    font-size: 14px;
+}
+.transaksi-left h4 {
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Bagian Kanan */
+.transaksi-right {
+    flex: 1;
+    text-align: center;
+    font-size: 14px;
+}
+.transaksi-right h4 {
+    margin: 10px 0;
+    font-size: 16px;
+    font-weight: bold;
+}
+.transaksi-right p {
+    margin: 5px 0;
+}
+
+.invoice {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+.copy-icon {
+    margin-left: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+/* QRIS Section */
+.transaksi-qris {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+.qris-logo {
+    width: 60px;
+    margin-bottom: 10px;
+}
+.qrcode {
+    width: 160px;
+    height: 160px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.qris-caption {
+    font-size: 12px;
+    margin-top: 5px;
+    color: #555;
+}
+
+
+/* Status */
+.transaksi-status {
+    margin-top: 20px;
+}
+
+.transaksi-paid {
+    background: #28c76f;
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 6px;
+}
+
+.transaksi-pending {
+    background: #f1c40f;
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 6px;
+}
+
+/* Right side items */
+.transaksi-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.transaksi-item img {
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+.transaksi-item-nama {
+    font-weight: bold;
+}
+
+.transaksi-item-harga {
+    color: #8e44ad;
+    font-weight: bold;
+}
+
+.transaksi-ringkasan {
+    margin-top: 20px;
+    border-top: 1px solid #ddd;
+    padding-top: 15px;
+}
+
+/* ==================== */
+/* RESPONSIVE DESIGN    */
+/* ==================== */
+@media (max-width: 992px) {
+    .transaksi-content {
+        gap: 20px;
+    }
+    .transaksi-left, .transaksi-right {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .transaksi-content {
+        flex-direction: column;
+    }
+    .transaksi-left, .transaksi-right {
+        width: 100%;
+    }
+    .transaksi-progress {
+        flex-direction: column;
+        align-items: flex-start;
+        padding-left: 10px;
+    }
+    .transaksi-progress-bar {
+        display: none; /* hilangkan garis di mobile agar rapi */
+    }
+    .transaksi-step {
+        display: flex;
+        align-items: center;
+        text-align: left;
+        margin-bottom: 15px;
+    }
+    .transaksi-step-icon {
+        margin: 0 10px 0 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .transaksi-title {
+        font-size: 18px;
+    }
+    .transaksi-subtitle {
+        font-size: 14px;
+    }
+    .transaksi-timer span {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+    .transaksi-item img {
+        width: 50px;
+        height: 50px;
+    }
+}
+
