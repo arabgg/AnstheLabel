@@ -144,18 +144,20 @@ class HomeController extends Controller
 
     public function transaksi($kode_invoice)
     {
+        $hero = BannerModel::select('banner_id', 'nama_banner', 'foto_banner')
+                ->where('banner_id', 9)
+                ->first();
+
         $transaksi = TransaksiModel::with(['detail.produk', 'detail.ukuran', 'detail.warna', 'pembayaran'])
             ->where('kode_invoice', $kode_invoice)
             ->firstOrFail();
 
-        // Ambil step dari config
         $steps = config('transaksi.steps');
 
-        // Cari index step berdasarkan status sekarang
         $statusKeys = array_keys($steps);
         $stepIndex = array_search($transaksi->status_transaksi, $statusKeys);
 
-        return view('home.checkout.transaksi', compact('transaksi', 'steps', 'stepIndex'));
+        return view('home.checkout.transaksi', compact('transaksi', 'steps', 'stepIndex', 'hero'));
     }
 
 
