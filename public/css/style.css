@@ -620,12 +620,12 @@ input[type="radio"]:checked + .detail-size-nama {
 .transaksi-content {display:flex;gap:20px;}
 .transaksi-left {flex:1;padding:20px;}
 .transaksi-right {flex:1;background:#f9f9f9;padding:20px;border:1px solid #eee;}
-.transaksi-card {display:flex;justify-content:space-between;border:1px solid black;border-radius:6px;padding:30px;width:90%;max-width:800px;margin:0 auto;background:#fff;font-family:'Montserrat',sans-serif!important;}
+.transaksi-card {display:flex;justify-content:space-between;border:1px solid #d3d3d3; border-radius:6px;padding:30px;width:90%;max-width:800px;margin:0 auto;background:#fff;font-family:'Montserrat',sans-serif!important;}
 .transaksi-detail-left {flex:1;padding-right:20px;}
 .transaksi-detail-left h4 {margin-bottom:10px;font-size:14px;font-weight:bold;}
 .transaksi-detail-left p {margin:10px 0;line-height:2.5;font-size:12px;}
 .transaksi-detail-right {flex:1;text-align:center;}
-.transaksi-detail-right h4 {margin:10px 0;font-size:14px;font-weight:bold;text-align:left;}
+.transaksi-detail-right h4 {font-size:14px;font-weight:bold;text-align:left;}
 .transaksi-detail-right p {margin:5px 0;font-size:12px;}
 .invoice {font-size:14px;margin-bottom:10px;text-align:left;}
 .invoice-copy-btn {background:transparent;color:#560024;border:none;padding:6px 0;margin-left:4px;cursor:pointer;}
@@ -637,11 +637,11 @@ input[type="radio"]:checked + .detail-size-nama {
 .transaksi-metode p {border:1px solid #560024;border-radius:4px;padding:10px 0;}
 .metode-logo {width:60px;margin-bottom:20px;align-self:flex-start;}
 .qrcode {width:160px;height:160px;border:1px solid #ddd;border-radius:6px;align-self:center;}
-.transaksi-status {border:1px solid black;border-radius:6px;padding:30px;width:90%;max-width:800px;margin:30px auto;background:#fff;}
+.transaksi-status {border:1px solid #d3d3d3;border-radius:6px;padding:30px;width:90%;max-width:800px;margin:30px auto;background:#fff;}
 .transaksi-status-pembayaran {margin-bottom:28px;}
 .transaksi-status p {font-weight:bold;font-size:14px;}
-.status-pembayaran {margin-left:20px;background:#28c76f;color:#fff;padding:6px 16px;border-radius:6px;}
-.status-transaksi {margin-left:43px;background:#f1c40f;color:#fff;padding:6px 16px;border-radius:6px;}
+.status-pembayaran {margin-left:20px;background:#28c76f;color:black;padding:6px 16px;border-radius:6px;}
+.status-transaksi {margin-left:43px;background:#FFC107;color:black;padding:6px 16px;border-radius:6px;}
 .transaksi-item {display:flex;align-items:center;justify-content:space-between;margin-bottom:15px;padding:20px;gap:10px;}
 .transaksi-item img {width:100px;height:120px;border-radius:4px;-o-object-fit:cover;object-fit:cover;}
 .transaksi-item-info {flex:1;padding-left:10px;}
