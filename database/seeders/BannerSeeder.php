@@ -70,6 +70,13 @@ class BannerSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'nama_banner' => 'Transaksi',
+                'foto_banner' => 'transaksi.mp4',
+                'deskripsi' => 'Video pada header transaksi',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
     }
 }

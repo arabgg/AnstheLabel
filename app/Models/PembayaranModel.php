@@ -41,7 +41,7 @@ class PembayaranModel extends Model
 
     public function metode() :BelongsTo
     {
-        return $this->belongsTo(MetodeModel::class, 'metode_id', 'metode_id');
+        return $this->belongsTo(MetodePembayaranModel::class, 'metode_pembayaran_id', 'metode_pembayaran_id');
     }
 
     public function detail() :HasMany

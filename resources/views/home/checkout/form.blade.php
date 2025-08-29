@@ -62,7 +62,7 @@
                     </div>
                 @endforeach
             </div>
-            <button type="submit" class="checkout-payment-btn">Pilih Metode Pembayaran</button>
+            <button type="submit" class="checkout-payment-btn">Buat Transaksi</button>
         </form>
     </div>
 
@@ -71,7 +71,7 @@
         @forelse ($cart as $item)
             <div class="checkout-product-item">
                 <img src="{{ $item['foto'] ? route('storage', ['folder' => 'foto_produk', 'filename' => $item['foto']]) : 'https://via.placeholder.com/80' }}" alt="{{ $item['nama'] }}">
-                <div>
+                <div class="checkout-product-info">
                     <h3 class="checkout-product-name">{{ $item['nama'] }}</h3>
                     <p>Warna : {{ $item['warna_nama'] ?? '-' }}</p>
                     <p>Ukuran : {{ $item['ukuran_nama'] ?? '-' }}</p>

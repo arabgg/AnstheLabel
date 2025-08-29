@@ -1,14 +1,20 @@
 @extends('home.layouts.app')
 
 @section('content')
-<div class="transaksi-container">
-    <div class="transaksi-header">
-        @if ($transaksi->status_transaksi == 'menunggu pembayaran')
-            <h2 class="transaksi-title">{{ $transaksi->status_transaksi }}</h2>
-            <p class="transaksi-subtitle">Silahkan melakukan pembayaran dengan metode yang kamu pilih</p>
-        @endif
+<div class="custom-transaksi-banner">
+    <div class="skeleton-wrapper hero-collection-skeleton">
+        <div class="skeleton skeleton-img"></div>
     </div>
+    <div class="custom-transaksi-banner skeleton-target" style="display:none;">    
+        <video class="transaksi-banner" autoplay muted loop>
+            <source src="{{ route('storage', ['folder' => 'banner', 'filename' => $hero->foto_banner]) }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+</div>
 
+
+<div class="transaksi-container">
     <!-- Progress Bar -->
     <div class="transaksi-progress {{ $transaksi->status_transaksi === 'batal' ? 'is-batal' : '' }}">
         @if($transaksi->status_transaksi !== 'batal')
@@ -46,56 +52,67 @@
     </div>
 
     <!-- Timer -->
-    <div class="transaksi-timer">
+    {{-- <div class="transaksi-timer">
         <span>2 Hours 59 Minute 59 Second</span>
-    </div>
+    </div> --}}
 
     <div class="transaksi-content">
         <!-- Box Detail Pesanan -->
         <div class="transaksi-left">
-<div class="transaksi-card">
-    {{-- Kiri: Detail Pesanan --}}
-    <div class="transaksi-left">
-        <h4>Detail Pesanan</h4>
-        <p><strong>Informasi Kontak</strong><br>
-            {{ $transaksi->email }}
-        </p>
-        <p><strong>Alamat Pengiriman</strong><br>
-            {{ $transaksi->nama_customer }}<br>
-            {{ $transaksi->alamat }}<br>
-            {{ $transaksi->no_hp }}
-        </p>
-    </div>
+            <div class="transaksi-card">
+                {{-- Kiri: Detail Pesanan --}}
+                <div class="transaksi-detail-left">
+                    <h4>Detail Pesanan</h4>
+                    <p>Informasi Kontak<br>
+                        {{ $transaksi->email }}
+                        {{ $transaksi->no_telp }}
+                    </p>
+                    <h4>Alamat Pengiriman</h4>
+                    <p>
+                        {{ $transaksi->nama_customer }}<br>
+                        {{ $transaksi->alamat }}<br>
+                    </p>
+                </div>
 
-    {{-- Kanan: Invoice + Metode Pembayaran --}}
-    <div class="transaksi-right">
-        <p class="invoice">
-            <strong>No Invoice :</strong> {{ $transaksi->kode_invoice }}
-            <span class="copy-icon">📋</span>
-        </p>
+                {{-- Kanan: Invoice + Metode Pembayaran --}}
+                <div class="transaksi-detail-right">
+                    <h4>Kode Invoice</h4>
+                    <p class="invoice">
+                        <button class="invoice-copy-btn" onclick="copyToClipboard('invoiceCode')">
+                            <i class="fa-regular fa-clipboard"></i>
+                        </button>
+                        <span class="invoice-kode" id="invoiceCode">{{ $transaksi->kode_invoice }}</span><br>
+                        <small class="invoice-note">* Simpan kode invoice untuk pengecekan selanjutnya</small>
+                    </p>
 
-        <h4>Metode Pembayaran</h4>
-        <div class="transaksi-qris">
-            <img src="{{ asset('images/qris.png') }}" alt="QRIS Logo" class="qris-logo">
-            @if($transaksi->pembayaran?->qrcode)
-                <img src="{{ asset('storage/'.$transaksi->pembayaran->qrcode) }}" 
-                     alt="QR Code" class="qrcode">
-            @endif
-        </div>
-        <p class="qris-caption">*Klik Untuk Memperbesar</p>
-    </div>
-</div>
-
+                    <h4>Metode Pembayaran</h4>
+                    <div class="transaksi-metode">
+                        @if($transaksi->pembayaran->metode->nama_pembayaran === 'qris')
+                            <img src="{{ storage_url('icons', $transaksi->pembayaran->metode->icon) }}" alt="Metode Logo" class="metode-logo">
+                            <img src="{{ storage_url('icons', $transaksi->pembayaran->metode->kode_bayar) }}" 
+                                alt="QR Code" class="qrcode">
+                        @else
+                            <img src="{{ storage_url('icons', $transaksi->pembayaran->metode->icon) }}" alt="Metode Logo" class="metode-logo">
+                            <p>
+                                <button class="metode-copy-btn" onclick="copyToClipboard('metodeCode')">
+                                    <i class="fa-regular fa-clipboard "></i>
+                                </button>
+                                <span class="metode-kode" id="metodeCode">{{ $transaksi->pembayaran->metode->kode_bayar }}</span>
+                            </p>
+                        @endif
+                    </div>
+                </div>
+            </div>
 
             <div class="transaksi-status">
-                <p>Status Pembayaran: 
-                    <span class="{{ $transaksi->status_pembayaran === 'paid' ? 'transaksi-paid' : 'transaksi-pending' }}">
-                        {{ ucfirst($transaksi->status_pembayaran) }}
+                <p class="transaksi-status-pembayaran">Status Pembayaran: 
+                    <span class="status-pembayaran">
+                        {{ $transaksi->pembayaran->status_pembayaran }}
                     </span>
                 </p>
                 <p>Status Transaksi: 
-                    <span class="{{ $transaksi->status_transaksi === 'pending' ? 'transaksi-pending' : 'transaksi-paid' }}">
-                        {{ ucfirst($transaksi->status_transaksi) }}
+                    <span class="status-transaksi">
+                        {{ $transaksi->status_transaksi }}
                     </span>
                 </p>
             </div>
@@ -104,28 +121,58 @@
         <!-- Box Ringkasan Order -->
         <div class="transaksi-right">
             @foreach($transaksi->detail as $item)
-    <div class="transaksi-item">
-        <img src="{{ storage_url('foto_produk', $item->produk->fotoUtama->foto_produk) }}" alt="{{ $item->produk->nama_produk }}">
-        <div class="transaksi-item-info">
-            <p class="transaksi-item-nama">{{ $item->produk->nama_produk }}</p>
-            <p class="transaksi-item-harga">
-                IDR {{ number_format($item->produk->harga,0,',','.') }}
-            </p>
-            <p>
-                Warna: {{ $item->warna->nama_warna ?? '-' }}<br>
-                Ukuran: {{ $item->ukuran->nama_ukuran ?? '-' }}
-            </p>
+        <div class="transaksi-item">
+            {{-- Foto produk --}}
+            <img src="{{ storage_url('foto_produk', optional(optional($item->produk)->fotoUtama)->foto_produk) }}" 
+                 alt="{{ optional($item->produk)->nama_produk ?? 'Produk' }}">
+
+            {{-- Informasi produk --}}
+            <div class="transaksi-item-info">
+                <p class="transaksi-item-nama">{{ ($item->produk)->nama_produk ?? 'Produk tidak ditemukan' }}</p>
+                <p>Warna: {{ ($item->warna)->nama_warna ?? '-' }}</p>
+                <p>Ukuran: {{ ($item->ukuran)->nama_ukuran ?? '-' }}</p>
+                <p>Jumlah: {{ $item->jumlah }}</p>
+            </div>
+
+            {{-- Harga --}}
+            <div class="transaksi-item-harga">
+                IDR {{ number_format($item->produk->harga * $item->jumlah, 2, ',', '.') }}
+            </div>
+        </div>
+    @endforeach
+
+    {{-- Ringkasan Transaksi --}}
+    <div class="transaksi-ringkasan">
+        <div class="transaksi-subtotal">
+            <span>Subtotal : {{ $transaksi->detail->sum('jumlah') }} item</span>
+            <span>Rp {{ number_format($transaksi->pembayaran->total_harga, 0, ',', '.') }}</span>
+        </div>
+        <div class="transaksi-total">
+            <span>Total</span>
+            <span>Rp {{ number_format($transaksi->pembayaran->total_harga, 0, ',', '.') }}</span>
         </div>
     </div>
-@endforeach
-
-
-            <div class="transaksi-ringkasan">
-                <p><strong>Subtotal:</strong> {{ count($transaksi->detail) }} item</p>
-                <p><strong>Total:</strong> Rp{{ number_format($transaksi->pembayaran->total_harga,0,',','.') }}</p>
-                <small>*Harga belum termasuk ongkir</small>
-            </div>
         </div>
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    function copyToClipboard(elementId) {
+        var text = document.getElementById(elementId).innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            Swal.fire({
+                toast: true,               
+                position: 'top-end',       
+                icon: 'success',
+                title: 'Berhasil disalin!',
+                text: text,                
+                showConfirmButton: false,
+                timer: 2000,               
+                timerProgressBar: true
+            });
+        });
+    }
+</script>
+@endpush
