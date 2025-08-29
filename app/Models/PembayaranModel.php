@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 
 class PembayaranModel extends Model
@@ -18,7 +19,7 @@ class PembayaranModel extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
-        'metode_id',
+        'metode_pembayaran_id',
         'status_pembayaran',
         'jumlah_produk',
         'total_harga',
@@ -40,11 +41,16 @@ class PembayaranModel extends Model
 
     public function metode() :BelongsTo
     {
-        return $this->belongsTo(MetodeModel::class, 'metode_id', 'metode_id');
+        return $this->belongsTo(MetodePembayaranModel::class, 'metode_pembayaran_id', 'metode_pembayaran_id');
     }
 
     public function detail() :HasMany
     {
         return $this->hasMany(DetailTransaksiModel::class, 'pembayaran_id', 'pembayaran_id');
+    }
+
+    public function pembayaran() :HasOne
+    {
+        return $this->hasOne(TransaksiModel::class, 'pembayaran_id', 'pembayaran_id');
     }
 }

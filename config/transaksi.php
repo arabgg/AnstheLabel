@@ -9,7 +9,7 @@ return [
         'dikemas' => [
             'label' => 'Dikemas',
             'desc'  => 'Pesanan sedang dikemas',
-            'icon'  => 'fas fa-box-open'
+            'icon'  => 'fa-solid fa-box-open'
         ],
         'dikirim' => [
             'label' => 'Dikirim',

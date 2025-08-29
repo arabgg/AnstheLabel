@@ -90,7 +90,7 @@ class ProdukController extends Controller
             'foto_sekunder.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'nama_produk' => 'required|string|max:255',
             'deskripsi' => 'required|string',
-            'harga' => 'required|string',
+            'harga' => 'required|numeric|min:0',
             'diskon' => 'nullable|string',
             'kategori_id' => 'required|integer',
             'bahan_id' => 'required|integer',
@@ -202,7 +202,9 @@ class ProdukController extends Controller
             }
         });
 
-        return redirect()->route('produk.index')->with('success', 'Produk berhasil disimpan!');
+        return redirect()
+        ->route('produk.index')
+        ->with('success', 'Produk berhasil disimpan!');
     }
 
     public function edit($id)
@@ -236,7 +238,7 @@ class ProdukController extends Controller
             'foto_sekunder.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'nama_produk' => 'required|string|max:255',
             'deskripsi' => 'required|string',
-            'harga' => 'required|string',
+            'harga' => 'required|numeric|min:0',
             'diskon' => 'nullable|string',
             'kategori_id' => 'required|integer',
             'bahan_id' => 'required|integer',

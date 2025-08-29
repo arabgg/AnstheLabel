@@ -14,6 +14,8 @@ class ProdukModel extends Model
 
     protected $table = 't_produk';
     protected $primaryKey = 'produk_id';
+    public $incrementing = true;   // penting biar PK dianggap auto-increment
+    protected $keyType = 'int';    // pastikan PK dianggap integer
     
     protected $fillable = [
         'kategori_id',
