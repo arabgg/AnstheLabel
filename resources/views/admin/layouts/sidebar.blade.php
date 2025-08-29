@@ -66,8 +66,8 @@
             </a>
 
             {{-- Metode Pembayaran --}}
-            <a href="/metode_pembayaran" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-red-300 transition"
-                :class="{{ request()->is('metode_pembayaran*') ? "'font-bold text-white bg-[#560024]'" : "''" }}">
+            <a href="/metode-pembayaran" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-red-300 transition"
+                :class="{{ request()->is('metode-pembayaran*') ? "'font-bold text-white bg-[#560024]'" : "''" }}">
                 <i class="fa-solid fa-credit-card"></i>
                 <span x-show="sidebarOpen" x-transition>Metode Pembayaran</span>
             </a>

@@ -8,6 +8,7 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\BahanController;
 use App\Http\Controllers\UkuranController;
 use App\Http\Controllers\WarnaController;
+use App\Http\Controllers\MetodePembayaranController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Storage;
@@ -193,4 +194,6 @@ Route::middleware('auth')->group(function () {
         // Delete
         Route::delete('/{id}/destroy', [WarnaController::class, 'destroy'])->name('warna.destroy');
     });
+
+    Route::resource('metode-pembayaran', MetodePembayaranController::class);
 });
