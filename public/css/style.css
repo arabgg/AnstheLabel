@@ -37,7 +37,6 @@ html,body {width:100%;font-family:'Montserrat',sans-serif!important;}
     .nav-links a{font-size:14px;}
     .breadcrumb{font-size:12px;}
 }
-
 /* BESTPRODUK STYLE */
 .bestproduk-section {max-width:1100px;margin:50px auto;padding:0 80px;}
 .bestproduk-header {display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;padding:0 10px;flex-wrap:wrap;gap:20px;}
@@ -61,7 +60,7 @@ html,body {width:100%;font-family:'Montserrat',sans-serif!important;}
 .bestproduk-kategori {font-size:12px;margin-bottom:7px;}
 .collection-price {margin-bottom:20px;font-size:12px;text-align:left;padding-left:10px;}
 .bestproduk-price {margin-bottom:6px;font-size:12px;}
-.price-discounted {color:#a09999;text-decoration:line-through;text-decoration-color:rgb(216,19,19);margin-right:8px;}
+.price-discounted {color:#a09999;text-decoration:line-through;-webkit-text-decoration-color:rgb(216,19,19);text-decoration-color:rgb(216,19,19);margin-right:8px;}
 .price-now {color:#560024;}
 .edition-section {max-width:100%;margin:50px auto;padding:0 20px;}
 .edition-header {display:flex;justify-content:center;align-items:center;flex-wrap:wrap;}
@@ -109,7 +108,7 @@ html,body {width:100%;font-family:'Montserrat',sans-serif!important;}
 .bestseller-kategori {font-size:12px;margin-bottom:7px;}
 .bestseller-hidden {display:none;}
 .bestseller-price {margin-bottom:6px;font-size:12px;}
-.price-discounted {color:#a09999;text-decoration:line-through;text-decoration-color:rgb(216,19,19);margin-right:8px;}
+.price-discounted {color:#a09999;text-decoration:line-through;-webkit-text-decoration-color:rgb(216,19,19);text-decoration-color:rgb(216,19,19);margin-right:8px;}
 .price-now {color:#560024;}
 .diskon-label {position:absolute;top:0px;right: 0px;background-color:#560024;color:white;font-size:11px;padding:8px 8px;z-index:10;}
 @media screen and (max-width:1024px) {
@@ -117,7 +116,6 @@ html,body {width:100%;font-family:'Montserrat',sans-serif!important;}
   .bestproduk-section, .edition-section, .bestseller-section {padding:0 40px;}
   .bestproduk-title, .edition-title, .bestseller-title {font-size:18px;}
 }
-
 /* Mobile (≤ 768px) */
 @media screen and (max-width:768px) {
   .bestproduk-grid, .edition-grid, .bestseller-grid {grid-template-columns:repeat(2,1fr);}
@@ -125,7 +123,6 @@ html,body {width:100%;font-family:'Montserrat',sans-serif!important;}
   .bestproduk-title, .edition-title, .bestseller-title {font-size:16px;}
   .bestproduk-name, .edition-name, .bestseller-name {font-size:14px;}
 }
-
 /* Small Mobile (≤ 480px) */
 @media screen and (max-width:480px) {
   .bestproduk-grid, .edition-grid, .bestseller-grid {grid-template-columns:1fr;}
@@ -169,7 +166,6 @@ html,body {width:100%;font-family:'Montserrat',sans-serif!important;}
   .recommend-card h3, .recommend-card p {font-size:16px;}
   .recommend-card p {font-size:13px;}
 }
-
 /* CAROUSEL STYLE */
 .ansthelabel-hashtag { display: flex; justify-content: center; align-items: center; padding: 24px 0; margin-bottom: 30px; }
 .ansthelabel-hashtag h1 { font-size: 32px; color: #560024; margin: 0; }
@@ -196,7 +192,6 @@ html,body {width:100%;font-family:'Montserrat',sans-serif!important;}
   .slide { height: 60vh; }
   .buy-now-btn { position: relative; bottom: auto; right: auto; display: inline-block; margin: 20px auto; font-size: 14px; padding: 8px 24px; }
 }
-
 /* SWIPER ARRIVAL CAROUSEL */
 .swiper { width: 100%; padding: 0; margin: 50px auto; overflow: hidden; }
 .swiper-title { text-align: center; font-size: 28px; color: #560024; margin-bottom: 50px; }
@@ -235,7 +230,6 @@ html,body {width:100%;font-family:'Montserrat',sans-serif!important;}
   .swiper-slide { width: 140px !important; }
   .swiper-slide img { max-width: 180px; max-height: 240px; }
 }
-
 /* FOOTER STYLE */
 .footer-section { background-color:#4a002a; background-image:url('/storage/images/footer.png'); background-repeat:no-repeat; background-size:cover; color:white; text-align:center; padding-left:1.25rem; padding-right:1.25rem; padding-top:30px; padding-bottom:30px; }
 .footer-section-menu { display:flex; justify-content:center; gap:40px; margin-bottom:60px; flex-wrap:wrap; }
@@ -265,7 +259,6 @@ html,body {width:100%;font-family:'Montserrat',sans-serif!important;}
   .footer-section-social a { font-size:22px; }
   .footer-section-text { font-size:10px; }
 }
-
 /* BANNER BAWAH */
 .collection-section{max-width:100%;margin:0 auto 60px auto;}
 .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;}
@@ -275,7 +268,6 @@ html,body {width:100%;font-family:'Montserrat',sans-serif!important;}
 @media screen and (max-width:1024px){.hero-item{height:600px;}}
 @media screen and (max-width:768px){.hero-grid{grid-template-columns:1fr;}.hero-item{height:400px;}}
 @media screen and (max-width:480px){.hero-item{height:300px;}}
-
 /* COLLECTION STYLE */
 .produk-header { max-width: 1360px; margin: 60px auto 0px auto; padding: 0 50px; }
 .produk-header h1 { text-align: center; font-size: 28px; font-weight: 400; color: #560024; margin-bottom: 20px; }
@@ -341,7 +333,6 @@ input[type="checkbox"]:checked::before { content: ""; display: block; width: 100
   .produk-search-form input[type="text"] { width: 120px; font-size: 12px; }
   .produk-buttons button { padding: 8px 20px; font-size: 12px; }
 }
-
 /* DETAIL STYLE */
 .detail-product-page { margin: 0 200px; padding: 60px 0; margin-bottom: 50px; }
 .detail-container { width: 90%; max-width: 1200px; margin: auto; }
@@ -360,7 +351,7 @@ input[type="checkbox"]:checked::before { content: ""; display: block; width: 100
 .detail-size-wrapper,
 .detail-quantity-wrapper { margin-bottom: 15px; }
 .detail-price {margin-bottom:20px;font-size:16px;text-align:left;}
-.detail-price-discounted {color:#a09999;text-decoration:line-through;text-decoration-color:rgb(216,19,19);margin-right:8px;}
+.detail-price-discounted {color:#a09999;text-decoration:line-through;-webkit-text-decoration-color:rgb(216,19,19);text-decoration-color:rgb(216,19,19);margin-right:8px;}
 .detail-price-now {color:#560024;}
 select,
 input[type="number"] { padding: 8px; width: 100px; margin-left: 10px; }
@@ -430,7 +421,6 @@ input[type="radio"]:checked + .detail-size-nama {
   .detail-recommend-card { width: 100%; height: auto; }
   .detail-recommend-card img { height: 200px; }
 }
-
 /* CART STYLE */
 .cart-container {max-width:1150px;margin:auto;margin-top:30px;margin-bottom:80px;padding:0 20px;}
 .cart-container h2 {margin-bottom:40px;font-size:32px;font-weight:bold;text-align:center;}
@@ -486,7 +476,6 @@ input[type="radio"]:checked + .detail-size-nama {
   .cart-table td {font-size:12px;}
   .cart-checkout,.cart-back {font-size:14px;}
 }
-
 /* CHECKOUT STYLE */
 .checkout-container { display: flex; max-width: 1000px; margin: 40px auto; margin-bottom: 40px; padding: 40px; gap: 40px; }
 .checkout-form { flex: 1; }
@@ -546,7 +535,6 @@ input[type="radio"]:checked + .detail-size-nama {
   .checkout-product-item p {font-size:11px;}
   .checkout-total-price {font-size:14px;}
 }
-
 /* INDIKATOR CART */
 .nav-icons { display: flex; align-items: center; gap: 15px; position: relative; }
 .nav-icon { position: relative; display: inline-block; color: #333; text-decoration: none; transition: color 0.2s ease-in-out; }
@@ -561,7 +549,6 @@ input[type="radio"]:checked + .detail-size-nama {
   .nav-icon {font-size:14px;}
   .cart-badge {top:-5px;right:-6px;font-size:8px;min-width:14px;padding:1px 4px;}
 }
-
 /* ANIMASI SKELETON */
 .skeleton-wrapper { display: flex; flex-direction: column; gap: 10px;}
 .skeleton { animation: skeleton-loading 1.5s infinite alternate;}
@@ -574,7 +561,6 @@ input[type="radio"]:checked + .detail-size-nama {
 @keyframes skeleton-loading {
     from { background-color: hsl(200, 20%, 70%) } to { background-color: hsl(200, 20%, 95%) }
 }
-
 /* PESAN SUKSES STYLE */
 .success-container {max-width:600px;margin:40px auto;padding:20px;font-family:'Montserrat',sans-serif!important;text-align:center;}
 .success-title {color:#560024;margin-bottom:20px;font-size:22px;font-weight:bold;}
@@ -598,7 +584,6 @@ input[type="radio"]:checked + .detail-size-nama {
   .success-message {font-size:12px;}
   .success-btn {display:block;width:100%;padding:10px;font-size:14px;}
 }
-
 /* DATA DETAIL TRANSAKSI */
 .custom-transaksi-banner {position:relative;width:100%;height:280px;background:#ECECEC;}
 .transaksi-banner {position:absolute;width:100%;height:100%;}
@@ -658,7 +643,6 @@ input[type="radio"]:checked + .detail-size-nama {
   .transaksi-card, .transaksi-status {width:100%;padding:20px;}
   .transaksi-progress::before {left:10%;width:80%;}
 }
-
 @media(max-width:768px){
   .transaksi-title {font-size:18px;}
   .transaksi-subtitle {font-size:14px;}
@@ -667,7 +651,6 @@ input[type="radio"]:checked + .detail-size-nama {
   .transaksi-progress {flex-wrap:wrap;gap:20px;justify-content:center;}
   .transaksi-progress::before, .transaksi-progress-bar {top:auto;bottom:0;left:10%;right:10%;}
 }
-
 @media(max-width:600px){
   .transaksi-item img {width:80px;height:100px;}
   .transaksi-item-info p {font-size:11px;}
@@ -675,7 +658,6 @@ input[type="radio"]:checked + .detail-size-nama {
   .transaksi-item-harga {font-size:13px;}
   .transaksi-total {font-size:16px;}
 }
-
 @media(max-width:480px){
   .transaksi-title {font-size:16px;}
   .transaksi-step-icon {width:30px;height:30px;font-size:12px;}
@@ -685,7 +667,6 @@ input[type="radio"]:checked + .detail-size-nama {
   .transaksi-progress::before, .transaksi-progress-bar {display:none;} /* hide garis penghubung biar rapi */
   .transaksi-step {min-width:unset;width:100%;max-width:200px;}
 }
-
 /* CEK TRANSAKSI */
 .invoice-container {max-width:800px;margin:100px auto 160px auto;padding:25px;text-align:center;}
 .invoice-title {font-size:38px;font-weight:bold;margin-bottom:14px;color:#333;}
