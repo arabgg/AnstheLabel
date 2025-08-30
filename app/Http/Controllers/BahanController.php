@@ -10,12 +10,12 @@ class BahanController extends Controller
     public function index()
     {
         $bahan = BahanModel::all();
-        return view('bahan.index', compact('bahan'));
+        return view('admin.bahan.index', compact('bahan'));
     }
 
     public function create()
     {
-        return view('bahan.create');
+        return view('admin.bahan.create');
     }
 
     public function store(Request $request)
@@ -34,13 +34,13 @@ class BahanController extends Controller
     public function show(string $id)
     {
         $bahan = BahanModel::findOrFail($id);
-        return view('bahan.show', compact('bahan'));
+        return view('adminbahan.show', compact('bahan'));
     }
 
     public function edit(string $id)
     {
         $bahan = BahanModel::findOrFail($id);
-        return view('bahan.edit', compact('bahan'));
+        return view('admin.bahan.edit', compact('bahan'));
     }
 
     public function update(Request $request, string $id)

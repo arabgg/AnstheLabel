@@ -10,12 +10,12 @@ class WarnaController extends Controller
     public function index()
     {
         $warna = WarnaModel::all();
-        return view('warna.index', compact('warna'));
+        return view('admin.warna.index', compact('warna'));
     }
 
     public function create()
     {
-        return view('warna.create');   
+        return view('admin.warna.create');   
     }
 
     public function store(Request $request)
@@ -31,13 +31,13 @@ class WarnaController extends Controller
     public function show(string $id)
     {
         $warna = WarnaModel::findOrFail($id);
-        return view('warna.show', compact('warna'));
+        return view('admin.warna.show', compact('warna'));
     }
 
     public function edit(string $id)
     {
         $warna = WarnaModel::findOrFail($id);
-        return view('warna.edit', compact('warna'));
+        return view('admin.warna.edit', compact('warna'));
     }
 
     

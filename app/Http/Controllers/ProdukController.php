@@ -21,6 +21,7 @@ class ProdukController extends Controller
 
     public function index(Request $request)
     {
+        $activeMenu = 'produk';
         $search = $request->input('search');
         $kategoriFilter = $request->input('kategori');
         $paginateLimit = $request->input('paginate', 15);
@@ -46,7 +47,7 @@ class ProdukController extends Controller
             })
             ->withQueryString();
 
-        return view('produk.index', compact('produk', 'kategoriList', 'paginateLimit'));
+        return view('admin.produk.index', compact('produk', 'kategoriList', 'paginateLimit', 'activeMenu'));
     }
 
     public function show($id)
@@ -60,7 +61,7 @@ class ProdukController extends Controller
             ])->findOrFail($id);
         });
 
-        return view('produk.show', compact('produk'));
+        return view('admin.produk.show', compact('produk'));
     }
 
     public function create()
@@ -78,7 +79,7 @@ class ProdukController extends Controller
             return WarnaModel::select('warna_id', 'kode_hex')->get();
         });
 
-        return view('produk.create', compact('kategori', 'bahan', 'ukuran', 'warna'));
+        return view('admin.produk.create', compact('kategori', 'bahan', 'ukuran', 'warna'));
     }
 
     public function store(Request $request)
@@ -226,7 +227,7 @@ class ProdukController extends Controller
             return WarnaModel::select('warna_id', 'kode_hex')->get();
         });
 
-        return view('produk.edit', compact('produk', 'kategori', 'bahan', 'ukuran', 'warna'));
+        return view('admin.produk.edit', compact('produk', 'kategori', 'bahan', 'ukuran', 'warna'));
     }
 
     public function update(Request $request, $id)

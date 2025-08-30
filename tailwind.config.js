@@ -1,12 +1,22 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    './resources/**/*.blade.php',
-    './resources/**/*.js',
-    './resources/**/*.vue',
+    "./resources/views/**/*.blade.php",
+    "./resources/**/*.js",
+    "./resources/**/*.vue",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        Montserrat: ['Montserrat', 'sans-serif'],
+      },
+    },
   },
+  safelist: [
+    'font-Montserrat',
+    'bg-[#560024]',
+    'hover:bg-[#A65A6A]',
+    'focus:ring-rose-700',
+  ],
   plugins: [],
-};
+}

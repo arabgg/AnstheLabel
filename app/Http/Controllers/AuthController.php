@@ -16,7 +16,7 @@ class AuthController extends Controller
             return redirect('/produk');
         }
 
-        return view('auth.login');
+        return view('admin.auth.login');
     }
 
     public function postLogin(Request $request)
@@ -34,7 +34,7 @@ class AuthController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Login berhasil',
-                'redirect' => url('/produk')
+                'redirect' => url('/admin')
             ]);
         }
 

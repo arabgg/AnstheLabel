@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Ansthelabel</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ mix('css/app.css') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
@@ -20,7 +20,7 @@
             <div class="mb-4 text-left">
                 <label for="username" class="block mb-2 text-sm font-medium text-gray-900">Username</label>
                 <input type="text" id="username" name="username" placeholder="admin ansthelabel" required
-                    class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-700 font-Montserrat">
+                    class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-700 font-montserrat">
             </div>
 
             <div class="mb-6 text-left">

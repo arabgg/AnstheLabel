@@ -2,6 +2,6 @@
 
 </main>
 
-<footer class="fixed bottom-0 left-0 w-full bg-white py-4 text-center text-sm text-gray-500 shadow-inner">
+<footer class="p-4 w-full mx-auto text-center bg-gray-200">
     &copy; {{ date('Y') }} Copyright by Ansthelabel.
 </footer>

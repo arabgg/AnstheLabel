@@ -1,42 +1,27 @@
 <div x-data="{ sidebarOpen: true }" class="flex">
-    {{-- Sidebar --}}
+    <!-- Sidebar -->
     <div :class="sidebarOpen ? 'w-64' : 'w-16'"
-        class="hidden md:flex flex-col fixed top-0 left-0 h-screen bg-gray-100 shadow-md transition-all duration-300">
+         class="bg-[#560024] text-white h-screen transition-all duration-300 flex flex-col">
 
-        {{-- Logo + Tombol Toggle --}}
-        <div class="p-4 flex items-center justify-center relative">
-            <a href="/" x-show="sidebarOpen" x-transition>
-                <img src="{{ asset('storage/images/ansthelabel.png') }}" class="h-10" alt="AnstheLabel Logo">
-            </a>
-            <a href="/" x-show="!sidebarOpen" x-transition>
-                <img src="{{ asset('storage/images/ansthelabel-icon.png') }}" class="h-8" alt="Icon">
-            </a>
-            <button @click="sidebarOpen = !sidebarOpen"
-                class="absolute top-4 right-[-12px] bg-white rounded-full shadow p-1">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        :d="sidebarOpen ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'" />
-                </svg>
-            </button>
-        </div>
+        <!-- Toggle Button -->
+        <button @click="sidebarOpen = !sidebarOpen"
+                class="p-3 focus:outline-none hover:bg-[#6e0030] transition">
+            <i class="fa fa-bars"></i>
+        </button>
 
-        {{-- Menu --}}
-        <nav class="flex-1 space-y-2 p-2 overflow-y-auto">
-            {{-- Dashboard --}}
-            <a href="/dashboard" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-red-300 transition"
-                :class="{{ request()->is('dashboard*') ? "'font-bold text-white bg-[#560024]'" : "''" }}">
-                <i class="fa-solid fa-chart-line h-5 w-5 flex-shrink-0"></i>
-                <span x-show="sidebarOpen" x-transition>Dashboard</span>
+        <!-- Sidebar Content -->
+        <nav class="flex-1 mt-4 space-y-2">
+            <a href="{{ url('/dashboard') }}" 
+               class="flex items-center px-4 py-2 hover:bg-[#6e0030] rounded-md transition">
+                <i class="fa fa-home mr-2"></i>
+                <span x-show="sidebarOpen" class="whitespace-nowrap">Dashboard</span>
             </a>
-
-            {{-- Produk --}}
-            <a href="/produk" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-red-300 transition"
-                :class="{{ request()->is('produk*') ? "'font-bold text-white bg-[#560024]'" : "''" }}">
-                <i class="fa-solid fa-boxes-stacked"></i>
-                <span x-show="sidebarOpen" x-transition>Produk</span>
+            <a href="{{ url('/produk') }}" 
+               class="flex items-center px-4 py-2 hover:bg-[#6e0030] rounded-md transition">
+                <i class="fa fa-box mr-2"></i>
+                <span x-show="sidebarOpen" class="whitespace-nowrap">Produk</span>
             </a>
-
+            
             {{-- Kategori --}}
             <a href="/kategori" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-red-300 transition"
                 :class="{{ request()->is('kategori*') ? "'font-bold text-white bg-[#560024]'" : "''" }}">
@@ -94,9 +79,5 @@
                 </form>
             </div>
         </nav>
-    </div>
-
-    {{-- Main Section --}}
-    <div :class="sidebarOpen ? 'ml-60' : 'ml-11'" class="flex-1 transition-all duration-300 p-4">
     </div>
 </div>
