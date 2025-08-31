@@ -4,7 +4,7 @@
 <div class="max-w-5xl mx-auto p-6">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Daftar Metode Pembayaran</h1>
-        <a href="{{ route('metode-pembayaran.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600">+ Tambah</a>
+        <a href="{{ route('metode_pembayaran.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600">+ Tambah</a>
     </div>
 
     @if(session('success'))
@@ -29,7 +29,7 @@
                 <td class="border px-3 py-2">{{ $row->metode_pembayaran_id }}</td>
                 <td class="border px-3 py-2 flex items-center gap-2">
                     @if($row->icon)
-                        <img src="{{ $row->icon }}" alt="icon" class="w-6 h-6">
+                        <img src="{{ asset('storage/icons/' . $row->icon) }}" alt="icon" class="w-6 h-6">
                     @endif
                     {{ $row->nama_pembayaran }}
                 </td>
@@ -42,9 +42,9 @@
                     @endif
                 </td>
                 <td class="border px-3 py-2 space-x-2">
-                    <a href="{{ route('metode-pembayaran.show',$row->metode_pembayaran_id) }}" class="text-blue-600 hover:underline">Detail</a>
-                    <a href="{{ route('metode-pembayaran.edit',$row->metode_pembayaran_id) }}" class="text-yellow-600 hover:underline">Edit</a>
-                    <form action="{{ route('metode-pembayaran.destroy',$row->metode_pembayaran_id) }}" method="POST" class="inline">
+                    <a href="{{ route('metode_pembayaran.show',$row->metode_pembayaran_id) }}" class="text-blue-600 hover:underline">Detail</a>
+                    <a href="{{ route('metode_pembayaran.edit',$row->metode_pembayaran_id) }}" class="text-yellow-600 hover:underline">Edit</a>
+                    <form action="{{ route('metode_pembayaran.destroy',$row->metode_pembayaran_id) }}" method="POST" class="inline">
                         @csrf @method('DELETE')
                         <button type="submit" onclick="return confirm('Yakin hapus?')" class="text-red-600 hover:underline">Hapus</button>
                     </form>

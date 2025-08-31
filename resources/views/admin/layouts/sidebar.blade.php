@@ -4,10 +4,10 @@
     {{-- Logo + Tombol Toggle --}}
     <div class="p-4 flex items-center justify-center relative">
         <a href="/" x-show="sidebarOpen" x-transition>
-            <img src="{{ asset('storage/images/ansthelabel.png') }}" class="h-10" alt="AnstheLabel Logo">
+            <img src="{{ asset('storage/page/ansthelabel.png') }}" class="h-10" alt="AnstheLabel Logo">
         </a>
         <a href="/" x-show="!sidebarOpen" x-transition>
-            <img src="{{ asset('storage/images/ansthelabel-icon.png') }}" class="h-8" alt="Icon">
+            <img src="{{ asset('storage/page/ansthelabel-icon.png') }}" class="h-8" alt="Icon">
         </a>
         <button @click="sidebarOpen = !sidebarOpen"
             class="absolute top-4 right-[-12px] bg-white rounded-full shadow p-1">
@@ -64,8 +64,8 @@
         </a>
 
         {{-- Metode Pembayaran --}}
-        <a href="/metode-pembayaran" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-red-300 transition"
-            :class="{{ request()->is('metode-pembayaran*') ? "'font-bold text-white bg-[#560024]'" : "''" }}">
+        <a href="/metode_pembayaran" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-red-300 transition"
+            :class="{{ request()->is('metode_pembayaran*') ? "'font-bold text-white bg-[#560024]'" : "''" }}">
             <i class="fa-solid fa-credit-card"></i>
             <span x-show="sidebarOpen" x-transition>Metode Pembayaran</span>
         </a>
