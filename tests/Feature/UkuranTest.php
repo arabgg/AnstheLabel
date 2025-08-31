@@ -47,27 +47,26 @@ class UkuranTest extends TestCase
     }
 
     /** @test */
-    public function create_ukuran_sukses_tanpa_deskripsi()
+    public function create_ukuran_gagal_ketika_tanpa_deskripsi()
     {
-        // Payload yang dikirim ke controller ukuran.store
+        // Payload tanpa deskripsi
         $payload = [
-            'nama_ukuran' => 'M',
-            'deskripsi' => null, // deskripsi boleh kosong
+            'nama_ukuran' => 'XXXL',
+            // 'deskripsi' => null, // tidak dikirim
         ];
 
         // Act → request create ukuran
         $resp = $this->post(route('ukuran.store'), $payload);
 
-        // Assert → redirect sukses dan ada flash message
-        $resp->assertRedirect(route('ukuran.index'));
-        $resp->assertSessionHas('success', 'Ukuran berhasil ditambahkan!');
+        // Assert → request gagal (validation error)
+        $resp->assertSessionHasErrors(['deskripsi']);
 
-        // Assert → cek ukuran tersimpan di DB
-        $this->assertDatabaseHas('m_ukuran', [
-            'nama_ukuran' => 'M',
-            'deskripsi' => null,
+        // Assert → pastikan tidak tersimpan di DB
+        $this->assertDatabaseMissing('m_ukuran', [
+            'nama_ukuran' => 'XXXL',
         ]);
     }
+
 
     /** @test */
     public function create_ukuran_gagal_ketika_nama_kosong()
@@ -199,5 +198,41 @@ class UkuranTest extends TestCase
         $resp->assertRedirect(route('ukuran.index'));
         $resp->assertSessionHas('success', 'Ukuran berhasil dihapus!');
         $this->assertDatabaseMissing('m_ukuran', ['ukuran_id' => $ukuran->ukuran_id]);
+    }
+
+    /** @test */
+    public function delete_ukuran_gagal_ketika_ukuran_tidak_ada()
+    {
+        $ukuran_id_tidak_ada = 999999;
+
+        $resp = $this->delete(route('ukuran.destroy', $ukuran_id_tidak_ada));
+
+        $resp->assertStatus(404); // Not found
+        $this->assertDatabaseMissing('m_ukuran', ['ukuran_id' => $ukuran_id_tidak_ada]);
+    }
+
+    /** @test */
+    public function update_ukuran_gagal_ketika_ukuran_tidak_ada()
+    {
+        $ukuran_id_tidak_ada = 999999;
+
+        $payload = [
+            'nama_ukuran' => 'Ukuran Update Gagal',
+            'deskripsi' => 'Deskripsi update gagal',
+        ];
+
+        $resp = $this->put(route('ukuran.update', $ukuran_id_tidak_ada), $payload);
+
+        $resp->assertStatus(404); // Not found
+    }
+
+    /** @test */
+    public function show_ukuran_gagal_ketika_ukuran_tidak_ada()
+    {
+        $ukuran_id_tidak_ada = 999999;
+
+        $resp = $this->get(route('ukuran.show', $ukuran_id_tidak_ada));
+
+        $resp->assertStatus(404); // Not found
     }
 }

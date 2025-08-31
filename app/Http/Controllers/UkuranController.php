@@ -22,7 +22,7 @@ class UkuranController extends Controller
     {
         $request->validate([
             'nama_ukuran' => 'required|string|max:255',
-            'deskripsi' => 'nullable|string',
+            'deskripsi' => 'required|string|max:255',
         ]);
 
         UkuranModel::create($request->all());

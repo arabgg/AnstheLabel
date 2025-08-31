@@ -240,4 +240,62 @@ class WarnaTest extends TestCase
         $resp->assertSessionHas('success', 'Warna berhasil dihapus!');
         $this->assertDatabaseMissing('m_warna', ['warna_id' => $warna->warna_id]);
     }
+
+    /** @test */
+    public function delete_warna_gagal_ketika_warna_tidak_ada()
+    {
+        $warna_id_tidak_ada = 999999;
+
+        $resp = $this->delete(route('warna.destroy', $warna_id_tidak_ada));
+
+        $resp->assertStatus(404); // Not found
+        $this->assertDatabaseMissing('m_warna', ['warna_id' => $warna_id_tidak_ada]);
+    }
+
+    /** @test */
+    public function update_warna_gagal_ketika_warna_tidak_ada()
+    {
+        $warna_id_tidak_ada = 999999;
+
+        $payload = [
+            'kode_hex' => '#000000',
+            'nama_warna' => 'Warna Update Gagal',
+        ];
+
+        $resp = $this->put(route('warna.update', $warna_id_tidak_ada), $payload);
+
+        $resp->assertStatus(404); // Not found
+    }
+
+    /** @test */
+    public function show_warna_gagal_ketika_warna_tidak_ada()
+    {
+        $warna_id_tidak_ada = 999999;
+
+        $resp = $this->get(route('warna.show', $warna_id_tidak_ada));
+
+        $resp->assertStatus(404); // Not found
+    }
+
+    /** @test */
+    public function create_warna_gagal_ketika_kode_hex_format_salah()
+    {
+        // Payload yang dikirim ke controller warna.store
+        $payload = [
+            'kode_hex' => 'FF5733', // tanpa # (format salah)
+            'nama_warna' => 'Merah Orange',
+        ];
+
+        // Act → request create warna
+        $resp = $this->post(route('warna.store'), $payload);
+
+        // Assert → redirect kembali ke form dengan error validasi
+        $resp->assertStatus(302);
+        $resp->assertSessionHasErrors(['kode_hex']);
+
+        // Assert → cek warna TIDAK tersimpan di DB
+        $this->assertDatabaseMissing('m_warna', [
+            'nama_warna' => 'Merah Orange',
+        ]);
+    }
 }

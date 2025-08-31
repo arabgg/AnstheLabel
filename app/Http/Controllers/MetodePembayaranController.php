@@ -32,7 +32,7 @@ class MetodePembayaranController extends Controller
         $validated = $request->validate([
             'metode_id' => 'required|integer',
             'nama_pembayaran' => 'required|string|max:255',
-            'kode_bayar' => 'required|string|max:50|unique:t_metode-pembayaran,kode_bayar',
+            'kode_bayar' => 'required|string|max:50|unique:t_metode_pembayaran,kode_bayar',
             'status_pembayaran' => 'required|boolean',
             'icon' => 'nullable|string|max:255',
         ]);
@@ -71,7 +71,7 @@ class MetodePembayaranController extends Controller
         $validated = $request->validate([
             'metode_id' => 'required|integer',
             'nama_pembayaran' => 'required|string|max:255',
-            'kode_bayar' => 'required|string|max:50|unique:t_metode-pembayaran,kode_bayar,' . $id . ',metode-pembayaran_id',
+            'kode_bayar' => 'required|string|max:50|unique:t_metode_pembayaran,kode_bayar,' . $id . ',metode_pembayaran_id',
             'status_pembayaran' => 'required|boolean',
             'icon' => 'nullable|string|max:255',
         ]);
