@@ -165,7 +165,7 @@ class ProdukTest extends TestCase
     {
         $produk = ProdukModel::factory()->create();
 
-        $resp = $this->get(route('produk.show', $produk->produk_id));
+        $resp = $this->get(route('produk.index') . '/' . $produk->produk_id . '/show');
 
         $resp->assertStatus(200);
         $resp->assertViewIs('produk.show'); // sesuaikan dengan view kamu
@@ -232,5 +232,48 @@ class ProdukTest extends TestCase
 
         $resp->assertRedirect(route('produk.index'));
         $this->assertDatabaseMissing('t_produk', ['produk_id' => $produk->produk_id]);
+    }
+
+    /** @test */
+    public function delete_produk_gagal_ketika_produk_tidak_ada()
+    {
+        $produk_id_tidak_ada = 999999;
+
+        $resp = $this->delete(route('produk.destroy', $produk_id_tidak_ada));
+
+        $resp->assertStatus(404); // Not found
+        $this->assertDatabaseMissing('t_produk', ['produk_id' => $produk_id_tidak_ada]);
+    }
+
+    /** @test */
+    public function update_produk_gagal_ketika_produk_tidak_ada()
+    {
+        $produk_id_tidak_ada = 999999;
+        $ukuran = UkuranModel::factory()->create();
+        $warna  = WarnaModel::factory()->create();
+
+        $payload = [
+            'nama_produk' => 'Hijab Pashmina Update',
+            'deskripsi'   => 'Update gagal produk tidak ada',
+            'harga'       => '150000',
+            'kategori_id' => 1,
+            'bahan_id'    => 1,
+            'ukuran_id' => [(string)$ukuran->ukuran_id],
+            'warna_id' => [(string)$warna->warna_id]
+        ];
+
+        $resp = $this->put(route('produk.update', $produk_id_tidak_ada), $payload);
+
+        $resp->assertStatus(404); // Not found
+    }
+
+    /** @test */
+    public function show_produk_gagal_ketika_produk_tidak_ada()
+    {
+        $produk_id_tidak_ada = 999999;
+
+        $resp = $this->get("/produk/{$produk_id_tidak_ada}/show");
+
+        $resp->assertStatus(404); // Not found
     }
 }
