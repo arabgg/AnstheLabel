@@ -10,12 +10,12 @@ class UkuranController extends Controller
     public function index()
     {
         $ukuran = UkuranModel::all();
-        return view('ukuran.index', compact('ukuran'));
+        return view('admin.ukuran.index', compact('ukuran'));
     }
 
     public function create()
     {
-        return view('ukuran.create');
+        return view('admin.ukuran.create');
     }
 
     public function store(Request $request)
@@ -33,13 +33,13 @@ class UkuranController extends Controller
     public function show(string $id)
     {
         $ukuran = UkuranModel::findOrFail($id);
-        return view('ukuran.show', compact('ukuran'));
+        return view('admin.ukuran.show', compact('ukuran'));
     }
 
     public function edit(string $id)
     {
         $ukuran = UkuranModel::findOrFail($id);
-        return view('ukuran.edit', compact('ukuran'));
+        return view('admin.ukuran.edit', compact('ukuran'));
     }
 
     public function update(Request $request, string $id)
@@ -52,7 +52,7 @@ class UkuranController extends Controller
         $ukuran = UkuranModel::findOrFail($id);
         $ukuran->update($request->all());
 
-        return redirect()->route('ukuran.index')->with('success', 'Ukuran berhasil diupdate!');
+        return redirect()->route('admin.ukuran.index')->with('success', 'Ukuran berhasil diupdate!');
     }
 
     public function destroy(string $id)
@@ -60,6 +60,6 @@ class UkuranController extends Controller
         $ukuran = UkuranModel::findOrFail($id);
         $ukuran->delete();
 
-        return redirect()->route('ukuran.index')->with('success', 'Ukuran berhasil dihapus!');
+        return redirect()->route('admin.ukuran.index')->with('success', 'Ukuran berhasil dihapus!');
     }
 }

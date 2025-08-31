@@ -21,7 +21,7 @@ class MetodePembayaranController extends Controller
      */
     public function create()
     {
-        return view('metode-pembayaran.create');
+        return view('admin.metode-pembayaran.create');
     }
 
     /**
@@ -49,7 +49,7 @@ class MetodePembayaranController extends Controller
     public function show($id)
     {
         $metode = MetodePembayaranModel::with('metode', 'pembayaran')->findOrFail($id);
-        return view('metode-pembayaran.show', compact('metode'));
+        return view('admin.metode-pembayaran.show', compact('metode'));
     }
 
     /**
@@ -58,7 +58,7 @@ class MetodePembayaranController extends Controller
     public function edit($id)
     {
         $metode = MetodePembayaranModel::findOrFail($id);
-        return view('metode-pembayaran.edit', compact('metode'));
+        return view('admin.metode-pembayaran.edit', compact('metode'));
     }
 
     /**
