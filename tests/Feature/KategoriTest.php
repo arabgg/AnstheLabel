@@ -170,4 +170,39 @@ class KategoriTest extends TestCase
         $resp->assertSessionHas('success', 'Kategori berhasil dihapus!');
         $this->assertDatabaseMissing('m_kategori', ['kategori_id' => $kategori->kategori_id]);
     }
+
+    /** @test */
+    public function delete_kategori_gagal_ketika_kategori_tidak_ada()
+    {
+        $kategori_id_tidak_ada = 999999;
+
+        $resp = $this->delete(route('kategori.destroy', $kategori_id_tidak_ada));
+
+        $resp->assertStatus(404); // Not found
+        $this->assertDatabaseMissing('m_kategori', ['kategori_id' => $kategori_id_tidak_ada]);
+    }
+
+    /** @test */
+    public function update_kategori_gagal_ketika_kategori_tidak_ada()
+    {
+        $kategori_id_tidak_ada = 999999;
+
+        $payload = [
+            'nama_kategori' => 'Kategori Update Gagal',
+        ];
+
+        $resp = $this->put(route('kategori.update', $kategori_id_tidak_ada), $payload);
+
+        $resp->assertStatus(404); // Not found
+    }
+
+    /** @test */
+    public function show_kategori_gagal_ketika_kategori_tidak_ada()
+    {
+        $kategori_id_tidak_ada = 999999;
+
+        $resp = $this->get(route('kategori.show', $kategori_id_tidak_ada));
+
+        $resp->assertStatus(404); // Not found
+    }
 }
