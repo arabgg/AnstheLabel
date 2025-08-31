@@ -88,11 +88,11 @@
                     <h4>Metode Pembayaran</h4>
                     <div class="transaksi-metode">
                         @if($transaksi->pembayaran->metode->nama_pembayaran === 'qris')
-                            <img src="{{ storage_url('icons', $transaksi->pembayaran->metode->icon) }}" alt="Metode Logo" class="metode-logo">
-                            <img src="{{ storage_url('icons', $transaksi->pembayaran->metode->kode_bayar) }}" 
+                            <img src="{{ route('storage', ['folder' => 'icons', 'filename' => $transaksi->pembayaran->metode->icon]) }}" alt="Metode Logo" class="metode-logo">
+                            <img src="{{ route('storage', ['folder' => 'icons', 'filename' => $transaksi->pembayaran->metode->kode_bayar]) }}" 
                                 alt="QR Code" class="qrcode">
                         @else
-                            <img src="{{ storage_url('icons', $transaksi->pembayaran->metode->icon) }}" alt="Metode Logo" class="metode-logo">
+                            <img src="{{ route('storage', ['folder' => 'icons', 'filename' => $transaksi->pembayaran->metode->icon]) }}" alt="Metode Logo" class="metode-logo">
                             <p>
                                 <button class="metode-copy-btn" onclick="copyToClipboard('metodeCode')">
                                     <i class="fa-regular fa-clipboard "></i>
@@ -123,7 +123,7 @@
             @foreach($transaksi->detail as $item)
         <div class="transaksi-item">
             {{-- Foto produk --}}
-            <img src="{{ storage_url('foto_produk', optional(optional($item->produk)->fotoUtama)->foto_produk) }}" 
+            <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->produk->fotoUtama->foto_produk]) }}" 
                  alt="{{ optional($item->produk)->nama_produk ?? 'Produk' }}">
 
             {{-- Informasi produk --}}
