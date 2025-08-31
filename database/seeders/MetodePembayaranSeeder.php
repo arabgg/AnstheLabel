@@ -45,15 +45,15 @@ class MetodePembayaranSeeder extends Seeder
                 'status_pembayaran' => false,
                 'icon' => 'ovo.png',
                 'created_at' => now()
-            ],
-            [
-                'metode_id' => 3,
-                'nama_pembayaran' => 'qris',
-                'kode_bayar' => 'barcode.png',
-                'status_pembayaran' => true,
-                'icon' => 'qris.png',
-                'created_at' => now()
-            ],
+            ]
+            // [
+            //     'metode_id' => 3,
+            //     'nama_pembayaran' => 'qris',
+            //     'kode_bayar' => 'barcode.png',
+            //     'status_pembayaran' => true,
+            //     'icon' => 'qris.png',
+            //     'created_at' => now()
+            // ],
         ]);
     }
 }

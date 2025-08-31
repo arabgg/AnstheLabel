@@ -15,7 +15,6 @@ class MetodeModel extends Model
     
     protected $fillable = [
         'nama_metode',
-        'kode_bayar',
     ];
 
     protected $casts = [

@@ -25,7 +25,7 @@
         <div>
             <strong>Icon:</strong> 
             @if($metode->icon)
-                <img src="{{ $metode->icon }}" alt="icon" class="w-12 h-12 mt-1">
+                <img src="{{ asset('storage/icons/' . $metode->icon) }}" alt="icon" class="w-12 h-12 mt-1">
             @else
                 <span class="text-gray-500">Tidak ada</span>
             @endif
@@ -33,7 +33,7 @@
     </div>
 
     <div class="mt-6">
-        <a href="{{ route('metode-pembayaran.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Kembali</a>
+        <a href="{{ route('metode_pembayaran.index') }}" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Kembali</a>
     </div>
 </div>
 @endsection
