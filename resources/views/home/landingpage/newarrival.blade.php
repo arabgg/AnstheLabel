@@ -39,7 +39,7 @@
                                 <span class="price-now">Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
                             @endif
                         </div>
-                        <div class="bestproduk-kategori">{{ $item->kategori->nama_kategori }}</div>
+                        <div class="bestproduk-kategori">{{ $item->kategori->nama_kategori ?? '-' }}</div>
                     </div>
                 </div>
             </div>

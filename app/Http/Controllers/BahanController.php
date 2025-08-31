@@ -28,7 +28,7 @@ class BahanController extends Controller
         BahanModel::create($request->all());
 
         return redirect()->route('bahan.index')
-            ->with('success', 'Bahan berhasil ditambahkan!');
+            ->with('success', 'Bahan berhasil ditambahkan');
     }
 
     public function show(string $id)
@@ -54,7 +54,7 @@ class BahanController extends Controller
         $bahan->update($request->all());
 
         return redirect()->route('bahan.index')
-            ->with('success', 'Bahan berhasil diperbarui!');
+            ->with('success', 'Bahan berhasil diperbarui');
     }
 
     public function destroy(string $id)
@@ -63,6 +63,6 @@ class BahanController extends Controller
         $bahan->delete();
 
         return redirect()->route('bahan.index')
-            ->with('success', 'Bahan berhasil dihapus!');
+            ->with('success', 'Bahan berhasil dihapus');
     }
 }
