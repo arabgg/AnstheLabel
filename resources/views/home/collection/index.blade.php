@@ -43,18 +43,18 @@
 
     // Show All Product
     function showAllKatalog() {
-        const cards = document.querySelectorAll('.produk-card');
-        cards.forEach(card => card.classList.remove('produk-hidden'));
+        const cards = document.querySelectorAll('.bestproduk-card');
+        cards.forEach(card => card.classList.remove('bestproduk-hidden'));
 
         document.getElementById('viewAllButton').style.display = 'none';
         document.getElementById('hideButton').style.display = 'inline-block';
     }
 
     function hideExtraKatalog() {
-        const cards = document.querySelectorAll('.produk-card');
+        const cards = document.querySelectorAll('.bestproduk-card');
         cards.forEach((card, index) => {
             if (index >= 6) {
-                card.classList.add('produk-hidden');
+                card.classList.add('bestproduk-hidden');
             }
         });
 

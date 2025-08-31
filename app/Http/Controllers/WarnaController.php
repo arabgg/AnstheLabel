@@ -21,7 +21,7 @@ class WarnaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'kode_hex' => 'required|regex:/^#[0-9A-Fa-f]{6}$/|max:7',
+            'kode_hex' => 'required|string|max:7',
             'nama_warna' => 'required|string|max:255',
         ]);
         WarnaModel::create($request->all());
@@ -44,7 +44,7 @@ class WarnaController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'kode_hex' => 'required|regex:/^#[0-9A-Fa-f]{6}$/|max:7',
+            'kode_hex' => 'required|string|max:7',
             'nama_warna' => 'required|string|max:255',
         ]);
         $warna = WarnaModel::findOrFail($id);
