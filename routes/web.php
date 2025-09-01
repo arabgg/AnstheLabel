@@ -143,37 +143,37 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{id}/destroy', [WarnaController::class, 'destroy'])->name('warna.destroy');
     });
 
-    Route::prefix('metode-pembayaran')->group(function () {
-        Route::get('/', [MetodePembayaranController::class, 'index'])->name('warna.index');
-        Route::get('/filter', [MetodePembayaranController::class, 'filter'])->name('warna.filter');
-        Route::get('/{id}/show', [MetodePembayaranController::class, 'show'])->name('warna.show');
-        Route::get('/create', [MetodePembayaranController::class, 'create'])->name('warna.create');
-        Route::post('/store', [MetodePembayaranController::class, 'store'])->name('warna.store');
-        Route::get('/{id}/edit', [MetodePembayaranController::class, 'edit'])->name('warna.edit');
-        Route::put('/{id}/update', [MetodePembayaranController::class, 'update'])->name('warna.update');
-        Route::delete('/{id}/destroy', [MetodePembayaranController::class, 'destroy'])->name('warna.destroy');
+    Route::prefix('metode_pembayaran')->group(function () {
+        Route::get('/', [MetodePembayaranController::class, 'index'])->name('metode_pembayaran.index');
+        Route::get('/filter', [MetodePembayaranController::class, 'filter'])->name('metode_pembayaran.filter');
+        Route::get('/{id}/show', [MetodePembayaranController::class, 'show'])->name('metode_pembayaran.show');
+        Route::get('/create', [MetodePembayaranController::class, 'create'])->name('metode_pembayaran.create');
+        Route::post('/store', [MetodePembayaranController::class, 'store'])->name('metode_pembayaran.store');
+        Route::get('/{id}/edit', [MetodePembayaranController::class, 'edit'])->name('metode_pembayaran.edit');
+        Route::put('/{id}/update', [MetodePembayaranController::class, 'update'])->name('metode_pembayaran.update');
+        Route::delete('/{id}/destroy', [MetodePembayaranController::class, 'destroy'])->name('metode_pembayaran.destroy');
     });
 
     Route::prefix('pesanan')->group(function () {
-        Route::get('/', [PesananController::class, 'index'])->name('warna.index');
-        Route::get('/filter', [PesananController::class, 'filter'])->name('warna.filter');
-        Route::get('/{id}/show', [PesananController::class, 'show'])->name('warna.show');
-        Route::get('/create', [PesananController::class, 'create'])->name('warna.create');
-        Route::post('/store', [PesananController::class, 'store'])->name('warna.store');
-        Route::get('/{id}/edit', [PesananController::class, 'edit'])->name('warna.edit');
-        Route::put('/{id}/update', [PesananController::class, 'update'])->name('warna.update');
-        Route::delete('/{id}/destroy', [PesananController::class, 'destroy'])->name('warna.destroy');
+        Route::get('/', [PesananController::class, 'index'])->name('pesanan.index');
+        Route::get('/filter', [PesananController::class, 'filter'])->name('pesanan.filter');
+        Route::get('/{id}/show', [PesananController::class, 'show'])->name('pesanan.show');
+        Route::get('/create', [PesananController::class, 'create'])->name('pesanan.create');
+        Route::post('/store', [PesananController::class, 'store'])->name('pesanan.store');
+        Route::get('/{id}/edit', [PesananController::class, 'edit'])->name('pesanan.edit');
+        Route::put('/{id}/update', [PesananController::class, 'update'])->name('pesanan.update');
+        Route::delete('/{id}/destroy', [PesananController::class, 'destroy'])->name('pesanan.destroy');
     });
 
     Route::prefix('banner')->group(function () {
-        Route::get('/', [BannerController::class, 'index'])->name('warna.index');
-        Route::get('/filter', [BannerController::class, 'filter'])->name('warna.filter');
-        Route::get('/{id}/show', [BannerController::class, 'show'])->name('warna.show');
-        Route::get('/create', [BannerController::class, 'create'])->name('warna.create');
-        Route::post('/store', [BannerController::class, 'store'])->name('warna.store');
-        Route::get('/{id}/edit', [BannerController::class, 'edit'])->name('warna.edit');
-        Route::put('/{id}/update', [BannerController::class, 'update'])->name('warna.update');
-        Route::delete('/{id}/destroy', [BannerController::class, 'destroy'])->name('warna.destroy');
+        Route::get('/', [BannerController::class, 'index'])->name('banner.index');
+        Route::get('/filter', [BannerController::class, 'filter'])->name('banner.filter');
+        Route::get('/{id}/show', [BannerController::class, 'show'])->name('banner.show');
+        Route::get('/create', [BannerController::class, 'create'])->name('banner.create');
+        Route::post('/store', [BannerController::class, 'store'])->name('banner.store');
+        Route::get('/{id}/edit', [BannerController::class, 'edit'])->name('banner.edit');
+        Route::put('/{id}/update', [BannerController::class, 'update'])->name('banner.update');
+        Route::delete('/{id}/destroy', [BannerController::class, 'destroy'])->name('banner.destroy');
     });
 
     Route::prefix('transaksi')->group(function () {

@@ -102,7 +102,7 @@
             </button>
 
             <div x-show="transaksiOpen" x-collapse class="flex flex-col pl-8 space-y-1">
-                <a href="/metode-pembayaran"
+                <a href="/metode_pembayaran"
                    class="flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-200 transition"
                    :class="{{ request()->is('metode-pembayaran*') ? "'font-bold text-white bg-[#560024]'" : "''" }}">
                     <i class="fa-solid fa-credit-card"></i>
