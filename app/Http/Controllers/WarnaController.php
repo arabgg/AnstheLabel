@@ -9,8 +9,9 @@ class WarnaController extends Controller
 {
     public function index()
     {
+        $title = 'List Warna Produk';
         $warna = WarnaModel::all();
-        return view('admin.warna.index', compact('warna'));
+        return view('admin.warna.index', compact('warna', 'title'));
     }
 
     public function create()

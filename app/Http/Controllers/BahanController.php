@@ -9,8 +9,10 @@ class BahanController extends Controller
 {
     public function index()
     {
+        $title = ' List Bahan Produk';
         $bahan = BahanModel::all();
-        return view('admin.bahan.index', compact('bahan'));
+
+        return view('admin.bahan.index', compact('bahan', 'title'));
     }
 
     public function create()

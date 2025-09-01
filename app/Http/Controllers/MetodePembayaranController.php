@@ -12,8 +12,9 @@ class MetodePembayaranController extends Controller
      */
     public function index()
     {
+        $title = 'List Metode Pembayaran';
         $data = MetodePembayaranModel::with('metode')->paginate(10);
-        return view('metode-pembayaran.index', compact('data'));
+        return view('metode-pembayaran.index', compact('data', 'title'));
     }
 
     /**
