@@ -9,6 +9,7 @@ use App\Http\Controllers\BahanController;
 use App\Http\Controllers\UkuranController;
 use App\Http\Controllers\WarnaController;
 use App\Http\Controllers\MetodePembayaranController;
+use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BannerController;
@@ -173,5 +174,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/{id}/edit', [BannerController::class, 'edit'])->name('warna.edit');
         Route::put('/{id}/update', [BannerController::class, 'update'])->name('warna.update');
         Route::delete('/{id}/destroy', [BannerController::class, 'destroy'])->name('warna.destroy');
+    });
+
+    Route::prefix('transaksi')->group(function () {
+        Route::get('/', [TransaksiController::class, 'index'])->name('transaksi.index');
+        Route::get('/{id}', [TransaksiController::class, 'show'])->name('transaksi.show');
+        Route::get('/{id}/edit', [TransaksiController::class, 'edit'])->name('transaksi.edit');
+        Route::put('/{id}', [TransaksiController::class, 'update'])->name('transaksi.update');
+        Route::get('/export', [TransaksiController::class, 'export'])->name('transaksi.export');
     });
 });
