@@ -195,5 +195,25 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{id}/destroy', [WarnaController::class, 'destroy'])->name('warna.destroy');
     });
 
-    Route::resource('metode-pembayaran', MetodePembayaranController::class);
+    Route::prefix('metode_pembayaran')->group(function () {
+        // Filter
+        Route::get('/filter', [MetodePembayaranController::class, 'filter'])->name('metode_pembayaran.filter');
+
+        // List
+        Route::get('/', [MetodePembayaranController::class, 'index'])->name('metode_pembayaran.index');
+
+        // Show
+        Route::get('/{id}/show', [MetodePembayaranController::class, 'show'])->name('metode_pembayaran.show');
+
+        // Create
+        Route::get('/create', [MetodePembayaranController::class, 'create'])->name('metode_pembayaran.create');
+        Route::post('/store', [MetodePembayaranController::class, 'store'])->name('metode_pembayaran.store');
+
+        // Edit
+        Route::get('/{id}/edit', [MetodePembayaranController::class, 'edit'])->name('metode_pembayaran.edit');
+        Route::put('/{id}/update', [MetodePembayaranController::class, 'update'])->name('metode_pembayaran.update');
+
+        // Delete
+        Route::delete('/{id}/destroy', [MetodePembayaranController::class, 'destroy'])->name('metode_pembayaran.destroy');
+    });
 });

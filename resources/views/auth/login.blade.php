@@ -13,7 +13,7 @@
     style="background: linear-gradient(to top right, #FFFFFF, #FBE9EB, #F4D6CC, #A65A6A, #560024);">
 
     <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md text-center">
-        <img src="{{ asset('storage/images/ansthelabel.png') }}" alt="Ansthelabel" class="mx-auto mb-4 w-40">
+        <img src="{{ asset('storage/page/ansthelabel.png') }}" alt="Ansthelabel" class="mx-auto mb-4 w-40">
 
         <form id="loginForm">
             @csrf

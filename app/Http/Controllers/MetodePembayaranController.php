@@ -3,94 +3,101 @@
 namespace App\Http\Controllers;
 
 use App\Models\MetodePembayaranModel;
+use App\Models\MetodeModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class MetodePembayaranController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $data = MetodePembayaranModel::with('metode')->paginate(10);
-        return view('metode-pembayaran.index', compact('data'));
+        return view('admin.metode_pembayaran.index', compact('data'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        return view('metode-pembayaran.create');
+        $metodes = MetodeModel::all();
+        return view('admin.metode_pembayaran.create', compact('metodes'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
             'metode_id' => 'required|integer',
             'nama_pembayaran' => 'required|string|max:255',
-            'kode_bayar' => 'required|string|max:50|unique:t_metode-pembayaran,kode_bayar',
+            'kode_bayar' => 'required|string|max:50|unique:t_metode_pembayaran,kode_bayar',
             'status_pembayaran' => 'required|boolean',
-            'icon' => 'nullable|string|max:255',
+            'icon' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
+
+        if ($request->hasFile('icon')) {
+            $fileName = time() . '_' . $request->file('icon')->getClientOriginalName();
+            $request->file('icon')->storeAs('icons', $fileName, 'public');
+            $validated['icon'] = $fileName;
+        }
+
 
         MetodePembayaranModel::create($validated);
 
-        return redirect()->route('metode-pembayaran.index')
+        return redirect()->route('metode_pembayaran.index')
             ->with('success', 'Metode pembayaran berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show($id)
     {
         $metode = MetodePembayaranModel::with('metode', 'pembayaran')->findOrFail($id);
-        return view('metode-pembayaran.show', compact('metode'));
+        return view('admin.metode_pembayaran.show', compact('metode'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit($id)
     {
-        $metode = MetodePembayaranModel::findOrFail($id);
-        return view('metode-pembayaran.edit', compact('metode'));
+        $mp = MetodePembayaranModel::findOrFail($id);
+        $metodes = MetodeModel::all();
+
+        return view('admin.metode_pembayaran.edit', compact('mp', 'metodes'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
-        $metode = MetodePembayaranModel::findOrFail($id);
+        $mp = MetodePembayaranModel::findOrFail($id);
 
         $validated = $request->validate([
             'metode_id' => 'required|integer',
             'nama_pembayaran' => 'required|string|max:255',
-            'kode_bayar' => 'required|string|max:50|unique:t_metode-pembayaran,kode_bayar,' . $id . ',metode-pembayaran_id',
-            'status_pembayaran' => 'required|boolean',
-            'icon' => 'nullable|string|max:255',
+            'kode_bayar' => 'required|string|max:50|unique:t_metode_pembayaran,kode_bayar,' . $id . ',metode_pembayaran_id',
+            'status_pembayaran' => 'required|in:1,0',
+            'icon' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
         ]);
 
-        $metode->update($validated);
+        if ($request->hasFile('icon')) {
+            if ($mp->icon && Storage::disk('public')->exists('icons/' . $mp->icon)) {
+                Storage::disk('public')->delete('icons/' . $mp->icon);
+            }
+            $fileName = time() . '_' . $request->file('icon')->getClientOriginalName();
+            $request->file('icon')->storeAs('icons', $fileName, 'public');
+            $validated['icon'] = $fileName;
+        }
 
-        return redirect()->route('metode-pembayaran.index')
+        $mp->update($validated);
+
+        return redirect()->route('metode_pembayaran.index')
             ->with('success', 'Metode pembayaran berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        $metode = MetodePembayaranModel::findOrFail($id);
-        $metode->delete();
+public function destroy($id)
+{
+    $mp = MetodePembayaranModel::findOrFail($id);
 
-        return redirect()->route('metode-pembayaran.index')
-            ->with('success', 'Metode pembayaran berhasil dihapus.');
+    $filePath = 'icons/' . $mp->icon;
+
+    if ($mp->icon && Storage::disk('public')->exists($filePath)) {
+        Storage::disk('public')->delete($filePath);
     }
+
+    $mp->delete();
+
+    return redirect()->route('metode_pembayaran.index')
+        ->with('success', 'Metode pembayaran berhasil dihapus beserta icon.');
+}
 }

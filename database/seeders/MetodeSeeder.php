@@ -15,8 +15,8 @@ class MetodeSeeder extends Seeder
     {
         DB::table('m_metode_pembayaran')->insert([
             ['nama_metode' => 'Transfer Bank', 'created_at' => now()],
-            ['nama_metode' => 'E-Wallet', 'created_at' => now()],
-            ['nama_metode' => 'Auto Bank', 'created_at' => now()],
+            ['nama_metode' => 'E-Wallet', 'created_at' => now()]
+            // ['nama_metode' => 'Auto Bank', 'created_at' => now()],
         ]);
     }
 }
