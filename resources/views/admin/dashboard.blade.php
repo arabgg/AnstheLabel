@@ -14,7 +14,6 @@
                    class="border rounded p-1"
                    max="{{ now()->format('Y-m-d') }}">
         </div>
-        <span class="mx-2 mt-6">-</span>
         <div>
             <label class="block text-sm font-semibold">Tanggal Selesai</label>
             <input type="date" name="end_date" id="end_date"
