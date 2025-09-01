@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -62,5 +63,26 @@ class DetailTransaksiModel extends Model
     public function warna() :BelongsTo
     {
         return $this->belongsTo(WarnaModel::class, 'warna_id', 'warna_id');
+    }
+
+    public static function getProdukTerjualHarianByRange($startDate, $endDate)
+    {
+        $data = self::selectRaw('DATE(created_at) as tanggal, SUM(jumlah) as produk_terjual')
+            ->whereBetween('created_at', [$startDate->startOfDay(), $endDate->endOfDay()])
+            ->groupBy('tanggal')
+            ->orderBy('tanggal')
+            ->get()
+            ->keyBy('tanggal');
+
+        $period = CarbonPeriod::create($startDate, $endDate);
+        $result = [];
+        foreach ($period as $date) {
+            $day = $date->format('Y-m-d');
+            $result[] = [
+                'tanggal' => $day,
+                'produk_terjual' => isset($data[$day]) ? $data[$day]->produk_terjual : 0
+            ];
+        }
+        return collect($result);
     }
 }

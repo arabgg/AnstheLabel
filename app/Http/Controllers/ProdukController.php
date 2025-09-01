@@ -21,6 +21,7 @@ class ProdukController extends Controller
 
     public function index(Request $request)
     {
+        $title = "List Produk";
         $search = $request->input('search');
         $kategoriFilter = $request->input('kategori');
         $paginateLimit = $request->input('paginate', 15);
@@ -46,7 +47,7 @@ class ProdukController extends Controller
             })
             ->withQueryString();
 
-        return view('admin.produk.index', compact('produk', 'kategoriList', 'paginateLimit'));
+        return view('admin.produk.index', compact('produk', 'kategoriList', 'paginateLimit','title'));
     }
 
     public function show($id)

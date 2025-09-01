@@ -690,7 +690,7 @@ input[type="radio"]:checked + .detail-size-nama {
 .invoice-sub-title {font-size:16px;font-weight:600;margin-bottom:80px;color:#333;}
 .invoice-error {background:#ffe5e5;color:#d9534f;padding:10px;border-radius:8px;margin-bottom:15px;font-size:14px;}
 .invoice-form {display:flex;align-items:center;flex-direction:column;gap:15px;width:100%;}
-.invoice-label {padding-left:10%;font-weight:500;align-self:flex-start;font-size:14px;color:#555;}
+.invoice-label {padding-left:17%;font-weight:500;align-self:flex-start;font-size:14px;color:#555;}
 .invoice-input {padding:12px;width:80%;max-width:500px;border:1px solid #ccc;border-radius:8px;font-size:14px;transition:border 0.2s ease;}
 .invoice-input::placeholder {font-size:12px;font-family:'Montserrat',sans-serif!important;}
 .invoice-input:focus {outline:none;border-color:#A65A6A;box-shadow:0 0 4px rgba(0,123,255,0.3);}

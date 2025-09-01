@@ -2,10 +2,6 @@
 
 @section('content')
 <div class="p-2 bg-white rounded-xl">
-    <div class="flex bg-[#560024] py-4 justify-center mb-4 rounded-xl">
-        <h1 class="text-2xl font-bold font-montserrat text-white">Daftar Produk</h1>
-    </div>
-
     <div class="flex flex-col md:flex-row md:justify-center mb-4 gap-7">
         {{-- Filter & Search --}}
         <form id="filterForm" method="GET" action="{{ url('/produk') }}"

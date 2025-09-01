@@ -9,8 +9,9 @@ class KategoriController extends Controller
 {
     public function index()
     {
+        $title = 'List Kategori Produk';
         $kategori = KategoriModel::all();
-        return view('admin.kategori.index', compact('kategori'));
+        return view('admin.kategori.index', compact('kategori', 'title'));
     }
 
     public function create()

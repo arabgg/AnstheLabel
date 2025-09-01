@@ -9,8 +9,9 @@ class UkuranController extends Controller
 {
     public function index()
     {
+        $title = 'List Ukuran Produk';
         $ukuran = UkuranModel::all();
-        return view('admin.ukuran.index', compact('ukuran'));
+        return view('admin.ukuran.index', compact('ukuran', 'title'));
     }
 
     public function create()
