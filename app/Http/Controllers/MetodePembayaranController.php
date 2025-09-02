@@ -9,11 +9,19 @@ use Illuminate\Support\Facades\Storage;
 
 class MetodePembayaranController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $title = 'List Metode Pembayaran';
-        $data = MetodePembayaranModel::with('metode')->paginate(10);
-        return view('metode-pembayaran.index', compact('data', 'title'));
+        $searchQuery = $request->input('search', '');
+
+        $metode = MetodePembayaranModel::select('metode_pembayaran_id', 'metode_id', 'nama_pembayaran', 'kode_bayar', 'icon', 'created_at', 'updated_at')
+            ->with('metode:metode_id,nama_metode')
+            ->when(!empty($searchQuery), function($q) use ($searchQuery) {
+                $q->where('nama_pembayaran', 'like', "%{$searchQuery}%");
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+            
+        return view('admin.metode-pembayaran.index', compact('metode', 'searchQuery'));
     }
 
     public function create()
