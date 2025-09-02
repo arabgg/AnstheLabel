@@ -102,7 +102,9 @@ Route::middleware('auth')->group(function () {
     Route::prefix('kategori')->group(function () {
         Route::get('/', [KategoriController::class, 'index'])->name('kategori.index');
         Route::get('/show/{id}', [KategoriController::class, 'show'])->name('kategori.show');
-        Route::get('/edit/{id}', [KategoriController::class, 'edit'])->name('kategori.edit'); 
+        Route::get('/create', [KategoriController::class, 'create'])->name('kategori.create');
+        Route::post('/store', [KategoriController::class, 'store'])->name('kategori.store');
+        Route::get('/edit/{id}', [KategoriController::class, 'edit'])->name('kategori.edit');
         Route::put('/update/{id}', [KategoriController::class, 'update'])->name('kategori.update');
         Route::delete('/destroy/{id}', [KategoriController::class, 'destroy'])->name('kategori.destroy');
     });
@@ -152,7 +154,8 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('pesanan')->group(function () {
         Route::get('/', [PesananController::class, 'index'])->name('pesanan.index');
-        Route::get('/show/{id}', [PesananController::class, 'show'])->name('pesanan.show');
+        Route::get('/show/{id}', [PesananController::class, 'show'])
+            ->whereUuid('id')->name('pesanan.show');
         Route::put('/update/pembayaran/{id}', [PesananController::class, 'updatePembayaran'])
             ->whereUuid('id')->name('update.pembayaran');
         Route::put('/update/transaksi/{id}', [PesananController::class, 'updateTransaksi'])
