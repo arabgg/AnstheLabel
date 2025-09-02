@@ -16,7 +16,7 @@ class BannerController extends Controller
             ->when(!empty($searchQuery), function($q) use ($searchQuery) {
                 $q->where('nama_banner', 'like', "%{$searchQuery}%");
             })
-            ->orderBy('created_at', 'desc')
+            ->orderBy('banner_id', 'asc')
             ->paginate(10)
             ->through(function($banner) {
                 $banner->is_video = strtolower($banner->nama_banner) === 'transaksi';

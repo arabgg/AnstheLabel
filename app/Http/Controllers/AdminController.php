@@ -6,33 +6,61 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\PembayaranModel;
 use App\Models\DetailTransaksiModel;
+use App\Models\ProdukModel;
+use App\Models\TransaksiModel;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $title = 'Dashboard';
 
-        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date')) : now()->subDays(6);
-        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date')) : now();
+        $pendapatan = PembayaranModel::select('pembayaran_id', 'total_harga')
+            ->where('status_pembayaran', 'lunas')
+            ->get()
+            ->sum(fn($t) => $t->total_harga ?? 0);
 
-        // Validasi maksimal 7 hari
-        if ($startDate->diffInDays($endDate) > 6) {
-            $endDate = $startDate->copy()->addDays(6);
+        $orderSelesai = TransaksiModel::select('transaksi_id', 'status_transaksi')
+            ->where('status_transaksi', 'selesai')->count();
+
+        $orderProses = TransaksiModel::select('transaksi_id', 'status_transaksi')
+            ->where('status_transaksi', '!=', 'selesai')->count();
+
+        $produk = ProdukModel::select('produk_id')->count();
+
+        $revenueChart = [];
+        $ordersChart = [];
+
+        for ($i = 10; $i >= 0; $i--) {
+            $date = Carbon::today()->subDays($i);
+            $formattedDate = $date->format('M d');
+
+            $dailyRevenue = TransaksiModel::select('transaksi_id', 'pembayaran_id')
+                ->whereRelation('pembayaran', 'status_pembayaran', 'lunas')
+                ->whereDate('created_at', $date) 
+                ->with('pembayaran')
+                ->get()
+                ->sum(fn($t) => $t->pembayaran->total_harga ?? 0);
+
+            $dailyOrders = TransaksiModel::select('transaksi_id', 'status_transaksi')
+                ->where('status_transaksi', 'selesai')
+                ->whereDate('created_at', $date)
+                ->count();
+
+            $revenueChart[$formattedDate] = $dailyRevenue;
+            $ordersChart[$formattedDate] = $dailyOrders;
         }
 
-        // Ambil data
-        $pendapatanHarian = PembayaranModel::getPendapatanHarianByRange($startDate, $endDate);
-        $produkHarian = DetailTransaksiModel::getProdukTerjualHarianByRange($startDate, $endDate);
+        $orders = TransaksiModel::select('transaksi_id', 'pembayaran_id', 'kode_invoice', 'nama_customer', 'status_transaksi', 'created_at')
+            ->with([
+                'pembayaran:pembayaran_id,metode_pembayaran_id,total_harga,status_pembayaran',
+                'pembayaran.metode:metode_pembayaran_id,nama_pembayaran',
+            ])
+            ->orderByDesc('created_at')
+            ->take(5)
+            ->get();
 
-        return view('admin.dashboard', [
-            'title' => $title,
-            'startDate' => $startDate,
-            'endDate' => $endDate,
-            'pendapatanHarian' => $pendapatanHarian,
-            'produkHarian' => $produkHarian,
-            'totalPendapatan' => $pendapatanHarian->sum('pendapatan'),
-            'totalProduk' => $produkHarian->sum('produk_terjual'),
-        ]);
+        return view('admin.dashboard', compact('pendapatan', 'orderSelesai', 'orderProses', 'produk', 'revenueChart', 'ordersChart', 'orders'));
+
     }
 }

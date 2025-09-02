@@ -1,86 +1,79 @@
-@extends('admin.layouts.app')
+<div class="bg-white rounded-lg shadow p-6">
+    <h2 class="text-xl font-bold mb-4">Edit Metode Pembayaran</h2>
+    <form action="{{ route('metode-pembayaran.update', $metode->metode_pembayaran_id) }}" method="POST" id="editMetodeForm" enctype="multipart/form-data" class="text-sm">
+        @csrf
+        @method('PUT')
 
-@section('content')
-    <div class="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-xl">
-        <h1 class="text-2xl font-bold mb-6 text-gray-800">Edit Metode Pembayaran</h1>
+        {{-- Metode --}}
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Metode</label>
+            <select name="metode_id" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#560024]">
+                <option value="1" {{ $metode->metode_id == 1 ? 'selected' : '' }}>Transfer Bank</option>
+                <option value="2" {{ $metode->metode_id == 2 ? 'selected' : '' }}>E-Wallet</option>
+                <option value="3" {{ $metode->metode_id == 3 ? 'selected' : '' }}>Auto Bank</option>
+            </select>
+        </div>
 
-        <form action="{{ route('metode_pembayaran.update', $mp->metode_pembayaran_id) }}" method="POST" enctype="multipart/form-data" class="space-y-5">
-            @csrf
-            @method('PUT')
+        {{-- Nama Pembayaran --}}
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Jenis Pembayaran</label>
+            <input type="text" name="nama_pembayaran" value="{{ $metode->nama_pembayaran }}" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#560024]">
+        </div>
 
-            {{-- Dropdown Metode --}}
-            <div>
-                <label for="metode_id" class="block text-sm font-medium text-gray-700 mb-1">Metode</label>
-                <select name="metode_id" id="metode_id" required
-                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                    <option value="">-- Pilih Metode --</option>
-                    @foreach ($metodes as $metode)
-                        <option value="{{ $metode->metode_id }}"
-                            {{ old('metode_id', $mp->metode_id) == $metode->metode_id ? 'selected' : '' }}>
-                            {{ $metode->nama_metode }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+        {{-- Kode Bayar --}}
+        <div class="mb-4" id="kode_bayar_text" style="{{ $metode->kode_bayar_type === 'text' ? '' : 'display:none;' }}">
+            <label class="block text-sm font-medium mb-1">Kode Bayar (Text)</label>
+            <input type="text" name="kode_bayar" value="{{ $metode->kode_bayar_type === 'text' ? $metode->kode_bayar : '' }}" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#560024]">
+        </div>
 
-            {{-- Nama Pembayaran --}}
-            <div>
-                <label for="nama_pembayaran" class="block text-sm font-medium text-gray-700 mb-1">Nama Pembayaran</label>
-                <input type="text" name="nama_pembayaran" id="nama_pembayaran"
-                    value="{{ old('nama_pembayaran', $mp->nama_pembayaran) }}"
-                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                @error('nama_pembayaran')
-                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+        <div class="mb-4" id="kode_bayar_image" style="{{ $metode->kode_bayar_type === 'image' ? '' : 'display:none;' }}">
+            <label class="block text-sm font-medium mb-1">Kode Bayar (Image)</label>
+            <input type="file" name="kode_bayar_img" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#560024]">
+            @if($metode->kode_bayar_type === 'image' && $metode->kode_bayar)
+                <div class="mt-2">
+                    <img src="{{ asset('storage/icons/' . $metode->kode_bayar) }}" class="p-1 w-20 h-20 border border-gray-400 rounded-lg">
+                </div>
+            @endif
+        </div>
 
-            {{-- Icon --}}
-            <div>
-                <label for="icon" class="block text-sm font-medium text-gray-700 mb-1">Icon</label>
-                @if ($mp->icon)
-                    <div class="mb-2">
-                        <img src="{{ asset('storage/icons/' . $mp->icon) }}" alt="Icon" class="h-12">
-                    </div>
-                @endif
-                <input type="file" name="icon" id="icon"
-                    class="w-full text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-indigo-700 hover:file:bg-indigo-100">
-                @error('icon')
-                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+        {{-- Icon --}}
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Icon</label>
+            <input type="file" name="icon" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#560024]">
+            @if($metode->icon)
+                <div class="mt-2">
+                    <img src="{{ asset('storage/icons/' . $metode->icon) }}" class="px-3 py-2 w-20 border border-gray-400 rounded-lg">
+                </div>
+            @endif
+        </div>
 
-            {{-- Kode Bayar --}}
-            <div>
-                <label for="kode_bayar" class="block text-sm font-medium text-gray-700 mb-1">Kode Bayar</label>
-                <input type="text" name="kode_bayar" id="kode_bayar"
-                    value="{{ old('kode_bayar', $mp->kode_bayar) }}"
-                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                @error('kode_bayar')
-                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+        {{-- Tombol --}}
+        <div class="flex justify-end gap-2">
+            <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Batal</button>
+            <button type="submit" class="px-4 py-2 bg-[#560024] text-white rounded hover:bg-[#700030]">Simpan</button>
+        </div>
+    </form>
+</div>
 
-            {{-- Status --}}
-            <div>
-                <label for="status_pembayaran" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                <select name="status_pembayaran" id="status_pembayaran"
-                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                    <option value="1" {{ old('status_pembayaran', $mp->status_pembayaran) == 1 ? 'selected' : '' }}>Aktif</option>
-                    <option value="0" {{ old('status_pembayaran', $mp->status_pembayaran) == 0 ? 'selected' : '' }}>Nonaktif</option>
-                </select>
-            </div>
+<script>
+    function toggleKodeBayarInput() {
+        const type = '{{ $metode->kode_bayar_type }}'; // initial type dari model
+        if(type === 'text') {
+            document.getElementById('kode_bayar_text').style.display = '';
+            document.getElementById('kode_bayar_image').style.display = 'none';
+        } else if(type === 'image') {
+            document.getElementById('kode_bayar_text').style.display = 'none';
+            document.getElementById('kode_bayar_image').style.display = '';
+        }
+    }
 
-            {{-- Action Buttons --}}
-            <div class="flex items-center space-x-3 pt-4">
-                <button type="submit"
-                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg shadow-md transition duration-200">
-                    Update
-                </button>
-                <a href="{{ route('metode_pembayaran.index') }}"
-                    class="px-5 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition duration-200">
-                    Batal
-                </a>
-            </div>
-        </form>
-    </div>
-@endsection
+    // optional: jika mau pilih tipe secara dinamis
+    // const kodeBayarTypeSelect = document.getElementById('kode_bayar_type');
+    // kodeBayarTypeSelect?.addEventListener('change', () => {
+    //     const selected = kodeBayarTypeSelect.value;
+    //     document.getElementById('kode_bayar_text').style.display = selected === 'text' ? '' : 'none';
+    //     document.getElementById('kode_bayar_image').style.display = selected === 'image' ? '' : 'none';
+    // });
+
+    document.addEventListener('DOMContentLoaded', toggleKodeBayarInput);
+</script>

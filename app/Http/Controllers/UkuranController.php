@@ -15,7 +15,7 @@ class UkuranController extends Controller
         ->when(!empty($searchQuery), function($q) use ($searchQuery) {
                 $q->where('nama_ukuran', 'like', "%{$searchQuery}%");
             })
-            ->orderBy('created_at', 'desc')
+            ->orderBy('ukuran_id', 'asc')
             ->paginate(10);
             
         return view('admin.ukuran.index', compact('ukuran', 'searchQuery'));

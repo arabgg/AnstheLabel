@@ -20,7 +20,7 @@ class PesananController extends Controller
             ->when(!empty($searchQuery), function($q) use ($searchQuery) {
                 $q->where('kode_invoice', 'like', "%{$searchQuery}%");
             })
-            ->orderBy('created_at', 'desc')
+            ->orderBy('transaksi_id', 'asc')
             ->paginate(10);
             
         return view('admin.pesanan.index', compact('pesanan', 'searchQuery'));

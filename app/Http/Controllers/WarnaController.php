@@ -15,7 +15,7 @@ class WarnaController extends Controller
         ->when(!empty($searchQuery), function($q) use ($searchQuery) {
                 $q->where('nama_warna', 'like', "%{$searchQuery}%");
             })
-            ->orderBy('created_at', 'desc')
+            ->orderBy('warna_id', 'asc')
             ->paginate(10);
             
         return view('admin.warna.index', compact('warna', 'searchQuery'));

@@ -18,7 +18,7 @@ class MetodePembayaranController extends Controller
             ->when(!empty($searchQuery), function($q) use ($searchQuery) {
                 $q->where('nama_pembayaran', 'like', "%{$searchQuery}%");
             })
-            ->orderBy('created_at', 'desc')
+            ->orderBy('metode_pembayaran_id', 'asc')
             ->paginate(10);
             
         return view('admin.metode-pembayaran.index', compact('metode', 'searchQuery'));
@@ -55,58 +55,73 @@ class MetodePembayaranController extends Controller
 
     public function show($id)
     {
-        $metode = MetodePembayaranModel::with('metode', 'pembayaran')->findOrFail($id);
-        return view('admin.metode_pembayaran.show', compact('metode'));
+        $metode = MetodePembayaranModel::select('metode_pembayaran_id', 'metode_id', 'nama_pembayaran', 'kode_bayar', 'icon')
+            ->with('metode:metode_id,nama_metode')
+            ->findOrFail($id);
+        
+        if (request()->ajax()) {
+            return view('admin.metode-pembayaran.show', compact('metode'));
+        }
+
+        return redirect()->route('metode-pembayaran.index');
     }
 
-    public function edit($id)
+    public function edit(string $id)
     {
-        $mp = MetodePembayaranModel::findOrFail($id);
-        $metodes = MetodeModel::all();
+        $metode = MetodePembayaranModel::select('metode_pembayaran_id', 'metode_id', 'nama_pembayaran', 'kode_bayar', 'icon')
+            ->with('metode:metode_id,nama_metode')
+            ->findOrFail($id);
 
-        return view('admin.metode_pembayaran.edit', compact('mp', 'metodes'));
+        return view('admin.metode-pembayaran.edit', compact('metode'));
     }
 
     public function update(Request $request, $id)
     {
-        $mp = MetodePembayaranModel::findOrFail($id);
-
-        $validated = $request->validate([
-            'metode_id' => 'required|integer',
+        $request->validate([
             'nama_pembayaran' => 'required|string|max:255',
-            'kode_bayar' => 'required|string|max:50|unique:t_metode_pembayaran,kode_bayar,' . $id . ',metode_pembayaran_id',
-            'status_pembayaran' => 'required|in:1,0',
-            'icon' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
+            'metode_id' => 'required|string|exists:t_metode,metode_id',
+            'kode_bayar' => 'nullable|string|max:255',
+            'kode_bayar_img' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+            'icon' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
 
-        if ($request->hasFile('icon')) {
-            if ($mp->icon && Storage::disk('public')->exists('icons/' . $mp->icon)) {
-                Storage::disk('public')->delete('icons/' . $mp->icon);
-            }
-            $fileName = time() . '_' . $request->file('icon')->getClientOriginalName();
-            $request->file('icon')->storeAs('icons', $fileName, 'public');
-            $validated['icon'] = $fileName;
+        $metode = MetodePembayaranModel::findOrFail($id);
+
+        $metode->nama_pembayaran = $request->nama_pembayaran;
+        $metode->metode_id = $request->metode_id;
+
+        // Update kode_bayar
+        if($request->hasFile('kode_bayar_img')){
+            $path = $request->file('kode_bayar_img')->store('icons', 'public');
+            $metode->kode_bayar = basename($path);
+        } else if($request->kode_bayar){
+            $metode->kode_bayar = $request->kode_bayar;
         }
 
-        $mp->update($validated);
+        // Update icon
+        if($request->hasFile('icon')){
+            $path = $request->file('icon')->store('icons', 'public');
+            $metode->icon = basename($path);
+        }
 
-        return redirect()->route('metode_pembayaran.index')
-            ->with('success', 'Metode pembayaran berhasil diperbarui.');
+        $metode->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Metode pembayaran berhasil diperbarui',
+            'data' => $metode
+        ]);
     }
 
-public function destroy($id)
-{
-    $mp = MetodePembayaranModel::findOrFail($id);
+    public function destroy($id)
+    {
+        $ukuran = MetodePembayaranModel::findOrFail($id);
+        $ukuran->delete();
 
-    $filePath = 'icons/' . $mp->icon;
-
-    if ($mp->icon && Storage::disk('public')->exists($filePath)) {
-        Storage::disk('public')->delete($filePath);
+        return response()->json([
+            'success' => true,
+            'message' => 'Metode pembayaran berhasil dihapus',
+            'id' => $id
+        ]);
     }
-
-    $mp->delete();
-
-    return redirect()->route('metode_pembayaran.index')
-        ->with('success', 'Metode pembayaran berhasil dihapus beserta icon.');
-}
 }

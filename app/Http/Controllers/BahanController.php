@@ -15,7 +15,7 @@ class BahanController extends Controller
         ->when(!empty($searchQuery), function($q) use ($searchQuery) {
                 $q->where('nama_bahan', 'like', "%{$searchQuery}%");
             })
-            ->orderBy('created_at', 'desc')
+            ->orderBy('bahan_id', 'asc')
             ->paginate(10);
             
         return view('admin.bahan.index', compact('bahan', 'searchQuery'));
