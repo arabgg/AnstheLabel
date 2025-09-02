@@ -19,9 +19,9 @@ return new class extends Migration
             $table->unsignedBigInteger('bahan_id')->index();
 
             $table->string('nama_produk', 200);
-            $table->integer('stok_produk')->default(1);
-            $table->string('harga', 200);
-            $table->string('diskon', 200)->nullable();
+            $table->integer('stok_produk');
+            $table->decimal('harga', 10, 2);
+            $table->decimal('diskon', 10, 2)->nullable();
             $table->text('deskripsi');
             $table->boolean('is_best')->default(false);
 

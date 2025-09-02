@@ -105,19 +105,50 @@
 @endsection
 
 @push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const kategoriFilter = document.getElementById('kategoriFilter');
-        const paginateFilter = document.getElementById('paginateFilter');
-        const form = document.getElementById('filterForm');
+    <script>
+        function toggleMenu(id) {
+            const menu = document.getElementById('menu-' + id);
+            const rect = menu.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - rect.bottom;
 
-        kategoriFilter.addEventListener('change', function() {
-            form.submit();
+            if (spaceBelow < 150) {
+                menu.style.top = 'auto';
+                menu.style.bottom = '100%';
+            } else {
+                menu.style.top = '100%';
+                menu.style.bottom = 'auto';
+            }
+
+            menu.classList.toggle('hidden');
+        }
+
+        document.addEventListener('click', function(e) {
+            document.querySelectorAll('[id^="menu-"]').forEach(menu => {
+                const toggleBtn = document.querySelector(
+                    `[onclick="toggleMenu('${menu.id.replace('menu-', '')}')"]`);
+                if (!menu.contains(e.target) && !toggleBtn.contains(e.target)) {
+                    menu.classList.add('hidden');
+                }
+            });
         });
 
-        paginateFilter.addEventListener('change', function() {
-            form.submit();
+        document.addEventListener('DOMContentLoaded', function() {
+            const kategoriFilter = document.getElementById('kategoriFilter');
+            const paginateFilter = document.getElementById('paginateFilter');
+            const sortFilter = document.getElementById('sortFilter');
+            const form = document.getElementById('filterForm');
+
+            kategoriFilter.addEventListener('change', function() {
+                form.submit();
+            });
+
+            paginateFilter.addEventListener('change', function() {
+                form.submit();
+            });
+
+            sortFilter.addEventListener('change', function() {
+                form.submit();
+            });
         });
-    });
-</script>
+    </script>
 @endpush

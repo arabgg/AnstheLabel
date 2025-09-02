@@ -1,9 +1,6 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <div class="flex bg-[#560024] py-4 justify-center mb-4 rounded-xl">
-        <h1 class="text-2xl font-bold font-montserrat text-white">Edit Produk</h1>
-    </div>
     <div class="max-w-6xl mx-auto px-4 py-6">
         @if ($errors->any())
             <div class="mb-4 p-4 bg-red-100 text-red-600 rounded-xl">
@@ -31,6 +28,26 @@
                             value="{{ $produk->nama_produk }}" required>
                     </div>
 
+                    {{-- Status Best --}}
+                    <div class="mt-3">
+                        {{-- Fallback agar tetap kirim 0 jika tidak dicentang --}}
+                        <input type="hidden" name="is_best" value="0">
+
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" name="is_best" value="1"
+                                @if (old('is_best', $produk->is_best ?? 0) == 1) checked @endif
+                                class="rounded border-gray-300 text-pink-600 focus:ring-pink-500">
+                            <span class="ml-2 text-sm text-gray-700">Tandai sebagai produk terbaik</span>
+                        </label>
+                    </div>
+
+                    {{-- Stok --}}
+                    <div>
+                        <label class="block font-medium mb-1">Stok</label>
+                        <input type="number" name="stok_produk" class="border border-gray-300 rounded-xl px-3 py-2 w-full"
+                            value="{{ $produk->stok_produk }}" required>
+                    </div>
+
                     {{-- Deskripsi --}}
                     <div>
                         <label class="block font-medium mb-1">Deskripsi</label>
@@ -40,15 +57,16 @@
                     {{-- Harga --}}
                     <div>
                         <label class="block font-medium mb-1">Harga</label>
-                        <input type="text" name="harga" class="border border-gray-300 rounded-xl px-3 py-2 w-full"
-                            value="{{ $produk->harga }}" required>
+                        <input type="number" step="0.01" name="harga"
+                            class="border border-gray-300 rounded-xl px-3 py-2 w-full" value="{{ $produk->harga }}"
+                            required>
                     </div>
 
                     {{-- Diskon --}}
                     <div>
                         <label class="block font-medium mb-1">Diskon</label>
-                        <input type="text" name="diskon" class="border border-gray-300 rounded-xl px-3 py-2 w-full"
-                            value="{{ $produk->diskon }}">
+                        <input type="number" step="0.01" name="diskon"
+                            class="border border-gray-300 rounded-xl px-3 py-2 w-full" value="{{ $produk->diskon }}">
                     </div>
 
                     {{-- Kategori --}}
@@ -57,7 +75,8 @@
                         <select name="kategori_id" class="border border-gray-300 rounded-xl px-3 py-2 w-full" required>
                             <option value="">Pilih Kategori</option>
                             @foreach ($kategori as $k)
-                                <option value="{{ $k->kategori_id }}" {{ $produk->kategori_id == $k->kategori_id ? 'selected' : '' }}>
+                                <option value="{{ $k->kategori_id }}"
+                                    {{ $produk->kategori_id == $k->kategori_id ? 'selected' : '' }}>
                                     {{ $k->nama_kategori }}
                                 </option>
                             @endforeach
@@ -70,7 +89,8 @@
                         <select name="bahan_id" class="border border-gray-300 rounded-xl px-3 py-2 w-full" required>
                             <option value="">Pilih Bahan</option>
                             @foreach ($bahan as $b)
-                                <option value="{{ $b->bahan_id }}" {{ $produk->bahan_id == $b->bahan_id ? 'selected' : '' }}>
+                                <option value="{{ $b->bahan_id }}"
+                                    {{ $produk->bahan_id == $b->bahan_id ? 'selected' : '' }}>
                                     {{ $b->nama_bahan }}
                                 </option>
                             @endforeach
@@ -101,7 +121,7 @@
                                         {{ optional($produk->warna)->pluck('warna_id')->contains($itemWarna->warna_id) ? 'checked' : '' }}>
                                     <span class="w-6 h-6 rounded-xl"
                                         style="background-color: {{ $itemWarna->kode_hex }}"></span>
-                                    <span>{{ $itemWarna->kode_hex }}</span>
+                                    <span>{{ $itemWarna->nama_warna }}</span>
                                 </label>
                             @endforeach
                         </div>
@@ -115,8 +135,10 @@
                         <label class="block font-medium mb-1">Foto Utama</label>
                         <input type="file" name="foto_utama" id="foto-utama" accept="image/*"
                             class="border border-gray-300 rounded-xl px-3 py-2 w-full">
-                        <div class="mt-3 w-60 aspect-[4/5] border flex items-center justify-center rounded-xl overflow-hidden">
-                            <img id="preview-utama" src="{{ $produk->fotoUtama ? asset('storage/foto_produk/'.$produk->fotoUtama->foto_produk) : 'https://via.placeholder.com/200?text=+' }}"
+                        <div
+                            class="mt-3 w-60 aspect-[4/5] border flex items-center justify-center rounded-xl overflow-hidden">
+                            <img id="preview-utama"
+                                src="{{ $produk->fotoUtama ? asset('storage/foto_produk/' . $produk->fotoUtama->foto_produk) : 'https://via.placeholder.com/200?text=+' }}"
                                 class="object-cover w-full h-full" alt="Preview Utama">
                         </div>
                     </div>
@@ -136,7 +158,7 @@
                                         <img id="preview-sekunder-{{ $i }}"
                                             class="{{ $fotoSekunder ? '' : 'hidden' }} border rounded-xl object-cover"
                                             style="width:80px; height:100px;"
-                                            src="{{ $fotoSekunder ? asset('storage/foto_produk/'.$fotoSekunder->foto_produk) : '' }}"
+                                            src="{{ $fotoSekunder ? asset('storage/foto_produk/' . $fotoSekunder->foto_produk) : '' }}"
                                             alt="Preview Sekunder">
                                     </div>
                                 </div>
