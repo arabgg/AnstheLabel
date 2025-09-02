@@ -25,29 +25,46 @@
             {{-- Bagian Kanan: Detail Produk --}}
             <div class="space-y-6">
                 {{-- Nama Produk --}}
-                <h1 class="text-3xl font-bold text-gray-800">{{ $produk->nama_produk }}</h1>
+                <div class="flex items-center gap-3">
+                    <h1 class="text-3xl font-bold text-gray-800">{{ $produk->nama_produk }}</h1>
+                    @if ($produk->is_best)
+                        <span class="px-3 py-1 bg-pink-600 text-white text-xs rounded-full">Best Seller</span>
+                    @endif
+                </div>
+
+                {{-- Kode Produk (jika ada) --}}
+                @if (!empty($produk->kode_produk))
+                    <p class="text-sm text-gray-500">Kode Produk: {{ $produk->kode_produk }}</p>
+                @endif
 
                 {{-- Harga --}}
                 @php
                     $hargaAkhir = $produk->diskon > 0 ? $produk->harga - $produk->diskon : $produk->harga;
                 @endphp
 
-                @if ($produk->diskon > 0)
-                    {{-- Harga asli dicoret (lebih besar) --}}
-                    <div class="text-lg text-gray-500 line-through">
-                        Rp {{ number_format($produk->harga, 0, ',', '.') }}
-                    </div>
+                <div>
+                    @if ($produk->diskon > 0)
+                        <div class="text-lg text-gray-500 line-through">
+                            Rp {{ number_format($produk->harga, 0, ',', '.') }}
+                        </div>
+                        <div class="text-xl text-amber-600 font-bold">
+                            Rp {{ number_format($hargaAkhir, 0, ',', '.') }}
+                        </div>
+                        <div class="text-sm text-green-600 font-medium">
+                            Diskon: Rp {{ number_format($produk->diskon, 0, ',', '.') }}
+                        </div>
+                    @else
+                        <div class="text-xl text-amber-600 font-bold">
+                            Rp {{ number_format($hargaAkhir, 0, ',', '.') }}
+                        </div>
+                    @endif
+                </div>
 
-                    {{-- Harga setelah diskon (lebih kecil) --}}
-                    <div class="text-base text-amber-600 font-semibold">
-                        Rp {{ number_format($hargaAkhir, 0, ',', '.') }}
-                    </div>
-                @else
-                    {{-- Harga normal --}}
-                    <div class="text-lg text-amber-600 font-semibold">
-                        Rp {{ number_format($hargaAkhir, 0, ',', '.') }}
-                    </div>
-                @endif
+                {{-- Stok --}}
+                <div>
+                    <label class="font-semibold">Stok:</label>
+                    <p class="text-gray-700">{{ $produk->stok_produk }} pcs</p>
+                </div>
 
                 {{-- Warna --}}
                 @if ($produk->warna && $produk->warna->count())
@@ -58,14 +75,13 @@
                                 @if ($wp->warna)
                                     <div class="w-6 h-6 rounded-full border"
                                         style="background-color: {{ $wp->warna->kode_hex }};"
-                                        title="{{ $wp->warna->nama_warna}}">
+                                        title="{{ $wp->warna->nama_warna }}">
                                     </div>
                                 @endif
                             @endforeach
                         </div>
                     </div>
                 @endif
-
 
                 {{-- Ukuran --}}
                 @if ($produk->ukuran && $produk->ukuran->count())
@@ -83,25 +99,32 @@
                     </div>
                 @endif
 
-
                 {{-- Kategori --}}
                 <div>
-                    <label for="kategori" class="font-semibold">Kategori:</label>
-                    <p class="text-gray-700 leading-relaxed">{{ $produk->kategori->nama_kategori ?? '-' }}</p>
+                    <label class="font-semibold">Kategori:</label>
+                    <p class="text-gray-700">{{ $produk->kategori->nama_kategori ?? '-' }}</p>
                 </div>
 
                 {{-- Bahan --}}
                 <div>
-                    <label for="bahan" class="font-semibold">Bahan:</label>
-                    <p class="text-gray-700 leading-relaxed">{{ $produk->bahan->nama_bahan ?? '-' }}</p>
+                    <label class="font-semibold">Bahan:</label>
+                    <p class="text-gray-700">{{ $produk->bahan->nama_bahan ?? '-' }}</p>
+                    <p class="text-sm text-gray-500">{{ $produk->bahan->deskripsi ?? '' }}</p>
                 </div>
+
 
                 {{-- Deskripsi --}}
                 <div>
-                    <label for="deskripsi" class="font-semibold">Deskripsi:</label>
+                    <label class="font-semibold">Deskripsi:</label>
                     <p class="text-gray-700 leading-relaxed">
                         {{ $produk->deskripsi ?? '-' }}
                     </p>
+                </div>
+
+                {{-- Tanggal Dibuat & Diperbarui --}}
+                <div class="text-sm text-gray-500">
+                    <p>Ditambahkan: {{ $produk->created_at->format('d M Y H:i') }}</p>
+                    <p>Terakhir diperbarui: {{ $produk->updated_at->format('d M Y H:i') }}</p>
                 </div>
 
                 {{-- Tombol Kembali --}}

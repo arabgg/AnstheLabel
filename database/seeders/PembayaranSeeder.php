@@ -15,7 +15,7 @@ class PembayaranSeeder extends Seeder
     {
         $data = [
             [
-                'pembayaran_id' => (string) Str::uuid(),
+                'pembayaran_id' => 'd7d9dfaa-9eca-415f-82c2-c4b388c7960f',
                 'metode_pembayaran_id' => 1,
                 'status_pembayaran' => 'pending',
                 'jumlah_produk' => 1,
@@ -24,7 +24,7 @@ class PembayaranSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'pembayaran_id' => (string) Str::uuid(),
+                'pembayaran_id' => '0bdebcaa-0353-44ab-861c-2992c13d45fc',
                 'metode_pembayaran_id' => 2,
                 'status_pembayaran' => 'pending',
                 'jumlah_produk' => 1,
@@ -33,7 +33,7 @@ class PembayaranSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'pembayaran_id' => (string) Str::uuid(),
+                'pembayaran_id' => '01529401-c821-4659-99b1-2f3d3502fdfd',
                 'metode_pembayaran_id' => 3,
                 'status_pembayaran' => 'pending',
                 'jumlah_produk' => 1,
