@@ -17,21 +17,23 @@ class PesananController extends Controller
                 'pembayaran:pembayaran_id,metode_pembayaran_id,status_pembayaran',
                 'pembayaran.metode:metode_pembayaran_id,nama_pembayaran'
             ])
-            ->when(!empty($searchQuery), function($q) use ($searchQuery) {
+            ->when(!empty($searchQuery), function ($q) use ($searchQuery) {
                 $q->where('kode_invoice', 'like', "%{$searchQuery}%");
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-            
+
         return view('admin.pesanan.index', compact('pesanan', 'searchQuery'));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+    public function show($id) {
+        $transaksi = TransaksiModel::with([
+            'pembayaran.metode', // relasi ke metode pembayaran
+            'detail.produk',
+            'detail.ukuran',
+            'detail.warna'
+        ])->findOrFail($id);
+        return view('admin.pesanan.show', compact('transaksi'));
     }
 
     public function updatePembayaran(Request $request, $id)
