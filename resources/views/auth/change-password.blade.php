@@ -2,8 +2,6 @@
 
 @section('content')
 <div class="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow">
-    <h2 class="text-2xl font-bold mb-6 text-center">Ganti Password</h2>
-
     {{-- Pesan sukses --}}
     @if(session('success'))
         <div class="bg-green-100 text-green-700 p-3 rounded mb-4">
@@ -51,7 +49,7 @@
 
         {{-- Tombol Submit --}}
         <button type="submit" 
-                class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">
+                class="w-full bg-[#560024] text-white py-2 rounded-lg hover:bg-[#7a0033] transition">
             Simpan Password
         </button>
     </form>
