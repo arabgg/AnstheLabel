@@ -2,32 +2,28 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PembayaranModel;
+use App\Models\TransaksiModel;
 use Illuminate\Http\Request;
 
 class PesananController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
+        $searchQuery = $request->input('search', '');
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+        $pesanan = TransaksiModel::select('transaksi_id', 'pembayaran_id', 'kode_invoice', 'nama_customer', 'no_telp', 'email', 'alamat', 'status_transaksi')
+            ->with([
+                'pembayaran:pembayaran_id,metode_pembayaran_id,status_pembayaran',
+                'pembayaran.metode:metode_pembayaran_id,nama_pembayaran'
+            ])
+            ->when(!empty($searchQuery), function($q) use ($searchQuery) {
+                $q->where('kode_invoice', 'like', "%{$searchQuery}%");
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+            
+        return view('admin.pesanan.index', compact('pesanan', 'searchQuery'));
     }
 
     /**
@@ -38,27 +34,37 @@ class PesananController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function updatePembayaran(Request $request, $id)
     {
-        //
+        $request->validate([
+            'status_pembayaran' => 'required|in:pending,lunas,gagal',
+        ]);
+
+        $pembayaran = PembayaranModel::findOrFail($id);
+        $pembayaran->status_pembayaran = $request->status_pembayaran;
+        $pembayaran->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status pembayaran berhasil diperbarui',
+            'data' => $pembayaran
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function updateTransaksi(Request $request, $id)
     {
-        //
-    }
+        $request->validate([
+            'status_transaksi' => 'required|in:menunggu pembayaran,dikemas,dikirim,selesai,batal',
+        ]);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $transaksi = TransaksiModel::findOrFail($id);
+        $transaksi->status_transaksi = $request->status_transaksi;
+        $transaksi->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status transaksi berhasil diperbarui',
+            'data' => $transaksi
+        ]);
     }
 }

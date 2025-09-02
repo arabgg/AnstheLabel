@@ -4,35 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
-    <script src="//unpkg.com/alpinejs" defer></script>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
 
-<body class="bg-gray-00 min-h-screen flex flex-col">
-
-    {{-- Navbar Mobile --}}
+<body class="bg-gray-200 min-h-screen flex flex-col font-Montserrat">
     @include('admin.layouts.navbar-mobile')
     
-    {{-- Sidebar + Main + Footer --}}
-    <div x-data="{ sidebarOpen: true }" class="flex">
-
-        {{-- Sidebar Desktop --}}
-        @include('admin.layouts.sidebar')
+    <div class="flex">
+        @include('admin.layouts.sidebar') 
         
-        {{-- Main Section + Footer --}}
-        <div :class="sidebarOpen ? 'ml-64' : 'ml-16'" class="flex-1 flex flex-col transition-all duration-300 min-h-screen">
-            @include('admin.layouts.header')
-            
-            {{-- Main Content --}}
-            <main class="flex-1 p-2">
+        <div class="flex-1 flex flex-col min-h-screen ml-60 ">
+            <main class="flex-1 p-5">
                 @yield('content')
             </main>
-
-            {{-- Footer --}}
-            @include('admin.layouts.footer')
         </div>
     </div>
 

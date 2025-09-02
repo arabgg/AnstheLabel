@@ -2,50 +2,79 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TransaksiModel;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\TransaksiExport;
+use App\Models\BannerModel;
+use Illuminate\Support\Facades\Storage;
 
 class BannerController extends Controller
 {
-    // Menampilkan semua transaksi
-    public function index()
+    public function index(Request $request)
     {
-        $transaksis = TransaksiModel::with('pembayaran', 'detail')->latest()->get();
-        return view('admin.transaksi.index', compact('transaksis'));
+        $searchQuery = $request->input('search', '');
+
+        $banners = BannerModel::select('banner_id', 'nama_banner', 'foto_banner', 'deskripsi')
+            ->when(!empty($searchQuery), function($q) use ($searchQuery) {
+                $q->where('nama_banner', 'like', "%{$searchQuery}%");
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->through(function($banner) {
+                $banner->is_video = strtolower($banner->nama_banner) === 'transaksi';
+                return $banner;
+            });
+
+        return view('admin.banner.index', compact('banners', 'searchQuery'));
     }
 
-    // Menampilkan detail transaksi
     public function show($id)
     {
-        $transaksi = TransaksiModel::with('pembayaran', 'detail')->findOrFail($id);
-        return view('transaksi.show', compact('transaksi'));
+        $banner = BannerModel::select('banner_id', 'nama_banner', 'foto_banner', 'deskripsi', 'created_at')
+            ->findOrFail($id);
+
+        $banner->is_video = strtolower($banner->nama_banner) === 'transaksi';
+
+        if (request()->ajax()) {
+            return view('admin.banner.show', compact('banner'));
+        }
+
+        return redirect()->route('banner.index');
     }
 
-    // Form edit status transaksi
     public function edit($id)
     {
-        $transaksi = TransaksiModel::findOrFail($id);
-        return view('transaksi.edit', compact('transaksi'));
+        $banner = BannerModel::select('banner_id', 'foto_banner')
+            ->findOrFail($id);
+
+        return view('admin.banner.edit', compact('banner'));
     }
 
-    // Update hanya status transaksi
     public function update(Request $request, $id)
     {
         $request->validate([
-            'status_transaksi' => 'required|in:pending,success,cancelled',
+            'foto_banner' => 'required|file|mimes:jpg,jpeg,png,mp4|max:10240',
         ]);
 
-        $transaksi = TransaksiModel::findOrFail($id);
-        $transaksi->update(['status_transaksi' => $request->status_transaksi]);
+        $banner = BannerModel::select('banner_id', 'foto_banner')
+            ->findOrFail($id);
 
-        return redirect()->route('transaksi.index')->with('success', 'Status transaksi berhasil diperbarui');
-    }
+        if ($request->hasFile('foto_banner')) {
+            // Hapus file lama jika ada
+            if ($banner->foto_banner && Storage::exists('public/banner/' . $banner->foto_banner)) {
+                Storage::delete('public/banner/' . $banner->foto_banner);
+            }
 
-    // Export data transaksi
-    public function export()
-    {
-        return Excel::download(new TransaksiExport, 'transaksi.xlsx');
+            $file = $request->file('foto_banner');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('public/banner', $filename);
+            $banner->foto_banner = $filename;
+        }
+
+        $banner->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Banner berhasil diperbarui',
+            'foto_banner' => asset('storage/banner/' . $banner->foto_banner)
+        ]);
     }
 }

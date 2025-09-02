@@ -36,4 +36,19 @@ class MetodePembayaranModel extends Model
     {
         return $this->hasMany(PembayaranModel::class, 'metode_pembayaran_id', 'metode_pembayaran_id');
     }
+
+    public function getKodeBayarTypeAttribute()
+    {
+        if (!$this->kode_bayar) {
+            return 'empty';
+        }
+
+        $ext = strtolower(pathinfo($this->kode_bayar, PATHINFO_EXTENSION));
+
+        if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])) {
+            return 'image';
+        }
+
+        return 'text';
+    }
 }
