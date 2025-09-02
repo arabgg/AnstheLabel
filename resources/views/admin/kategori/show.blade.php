@@ -1,16 +1,26 @@
-@extends('admin.layouts.app')
-
-@section('content')
-<div class="p-6 bg-white rounded shadow-md max-w-2xl mx-auto">
-    <h1 class="text-2xl font-bold mb-4">Detail Kategori</h1>
-
-    <div class="mb-4">
-        <label class="block font-semibold mb-1">Nama Kategori</label>
-        <p class="px-4 py-2 border rounded bg-gray-50">{{ $kategori->nama_kategori }}</p>
+<div class="bg-white rounded-lg shadow-lg w-full py-8 px-14 relative flex flex-col">
+    <h2 class="text-xl font-semibold mb-4">Detail Kategori</h2>
+    <div class="space-y-3 text-sm flex-1">        
+        <table class="w-full text-left border-collapse">
+            <tbody class="text-sm">
+                <tr class="border-b border-transparent">
+                    <td class="py-2 font-medium">ID</td>
+                    <td class="py-2 px-2">:</td>
+                    <td class="py-2">{{ $kategori->kategori_id ?? '-' }}</td>
+                </tr>
+                <tr class="border-b border-transparent">
+                    <td class="py-2 font-medium">Nama Kategori</td>
+                    <td class="py-2 px-2">:</td>
+                    <td class="py-2">{{ $kategori->nama_kategori ?? '-' }}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <div class="flex justify-end">
-        <a href="{{ route('kategori.index') }}" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">Kembali</a>
+    {{-- Tombol Tutup di bawah kanan --}}
+    <div class="flex justify-center mt-7 text-white font-semibold">
+        <button onclick="closeModal()" class="px-4 py-2 bg-red-600 rounded hover:bg-red-700">
+            Tutup
+        </button>
     </div>
 </div>
-@endsection
