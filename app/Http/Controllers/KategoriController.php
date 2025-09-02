@@ -13,7 +13,7 @@ class KategoriController extends Controller
     {
         $searchQuery = $request->input('search', '');
 
-        $kategori = KategoriModel::select('kategori_id', 'nama_kategori', 'created_at')
+        $kategori = KategoriModel::select('kategori_id', 'nama_kategori', 'created_at', 'updated_at')
         ->when(!empty($searchQuery), function($q) use ($searchQuery) {
                 $q->where('nama_kategori', 'like', "%{$searchQuery}%");
             })
