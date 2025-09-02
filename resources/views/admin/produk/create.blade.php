@@ -1,10 +1,6 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <div class="flex bg-[#560024] py-4 justify-center mb-4 rounded-xl">
-        <h1 class="text-2xl font-bold font-montserrat text-white">Tambah Produk</h1>
-    </div>
-
     <div class="max-w-6xl mx-auto px-4 py-6">
         @if ($errors->any())
             <div class="mb-4 p-4 bg-red-100 text-red-600 rounded-xl">
@@ -32,6 +28,24 @@
                             required>
                     </div>
 
+                    {{-- Status Best --}}
+                    <div class="mt-3">
+                        <input type="hidden" name="is_best" value="0">
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" name="is_best" value="1"
+                                {{ old('is_best', $produk->is_best ?? 0) == 1 ? 'checked' : '' }}
+                                class="rounded border-gray-300 text-pink-600 focus:ring-pink-500">
+                            <span class="ml-2 text-sm text-gray-700">Tandai sebagai produk terbaik</span>
+                        </label>
+                    </div>
+
+                    {{-- Stok --}}
+                    <div>
+                        <label class="block font-medium mb-1">Stok</label>
+                        <input type="number" name="stok_produk" class="border border-gray-300 rounded-xl px-3 py-2 w-full"
+                            required>
+                    </div>
+
                     {{-- Deskripsi --}}
                     <div>
                         <label class="block font-medium mb-1">Deskripsi</label>
@@ -42,12 +56,13 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label class="block font-medium mb-1">Harga</label>
-                            <input type="text" name="harga" class="border border-gray-300 rounded-xl px-3 py-2 w-full"
-                                required>
+                            <input type="number" step="0.01" name="harga"
+                                class="border border-gray-300 rounded-xl px-3 py-2 w-full" required>
                         </div>
                         <div>
                             <label class="block font-medium mb-1">Diskon</label>
-                            <input type="text" name="diskon" class="border border-gray-300 rounded-xl px-3 py-2 w-full">
+                            <input type="number" step="0.01" name="diskon"
+                                class="border border-gray-300 rounded-xl px-3 py-2 w-full">
                         </div>
                     </div>
 
@@ -134,9 +149,9 @@
                             @foreach ($warna as $itemWarna)
                                 <label class="flex items-center gap-2 border px-3 py-1 rounded-xl cursor-pointer">
                                     <input type="checkbox" name="warna_id[]" value="{{ $itemWarna->warna_id }}">
-                                    <span class="w-6 h-6 rounded-xl"
-                                        style="background-color: {{ $itemWarna->kode_hex }}"></span>
-                                    <span>{{ $itemWarna->kode_hex }}</span>
+                                    <span class="w-6 h-6 rounded-xl" style="background-color: {{ $itemWarna->kode_hex }}"
+                                        title="{{ $itemWarna->kode_hex }}"></span>
+                                    <span>{{ $itemWarna->nama_warna }}</span>
                                 </label>
                             @endforeach
                         </div>
