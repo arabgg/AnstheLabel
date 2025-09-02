@@ -20,7 +20,7 @@
 
             {{-- Bagian Pengantaran --}}
             <div class="checkout-pengantaran">
-                <h3 class="checkout-pengantaran-title">Pengantaran</h3>
+                <h3 class="checkout-pengantaran-title">Alamat Pengantaran</h3>
                 <input class="checkout-pengantaran-data" type="text" name="nama" placeholder="Nama Lengkap" required>
                 <input class="checkout-pengantaran-data" type="text" name="alamat" placeholder="Alamat" required>
                 <input class="checkout-pengantaran-data" type="text" name="kota" placeholder="Kota" required>
@@ -62,7 +62,7 @@
                     </div>
                 @endforeach
             </div>
-            <button type="submit" class="checkout-payment-btn">Buat Transaksi</button>
+            <button type="submit" class="checkout-payment-btn">Buat Pesanan</button>
         </form>
     </div>
 

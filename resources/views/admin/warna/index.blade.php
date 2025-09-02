@@ -1,54 +1,244 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <div class="p-6">
-        <h1 class="text-2xl font-bold mb-4">Daftar Warna</h1>
-        <a href="{{ route('warna.create') }}" class="bg-blue-500 text-white px-4 py-2 rounded mb-4 inline-block">Tambah
-            Warna</a>
+<div class="p-8 bg-white rounded-lg shadow">
+    {{-- Judul --}}
+    <div class="flex justify-between items-start mb-7 border-b border-gray-300 pb-4">
+        <h1 class="text-2xl font-bold pl-4 pt-4">Manage Warna</h1>
+    </div>
 
-        @if (session('success'))
-            <div class="bg-green-100 text-green-700 p-2 mb-4 rounded">
-                {{ session('success') }}
-            </div>
-        @endif
+    {{-- Search --}}
+    <div class="flex justify-end mb-7 mt-12">
+        <form method="GET" action="{{ route('warna.index') }}" class="mr-3 flex items-center border rounded-lg px-3 py-2 w-1/3">
+            <input type="text" name="search" placeholder="Search Warna" value="{{ $searchQuery ?? '' }}" class="w-full outline-none placeholder:text-sm">
+            <button type="submit" class="ml-2">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+        
+        <a href="{{ url('/warna/create') }}"
+        class="px-7 py-2 bg-[#560024] text-white font-semibold rounded-lg hover:bg-gray-700 flex items-center justify-center text-sm">
+            Tambah
+        </a>
+    </div>
 
-        <table class="w-full border border-gray-300 rounded">
-            <thead>
-                <tr class="bg-gray-100">
-                    <th class="border px-4 py-2">Nomer</th>
-                    <th class="border px-4 py-2">Kode Hex</th>
-                    <th class="border px-4 py-2">Nama Warna</th>
-                    <th class="border px-4 py-2">Aksi</th>
+    {{-- Tabel item --}}
+    <div class="overflow-x-auto rounded-lg">
+        <table class="w-full table-auto border-collapse text-center">
+            <thead class="bg-[#560024] text-white text-sm">
+                <tr>
+                    <th class="p-3">ID</th>
+                    <th class="p-3">NAMA WARNA</th>
+                    <th class="p-3">KODE WARNA</th>
+                    <th class="p-3">DIBUAT</th>
+                    <th class="p-3">UPDATE</th>
+                    <th class="p-3">ACTION</th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach ($warna as $w)
-                    <tr>
-                        <td class="border px-4 py-2">{{ $loop->iteration }}</td>
-                        <td class="border px-4 py-2">
+            <tbody class="text-sm">
+                @forelse ($warna as $item)
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="p-3">{{ $item->warna_id }}</td>
+                        <td class="p-3">{{ $item->nama_warna }}</td>
+                        <td class="p-3">
                             <div class="flex items-center gap-2">
-                                <div class="w-6 h-6 rounded-full border" style="background-color: {{ $w->kode_hex }};">
-                                </div>
-                                <span>{{ $w->kode_hex }}</span>
+                                <div class="w-4 h-4 rounded-full border" style="background-color: {{ $item->kode_hex }};"></div>
+                                <span>{{ $item->kode_hex }}</span>
                             </div>
                         </td>
+                        <td class="p-3">{{ $item->created_at->format('d M Y [ H : i ]') }}</td>
+                        <td class="p-3">{{ $item->updated_at->format('d M Y [ H : i ]') }}</td>
+                        <td class="p-3 mt-5 flex gap-2 justify-center items-center">
+                            {{-- Tombol Detail --}}
+                            <button 
+                                class="flex items-center justify-center py-2 px-3 rounded-lg border border-gray-400 text-black hover:bg-blue-400 hover:border-blue-400"
+                                onclick="openWarnaModal('{{ route('warna.show', ['id' => $item->warna_id]) }}')">
+                                <i class="fa-solid fa-database"></i>
+                            </button>
 
-                        <td class="border px-4 py-2">{{ $w->nama_warna }}</td>
-                        <td class="flex justify-center border px-4 py-2 space-x-1">
-                            <a href="{{ route('warna.show', $w->warna_id) }}"
-                                class="px-2 py-1 bg-gray-300 rounded hover:bg-gray-400">Detail</a>
-                            <a href="{{ route('warna.edit', $w->warna_id) }}"
-                                class="bg-yellow-500 text-white px-2 py-1 rounded">Edit</a>
-                            <form action="{{ route('warna.destroy', $w->warna_id) }}" method="POST" class="inline-block"
-                                onsubmit="return confirm('Yakin ingin hapus?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded">Hapus</button>
-                            </form>
+                            {{-- Tombol Edit --}}
+                            <button
+                                class="flex items-center justify-center py-2 px-3 rounded-lg border border-gray-400 text-black hover:bg-yellow-300 hover:border-yellow-300"
+                                onclick="openWarnaModal('{{ route('warna.edit', ['id' => $item->warna_id]) }}')">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                            </button>
+
+                            {{-- Tombol Hapus --}}
+                            <button 
+                                class="flex items-center justify-center py-2 px-3 rounded-lg border border-gray-400 text-black hover:bg-red-500 hover:border-red-500"
+                                onclick="deleteWarna('{{ route('warna.destroy', $item->warna_id) }}')">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </button>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="4" class="p-3 text-center text-gray-500">item tidak ditemukan.</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
+
+    {{-- Pagination --}}
+    <div class="mt-4 flex justify-center space-x-1">
+        @if ($warna->onFirstPage() === false)
+            <a href="{{ $warna->previousPageUrl() }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">&laquo;</a>
+        @endif
+
+        @foreach ($warna->getUrlRange(1, $warna->lastPage()) as $page => $url)
+            <a href="{{ $url }}" class="px-3 py-1 rounded 
+                {{ $warna->currentPage() === $page ? 'bg-[#560024] text-white' : 'bg-gray-200 hover:bg-gray-300' }}">
+                {{ $page }}
+            </a>
+        @endforeach
+
+        @if ($warna->hasMorePages())
+            <a href="{{ $warna->nextPageUrl() }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">&raquo;</a>
+        @endif
+    </div>
+</div>
+
+{{-- Modal --}}
+<div id="WarnaModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div id="modalContent" class="mx-2 w-full max-w-lg">
+        {{-- Konten show.blade.php akan dimuat di sini --}}
+    </div>
+</div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // --- Buka modal ---
+    function openWarnaModal(url) {
+        fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById('modalContent').innerHTML = html;
+                document.getElementById('WarnaModal').classList.remove('hidden');
+
+                // Pasang listener form setelah modal dimuat
+                const form = document.getElementById('editWarnaForm');
+                if(form){
+                    form.addEventListener('submit', function(e){
+                        e.preventDefault();
+                        const url = this.action;
+                        const formData = new FormData(this);
+                        const data = Object.fromEntries(formData.entries());
+
+                        fetch(url, {
+                            method: 'PUT',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: JSON.stringify(data)
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            closeModal(); // Tutup modal
+
+                            if(data.success){
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: data.message,
+                                    toast: true,
+                                    position: 'top-end',
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                });
+
+                                // Update row tabel otomatis (loop semua field dari data.data)
+                                const row = document.querySelector(`[data-warna-id='${data.data.warna_id}']`);
+                                if(row){
+                                    Object.keys(data.data).forEach((key, index) => {
+                                        // index +1 karena td pertama biasanya ID
+                                        if(row.querySelector(`td:nth-child(${index + 1})`))
+                                            row.querySelector(`td:nth-child(${index + 1})`).textContent = data.data[key];
+                                    });
+                                }
+
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: data.message,
+                                    toast: true,
+                                    position: 'top-end'
+                                });
+                            }
+                        })
+                        .catch(err => {
+                            closeModal();
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: err.message || 'Terjadi kesalahan',
+                                toast: true,
+                                position: 'top-end'
+                            });
+                        });
+                    });
+                }
+            })
+            .catch(err => console.error(err));
+    }
+
+    // --- Tutup modal ---
+    function closeModal() {
+        document.getElementById('WarnaModal').classList.add('hidden');
+        document.getElementById('modalContent').innerHTML = '';
+    }
+
+    // --- Delete bahan ---
+    function deleteWarna(url) {
+        Swal.fire({
+            title: 'Hapus Warna?',
+            text: "Data tidak bisa dikembalikan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if(result.isConfirmed){
+                fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.success){
+                        Swal.fire({
+                            icon: 'success',
+                            title: data.message,
+                            toast: true,
+                            position: 'top-end',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        // Hapus row dari tabel
+                        document.querySelector(`[data-warna-id='${data.id}']`)?.remove();
+                    } else {
+                        Swal.fire('Gagal', data.message, 'error');
+                    }
+                })
+                .catch(err => Swal.fire('Error', 'Terjadi kesalahan', 'error'));
+            }
+        });
+    }
+
+    // --- Tambahkan atribut data-bahan-id ---
+    document.querySelectorAll('tbody tr').forEach(tr => {
+        const warnaId = tr.querySelector('td')?.innerText;
+        if(warnaId) tr.setAttribute('data-warna-id', warnaId.trim());
+    });
+</script>
+@endpush

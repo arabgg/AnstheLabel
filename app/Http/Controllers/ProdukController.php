@@ -40,6 +40,13 @@ class ProdukController extends Controller
             ->when($search, function ($query, $search) {
                 $query->where('nama_produk', 'like', '%' . $search . '%');
             })
+            ->when($request->input('sort'), function ($query, $sort) {
+                if ($sort === 'terbaru') {
+                    $query->orderBy('created_at', 'desc');
+                } elseif ($sort === 'terlama') {
+                    $query->orderBy('created_at', 'asc');
+                }
+            })
             ->when($paginateLimit, function ($query, $paginateLimit) {
                 return $query->paginate($paginateLimit);
             }, function ($query) use ($paginateLimit) {
@@ -47,13 +54,15 @@ class ProdukController extends Controller
             })
             ->withQueryString();
 
-        return view('admin.produk.index', compact('produk', 'kategoriList', 'paginateLimit','title'));
+        return view('admin.produk.index', compact('produk', 'kategoriList', 'paginateLimit', 'title'));
     }
 
     public function show($id)
     {
+        $title = "Detail Produk";
         $produk = Cache::rememberForever('produk_' . $id, function () use ($id) {
             return ProdukModel::with([
+                'bahan',
                 'fotoUtama',
                 'foto',
                 'ukuran.ukuran',
@@ -61,11 +70,12 @@ class ProdukController extends Controller
             ])->findOrFail($id);
         });
 
-        return view('admin.produk.show', compact('produk'));
+        return view('admin.produk.show', compact('produk', 'title'));
     }
 
     public function create()
     {
+        $title = "Tambah Produk";
         $kategori = Cache::remember('create_form_kategori', 600, function () {
             return KategoriModel::select('kategori_id', 'nama_kategori')->get();
         });
@@ -76,10 +86,10 @@ class ProdukController extends Controller
             return UkuranModel::select('ukuran_id', 'nama_ukuran')->get();
         });
         $warna = Cache::remember('create_form_warna', 600, function () {
-            return WarnaModel::select('warna_id', 'kode_hex')->get();
+            return WarnaModel::select('warna_id', 'kode_hex', 'nama_warna')->get();
         });
 
-        return view('admin.produk.create', compact('kategori', 'bahan', 'ukuran', 'warna'));
+        return view('admin.produk.create', compact('kategori', 'bahan', 'ukuran', 'warna', 'title'));
     }
 
     public function store(Request $request)
@@ -90,9 +100,11 @@ class ProdukController extends Controller
             'foto_utama' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'foto_sekunder.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'nama_produk' => 'required|string|max:255',
+            'is_best' => 'nullable|boolean',
+            'stok_produk' => 'required|integer',
             'deskripsi' => 'required|string',
-            'harga' => 'required|string',
-            'diskon' => 'nullable|string',
+            'harga' => 'required|numeric|min:0',
+            'diskon' => 'nullable|numeric|min:0',
             'kategori_id' => 'required|integer',
             'bahan_id' => 'required|integer',
             'ukuran_id' => 'required|array|min:1',
@@ -127,7 +139,9 @@ class ProdukController extends Controller
 
             $produk = ProdukModel::create([
                 'nama_produk' => $request->nama_produk,
+                'is_best' => $request->is_best,
                 'deskripsi' => $request->deskripsi,
+                'stok_produk' => $request->stok_produk,
                 'harga' => $request->harga,
                 'diskon' => $request->diskon,
                 'kategori_id' => $request->kategori_id,
@@ -137,9 +151,13 @@ class ProdukController extends Controller
             if ($request->hasFile('foto_utama')) {
                 $fotoUtama = $request->file('foto_utama');
                 $filename = time() . '_' . $fotoUtama->getClientOriginalName();
-                $path = public_path('storage/foto_produk');
-                $fotoUtama->move($path, $filename);
-                $optimizerChain->optimize($path . '/' . $filename);
+
+                // Simpan ke storage/app/public/foto_produk
+                $fotoUtama->storeAs('public/foto_produk', $filename);
+
+                // Optimasi file
+                $optimizerChain->optimize(storage_path('app/public/foto_produk/' . $filename));
+
                 FotoProdukModel::create([
                     'produk_id' => $produk->produk_id,
                     'foto_produk' => $filename,
@@ -150,9 +168,9 @@ class ProdukController extends Controller
             if ($request->hasFile('foto_sekunder')) {
                 foreach ($request->file('foto_sekunder') as $foto) {
                     $filename = time() . '_' . $foto->getClientOriginalName();
-                    $path = public_path('storage/foto_produk');
-                    $foto->move($path, $filename);
-                    $optimizerChain->optimize($path . '/' . $filename);
+                    $foto->storeAs('public/foto_produk', $filename);
+                    $optimizerChain->optimize(storage_path('app/public/foto_produk/' . $filename));
+
                     FotoProdukModel::create([
                         'produk_id' => $produk->produk_id,
                         'foto_produk' => $filename,
@@ -208,6 +226,7 @@ class ProdukController extends Controller
 
     public function edit($id)
     {
+        $title = "Edit Produk";
         $produk = Cache::rememberForever('edit_produk_' . $id, function () use ($id) {
             return ProdukModel::with(['warna', 'ukuran', 'foto'])->findOrFail($id);
         });
@@ -222,10 +241,10 @@ class ProdukController extends Controller
             return UkuranModel::select('ukuran_id', 'nama_ukuran')->get();
         });
         $warna = Cache::remember('create_form_warna', 600, function () {
-            return WarnaModel::select('warna_id', 'kode_hex')->get();
+            return WarnaModel::select('warna_id', 'kode_hex', 'nama_warna')->get();
         });
 
-        return view('admin.produk.edit', compact('produk', 'kategori', 'bahan', 'ukuran', 'warna'));
+        return view('admin.produk.edit', compact('produk', 'kategori', 'bahan', 'ukuran', 'warna', 'title'));
     }
 
     public function update(Request $request, $id)
@@ -236,9 +255,11 @@ class ProdukController extends Controller
             'foto_utama' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'foto_sekunder.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'nama_produk' => 'required|string|max:255',
+            'is_best' => 'nullable|boolean',
+            'stok_produk' => 'required|integer',
             'deskripsi' => 'required|string',
-            'harga' => 'required|string',
-            'diskon' => 'nullable|string',
+            'harga' => 'required|numeric|min:0',
+            'diskon' => 'nullable|numeric|min:0',
             'kategori_id' => 'required|integer',
             'bahan_id' => 'required|integer',
             'ukuran_id' => 'required|array|min:1',
@@ -250,15 +271,16 @@ class ProdukController extends Controller
         DB::transaction(function () use ($request, $id, $optimizerChain) {
             $produk = ProdukModel::findOrFail($id);
 
-            $produk->update($request->only(['nama_produk', 'deskripsi', 'harga', 'diskon', 'kategori_id', 'bahan_id']));
+            $produk->update($request->only(['nama_produk', 'deskripsi', 'harga', 'diskon', 'stok_produk', 'is_best', 'kategori_id', 'bahan_id']));
 
             if ($request->hasFile('foto_utama')) {
                 FotoProdukModel::where('produk_id', $id)->where('status_foto', 1)->delete();
+
                 $fotoUtama = $request->file('foto_utama');
                 $filename = time() . '_' . $fotoUtama->getClientOriginalName();
-                $path = public_path('storage/foto_produk');
-                $fotoUtama->move($path, $filename);
-                $optimizerChain->optimize($path . '/' . $filename);
+                $fotoUtama->storeAs('public/foto_produk', $filename);
+                $optimizerChain->optimize(storage_path('app/public/foto_produk/' . $filename));
+
                 FotoProdukModel::create([
                     'produk_id' => $id,
                     'foto_produk' => $filename,
@@ -269,9 +291,9 @@ class ProdukController extends Controller
             if ($request->hasFile('foto_sekunder')) {
                 foreach ($request->file('foto_sekunder') as $foto) {
                     $filename = time() . '_' . $foto->getClientOriginalName();
-                    $path = public_path('storage/foto_produk');
-                    $foto->move($path, $filename);
-                    $optimizerChain->optimize($path . '/' . $filename);
+                    $foto->storeAs('public/foto_produk', $filename);
+                    $optimizerChain->optimize(storage_path('app/public/foto_produk/' . $filename));
+
                     FotoProdukModel::create([
                         'produk_id' => $id,
                         'foto_produk' => $filename,
@@ -310,11 +332,7 @@ class ProdukController extends Controller
             $fotos = $produk->foto;
 
             foreach ($fotos as $foto) {
-                $filePath = public_path('storage/foto_produk/' . $foto->foto_produk);
-
-                if (file_exists($filePath)) {
-                    unlink($filePath);
-                }
+                Storage::delete('public/foto_produk/' . $foto->foto_produk);
             }
 
             $produk->foto()->delete();

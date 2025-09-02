@@ -1,85 +1,60 @@
 @extends('admin.layouts.app')
 
 @section('content')
-<div class="p-2 bg-white rounded-xl">
-    <div class="flex flex-col md:flex-row md:justify-center mb-4 gap-7">
-        {{-- Filter & Search --}}
-        <form id="filterForm" method="GET" action="{{ url('/produk') }}"
-            class="flex flex-col sm:flex-row sm:items-center gap-3 w-full md:w-auto bg-white p-3 rounded-lg shadow">
-
-            {{-- Filter Kategori --}}
-            <select name="kategori" id="kategoriFilter"
-                class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-pink-300">
-                <option value="">All</option>
-                @foreach ($kategoriList as $kategori)
-                    <option value="{{ $kategori->kategori_id }}"
-                        {{ request('kategori') == $kategori->kategori_id ? 'selected' : '' }}>
-                        {{ $kategori->nama_kategori }}
-                    </option>
-                @endforeach
-            </select>
-
-            {{-- Filter Paginate --}}
-            <select name="paginate" id="paginateFilter"
-                class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-pink-300">
-                @foreach ([5, 15, 25, 50, 100] as $limit)
-                    <option value="{{ $limit }}" {{ request('paginate', 15) == $limit ? 'selected' : '' }}>
-                        Tampilkan {{ $limit }}
-                    </option>
-                @endforeach
-            </select>
-
-            {{-- Search Bar --}}
-            <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden w-full sm:w-auto">
-                <input type="text" name="search" placeholder="Cari nama produk..." value="{{ request('search') }}"
-                    class="w-full px-4 py-2 text-gray-700 focus:outline-none">
-                <button type="submit" class="px-4 py-2 bg-black text-white hover:bg-gray-700 transition duration-200">
-                    Cari
-                </button>
-            </div>
-        </form>
-
-        {{-- Tombol Tambah --}}
-        <a href="{{ url('/produk/create') }}"
-            class="inline-flex items-center justify-center text-base bg-black text-white px-6 py-5 rounded-xl shadow-md hover:bg-gray-700 transition w-full md:w-auto">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
-            Baru
-        </a>
+<div class="p-8 bg-white rounded-lg shadow">
+    <div class="flex justify-between items-start mb-7 border-b border-gray-300 pb-4">
+        <h1 class="text-2xl font-bold pl-4 pt-4">Manage Produk</h1>
     </div>
 
+    <div class="flex justify-end mb-7 mt-12">
+        <form method="GET" action="{{ route('produk.index') }}" class="mr-3 flex items-center border rounded-lg px-3 py-2 w-1/3">
+            <input type="text" name="search" placeholder="Search Produk" value="{{ request('search') }}" class="w-full outline-none placeholder:text-sm">
+            <button type="submit" class="ml-2">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
+        
+        <a href="{{ url('/produk/create') }}"
+        class="px-7 py-2 bg-[#560024] text-white font-semibold rounded-lg hover:bg-gray-700 flex items-center justify-center text-sm">
+            Tambah
+        </a>
+    </div>
+    
     {{-- Produk Grid --}}
     <div class="grid gap-5 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
         @foreach ($produk as $p)
-            <div
-                class="p-2 bg-[#F0F4F9] rounded-xl shadow-md overflow-hidden hover:bg-[#DFE3E7] transition duration-200">
-                <a href="{{ url('/produk/' . $p->produk_id . '/show') }}">
-                    <div class="aspect-[4/5] rounded-xl overflow-hidden">
-                        <img src="{{ asset('storage/foto_produk/' . $p->fotoUtama->foto_produk) }}"
-                            alt="{{ $p->nama_produk }}" class="w-full h-full object-cover">
-                    </div>
-                </a>
-                <div class="p-2">
-                    <div>
-                        <h2 class="text-lg font-semibold font-montserrat truncate">{{ $p->nama_produk }}</h2>
-                    </div>
-                    <div class="flex P-4 justify-between items-center mt-4">
-                        <button
-                            onclick="document.getElementById('modal-{{ $p->produk_id }}').classList.remove('hidden')"
-                            class="px-4 py-2 bg-white text-base border border-gray-300 text-black rounded-xl hover:bg-red-500 transition duration-200">
-                            Hapus
+            <div class="p-2 bg-slate-200 rounded-xl shadow-md overflow-visible hover:bg-[#DFE3E7] transition duration-200">
+                {{-- Nama Produk + Dropdown --}}
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="text-small font-montserrat truncate">{{ $p->nama_produk }}</h2>
+
+                    <div x-data="{ open: false }" class="relative inline-block text-left">
+                        <button @click="open = !open" class="rounded-full px-2 hover:bg-gray-300 transition">
+                            <i class="fa-solid fa-ellipsis-vertical text-gray-700 text-sm"></i>
                         </button>
-                        <a href="{{ url('/produk/' . $p->produk_id . '/edit') }}"
-                            class="px-4 py-2 bg-black text-base text-white border rounded-xl hover:bg-gray-700 transition duration-200">
-                            Edit
-                        </a>
+
+                        <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-lg shadow-lg z-50 transition-all duration-200 ease-out">
+                            <a href="{{ url('/produk/' . $p->produk_id . '/edit') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-black hover:bg-gray-100 transition">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                                <span>Edit</span>
+                            </a>
+                            <button type="button" onclick="document.getElementById('modal-{{ $p->produk_id }}').classList.remove('hidden');" class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 hover:text-red-700 transition">
+                                <i class="fa-regular fa-trash-can text-red-500"></i>
+                                <span>Hapus</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
+
+                {{-- Gambar Produk --}}
+                <a href="{{ url('/produk/' . $p->produk_id . '/show') }}">
+                    <div class="aspect-[4/5] rounded-xl overflow-hidden">
+                        <img src="{{ asset('storage/foto_produk/' . $p->fotoUtama->foto_produk) }}" alt="{{ $p->nama_produk }}" class="w-full h-full object-cover">
+                    </div>
+                </a>
             </div>
 
-            {{-- Modal --}}
+            {{-- Modal Konfirmasi Hapus --}}
             <div id="modal-{{ $p->produk_id }}"
                 class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
                 onclick="if(event.target === this) this.classList.add('hidden')">
@@ -109,27 +84,71 @@
         @endforeach
     </div>
 
-    {{-- Pagination Links --}}
-    <div class="mt-8">
-        {{ $produk->appends(request()->except('page'))->links() }}
+    {{-- Pagination --}}
+    <div class="mt-4 flex justify-center space-x-1">
+        @if ($produk->onFirstPage() === false)
+            <a href="{{ $produk->previousPageUrl() }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">&laquo;</a>
+        @endif
+
+        @foreach ($produk->getUrlRange(1, $produk->lastPage()) as $page => $url)
+            <a href="{{ $url }}" class="px-3 py-1 rounded 
+                {{ $produk->currentPage() === $page ? 'bg-[#560024] text-white' : 'bg-gray-200 hover:bg-gray-300' }}">
+                {{ $page }}
+            </a>
+        @endforeach
+
+        @if ($produk->hasMorePages())
+            <a href="{{ $produk->nextPageUrl() }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">&raquo;</a>
+        @endif
     </div>
 </div>
 @endsection
 
 @push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const kategoriFilter = document.getElementById('kategoriFilter');
-        const paginateFilter = document.getElementById('paginateFilter');
-        const form = document.getElementById('filterForm');
+    <script>
+        function toggleMenu(id) {
+            const menu = document.getElementById('menu-' + id);
+            const rect = menu.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - rect.bottom;
 
-        kategoriFilter.addEventListener('change', function() {
-            form.submit();
+            if (spaceBelow < 150) {
+                menu.style.top = 'auto';
+                menu.style.bottom = '100%';
+            } else {
+                menu.style.top = '100%';
+                menu.style.bottom = 'auto';
+            }
+
+            menu.classList.toggle('hidden');
+        }
+
+        document.addEventListener('click', function(e) {
+            document.querySelectorAll('[id^="menu-"]').forEach(menu => {
+                const toggleBtn = document.querySelector(
+                    `[onclick="toggleMenu('${menu.id.replace('menu-', '')}')"]`);
+                if (!menu.contains(e.target) && !toggleBtn.contains(e.target)) {
+                    menu.classList.add('hidden');
+                }
+            });
         });
 
-        paginateFilter.addEventListener('change', function() {
-            form.submit();
+        document.addEventListener('DOMContentLoaded', function() {
+            const kategoriFilter = document.getElementById('kategoriFilter');
+            const paginateFilter = document.getElementById('paginateFilter');
+            const sortFilter = document.getElementById('sortFilter');
+            const form = document.getElementById('filterForm');
+
+            kategoriFilter.addEventListener('change', function() {
+                form.submit();
+            });
+
+            paginateFilter.addEventListener('change', function() {
+                form.submit();
+            });
+
+            sortFilter.addEventListener('change', function() {
+                form.submit();
+            });
         });
-    });
-</script>
+    </script>
 @endpush
