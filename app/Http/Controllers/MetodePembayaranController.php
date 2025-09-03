@@ -21,7 +21,7 @@ class MetodePembayaranController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
             
-        return view('admin.metode-pembayaran.index', compact('metode', 'searchQuery'));
+        return view('admin.metode_pembayaran.index', compact('metode', 'searchQuery'));
     }
 
     public function create()

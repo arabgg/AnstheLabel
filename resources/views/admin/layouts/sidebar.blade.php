@@ -63,11 +63,11 @@
 
             {{-- Transaksi --}}
             <details 
-                {{ request()->is('transaksi*') || request()->is('metode-pembayaran*') ? 'open' : '' }}
+                {{ request()->is('transaksi*') || request()->is('metode_pembayaran*') ? 'open' : '' }}
                 class="group"
             >
                 <summary class="flex items-center gap-3 px-3 py-2 w-full rounded hover:bg-red-100 cursor-pointer
-                    {{ request()->is('transaksi*') || request()->is('metode-pembayaran*') ? 'font-bold text-black bg-red-200 border-l-4 border-[#560024]' : '' }}">
+                    {{ request()->is('transaksi*') || request()->is('metode_pembayaran*') ? 'font-bold text-black bg-red-200 border-l-4 border-[#560024]' : '' }}">
                     <i class="fa-solid fa-receipt h-5 w-5 flex-shrink-0 text-center"></i>
                     <span class="text-sm">Transaksi</span>
                     <span class="ml-auto">
@@ -75,8 +75,8 @@
                     </span>
                 </summary>
                 <div class="flex flex-col space-y-1 mt-1">
-                    <a href="/metode-pembayaran" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-red-100 transition
-                        {{ request()->is('metode-pembayaran*') ? 'font-bold text-black bg-red-200 border-l-4 border-[#560024]' : '' }}">
+                    <a href="/metode_pembayaran" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-red-100 transition
+                        {{ request()->is('metode_pembayaran*') ? 'font-bold text-black bg-red-200 border-l-4 border-[#560024]' : '' }}">
                         <i class="fa-solid fa-credit-card h-5 w-5 flex-shrink-0"></i>
                         <span class="text-sm">Metode Pembayaran</span>
                     </a>

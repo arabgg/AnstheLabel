@@ -142,14 +142,14 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{id}/destroy', [WarnaController::class, 'destroy'])->name('warna.destroy');
     });
 
-    Route::prefix('metode-pembayaran')->group(function () {
-        Route::get('/', [MetodePembayaranController::class, 'index'])->name('metode-pembayaran.index');
-        Route::get('/{id}/show', [MetodePembayaranController::class, 'show'])->name('metode-pembayaran.show');
-        Route::get('/create', [MetodePembayaranController::class, 'create'])->name('metode-pembayaran.create');
-        Route::post('/store', [MetodePembayaranController::class, 'store'])->name('metode-pembayaran.store');
-        Route::get('/{id}/edit', [MetodePembayaranController::class, 'edit'])->name('metode-pembayaran.edit');
-        Route::put('/{id}/update', [MetodePembayaranController::class, 'update'])->name('metode-pembayaran.update');
-        Route::delete('/{id}/destroy', [MetodePembayaranController::class, 'destroy'])->name('metode-pembayaran.destroy');
+    Route::prefix('metode_pembayaran')->group(function () {
+        Route::get('/', [MetodePembayaranController::class, 'index'])->name('metode_pembayaran.index');
+        Route::get('/{id}/show', [MetodePembayaranController::class, 'show'])->name('metode_pembayaran.show');
+        Route::get('/create', [MetodePembayaranController::class, 'create'])->name('metode_pembayaran.create');
+        Route::post('/store', [MetodePembayaranController::class, 'store'])->name('metode_pembayaran.store');
+        Route::get('/{id}/edit', [MetodePembayaranController::class, 'edit'])->name('metode_pembayaran.edit');
+        Route::put('/{id}/update', [MetodePembayaranController::class, 'update'])->name('metode_pembayaran.update');
+        Route::delete('/{id}/destroy', [MetodePembayaranController::class, 'destroy'])->name('metode_pembayaran.destroy');
     });
 
     Route::prefix('pesanan')->group(function () {
