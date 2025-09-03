@@ -10,15 +10,17 @@ class BahanController extends Controller
     public function index(Request $request)
     {
         $searchQuery = $request->input('search', '');
+        $sortColumn = $request->input('sort', 'created_at'); // default sorting
+        $sortDirection = $request->input('direction', 'desc');
 
         $bahan = BahanModel::select('bahan_id', 'nama_bahan', 'deskripsi', 'created_at', 'updated_at')
         ->when(!empty($searchQuery), function($q) use ($searchQuery) {
                 $q->where('nama_bahan', 'like', "%{$searchQuery}%");
             })
-            ->orderBy('created_at', 'desc')
+            ->orderBy($sortColumn, $sortDirection)
             ->paginate(10);
-            
-        return view('admin.bahan.index', compact('bahan', 'searchQuery'));
+
+        return view('admin.bahan.index', compact('bahan', 'searchQuery', 'sortColumn', 'sortDirection'));
     }
 
     public function create()
