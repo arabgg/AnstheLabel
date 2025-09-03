@@ -4,25 +4,19 @@
     <div class="p-8 bg-white rounded-lg shadow">
         {{-- Judul --}}
         <div class="flex justify-between items-start mb-7 border-b border-gray-300 pb-4">
-            <h1 class="text-2xl font-bold pl-4 pt-4">Manage Bahan</h1>
+            <h1 class="text-2xl font-bold pl-4 pt-4">Manage Metode Pembayaran</h1>
         </div>
 
         {{-- Search --}}
-        <div class="flex justify-end mb-7 mt-12">
-            <form method="GET" action="{{ route('bahan.index') }}"
-                class="mr-3 flex items-center border rounded-lg px-3 py-2 w-1/3">
-                <input type="text" name="search" placeholder="Search Bahan" value="{{ $searchQuery ?? '' }}"
+        <div class="flex justify-end mb-5">
+            <form method="GET" action="{{ route('metode_pembayaran.index') }}"
+                class="flex items-center border rounded px-3 py-2 w-1/3">
+                <input type="text" name="search" placeholder="Search Metode Pembayaran" value="{{ $searchQuery ?? '' }}"
                     class="w-full outline-none placeholder:text-sm">
                 <button type="submit" class="ml-2">
                     <i class="fas fa-search"></i>
                 </button>
             </form>
-
-            <a href="javascript:void(0);" onclick="openBahanModal('{{ route('bahan.create') }}')"
-                class="px-7 py-2 bg-[#560024] text-white font-semibold rounded-lg hover:bg-gray-700 flex items-center justify-center text-sm">
-                Tambah
-            </a>
-
         </div>
 
         {{-- Tabel item --}}
@@ -30,63 +24,65 @@
             <table class="w-full table-auto border-collapse text-center">
                 <thead class="bg-[#560024] text-white text-sm">
                     <tr>
-                        @php
-                            $columns = [
-                                'bahan_id' => 'No',
-                                'nama_bahan' => 'NAMA BAHAN',
-                                'deskripsi' => 'DESKRIPSI',
-                                'created_at' => 'DIBUAT',
-                                'updated_at' => 'UPDATE',
-                            ];
-                        @endphp
-
-                        @foreach ($columns as $col => $label)
-                            <th class="p-3 cursor-pointer" onclick="sortTable('{{ $col }}')">
-                                {{ $label }}
-                                @if (request('sort') === $col)
-                                    @if (request('direction') === 'asc')
-                                        <i class="fas fa-arrow-up ml-1"></i>
-                                    @else
-                                        <i class="fas fa-arrow-down ml-1"></i>
-                                    @endif
-                                @else
-                                    <i class="fas fa-sort ml-1"></i>
-                                @endif
-                            </th>
-                        @endforeach
-
+                        <th class="p-3">ID</th>
+                        <th class="p-3">METODE</th>
+                        <th class="p-3">PEMBAYARAN</th>
+                        <th class="p-3">KODE BAYAR</th>
+                        <th class="p-3">ICON</th>
+                        <th class="p-3">DIBUAT</th>
+                        <th class="p-3">UPDATE</th>
                         <th class="p-3">ACTION</th>
                     </tr>
                 </thead>
                 <tbody class="text-sm">
-                    @forelse ($bahan as $item)
+                    @forelse ($metode as $item)
                         <tr class="border-b hover:bg-gray-50">
-                            <td class="p-3">{{ $bahan->firstItem() + $loop->index }}</td>
-                            <td class="p-3">{{ $item->nama_bahan }}</td>
-                            <td class="p-3 break-words max-w-xs">{{ $item->deskripsi }}</td>
+                            <td class="p-3">{{ $item->metode_pembayaran_id }}</td>
+                            <td class="p-3">{{ $item->metode->nama_metode }}</td>
+                            <td class="p-3">{{ $item->nama_pembayaran }}</td>
+                            <td class="p-3">
+                                <div class="flex justify-center">
+                                    @if ($item->kode_bayar_type === 'image')
+                                        <img src="{{ asset('storage/icons/' . $item->kode_bayar) }}"
+                                            class="w-20 h-20 rounded">
+                                    @elseif($item->kode_bayar_type === 'text')
+                                        <span class="text-gray-800 font-medium">{{ $item->kode_bayar }}</span>
+                                    @else
+                                        <span class="text-gray-400">No Media</span>
+                                    @endif
+                                </div>
+                            </td>
+                            <td class="p-3">
+                                <img src="{{ asset('storage/icons/' . $item->icon) }}" class="w-12 rounded">
+                            </td>
                             <td class="p-3">{{ $item->created_at->format('d M Y [ H : i ]') }}</td>
                             <td class="p-3">{{ $item->updated_at->format('d M Y [ H : i ]') }}</td>
                             <td class="p-3 mt-5 flex gap-2 justify-center items-center">
                                 {{-- Tombol Detail --}}
                                 <button
                                     class="flex items-center justify-center py-2 px-3 rounded-lg border border-gray-400 text-black hover:bg-blue-400 hover:border-blue-400"
-                                    onclick="openBahanModal('{{ route('bahan.show', ['id' => $item->bahan_id]) }}')">
+                                    onclick="openMetodeModal('{{ route('metode_pembayaran.show', ['id' => $item->metode_pembayaran_id]) }}')">
                                     <i class="fa-solid fa-database"></i>
                                 </button>
 
                                 {{-- Tombol Edit --}}
                                 <button
                                     class="flex items-center justify-center py-2 px-3 rounded-lg border border-gray-400 text-black hover:bg-yellow-300 hover:border-yellow-300"
-                                    onclick="openBahanModal('{{ route('bahan.edit', ['id' => $item->bahan_id]) }}')">
+                                    onclick="openMetodeModal('{{ route('metode_pembayaran.edit', $item->metode_pembayaran_id) }}')">
                                     <i class="fa-regular fa-pen-to-square"></i>
                                 </button>
 
-                                {{-- Tombol Hapus --}}
-                                <button
-                                    class="flex items-center justify-center py-2 px-3 rounded-lg border border-gray-400 text-black hover:bg-red-500 hover:border-red-500"
-                                    onclick="deleteBahan('{{ route('bahan.destroy', $item->bahan_id) }}')">
+                                {{-- Tombol Hapus
+                            <form action="{{ route('metode_pembayaran.destroy', $item->metode_pembayaran_id) }}" method="POST" 
+                                onsubmit="return confirm('Hapus item ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" 
+                                        class="flex items-center justify-center py-2 px-3 rounded-lg border border-gray-400 text-black 
+                                            hover:bg-red-500 hover:border-red-500">
                                     <i class="fa-regular fa-trash-can"></i>
                                 </button>
+                            </form> --}}
                             </td>
                         </tr>
                     @empty
@@ -100,27 +96,27 @@
 
         {{-- Pagination --}}
         <div class="mt-4 flex justify-center space-x-1">
-            @if ($bahan->onFirstPage() === false)
-                <a href="{{ $bahan->previousPageUrl() }}"
+            @if ($metode->onFirstPage() === false)
+                <a href="{{ $metode->previousPageUrl() }}"
                     class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">&laquo;</a>
             @endif
 
-            @foreach ($bahan->getUrlRange(1, $bahan->lastPage()) as $page => $url)
+            @foreach ($metode->getUrlRange(1, $metode->lastPage()) as $page => $url)
                 <a href="{{ $url }}"
                     class="px-3 py-1 rounded 
-                {{ $bahan->currentPage() === $page ? 'bg-[#560024] text-white' : 'bg-gray-200 hover:bg-gray-300' }}">
+                {{ $metode->currentPage() === $page ? 'bg-[#560024] text-white' : 'bg-gray-200 hover:bg-gray-300' }}">
                     {{ $page }}
                 </a>
             @endforeach
 
-            @if ($bahan->hasMorePages())
-                <a href="{{ $bahan->nextPageUrl() }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">&raquo;</a>
+            @if ($metode->hasMorePages())
+                <a href="{{ $metode->nextPageUrl() }}" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">&raquo;</a>
             @endif
         </div>
     </div>
 
     {{-- Modal --}}
-    <div id="BahanModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div id="MetodeModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
         <div id="modalContent" class="mx-2 w-full max-w-lg">
             {{-- Konten show.blade.php akan dimuat di sini --}}
         </div>
@@ -128,25 +124,9 @@
 @endsection
 
 @push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        function sortTable(column) {
-            const url = new URL(window.location.href);
-            const currentSort = url.searchParams.get('sort');
-            const currentDir = url.searchParams.get('direction');
-
-            let newDir = 'asc';
-            if (currentSort === column && currentDir === 'asc') newDir = 'desc';
-
-            url.searchParams.set('sort', column);
-            url.searchParams.set('direction', newDir);
-
-            window.location.href = url.toString();
-        }
-    </script>
     <script>
         // --- Buka modal ---
-        function openBahanModal(url) {
+        function openMetodeModal(url) {
             fetch(url, {
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest'
@@ -155,10 +135,10 @@
                 .then(res => res.text())
                 .then(html => {
                     document.getElementById('modalContent').innerHTML = html;
-                    document.getElementById('BahanModal').classList.remove('hidden');
+                    document.getElementById('MetodeModal').classList.remove('hidden');
 
                     // Pasang listener form edit setelah modal dimuat
-                    const form = document.getElementById('editBahanForm');
+                    const form = document.getElementById('editMetodeForm');
                     if (form) {
                         form.addEventListener('submit', function(e) {
                             e.preventDefault();
@@ -190,12 +170,11 @@
                                             showConfirmButton: false
                                         });
 
-                                        // Update row tabel otomatis (loop semua field dari data.data)
+                                        // Update row tabel otomatis
                                         const row = document.querySelector(
-                                            `[data-bahan-id='${data.data.bahan_id}']`);
+                                            `[data-metode-id='${data.data.metode_pembayaran_id}']`);
                                         if (row) {
                                             Object.keys(data.data).forEach((key, index) => {
-                                                // index +1 karena td pertama biasanya ID
                                                 if (row.querySelector(`td:nth-child(${index + 1})`))
                                                     row.querySelector(`td:nth-child(${index + 1})`)
                                                     .textContent = data.data[key];
@@ -225,8 +204,8 @@
                         });
                     }
 
-                    // Pasang listener form create setelah modal dimuat
-                    const createForm = document.getElementById('createBahanForm');
+                    // Listener form create jika ada
+                    const createForm = document.getElementById('createMetodeForm');
                     if (createForm) {
                         createForm.addEventListener('submit', handleCreateSubmit);
                     }
@@ -236,14 +215,14 @@
 
         // --- Tutup modal ---
         function closeModal() {
-            document.getElementById('BahanModal').classList.add('hidden');
+            document.getElementById('MetodeModal').classList.add('hidden');
             document.getElementById('modalContent').innerHTML = '';
         }
 
-        // --- Delete bahan ---
-        function deleteBahan(url) {
+        // --- Delete metode pembayaran ---
+        function deleteMetode(url) {
             Swal.fire({
-                title: 'Hapus Bahan?',
+                title: 'Hapus Metode Pembayaran?',
                 text: "Data tidak bisa dikembalikan!",
                 icon: 'warning',
                 showCancelButton: true,
@@ -272,7 +251,7 @@
                                     showConfirmButton: false
                                 });
                                 // Hapus row dari tabel
-                                document.querySelector(`[data-bahan-id='${data.id}']`)?.remove();
+                                document.querySelector(`[data-metode-id='${data.id}']`)?.remove();
                             } else {
                                 Swal.fire('Gagal', data.message, 'error');
                             }
@@ -282,10 +261,10 @@
             });
         }
 
-        // --- Tambahkan atribut data-bahan-id ---
+        // --- Tambahkan atribut data-metode-id pada row tabel ---
         document.querySelectorAll('tbody tr').forEach(tr => {
-            const bahanId = tr.querySelector('td')?.innerText;
-            if (bahanId) tr.setAttribute('data-bahan-id', bahanId.trim());
+            const metodeId = tr.querySelector('td')?.innerText;
+            if (metodeId) tr.setAttribute('data-metode-id', metodeId.trim());
         });
     </script>
 @endpush

@@ -10,15 +10,16 @@ class UkuranController extends Controller
     public function index(Request $request)
     {
         $searchQuery = $request->input('search', '');
-
+        $sortColumn = $request->input('sort', 'created_at'); // default sorting
+        $sortDirection = $request->input('direction', 'desc');
         $ukuran = UkuranModel::select('ukuran_id', 'nama_ukuran', 'deskripsi', 'created_at', 'updated_at')
-        ->when(!empty($searchQuery), function($q) use ($searchQuery) {
+            ->when(!empty($searchQuery), function ($q) use ($searchQuery) {
                 $q->where('nama_ukuran', 'like', "%{$searchQuery}%");
             })
-            ->orderBy('ukuran_id', 'asc')
+            ->orderBy($sortColumn, $sortDirection)
             ->paginate(10);
-            
-        return view('admin.ukuran.index', compact('ukuran', 'searchQuery'));
+
+        return view('admin.ukuran.index', compact('ukuran', 'searchQuery', 'sortColumn', 'sortDirection'));
     }
 
     public function create()
@@ -42,7 +43,7 @@ class UkuranController extends Controller
     {
         $ukuran = UkuranModel::select('ukuran_id', 'nama_ukuran', 'deskripsi')
             ->findOrFail($id);
-        
+
         if (request()->ajax()) {
             return view('admin.ukuran.show', compact('ukuran'));
         }
