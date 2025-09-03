@@ -12,6 +12,7 @@ mix.js('resources/js/app.js', 'public/js')
 
 // Kalau kamu punya CSS tambahan manual, bisa tambahkan juga
    .postCss('resources/css/style.css', 'public/css')
+   .postCss('resources/css/app.css', 'public/css')
 
 // Aktifkan versioning kalau production
 if (mix.inProduction()) {
