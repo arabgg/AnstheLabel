@@ -10,15 +10,17 @@ class WarnaController extends Controller
     public function index(Request $request)
     {
         $searchQuery = $request->input('search', '');
+        $sortColumn = $request->input('sort', 'created_at'); // default sorting
+        $sortDirection = $request->input('direction', 'desc');
 
         $warna = WarnaModel::select('warna_id', 'nama_warna', 'kode_hex', 'created_at', 'updated_at')
         ->when(!empty($searchQuery), function($q) use ($searchQuery) {
                 $q->where('nama_warna', 'like', "%{$searchQuery}%");
             })
-            ->orderBy('created_at', 'desc')
+            ->orderBy($sortColumn, $sortDirection)
             ->paginate(10);
-            
-        return view('admin.warna.index', compact('warna', 'searchQuery'));
+
+        return view('admin.warna.index', compact('warna', 'searchQuery', 'sortColumn', 'sortDirection'));
     }
 
     public function create()
@@ -33,7 +35,7 @@ class WarnaController extends Controller
             'nama_warna' => 'required|string|max:255',
         ]);
         WarnaModel::create($request->all());
-        return redirect()->route('admin.warna.index')->with('success', 'Warna berhasil ditambahkan!');
+        return redirect()->route('warna.index')->with('success', 'Warna berhasil ditambahkan!');
     }
 
     public function show($id)
