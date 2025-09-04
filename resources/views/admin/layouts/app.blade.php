@@ -21,7 +21,7 @@
         @include('admin.layouts.sidebar') 
         
         <div class="flex-1 flex flex-col min-h-screen ml-60 ">
-            <main class="flex-1 p-5">
+            <main class="flex-1 p-2">
                 @yield('content')
             </main>
         </div>
