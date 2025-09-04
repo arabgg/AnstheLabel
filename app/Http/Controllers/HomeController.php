@@ -29,7 +29,7 @@ class HomeController extends Controller
                 ->with([
                     'fotoUtama', 'hoverFoto'
                 ])
-                ->latest('produk_id')
+                ->orderBy('produk_id', 'desc')
                 ->take(4)
                 ->get();
         });
