@@ -72,17 +72,18 @@ class MetodePembayaranController extends Controller
             ->with('metode:metode_id,nama_metode')
             ->findOrFail($id);
 
-        return view('admin.metode_pembayaran.edit', compact('metode'));
+        $metodes = MetodeModel::select('metode_id', 'nama_metode')->get();
+
+        return view('admin.metode_pembayaran.edit', compact('metode', 'metodes'));
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
             'nama_pembayaran' => 'required|string|max:255',
-            'metode_id' => 'required|string|exists:t_metode,metode_id',
+            'metode_id' => 'required|string|exists:m_metode_pembayaran,metode_id',
             'kode_bayar' => 'nullable|string|max:255',
-            'kode_bayar_img' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
-            'icon' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
+            'icon' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $metode = MetodePembayaranModel::findOrFail($id);
@@ -99,9 +100,11 @@ class MetodePembayaranController extends Controller
         }
 
         // Update icon
-        if($request->hasFile('icon')){
+        if ($request->hasFile('icon')) {
             $path = $request->file('icon')->store('icons', 'public');
             $metode->icon = basename($path);
+        } else {
+            $metode->icon = $request->old_icon;
         }
 
         $metode->save();

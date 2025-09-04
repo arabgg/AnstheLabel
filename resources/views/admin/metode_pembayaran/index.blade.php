@@ -124,120 +124,35 @@
 @endsection
 
 @push('scripts')
-    <script>
-        // --- Buka modal ---
-        function openMetodeModal(url) {
-            fetch(url, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(res => res.text())
-                .then(html => {
-                    document.getElementById('modalContent').innerHTML = html;
-                    document.getElementById('MetodeModal').classList.remove('hidden');
+<script>
+    // --- Buka modal ---
+    function openMetodeModal(url) {
+        fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById('modalContent').innerHTML = html;
+                document.getElementById('MetodeModal').classList.remove('hidden');
 
-                    // Pasang listener form edit setelah modal dimuat
-                    const form = document.getElementById('editMetodeForm');
-                    if (form) {
-                        form.addEventListener('submit', function(e) {
-                            e.preventDefault();
-                            const url = this.action;
-                            const formData = new FormData(this);
-                            const data = Object.fromEntries(formData.entries());
+                // Pasang listener form edit setelah modal dimuat
+                const form = document.getElementById('editMetodeForm');
+                if (form) {
+                    form.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        const url = this.action;
+                        const formData = new FormData(this);
 
-                            fetch(url, {
-                                    method: 'PUT',
-                                    headers: {
-                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                        'Content-Type': 'application/json',
-                                        'Accept': 'application/json',
-                                        'X-Requested-With': 'XMLHttpRequest'
-                                    },
-                                    body: JSON.stringify(data)
-                                })
-                                .then(res => res.json())
-                                .then(data => {
-                                    closeModal(); // Tutup modal
-
-                                    if (data.success) {
-                                        Swal.fire({
-                                            icon: 'success',
-                                            title: data.message,
-                                            toast: true,
-                                            position: 'top-end',
-                                            timer: 1500,
-                                            showConfirmButton: false
-                                        });
-
-                                        // Update row tabel otomatis
-                                        const row = document.querySelector(
-                                            `[data-metode-id='${data.data.metode_pembayaran_id}']`);
-                                        if (row) {
-                                            Object.keys(data.data).forEach((key, index) => {
-                                                if (row.querySelector(`td:nth-child(${index + 1})`))
-                                                    row.querySelector(`td:nth-child(${index + 1})`)
-                                                    .textContent = data.data[key];
-                                            });
-                                        }
-
-                                    } else {
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Gagal',
-                                            text: data.message,
-                                            toast: true,
-                                            position: 'top-end'
-                                        });
-                                    }
-                                })
-                                .catch(err => {
-                                    closeModal();
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Error',
-                                        text: err.message || 'Terjadi kesalahan',
-                                        toast: true,
-                                        position: 'top-end'
-                                    });
-                                });
-                        });
-                    }
-
-                    // Listener form create jika ada
-                    const createForm = document.getElementById('createMetodeForm');
-                    if (createForm) {
-                        createForm.addEventListener('submit', handleCreateSubmit);
-                    }
-                })
-                .catch(err => console.error(err));
-        }
-
-        // --- Tutup modal ---
-        function closeModal() {
-            document.getElementById('MetodeModal').classList.add('hidden');
-            document.getElementById('modalContent').innerHTML = '';
-        }
-
-        // --- Delete metode pembayaran ---
-        function deleteMetode(url) {
-            Swal.fire({
-                title: 'Hapus Metode Pembayaran?',
-                text: "Data tidak bisa dikembalikan!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch(url, {
-                            method: 'DELETE',
+                        fetch(url, {
+                            method: 'POST', // tetap pakai POST
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'Accept': 'application/json'
-                            }
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: formData
                         })
                         .then(res => res.json())
                         .then(data => {
@@ -249,22 +164,95 @@
                                     position: 'top-end',
                                     timer: 1500,
                                     showConfirmButton: false
+                                }).then(() => {
+                                    // reload halaman setelah alert selesai
+                                    window.location.reload();
                                 });
-                                // Hapus row dari tabel
-                                document.querySelector(`[data-metode-id='${data.id}']`)?.remove();
+
                             } else {
-                                Swal.fire('Gagal', data.message, 'error');
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: data.message,
+                                    toast: true,
+                                    position: 'top-end'
+                                });
                             }
                         })
-                        .catch(err => Swal.fire('Error', 'Terjadi kesalahan', 'error'));
+                        .catch(err => {
+                            closeModal();
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: err.message || 'Terjadi kesalahan',
+                                toast: true,
+                                position: 'top-end'
+                            });
+                        });
+                    });
                 }
-            });
-        }
 
-        // --- Tambahkan atribut data-metode-id pada row tabel ---
-        document.querySelectorAll('tbody tr').forEach(tr => {
-            const metodeId = tr.querySelector('td')?.innerText;
-            if (metodeId) tr.setAttribute('data-metode-id', metodeId.trim());
+                // Listener form create jika ada
+                const createForm = document.getElementById('createMetodeForm');
+                if (createForm) {
+                    createForm.addEventListener('submit', handleCreateSubmit);
+                }
+            })
+            .catch(err => console.error(err));
+    }
+
+    // --- Tutup modal ---
+    function closeModal() {
+        document.getElementById('MetodeModal').classList.add('hidden');
+        document.getElementById('modalContent').innerHTML = '';
+    }
+
+    // --- Delete metode pembayaran ---
+    function deleteMetode(url) {
+        Swal.fire({
+            title: 'Hapus Metode Pembayaran?',
+            text: "Data tidak bisa dikembalikan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(url, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: data.message,
+                                toast: true,
+                                position: 'top-end',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            // Hapus row dari tabel
+                            document.querySelector(`[data-metode-id='${data.id}']`)?.remove();
+                        } else {
+                            Swal.fire('Gagal', data.message, 'error');
+                        }
+                    })
+                    .catch(err => Swal.fire('Error', 'Terjadi kesalahan', 'error'));
+            }
         });
-    </script>
+    }
+
+    // --- Tambahkan atribut data-metode-id pada row tabel ---
+    document.querySelectorAll('tbody tr').forEach(tr => {
+        const metodeId = tr.querySelector('td')?.innerText;
+        if (metodeId) tr.setAttribute('data-metode-id', metodeId.trim());
+    });
+</script>
 @endpush

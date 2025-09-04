@@ -97,7 +97,7 @@
 </div>
 
 {{-- Modal --}}
-<div id="bannerModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+<div id="BannerModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
     <div id="modalContent" class="mx-2 w-full max-w-lg">
         {{-- Konten ajax akan dimuat di sini --}}
     </div>
@@ -106,21 +106,92 @@
 
 @push('scripts')
 <script>
+    // --- Buka modal ---
     function openBannerModal(url) {
         fetch(url, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(res => res.text())
-        .then(html => {
-            document.getElementById('modalContent').innerHTML = html;
-            document.getElementById('bannerModal').classList.remove('hidden');
-        })
-        .catch(err => console.error(err));
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById('modalContent').innerHTML = html;
+                document.getElementById('BannerModal').classList.remove('hidden');
+
+                // Pasang listener form edit setelah modal dimuat
+                const form = document.getElementById('editBannerForm');
+                if (form) {
+                    form.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        const url = this.action;
+                        const formData = new FormData(this);
+
+                        fetch(url, {
+                            method: 'POST', // tetap pakai POST
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: formData
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: data.message,
+                                    toast: true,
+                                    position: 'top-end',
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    // reload halaman setelah alert selesai
+                                    window.location.reload();
+                                });
+
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: data.message,
+                                    toast: true,
+                                    position: 'top-end'
+                                });
+                            }
+                        })
+                        .catch(err => {
+                            closeModal();
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: err.message || 'Terjadi kesalahan',
+                                toast: true,
+                                position: 'top-end'
+                            });
+                        });
+                    });
+                }
+
+                // Listener form create jika ada
+                const createForm = document.getElementById('createBannerForm');
+                if (createForm) {
+                    createForm.addEventListener('submit', handleCreateSubmit);
+                }
+            })
+            .catch(err => console.error(err));
     }
 
+    // --- Tutup modal ---
     function closeModal() {
-        document.getElementById('bannerModal').classList.add('hidden');
+        document.getElementById('BannerModal').classList.add('hidden');
         document.getElementById('modalContent').innerHTML = '';
     }
+
+    // --- Tambahkan atribut data-metode-id pada row tabel ---
+    document.querySelectorAll('tbody tr').forEach(tr => {
+        const bannerId = tr.querySelector('td')?.innerText;
+        if (bannerId) tr.setAttribute('data-banner-id', bannerId.trim());
+    });
 </script>
 @endpush
