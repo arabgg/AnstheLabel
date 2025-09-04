@@ -21,7 +21,7 @@ class MetodePembayaranController extends Controller
             ->orderBy('metode_pembayaran_id', 'asc')
             ->paginate(10);
             
-        return view('admin.metode-pembayaran.index', compact('metode', 'searchQuery'));
+        return view('admin.metode_pembayaran.index', compact('metode', 'searchQuery'));
     }
 
     public function create()
@@ -60,10 +60,10 @@ class MetodePembayaranController extends Controller
             ->findOrFail($id);
         
         if (request()->ajax()) {
-            return view('admin.metode-pembayaran.show', compact('metode'));
+            return view('admin.metode_pembayaran.show', compact('metode'));
         }
 
-        return redirect()->route('metode-pembayaran.index');
+        return redirect()->route('metode_pembayaran.index');
     }
 
     public function edit(string $id)
@@ -72,7 +72,7 @@ class MetodePembayaranController extends Controller
             ->with('metode:metode_id,nama_metode')
             ->findOrFail($id);
 
-        return view('admin.metode-pembayaran.edit', compact('metode'));
+        return view('admin.metode_pembayaran.edit', compact('metode'));
     }
 
     public function update(Request $request, $id)

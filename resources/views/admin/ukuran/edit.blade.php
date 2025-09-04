@@ -9,7 +9,7 @@
         </div>
         <div class="mb-4">
             <label class="block text-sm font-medium mb-1">Deskripsi</label>
-            <input type="text" name="deskripsi" value="{{ $ukuran->deskripsi }}" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#560024]">
+            <textarea name="deskripsi" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#560024]">{{ $ukuran->deskripsi }}</textarea>
         </div>
         <div class="flex justify-end gap-2">
             <button type="button" onclick="closeModal()" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Batal</button>

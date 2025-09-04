@@ -12,15 +12,18 @@ class KategoriController extends Controller
     public function index(Request $request)
     {
         $searchQuery = $request->input('search', '');
+        $sortColumn = $request->input('sort', 'created_at'); // default sorting
+        $sortDirection = $request->input('direction', 'desc');
 
         $kategori = KategoriModel::select('kategori_id', 'nama_kategori', 'created_at', 'updated_at')
-        ->when(!empty($searchQuery), function($q) use ($searchQuery) {
+            ->when(!empty($searchQuery), function ($q) use ($searchQuery) {
                 $q->where('nama_kategori', 'like', "%{$searchQuery}%");
             })
-            ->orderBy('kategori_id', 'asc')
-            ->paginate(10);
+            ->orderBy($sortColumn, $sortDirection)
+            ->paginate(10)
+            ->withQueryString(); // supaya search tetap terbawa saat sorting
 
-        return view('admin.kategori.index', compact('kategori', 'searchQuery'));
+        return view('admin.kategori.index', compact('kategori', 'searchQuery', 'sortColumn', 'sortDirection'));
     }
 
     public function create()
@@ -49,7 +52,7 @@ class KategoriController extends Controller
     {
         $kategori = KategoriModel::select('kategori_id', 'nama_kategori')
             ->findOrFail($id);
-        
+
         if (request()->ajax()) {
             return view('admin.kategori.show', compact('kategori'));
         }
