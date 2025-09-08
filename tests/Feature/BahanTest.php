@@ -3,9 +3,9 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\Models\BahanModel;
 use App\Http\Middleware\Authenticate;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class BahanTest extends TestCase
 {
@@ -14,10 +14,10 @@ class BahanTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        // Disable middleware auth supaya POST bisa langsung di-test
         $this->withoutMiddleware(Authenticate::class);
     }
+
+    // --- Store ---
 
     /** @test */
     public function create_bahan_sukses()
@@ -30,7 +30,7 @@ class BahanTest extends TestCase
         $resp = $this->post(route('bahan.store'), $payload);
 
         $resp->assertRedirect(route('bahan.index'));
-        $resp->assertSessionHas('success', 'Bahan berhasil ditambahkan!');
+        $resp->assertSessionHas('success', 'Bahan berhasil ditambahkan');
 
         $this->assertDatabaseHas('m_bahan', [
             'nama_bahan' => 'Katun',
@@ -56,6 +56,8 @@ class BahanTest extends TestCase
         ]);
     }
 
+    // --- Index & Show ---
+
     /** @test */
     public function index_bahan_menampilkan_data()
     {
@@ -64,7 +66,7 @@ class BahanTest extends TestCase
         $resp = $this->get(route('bahan.index'));
 
         $resp->assertStatus(200);
-        $resp->assertViewIs('bahan.index');
+        $resp->assertViewIs('admin.bahan.index');
         $resp->assertViewHas('bahan');
     }
 
@@ -73,12 +75,16 @@ class BahanTest extends TestCase
     {
         $bahan = BahanModel::factory()->create();
 
-        $resp = $this->get(route('bahan.show', $bahan->bahan_id));
+        $resp = $this->get(route('bahan.show', $bahan->bahan_id), [
+            'X-Requested-With' => 'XMLHttpRequest',
+        ]);
 
         $resp->assertStatus(200);
-        $resp->assertViewIs('bahan.show');
+        $resp->assertViewIs('admin.bahan.show');
         $resp->assertViewHas('bahan', fn ($b) => $b->bahan_id === $bahan->bahan_id);
     }
+
+    // --- Update ---
 
     /** @test */
     public function update_bahan_sukses()
@@ -90,14 +96,23 @@ class BahanTest extends TestCase
             'deskripsi' => 'Deskripsi updated',
         ];
 
-        $resp = $this->put(route('bahan.update', $bahan->bahan_id), $payload);
+        $resp = $this->putJson(route('bahan.update', $bahan->bahan_id), $payload);
 
-        $resp->assertRedirect(route('bahan.index'));
-        $resp->assertSessionHas('success', 'Bahan berhasil diperbarui!');
+        $resp->assertStatus(200);
+        $resp->assertJson([
+            'success' => true,
+            'message' => 'Bahan berhasil diperbarui',
+            'data' => [
+                'bahan_id' => $bahan->bahan_id,
+                'nama_bahan' => 'Katun Updated',
+                'deskripsi' => 'Deskripsi updated',
+            ],
+        ]);
+
         $this->assertDatabaseHas('m_bahan', [
+            'bahan_id' => $bahan->bahan_id,
             'nama_bahan' => 'Katun Updated',
             'deskripsi' => 'Deskripsi updated',
-            'bahan_id' => $bahan->bahan_id
         ]);
     }
 
@@ -111,24 +126,33 @@ class BahanTest extends TestCase
             'deskripsi' => 'Deskripsi test',
         ];
 
-        $resp = $this->put(route('bahan.update', $bahan->bahan_id), $payload);
+        $resp = $this->putJson(route('bahan.update', $bahan->bahan_id), $payload);
 
-        $resp->assertSessionHasErrors(['nama_bahan']);
+        $resp->assertStatus(422);
+        $resp->assertJsonValidationErrors(['nama_bahan']);
+
         $this->assertDatabaseMissing('m_bahan', [
+            'bahan_id' => $bahan->bahan_id,
             'nama_bahan' => '',
-            'bahan_id' => $bahan->bahan_id
         ]);
     }
+
+    // --- Destroy ---
 
     /** @test */
     public function delete_bahan_sukses()
     {
         $bahan = BahanModel::factory()->create();
 
-        $resp = $this->delete(route('bahan.destroy', $bahan->bahan_id));
+        $resp = $this->deleteJson(route('bahan.destroy', $bahan->bahan_id));
 
-        $resp->assertRedirect(route('bahan.index'));
-        $resp->assertSessionHas('success', 'Bahan berhasil dihapus!');
+        $resp->assertStatus(200);
+        $resp->assertJson([
+            'success' => true,
+            'message' => 'Bahan berhasil dihapus',
+            'id' => $bahan->bahan_id,
+        ]);
+
         $this->assertDatabaseMissing('m_bahan', ['bahan_id' => $bahan->bahan_id]);
     }
 }
