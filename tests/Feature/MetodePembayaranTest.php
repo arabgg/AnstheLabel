@@ -111,11 +111,12 @@ class MetodePembayaranTest extends TestCase
     {
         $this->actingAs(User::factory()->create());
 
-        $data = MetodePembayaranModel::factory()->create();
+        // otomatis bikin MetodeModel juga karena factory sudah di-link
+        $data = \App\Models\MetodePembayaranModel::factory()->create();
 
         $update = [
             'nama_pembayaran' => 'Metode Update',
-            'metode_id' => (string) $data->metode_id, // penting! kirim string biar lolos validasi
+            'metode_id' => (string) $data->metode_id, // tetap string supaya lolos validasi
             'kode_bayar' => 'KODE-UPDATE',
         ];
 
@@ -134,6 +135,7 @@ class MetodePembayaranTest extends TestCase
             'kode_bayar' => 'KODE-UPDATE',
         ]);
     }
+
 
 
     /** @test */
