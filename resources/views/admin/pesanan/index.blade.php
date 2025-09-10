@@ -76,7 +76,7 @@
                             <td class="p-3 mt-4 flex gap-2 justify-center items-center">
                                 <a href="{{ route('pesanan.show', ['id' => $item->transaksi_id]) }}"
                                     class="flex items-center justify-center py-2 px-3 rounded-lg border border-gray-400 text-black hover:bg-blue-400 hover:border-blue-400">
-                                    <i class="fa-solid fa-database"></i>
+                                    <i class="fa-solid fa-eye"></i>
                                 </a>
                             </td>
                         </tr>
