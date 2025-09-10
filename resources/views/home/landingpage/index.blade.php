@@ -116,5 +116,14 @@
 
         carousel.addEventListener('click', showNextImage);
     });
+
+    // Show All Product
+    function showAllKatalog() {
+        const cards = document.querySelectorAll('.bestproduk-card');
+        cards.forEach(card => card.classList.remove('bestproduk-hidden'));
+
+        document.getElementById('viewAllButton').style.display = 'none';
+        document.getElementById('collectionButton').style.display = 'inline-block';
+    }
 </script>
 @endpush
