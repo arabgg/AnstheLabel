@@ -25,15 +25,13 @@ class HomeController extends Controller
                 ->get();
         });
 
-        $newarrival = Cache::remember('newarrival', 600, function () {
-            return ProdukModel::select('produk_id', 'kategori_id', 'nama_produk', 'harga', 'diskon')
-                ->with([
-                    'fotoUtama', 'hoverFoto'
-                ])
-                ->orderBy('produk_id', 'desc')
-                ->take(8)
-                ->get();
-        });
+        $newarrival = ProdukModel::select('produk_id', 'kategori_id', 'nama_produk', 'harga', 'diskon')
+            ->with([
+                'fotoUtama', 'hoverFoto'
+            ])
+            ->orderBy('produk_id', 'desc')
+            ->take(8)
+            ->get();
 
         $bestseller = Cache::remember('bestseller', 600, function () {
             return ProdukModel::select('produk_id', 'kategori_id','nama_produk', 'harga', 'diskon')
