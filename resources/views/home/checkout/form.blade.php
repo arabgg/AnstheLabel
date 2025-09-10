@@ -25,10 +25,20 @@
             <div class="checkout-pengantaran">
                 <h3 class="checkout-pengantaran-title">Pengantaran</h3>
                 <input class="checkout-pengantaran-data" type="text" name="nama" placeholder="Nama Lengkap" required>
-                <input class="checkout-pengantaran-data" type="tel" name="telepon" placeholder="Telepon" pattern="[0-9]+" required>
-                @error('telepon')
-                    <small class="text-danger">{{ $message }}</small>
-                @enderror
+
+                {{-- Telepon --}}
+                <div class="checkout-pengantaran-telepon">
+                    <span class="prefix">+62</span>
+                    <input class="checkout-pengantaran-data telepon-input" 
+                        type="tel" 
+                        id="telepon_user" 
+                        placeholder="81234567890" 
+                        pattern="[0-9]{8,15}" 
+                        required>
+                </div>
+                <input type="hidden" name="telepon" id="telepon">
+
+                {{-- Alamat Lengkap --}}
                 <select class="checkout-pengantaran-data" style="margin-left: 0px" id="provinsi" name="provinsi" class="form-select">
                     <option value="">Pilih Provinsi</option>
                 </select>
@@ -117,6 +127,18 @@
 
 @push('scripts')
 <script>
+document.querySelector('form[action="{{ route('checkout.save') }}"]').addEventListener('submit', function(e){
+    const teleponUser = document.getElementById('telepon_user').value.trim();
+    const teleponHidden = document.getElementById('telepon');
+
+    if(!teleponUser) {
+        e.preventDefault();
+        Swal.fire({ icon: 'error', title: 'Nomor telepon harus diisi!' });
+        return;
+    }
+    teleponHidden.value = '+62' + teleponUser;
+});
+
 document.addEventListener("DOMContentLoaded", function () {
     const provinsi = document.getElementById("provinsi");
     const kota = document.getElementById("kota");

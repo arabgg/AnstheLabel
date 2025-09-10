@@ -289,10 +289,7 @@ class HomeController extends Controller
     {
         $validated = $request->validate([
             'nama' => 'required|string',
-            'telepon' => [
-                'required',
-                'regex:/^(\+62|62|0)8[1-9][0-9]{6,11}$/'
-            ],
+            'telepon' => 'required|string',
             'email' => ['required', 'email', new EmailActive],
             'provinsi' => 'required|string',
             'kota' => 'required|string',
@@ -303,6 +300,11 @@ class HomeController extends Controller
         ]);
 
         $fullAddress = "{$validated['alamat']}, {$validated['desa']}, {$validated['kecamatan']}, {$validated['kota']}, {$validated['provinsi']}";
+        $telepon = $request->input('telepon');
+
+        if (str_starts_with($telepon, '+62')) {
+            $telepon = '0' . substr($telepon, 3);
+        }
 
         $cart = session()->get('cart', []);
 
@@ -312,7 +314,7 @@ class HomeController extends Controller
 
         $kode_invoice = null;
         
-        DB::transaction(function () use ($cart, $validated, $fullAddress, &$kode_invoice) {
+        DB::transaction(function () use ($cart, $telepon, $validated, $fullAddress, &$kode_invoice) {
             $total = collect($cart)->sum(fn($item) => $item['harga'] * $item['quantity']);
 
             $pembayaran = PembayaranModel::create([
@@ -324,7 +326,7 @@ class HomeController extends Controller
             $transaksi = TransaksiModel::create([
                 'pembayaran_id'     => $pembayaran->pembayaran_id,
                 'nama_customer'     => $validated['nama'],
-                'no_telp'           => $validated['telepon'],
+                'no_telp'           => $telepon,
                 'email'             => $validated['email'],
                 'alamat'            => $fullAddress
             ]);
