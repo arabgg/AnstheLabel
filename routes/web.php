@@ -91,7 +91,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('produk')->group(function () {
         Route::get('/', [ProdukController::class, 'index'])->name('produk.index');
         Route::get('/filter', [ProdukController::class, 'filter'])->name('produk.filter');
-        Route::get('/{id}/show', [ProdukController::class, 'show'])->name('produk.show');
+        Route::get('/{id}/show', [ProdukController::class, 'show']);
         Route::get('/create', [ProdukController::class, 'create'])->name('produk.create');
         Route::post('/store', [ProdukController::class, 'store'])->name('produk.store');
         Route::get('/{id}/edit', [ProdukController::class, 'edit'])->name('produk.edit');
