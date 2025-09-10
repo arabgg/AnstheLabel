@@ -127,25 +127,93 @@
 
 @push('scripts')
 <script>
-document.querySelector('form[action="{{ route('checkout.save') }}"]').addEventListener('submit', function(e){
-    const teleponUser = document.getElementById('telepon_user').value.trim();
-    const teleponHidden = document.getElementById('telepon');
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form[action="{{ route('checkout.save') }}"]');
+    const teleponUserInput = document.getElementById('telepon_user');
+    const teleponHiddenInput = document.getElementById('telepon');
 
-    if(!teleponUser) {
-        e.preventDefault();
-        Swal.fire({ icon: 'error', title: 'Nomor telepon harus diisi!' });
-        return;
+    function showToast(icon, title) {
+        Swal.fire({
+            toast: true, 
+            position: 'top-end', 
+            icon: icon,
+            title: title,
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            customClass: {
+                popup: 'swal2-border-radius',
+            }
+        });
     }
-    teleponHidden.value = '+62' + teleponUser;
-});
 
-document.addEventListener("DOMContentLoaded", function () {
+    // Listener submit form
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const teleponUser = teleponUserInput.value.trim();
+        const email = form.querySelector('input[name="email"]').value.trim();
+        const metodeTerpilih = form.querySelector('input[name="metode_pembayaran_id"]:checked');
+        const cartItems = document.querySelectorAll('.checkout-product-item');
+
+        // Validasi telepon
+        if (!teleponUser) {
+            showToast('error', 'Nomor telepon harus diisi!');
+            return;
+        }
+        if (!/^\d{8,15}$/.test(teleponUser)) {
+            showToast('error', 'Nomor telepon tidak valid (8-15 digit)!');
+            return;
+        }
+        teleponHiddenInput.value = '+62' + teleponUser;
+
+        // Validasi email sederhana frontend
+        if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(email)) {
+            showToast('error', 'Format email tidak valid!');
+            return;
+        }
+
+        // Validasi metode pembayaran
+        if (!metodeTerpilih) {
+            showToast('error', 'Silakan pilih metode pembayaran!');
+            return;
+        }
+
+        // Validasi keranjang
+        if (cartItems.length === 0) {
+            showToast('error', 'Keranjang belanja kosong!');
+            return;
+        }
+        showToast('success', 'Form valid, transaksi diproses!');
+
+        setTimeout(() => {
+            form.submit();
+        }, 500);
+    });
+
+    teleponUserInput.addEventListener('input', function() {
+        this.value = this.value.replace(/[^\d]/g, '');
+    });
+
+    // Toggle payment list
+    document.querySelectorAll('.checkout-payment-toggle').forEach(button => {
+        button.addEventListener('click', () => {
+            const target = document.getElementById(button.dataset.target);
+            if (target.classList.contains('show')) {
+                target.classList.remove('show');
+            } else {
+                document.querySelectorAll('.checkout-payment-list').forEach(list => list.classList.remove('show'));
+                target.classList.add('show');
+            }
+        });
+    });
+
+    // Load wilayah (provinsi → kota → kecamatan → desa)
     const provinsi = document.getElementById("provinsi");
     const kota = document.getElementById("kota");
     const kecamatan = document.getElementById("kecamatan");
     const desa = document.getElementById("desa");
 
-    // Load provinsi
     fetch("/wilayah/provinsi")
         .then(res => res.json())
         .then(data => {
@@ -154,17 +222,16 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
 
-    // Event provinsi -> kota
     provinsi.addEventListener("change", function () {
         kota.innerHTML = `<option value="">Pilih Kota</option>`;
         kecamatan.innerHTML = `<option value="">Pilih Kecamatan</option>`;
         desa.innerHTML = `<option value="">Pilih Desa</option>`;
+        kota.disabled = !this.value;
+        kecamatan.disabled = true;
+        desa.disabled = true;
 
         if (this.value) {
-            kota.disabled = false;
-
             const provinsiId = this.selectedOptions[0].getAttribute("data-id");
-
             fetch(`/wilayah/kota/${provinsiId}`)
                 .then(res => res.json())
                 .then(data => {
@@ -172,23 +239,17 @@ document.addEventListener("DOMContentLoaded", function () {
                         kota.innerHTML += `<option value="${item.name}" data-id="${item.id}">${item.name}</option>`;
                     });
                 });
-        } else {
-            kota.disabled = true;
-            kecamatan.disabled = true;
-            desa.disabled = true;
         }
     });
 
-    // Event kota -> kecamatan
     kota.addEventListener("change", function () {
         kecamatan.innerHTML = `<option value="">Pilih Kecamatan</option>`;
         desa.innerHTML = `<option value="">Pilih Desa</option>`;
+        kecamatan.disabled = !this.value;
+        desa.disabled = true;
 
         if (this.value) {
-            kecamatan.disabled = false;
-
             const kotaId = this.selectedOptions[0].getAttribute("data-id");
-
             fetch(`/wilayah/kecamatan/${kotaId}`)
                 .then(res => res.json())
                 .then(data => {
@@ -196,21 +257,14 @@ document.addEventListener("DOMContentLoaded", function () {
                         kecamatan.innerHTML += `<option value="${item.name}" data-id="${item.id}">${item.name}</option>`;
                     });
                 });
-        } else {
-            kecamatan.disabled = true;
-            desa.disabled = true;
         }
     });
 
-    // Event kecamatan -> desa
-    kecamatan.addEventListener("change", function () {
+     kecamatan.addEventListener("change", function () {
         desa.innerHTML = `<option value="">Pilih Desa</option>`;
-
         if (this.value) {
             desa.disabled = false;
-
             const kecamatanId = this.selectedOptions[0].getAttribute("data-id");
-
             fetch(`/wilayah/desa/${kecamatanId}`)
                 .then(res => res.json())
                 .then(data => {
@@ -222,62 +276,6 @@ document.addEventListener("DOMContentLoaded", function () {
             desa.disabled = true;
         }
     });
-});
-</script>
-
-<script>
-function showToast(icon, title) {
-    Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: icon,
-        title: title,
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true
-    });
-}
-
-// Toggle payment list
-document.querySelectorAll('.checkout-payment-toggle').forEach(button => {
-    button.addEventListener('click', () => {
-        const target = document.getElementById(button.dataset.target);
-        if (target.classList.contains('show')) {
-            target.classList.remove('show');
-        } else {
-            document.querySelectorAll('.checkout-payment-list').forEach(list => list.classList.remove('show'));
-            target.classList.add('show');
-        }
-    });
-});
-
-// Validasi checkout secara dinamis
-document.querySelector('form[action="{{ route('checkout.save') }}"]').addEventListener('submit', function(e){
-    e.preventDefault(); // hentikan sementara submit
-
-    const form = e.target;
-
-    // Cek metode pembayaran terpilih
-    const metodeTerpilih = form.querySelector('input[name="metode_pembayaran_id"]:checked');
-    if (!metodeTerpilih) {
-        showToast('error', 'Silakan pilih metode pembayaran!');
-        return;
-    }
-
-    // Cek jumlah item di keranjang melalui DOM
-    const cartItems = document.querySelectorAll('.checkout-product-item');
-    if (cartItems.length === 0) {
-        showToast('error', 'Keranjang belanja kosong!');
-        return;
-    }
-
-    // Jika valid, tampilkan toast sukses
-    showToast('success', 'Metode pembayaran berhasil dipilih!');
-
-    // Submit form setelah delay agar toast terlihat
-    setTimeout(() => {
-        form.submit();
-    }, 500); // 0.5 detik
 });
 </script>
 @endpush
