@@ -134,9 +134,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Event provinsi -> kota
     provinsi.addEventListener("change", function () {
-        kota.innerHTML = `<option value="">-- Pilih Kota --</option>`;
-        kecamatan.innerHTML = `<option value="">-- Pilih Kecamatan --</option>`;
-        desa.innerHTML = `<option value="">-- Pilih Desa --</option>`;
+        kota.innerHTML = `<option value="">Pilih Kota</option>`;
+        kecamatan.innerHTML = `<option value="">Pilih Kecamatan</option>`;
+        desa.innerHTML = `<option value="">Pilih Desa</option>`;
 
         if (this.value) {
             kota.disabled = false;
@@ -159,8 +159,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Event kota -> kecamatan
     kota.addEventListener("change", function () {
-        kecamatan.innerHTML = `<option value="">-- Pilih Kecamatan --</option>`;
-        desa.innerHTML = `<option value="">-- Pilih Desa --</option>`;
+        kecamatan.innerHTML = `<option value="">Pilih Kecamatan</option>`;
+        desa.innerHTML = `<option value="">Pilih Desa</option>`;
 
         if (this.value) {
             kecamatan.disabled = false;
@@ -182,7 +182,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Event kecamatan -> desa
     kecamatan.addEventListener("change", function () {
-        desa.innerHTML = `<option value="">-- Pilih Desa --</option>`;
+        desa.innerHTML = `<option value="">Pilih Desa</option>`;
 
         if (this.value) {
             desa.disabled = false;
