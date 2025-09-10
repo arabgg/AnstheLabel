@@ -498,6 +498,11 @@ input[type="radio"]:checked + .detail-size-nama {
 .checkout-kontak-data::placeholder {font-family: 'Montserrat',sans-serif!important;color: #aaa;font-size: 12px;}
 .checkout-pengantaran-title { margin-bottom: 10px; font-size: 16px; font-weight: bold; }
 .checkout-kontak-data { width: 100%; padding: 10px; margin-bottom: 15px; border: 2px solid #6b0f2e; border-radius: 6px; }
+.checkout-pengantaran-telepon {display: flex;align-items: center;margin-bottom: 15px;}
+.checkout-pengantaran-telepon .prefix {padding: 10px;padding-right: 15px;background: #6b0f2e;border: 2px solid #6b0f2e;border-radius: 6px 0 0 6px;font-size: 12px;font-weight: 500;color: #fff;line-height: 1.5;}
+.checkout-pengantaran-telepon .telepon-input {flex: 1;padding: 10px;border: 2px solid #6b0f2e;border-left: none;border-radius: 0 6px 6px 0;font-size: 12px;color: #000;line-height: 1.5;margin-bottom: 0; }
+.checkout-pengantaran-telepon .telepon-input::-moz-placeholder {color: #aaa;font-family: 'Montserrat', sans-serif!important;font-size: 12px;}
+.checkout-pengantaran-telepon .telepon-input::placeholder {color: #aaa;font-family: 'Montserrat', sans-serif!important;font-size: 12px;}
 .checkout-pengantaran-data { width: 100%; padding: 10px; margin-bottom: 15px; border: 2px solid #6b0f2e; border-radius: 6px; }
 .checkout-pengantaran-data::-moz-placeholder {font-family: 'Montserrat',sans-serif!important;color: #aaa;font-size: 12px;}
 .checkout-pengantaran-data::placeholder {font-family: 'Montserrat',sans-serif!important;color: #aaa;font-size: 12px;}
