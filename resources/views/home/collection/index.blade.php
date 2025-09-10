@@ -77,15 +77,5 @@
         document.getElementById("viewAllButton").style.display = "none";
         document.getElementById("hideButton").style.display = "none";
     }
-
-    // Auto scroll ke produk setelah filter
-    @if(request()->has('filter'))
-    window.addEventListener('load', function () {
-        const target = document.getElementById("katalog");
-        if (target) {
-            target.scrollIntoView({ behavior: "smooth" });
-        }
-    });
-    @endif
 </script>
 @endpush

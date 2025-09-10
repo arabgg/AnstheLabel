@@ -53,6 +53,10 @@ Route::post('/cart/update', [HomeController::class, 'update_cart'])->name('cart.
 Route::post('/cart/remove', [HomeController::class, 'remove_cart'])->name('cart.remove');
 Route::get('/checkout', [HomeController::class, 'checkoutForm'])->name('checkout.form');
 Route::post('/checkout/save', [HomeController::class, 'saveCheckout'])->name('checkout.save');
-Route::get('/checkout/payment', [HomeController::class, 'paymentForm'])->name('checkout.payment');
-Route::post('/checkout/process', [HomeController::class, 'processPayment'])->name('checkout.process');
-Route::get('/checkout/success/{detail_id}', [HomeController::class, 'paymentSuccess'])->name('checkout.success');
+
+Route::get('wilayah/provinsi', [HomeController::class, 'provinsi']);
+Route::get('wilayah/kota/{provinsi_id}', [HomeController::class, 'kota']);
+Route::get('wilayah/kecamatan/{kota_id}', [HomeController::class, 'kecamatan']) ;
+Route::get('wilayah/desa/{kecamatan_id}', [HomeController::class, 'desa']);
+
+

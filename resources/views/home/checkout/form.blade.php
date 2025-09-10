@@ -10,6 +10,9 @@
             <div class="checkout-kontak">
                 <h3 class="checkout-kontak-title">Kontak</h3>
                 <input class="checkout-kontak-data" type="email" name="email" placeholder="Email" required>
+                @error('email')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
                 <div class="checkout-newsletter">
                     <label>
                         <input type="checkbox" name="newsletter" value="yes" required>
@@ -22,10 +25,23 @@
             <div class="checkout-pengantaran">
                 <h3 class="checkout-pengantaran-title">Pengantaran</h3>
                 <input class="checkout-pengantaran-data" type="text" name="nama" placeholder="Nama Lengkap" required>
-                <input class="checkout-pengantaran-data" type="text" name="alamat" placeholder="Alamat" required>
-                <input class="checkout-pengantaran-data" type="text" name="kota" placeholder="Kota" required>
-                <input class="checkout-pengantaran-data" type="text" name="kecamatan" placeholder="Kecamatan" required>
                 <input class="checkout-pengantaran-data" type="tel" name="telepon" placeholder="Telepon" pattern="[0-9]+" required>
+                @error('telepon')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
+                <select class="checkout-pengantaran-data" style="margin-left: 0px" id="provinsi" name="provinsi" class="form-select">
+                    <option value="">Pilih Provinsi</option>
+                </select>
+                <select class="checkout-pengantaran-data" style="margin-left: 0px" id="kota" name="kota" class="form-select" disabled>
+                    <option value="">Pilih Kota/Kabupaten</option>
+                </select>
+                <select class="checkout-pengantaran-data" style="margin-left: 0px" id="kecamatan" name="kecamatan" class="form-select" disabled>
+                    <option value="">Pilih Kecamatan</option>
+                </select>
+                <select class="checkout-pengantaran-data" style="margin-left: 0px" id="desa" name="desa" class="form-select" disabled>
+                    <option value="">Pilih Kelurahan/Desa</option>
+                </select>
+                <input class="checkout-pengantaran-data" type="text" name="alamat" placeholder="Alamat" required>
             </div>
 
             {{-- Bagian Metode Pembayaran --}}
@@ -38,6 +54,7 @@
                                 class="checkout-payment-toggle" 
                                 data-target="payment-{{ $grouped->first()->metode_id }}">
                             {{ $grouped->first()->metode->nama_metode }}
+                            <span style="float: right; font-size: 14px;">&#9662;</span>
                         </button>
 
                         <div id="payment-{{ $grouped->first()->metode_id }}" class="checkout-payment-list">
@@ -99,6 +116,93 @@
 @endsection
 
 @push('scripts')
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const provinsi = document.getElementById("provinsi");
+    const kota = document.getElementById("kota");
+    const kecamatan = document.getElementById("kecamatan");
+    const desa = document.getElementById("desa");
+
+    // Load provinsi
+    fetch("/wilayah/provinsi")
+        .then(res => res.json())
+        .then(data => {
+            data.forEach(item => {
+                provinsi.innerHTML += `<option value="${item.name}" data-id="${item.id}">${item.name}</option>`;
+            });
+        });
+
+    // Event provinsi -> kota
+    provinsi.addEventListener("change", function () {
+        kota.innerHTML = `<option value="">-- Pilih Kota --</option>`;
+        kecamatan.innerHTML = `<option value="">-- Pilih Kecamatan --</option>`;
+        desa.innerHTML = `<option value="">-- Pilih Desa --</option>`;
+
+        if (this.value) {
+            kota.disabled = false;
+
+            const provinsiId = this.selectedOptions[0].getAttribute("data-id");
+
+            fetch(`/wilayah/kota/${provinsiId}`)
+                .then(res => res.json())
+                .then(data => {
+                    data.forEach(item => {
+                        kota.innerHTML += `<option value="${item.name}" data-id="${item.id}">${item.name}</option>`;
+                    });
+                });
+        } else {
+            kota.disabled = true;
+            kecamatan.disabled = true;
+            desa.disabled = true;
+        }
+    });
+
+    // Event kota -> kecamatan
+    kota.addEventListener("change", function () {
+        kecamatan.innerHTML = `<option value="">-- Pilih Kecamatan --</option>`;
+        desa.innerHTML = `<option value="">-- Pilih Desa --</option>`;
+
+        if (this.value) {
+            kecamatan.disabled = false;
+
+            const kotaId = this.selectedOptions[0].getAttribute("data-id");
+
+            fetch(`/wilayah/kecamatan/${kotaId}`)
+                .then(res => res.json())
+                .then(data => {
+                    data.forEach(item => {
+                        kecamatan.innerHTML += `<option value="${item.name}" data-id="${item.id}">${item.name}</option>`;
+                    });
+                });
+        } else {
+            kecamatan.disabled = true;
+            desa.disabled = true;
+        }
+    });
+
+    // Event kecamatan -> desa
+    kecamatan.addEventListener("change", function () {
+        desa.innerHTML = `<option value="">-- Pilih Desa --</option>`;
+
+        if (this.value) {
+            desa.disabled = false;
+
+            const kecamatanId = this.selectedOptions[0].getAttribute("data-id");
+
+            fetch(`/wilayah/desa/${kecamatanId}`)
+                .then(res => res.json())
+                .then(data => {
+                    data.forEach(item => {
+                        desa.innerHTML += `<option value="${item.name}" data-id="${item.id}">${item.name}</option>`;
+                    });
+                });
+        } else {
+            desa.disabled = true;
+        }
+    });
+});
+</script>
+
 <script>
 function showToast(icon, title) {
     Swal.fire({
