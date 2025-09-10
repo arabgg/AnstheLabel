@@ -25,6 +25,9 @@ class DatabaseSeeder extends Seeder
             UkuranProdukSeeder::class,
             WarnaProdukSeeder::class,
             FotoProdukSeeder::class,
+            PembayaranSeeder::class,
+            TransaksiSeeder::class,
+            DetailTransaksiSeeder::class,
         ]);
     }
 }

@@ -49,6 +49,7 @@ html,body {width:100%;font-family:'Montserrat',sans-serif!important;}
 .view-all-link:hover {color:white;}
 .bestproduk-grid {display:grid;grid-template-columns:repeat(4, 1fr);gap:20px 20px;}
 .bestproduk-card {background-color:#fff;overflow:hidden;position:relative;}
+.bestproduk-hidden {display: none;}
 .bestproduk-image-wrapper {position:relative;overflow:hidden;height:250px;}
 .bestproduk-image {width:100%;height:250px;object-fit:cover;transition:opacity 1s ease;position:absolute;top:0;left:0;}
 .default-image {z-index:1;opacity:1;}
@@ -433,7 +434,7 @@ input[type="radio"]:checked + .detail-size-nama {
 
 /* CART STYLE */
 .cart-container {max-width:1150px;margin:auto;margin-top:30px;margin-bottom:80px;padding:0 20px;}
-.cart-container h2 {margin-bottom:40px;font-size:32px;font-weight:bold;text-align:center;}
+.cart-container h2 {margin-bottom:40px;font-size:32px;font-weight:bold;text-align:left;}
 .cart-container p {text-align:center;padding:80px 0;margin-bottom:60px;font-size:18px;font-weight:400;}
 .cart-logo {align-items:center;display:flex;justify-content:center;margin-bottom:20px;padding:16px 0;}
 .cart-logo img {height:50px;margin:0;}
@@ -690,7 +691,7 @@ input[type="radio"]:checked + .detail-size-nama {
 .invoice-sub-title {font-size:16px;font-weight:600;margin-bottom:80px;color:#333;}
 .invoice-error {background:#ffe5e5;color:#d9534f;padding:10px;border-radius:8px;margin-bottom:15px;font-size:14px;}
 .invoice-form {display:flex;align-items:center;flex-direction:column;gap:15px;width:100%;}
-.invoice-label {padding-left:10%;font-weight:500;align-self:flex-start;font-size:14px;color:#555;}
+.invoice-label {padding-left:17%;font-weight:500;align-self:flex-start;font-size:14px;color:#555;}
 .invoice-input {padding:12px;width:80%;max-width:500px;border:1px solid #ccc;border-radius:8px;font-size:14px;transition:border 0.2s ease;}
 .invoice-input::placeholder {font-size:12px;font-family:'Montserrat',sans-serif!important;}
 .invoice-input:focus {outline:none;border-color:#A65A6A;box-shadow:0 0 4px rgba(0,123,255,0.3);}

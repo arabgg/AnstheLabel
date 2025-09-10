@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Validator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,6 +29,10 @@ class AppServiceProvider extends ServiceProvider
         View::composer('*', function ($view) {
             $cart = session()->get('cart', []);
             $view->with('cartCount', count($cart));
+        });
+
+        Validator::extend('email_active', function ($attribute, $value, $parameters, $validator) {
+            return checkdnsrr(explode('@', $value)[1], 'MX');
         });
     }
 }

@@ -3,34 +3,30 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>@yield('title', 'Admin Panel')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="//unpkg.com/alpinejs" defer></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>Admin Ansthelabel</title>
+
+    <link rel="stylesheet" href="{{ mix('css/app.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
-    @stack('head')
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
 
-<body class="bg-gray-00 min-h-screen flex flex-col">
-
-    {{-- Navbar Mobile --}}
+<body class="bg-gray-200 min-h-screen flex flex-col font-Montserrat">
     @include('admin.layouts.navbar-mobile')
     
     <div class="flex">
-        {{-- Sidebar Desktop --}}
-        @include('admin.layouts.sidebar')
-
-        {{-- Konten Utama --}}
-        <main class="flex-1 p-2">
-            @yield('content')
-        </main>
+        @include('admin.layouts.sidebar') 
+        
+        <div class="flex-1 flex flex-col min-h-screen ml-60 ">
+            <main class="flex-1 p-2">
+                @yield('content')
+            </main>
+        </div>
     </div>
-
-    {{-- Footer --}}
-    @include('admin.layouts.footer')
 
     @stack('scripts')
 </body>
-
 </html>

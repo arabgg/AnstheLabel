@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\BannerModel;
 use App\Models\DetailTransaksiModel;
 use App\Models\KategoriModel;
-use App\Models\MetodeModel;
+use Illuminate\Support\Facades\Http;
 use App\Models\MetodePembayaranModel;
 use App\Models\PembayaranModel;
 use Illuminate\Http\Request;
 use App\Models\ProdukModel;
 use App\Models\TransaksiModel;
+use App\Rules\EmailActive;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -25,20 +26,18 @@ class HomeController extends Controller
         });
 
         $newarrival = Cache::remember('newarrival', 600, function () {
-            return ProdukModel::select('produk_id', 'nama_produk', 'harga', 'diskon')
+            return ProdukModel::select('produk_id', 'kategori_id', 'nama_produk', 'harga', 'diskon')
                 ->with([
-                    'kategori:kategori_id,nama_kategori',
                     'fotoUtama', 'hoverFoto'
                 ])
-                ->latest('produk_id')
+                ->orderBy('produk_id', 'desc')
                 ->take(4)
                 ->get();
         });
 
         $bestseller = Cache::remember('bestseller', 600, function () {
-            return ProdukModel::select('produk_id', 'nama_produk', 'harga', 'diskon')
+            return ProdukModel::select('produk_id', 'kategori_id','nama_produk', 'harga', 'diskon')
                 ->with([
-                    'kategori:kategori_id,nama_kategori',
                     'fotoUtama', 'hoverFoto'
                 ])
                 ->orderByDesc('harga')
@@ -73,16 +72,12 @@ class HomeController extends Controller
 
         $filterKategori = (array) $request->input('filter', []);
         $searchQuery = $request->input('search', '');
-
-        $cacheKey = 'produk_' . md5(json_encode($filterKategori) . '_' . $searchQuery);
         
-        $produk = Cache::remember($cacheKey, 600, function() use ($filterKategori, $searchQuery) {
-            return ProdukModel::select('produk_id', 'nama_produk', 'harga', 'diskon', 'kategori_id')
+        $produk = ProdukModel::select('produk_id', 'nama_produk', 'harga', 'diskon', 'kategori_id')
                 ->with(['kategori:kategori_id,nama_kategori', 'fotoUtama'])
                 ->when(!empty($filterKategori), fn($q) => $q->whereIn('kategori_id', $filterKategori))
                 ->when(!empty($searchQuery), fn($q) => $q->where('nama_produk', 'like', "%{$searchQuery}%"))
                 ->paginate(100);
-        });
 
         $kategori = KategoriModel::select('kategori_id', 'nama_kategori')->get();
 
@@ -150,18 +145,20 @@ class HomeController extends Controller
 
     public function transaksi($kode_invoice)
     {
-        $transaksi = TransaksiModel::with(['detail.produk', 'detail.ukuran', 'detail.warna', 'detail.pembayaran'])
+        $hero = BannerModel::select('banner_id', 'nama_banner', 'foto_banner')
+                ->where('banner_id', 9)
+                ->first();
+
+        $transaksi = TransaksiModel::with(['detail.produk', 'detail.ukuran', 'detail.warna', 'pembayaran'])
             ->where('kode_invoice', $kode_invoice)
             ->firstOrFail();
 
-        // Ambil step dari config
         $steps = config('transaksi.steps');
 
-        // Cari index step berdasarkan status sekarang
         $statusKeys = array_keys($steps);
         $stepIndex = array_search($transaksi->status_transaksi, $statusKeys);
 
-        return view('home.checkout.transaksi', compact('transaksi', 'steps', 'stepIndex'));
+        return view('home.checkout.transaksi', compact('transaksi', 'steps', 'stepIndex', 'hero'));
     }
 
 
@@ -242,6 +239,35 @@ class HomeController extends Controller
         return redirect()->route('cart.index');
     }
 
+    public function provinsi()
+    {
+        $response = Http::withoutVerifying()
+            ->get("https://emsifa.github.io/api-wilayah-indonesia/api/provinces.json");
+
+        return response()->json($response->json());
+    }
+
+    public function kota($provinsi_id)
+    {
+        $response = Http::withoutVerifying()
+            ->get("https://emsifa.github.io/api-wilayah-indonesia/api/regencies/{$provinsi_id}.json");
+        return response()->json($response->json(), $response->status());
+    }
+
+    public function kecamatan($kota_id)
+    {
+        $response = Http::withoutVerifying()
+            ->get("https://emsifa.github.io/api-wilayah-indonesia/api/districts/{$kota_id}.json");
+        return response()->json($response->json(), $response->status());
+    }
+
+    public function desa($kecamatan_id)
+    {
+        $response = Http::withoutVerifying()
+            ->get("https://emsifa.github.io/api-wilayah-indonesia/api/villages/{$kecamatan_id}.json");
+        return response()->json($response->json(), $response->status());
+    }
+
     public function checkoutForm()
     {
         $cart = session()->get('cart', []);
@@ -261,39 +287,44 @@ class HomeController extends Controller
     {
         $validated = $request->validate([
             'nama' => 'required|string',
-            'telepon' => 'required|string',
-            'email' => 'required|email',
-            'alamat' => 'required|string',
+            'telepon' => [
+                'required',
+                'regex:/^(\+62|62|0)8[1-9][0-9]{6,11}$/'
+            ],
+            'email' => ['required', 'email', new EmailActive],
+            'provinsi' => 'required|string',
             'kota' => 'required|string',
             'kecamatan' => 'required|string',
+            'desa' => 'required|string',
+            'alamat' => 'required|string',
             'metode_pembayaran_id' => 'required|exists:t_metode_pembayaran,metode_pembayaran_id'
         ]);
 
-        $fullAddress = "{$validated['alamat']}, {$validated['kota']}, {$validated['kecamatan']}";
+        $fullAddress = "{$validated['alamat']}, {$validated['desa']}, {$validated['kecamatan']}, {$validated['kota']}, {$validated['provinsi']}";
 
         $cart = session()->get('cart', []);
-        $checkoutData = session()->get('checkout_data');
 
-        if (!$checkoutData || empty($cart)) {
+        if (empty($cart)) {
             return redirect()->route('cart.index')->with('error', 'Data tidak valid.');
         }
 
-        $transaksiId = null;
+        $kode_invoice = null;
         
-        DB::transaction(function () use ($cart, $validated, $fullAddress, &$transaksiId) {
-            $transaksi = TransaksiModel::create([
-                'nama_customer'     => $validated['nama'],
-                'no_telp'           => $validated['telepon'],
-                'email'             => $validated['email'],
-                'alamat'            => $fullAddress
-            ]);
-
+        DB::transaction(function () use ($cart, $validated, $fullAddress, &$kode_invoice) {
             $total = collect($cart)->sum(fn($item) => $item['harga'] * $item['quantity']);
 
             $pembayaran = PembayaranModel::create([
                 'metode_pembayaran_id'  => $validated['metode_pembayaran_id'],
                 'jumlah_produk'         => count($cart),
                 'total_harga'           => $total,
+            ]);
+
+            $transaksi = TransaksiModel::create([
+                'pembayaran_id'     => $pembayaran->pembayaran_id,
+                'nama_customer'     => $validated['nama'],
+                'no_telp'           => $validated['telepon'],
+                'email'             => $validated['email'],
+                'alamat'            => $fullAddress
             ]);
 
             foreach ($cart as $item) {
@@ -306,89 +337,11 @@ class HomeController extends Controller
                     'jumlah'         => $item['quantity'],
                 ]);
             }
-            $transaksiId = $transaksi->transaksi_id; 
+            $kode_invoice = $transaksi->kode_invoice; 
         });
 
         session()->forget(['cart', 'checkout_data']);
 
-        return redirect()->route('checkout.success', ['transaksi_id' => $transaksiId]);
-    }
-
-    public function paymentForm()
-    {
-        $cart = session()->get('cart', []);
-        $checkoutData = session()->get('checkout_data');
-        $total = collect($cart)->sum(fn($item) => $item['harga'] * $item['quantity']);
-
-        if (!$checkoutData || empty($cart)) {
-            return redirect()->route('cart.index')->with('error', 'Data checkout tidak valid.');
-        }
-
-        $paymentMethods = MetodeModel::select('metode_id', 'nama_metode')->get();
-
-        return view('home.checkout.payment', compact('cart', 'checkoutData', 'paymentMethods', 'total'));
-    }
-
-    public function processPayment(Request $request)
-    {
-        $request->validate([
-            'metode_id' => 'required|exists:m_metode_pembayaran,metode_id'
-        ]);
-
-        $cart = session()->get('cart', []);
-        $checkoutData = session()->get('checkout_data');
-
-        if (!$checkoutData || empty($cart)) {
-            return redirect()->route('cart.index')->with('error', 'Data tidak valid.');
-        }
-
-        $detailId = null;
-
-        DB::transaction(function () use ($cart, $checkoutData, $request, &$detailId) {
-            $transaksi = TransaksiModel::create([
-                'nama_customer'     => $checkoutData['nama'],
-                'no_telp'           => $checkoutData['telepon'],
-                'email'             => $checkoutData['email'],
-                'alamat'            => $checkoutData['alamat'],
-            ]);
-
-            $total = collect($cart)->sum(fn($item) => $item['harga'] * $item['quantity']);
-
-            $pembayaran = PembayaranModel::create([
-                'metode_id'         => $request->metode_id,
-                'jumlah_produk'     => count($cart),
-                'total_harga'       => $total,
-            ]);
-
-            foreach ($cart as $item) {
-                $detail = DetailTransaksiModel::create([
-                    'transaksi_id'   => $transaksi->transaksi_id,
-                    'pembayaran_id'  => $pembayaran->pembayaran_id,
-                    'produk_id'      => $item['produk_id'],
-                    'ukuran_id'      => $item['ukuran_id'],
-                    'warna_id'       => $item['warna_id'],
-                    'jumlah'         => $item['quantity'],
-                ]);
-
-                $detailId = $detail->detail_transaksi_id;
-            }
-        });
-
-        session()->forget(['cart', 'checkout_data']);
-
-        return redirect()->route('checkout.success', ['detail_id' => $detailId]);
-    }
-
-
-    public function paymentSuccess($detail_id)
-    {
-        $detail = DetailTransaksiModel::select('detail_transaksi_id', 'transaksi_id', 'pembayaran_id')
-            ->with([
-                'transaksi:transaksi_id,kode_invoice',
-                'pembayaran.metode:metode_id,nama_metode,kode_bayar'
-            ])
-            ->findOrFail($detail_id);
-
-        return view('home.checkout.success', compact('detail'));
+        return redirect()->route('transaksi.show', ['kode_invoice' => $kode_invoice]);
     }
 }

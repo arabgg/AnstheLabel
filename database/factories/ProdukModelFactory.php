@@ -16,6 +16,7 @@ class ProdukModelFactory extends Factory
             'deskripsi'   => $this->faker->sentence(),
             'harga'       => $this->faker->numberBetween(50000, 200000),
             'diskon'      => $this->faker->randomElement([0, 10000, 20000]),
+            'stok_produk' => $this->faker->numberBetween(0, 100),
             'kategori_id' => \App\Models\KategoriModel::factory(),
             'bahan_id'    => \App\Models\BahanModel::factory(),
         ];

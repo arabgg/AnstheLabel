@@ -4,18 +4,31 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\KategoriModel;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class KategoriController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $kategori = KategoriModel::all();
-        return view('kategori.index', compact('kategori'));
+        $searchQuery = $request->input('search', '');
+        $sortColumn = $request->input('sort', 'created_at'); // default sorting
+        $sortDirection = $request->input('direction', 'desc');
+
+        $kategori = KategoriModel::select('kategori_id', 'nama_kategori', 'created_at', 'updated_at')
+            ->when(!empty($searchQuery), function ($q) use ($searchQuery) {
+                $q->where('nama_kategori', 'like', "%{$searchQuery}%");
+            })
+            ->orderBy($sortColumn, $sortDirection)
+            ->paginate(10)
+            ->withQueryString(); // supaya search tetap terbawa saat sorting
+
+        return view('admin.kategori.index', compact('kategori', 'searchQuery', 'sortColumn', 'sortDirection'));
     }
 
     public function create()
     {
-        return view('kategori.create');
+        return view('admin.kategori.create');
     }
 
     public function store(Request $request)
@@ -37,32 +50,41 @@ class KategoriController extends Controller
 
     public function show($id)
     {
-        $kategori = KategoriModel::findOrFail($id);
-        return view('kategori.show', compact('kategori'));
+        $kategori = KategoriModel::select('kategori_id', 'nama_kategori')
+            ->findOrFail($id);
+
+        if (request()->ajax()) {
+            return view('admin.kategori.show', compact('kategori'));
+        }
+
+        return redirect()->route('kategori.index');
     }
 
     public function edit($id)
     {
-        $kategori = KategoriModel::findOrFail($id);
-        return view('kategori.edit', compact('kategori'));
+        $kategori = KategoriModel::select('kategori_id', 'nama_kategori')
+            ->findOrFail($id);
+
+        return view('admin.kategori.edit', compact('kategori'));
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
             'nama_kategori' => 'required|string|max:255',
-        ], [
-            'nama_kategori.required' => 'Nama kategori wajib diisi.',
-            'nama_kategori.string' => 'Nama kategori harus berupa teks.',
-            'nama_kategori.max' => 'Nama kategori maksimal 255 karakter.',
         ]);
 
-        $kategori = KategoriModel::findOrFail($id);
-        $kategori->update([
-            'nama_kategori' => $request->nama_kategori,
-        ]);
+        $kategori = KategoriModel::select('kategori_id', 'nama_kategori')
+            ->findOrFail($id);
+        $kategori->nama_kategori = $request->nama_kategori;
+        $kategori->save();
 
-        return redirect()->route('kategori.index')->with('success', 'Kategori berhasil diperbarui!');
+        // Selalu kembalikan JSON
+        return response()->json([
+            'success' => true,
+            'message' => 'Kategori berhasil diperbarui',
+            'data' => $kategori
+        ]);
     }
 
     public function destroy($id)
@@ -70,6 +92,10 @@ class KategoriController extends Controller
         $kategori = KategoriModel::findOrFail($id);
         $kategori->delete();
 
-        return redirect()->route('kategori.index')->with('success', 'Kategori berhasil dihapus!');
+        return response()->json([
+            'success' => true,
+            'message' => 'Kategori berhasil dihapus',
+            'id' => $id
+        ]);
     }
 }

@@ -7,22 +7,31 @@ use Illuminate\Http\Request;
 
 class UkuranController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $ukuran = UkuranModel::all();
-        return view('ukuran.index', compact('ukuran'));
+        $searchQuery = $request->input('search', '');
+        $sortColumn = $request->input('sort', 'created_at'); // default sorting
+        $sortDirection = $request->input('direction', 'desc');
+        $ukuran = UkuranModel::select('ukuran_id', 'nama_ukuran', 'deskripsi', 'created_at', 'updated_at')
+            ->when(!empty($searchQuery), function ($q) use ($searchQuery) {
+                $q->where('nama_ukuran', 'like', "%{$searchQuery}%");
+            })
+            ->orderBy($sortColumn, $sortDirection)
+            ->paginate(10);
+
+        return view('admin.ukuran.index', compact('ukuran', 'searchQuery', 'sortColumn', 'sortDirection'));
     }
 
     public function create()
     {
-        return view('ukuran.create');
+        return view('admin.ukuran.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'nama_ukuran' => 'required|string|max:255',
-            'deskripsi' => 'nullable|string',
+            'deskripsi' => 'required|string',
         ]);
 
         UkuranModel::create($request->all());
@@ -30,36 +39,55 @@ class UkuranController extends Controller
         return redirect()->route('ukuran.index')->with('success', 'Ukuran berhasil ditambahkan!');
     }
 
-    public function show(string $id)
+    public function show($id)
     {
-        $ukuran = UkuranModel::findOrFail($id);
-        return view('ukuran.show', compact('ukuran'));
+        $ukuran = UkuranModel::select('ukuran_id', 'nama_ukuran', 'deskripsi')
+            ->findOrFail($id);
+
+        if (request()->ajax()) {
+            return view('admin.ukuran.show', compact('ukuran'));
+        }
+
+        return redirect()->route('ukuran.index');
     }
 
     public function edit(string $id)
     {
-        $ukuran = UkuranModel::findOrFail($id);
-        return view('ukuran.edit', compact('ukuran'));
+        $ukuran = UkuranModel::select('ukuran_id', 'nama_ukuran', 'deskripsi')
+            ->findOrFail($id);
+
+        return view('admin.ukuran.edit', compact('ukuran'));
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
         $request->validate([
             'nama_ukuran' => 'required|string|max:255',
-            'deskripsi' => 'nullable|string',
+            'deskripsi' => 'required|string',
         ]);
 
-        $ukuran = UkuranModel::findOrFail($id);
-        $ukuran->update($request->all());
+        $ukuran = UkuranModel::select('ukuran_id', 'nama_ukuran', 'deskripsi')
+            ->findOrFail($id);
+        $ukuran->nama_ukuran = $request->nama_ukuran;
+        $ukuran->deskripsi = $request->deskripsi;
+        $ukuran->save();
 
-        return redirect()->route('ukuran.index')->with('success', 'Ukuran berhasil diupdate!');
+        return response()->json([
+            'success' => true,
+            'message' => 'Ukuran berhasil diperbarui',
+            'data' => $ukuran
+        ]);
     }
 
-    public function destroy(string $id)
+    public function destroy($id)
     {
         $ukuran = UkuranModel::findOrFail($id);
         $ukuran->delete();
 
-        return redirect()->route('ukuran.index')->with('success', 'Ukuran berhasil dihapus!');
+        return response()->json([
+            'success' => true,
+            'message' => 'Ukuran berhasil dihapus',
+            'id' => $id
+        ]);
     }
 }

@@ -7,55 +7,86 @@ use Illuminate\Http\Request;
 
 class WarnaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $warna = WarnaModel::all();
-        return view('warna.index', compact('warna'));
+        $searchQuery = $request->input('search', '');
+        $sortColumn = $request->input('sort', 'created_at'); // default sorting
+        $sortDirection = $request->input('direction', 'desc');
+
+        $warna = WarnaModel::select('warna_id', 'nama_warna', 'kode_hex', 'created_at', 'updated_at')
+        ->when(!empty($searchQuery), function($q) use ($searchQuery) {
+                $q->where('nama_warna', 'like', "%{$searchQuery}%");
+            })
+            ->orderBy($sortColumn, $sortDirection)
+            ->paginate(10);
+
+        return view('admin.warna.index', compact('warna', 'searchQuery', 'sortColumn', 'sortDirection'));
     }
 
     public function create()
     {
-        return view('warna.create');   
+        return view('admin.warna.create');   
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'kode_hex' => 'required|string|max:7',
+            'kode_hex' => 'required|regex:/^#[0-9A-Fa-f]{6}$/|max:7',
             'nama_warna' => 'required|string|max:255',
         ]);
         WarnaModel::create($request->all());
         return redirect()->route('warna.index')->with('success', 'Warna berhasil ditambahkan!');
     }
 
-    public function show(string $id)
+    public function show($id)
     {
-        $warna = WarnaModel::findOrFail($id);
-        return view('warna.show', compact('warna'));
+        $warna = WarnaModel::select('warna_id', 'nama_warna', 'kode_hex')
+            ->findOrFail($id);
+        
+        if (request()->ajax()) {
+            return view('admin.warna.show', compact('warna'));
+        }
+
+        return redirect()->route('warna.index');
     }
 
     public function edit(string $id)
     {
-        $warna = WarnaModel::findOrFail($id);
-        return view('warna.edit', compact('warna'));
+        $warna = warnaModel::select('warna_id', 'nama_warna', 'kode_hex')
+            ->findOrFail($id);
+
+        return view('admin.warna.edit', compact('warna'));
     }
 
-    
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
         $request->validate([
-            'kode_hex' => 'required|string|max:7',
             'nama_warna' => 'required|string|max:255',
+            'kode_hex' => 'required|regex:/^#[0-9A-Fa-f]{6}$/|max:7',
         ]);
-        $warna = WarnaModel::findOrFail($id);
-        $warna->update($request->all());
-        return redirect()->route('warna.index')->with('success', 'Warna berhasil diperbarui!');
+
+        $warna = warnaModel::select('warna_id', 'nama_warna', 'kode_hex')
+            ->findOrFail($id);
+        $warna->nama_warna = $request->nama_warna;
+        $warna->kode_hex = $request->kode_hex;
+        $warna->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Warna berhasil diperbarui',
+            'data' => $warna
+        ]);
     }
-    
-    public function destroy(string $id)
+
+    public function destroy($id)
     {
         $warna = WarnaModel::findOrFail($id);
         $warna->delete();
-        return redirect()->route('warna.index')->with('success', 'Warna berhasil dihapus!');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Warna berhasil dihapus',
+            'id' => $id
+        ]);
     }
 }

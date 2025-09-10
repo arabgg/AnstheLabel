@@ -5,7 +5,7 @@
 
     <div class="bestproduk-grid" id="katalogGrid">
         @foreach ($newarrival as $index => $item)
-            <div class="bestproduk-card">
+            <div class="bestproduk-card {{ $index >= 4 ? 'bestproduk-hidden' : '' }}">
                 {{-- Skeleton Wrapper --}}
                 <div class="skeleton-wrapper">
                     <div class="skeleton skeleton-img"></div>
@@ -39,7 +39,7 @@
                                 <span class="price-now">Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
                             @endif
                         </div>
-                        <div class="bestproduk-kategori">{{ $item->kategori->nama_kategori ?? '-' }}</div>
+                        <div class="bestproduk-kategori">{{ $item->kategori->nama_kategori }}</div>
                     </div>
                 </div>
             </div>
@@ -47,6 +47,11 @@
     </div>
     
     <div class="bestproduk-buttons">
-        <a href="{{ route('collection') }}" class="view-all-link">VIEW ALL</a>  
+        @if (count($newarrival) > 4)
+            <button id="viewAllButton" class="more-link" onclick="showAllKatalog()">MORE</button>
+            <div class="bestproduk-buttons">
+                <a id="collectionButton" href="{{ route('collection') }}" class="view-all-link" style="display:none;">VIEW ALL</a>
+            </div>
+        @endif
     </div>
 </div>
