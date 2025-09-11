@@ -8,7 +8,7 @@
             @csrf
             {{-- Bagian Kontak --}}
             <div class="checkout-kontak">
-                <h3 class="checkout-kontak-title">Kontak</h3>
+                <h3 class="checkout-kontak-title">Contact</h3>
                 <input class="checkout-kontak-data" type="email" name="email" placeholder="Email" required>
                 @error('email')
                     <small class="text-danger">{{ $message }}</small>
@@ -23,8 +23,8 @@
 
             {{-- Bagian Pengantaran --}}
             <div class="checkout-pengantaran">
-                <h3 class="checkout-pengantaran-title">Pengantaran</h3>
-                <input class="checkout-pengantaran-data" type="text" name="nama" placeholder="Nama Lengkap" required>
+                <h3 class="checkout-pengantaran-title">Delivery</h3>
+                <input class="checkout-pengantaran-data" type="text" name="nama" placeholder="Full Name" required>
 
                 {{-- Telepon --}}
                 <div class="checkout-pengantaran-telepon">
@@ -32,7 +32,7 @@
                     <input class="checkout-pengantaran-data telepon-input" 
                         type="tel" 
                         id="telepon_user" 
-                        placeholder="81234567890" 
+                        placeholder="813xxxxxxx" 
                         pattern="[0-9]{8,15}" 
                         required>
                 </div>
@@ -40,23 +40,23 @@
 
                 {{-- Alamat Lengkap --}}
                 <select class="checkout-pengantaran-data" style="margin-left: 0px" id="provinsi" name="provinsi" class="form-select">
-                    <option value="">Pilih Provinsi</option>
+                    <option value="">Select Provinsi</option>
                 </select>
                 <select class="checkout-pengantaran-data" style="margin-left: 0px" id="kota" name="kota" class="form-select" disabled>
-                    <option value="">Pilih Kota/Kabupaten</option>
+                    <option value="">Select Kota/Kabupaten</option>
                 </select>
                 <select class="checkout-pengantaran-data" style="margin-left: 0px" id="kecamatan" name="kecamatan" class="form-select" disabled>
-                    <option value="">Pilih Kecamatan</option>
+                    <option value="">Select Kecamatan</option>
                 </select>
                 <select class="checkout-pengantaran-data" style="margin-left: 0px" id="desa" name="desa" class="form-select" disabled>
-                    <option value="">Pilih Kelurahan/Desa</option>
+                    <option value="">Select Kelurahan/Desa</option>
                 </select>
                 <input class="checkout-pengantaran-data" type="text" name="alamat" placeholder="Alamat" required>
             </div>
 
             {{-- Bagian Metode Pembayaran --}}
             <div class="checkout-payment-section">
-                <h3 class="checkout-payment-title">Metode Pembayaran</h3>
+                <h3 class="checkout-payment-title">Payment Method</h3>
 
                 @foreach($metode->groupBy('metode_id') as $grouped)
                     <div class="checkout-payment-group">
@@ -89,7 +89,7 @@
                     </div>
                 @endforeach
             </div>
-            <button type="submit" class="checkout-payment-btn">Buat Transaksi</button>
+            <button type="submit" class="checkout-payment-btn">Make an Order</button>
         </form>
     </div>
 
@@ -158,33 +158,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Validasi telepon
         if (!teleponUser) {
-            showToast('error', 'Nomor telepon harus diisi!');
+            showToast('error', 'Phone number is required!');
             return;
         }
         if (!/^\d{8,15}$/.test(teleponUser)) {
-            showToast('error', 'Nomor telepon tidak valid (8-15 digit)!');
+            showToast('error', 'Invalid phone number (8-15 digits)!');
             return;
         }
         teleponHiddenInput.value = '+62' + teleponUser;
 
         // Validasi email sederhana frontend
         if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(email)) {
-            showToast('error', 'Format email tidak valid!');
+            showToast('error', 'Invalid email format!');
             return;
         }
 
         // Validasi metode pembayaran
         if (!metodeTerpilih) {
-            showToast('error', 'Silakan pilih metode pembayaran!');
+            showToast('error', 'Please select a payment method!');
             return;
         }
 
         // Validasi keranjang
         if (cartItems.length === 0) {
-            showToast('error', 'Keranjang belanja kosong!');
+            showToast('error', 'Empty shopping cart!');
             return;
         }
-        showToast('success', 'Form valid, transaksi diproses!');
+        showToast('success', 'Form valid, transaction processed!');
 
         setTimeout(() => {
             form.submit();
@@ -223,9 +223,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
     provinsi.addEventListener("change", function () {
-        kota.innerHTML = `<option value="">Pilih Kota</option>`;
-        kecamatan.innerHTML = `<option value="">Pilih Kecamatan</option>`;
-        desa.innerHTML = `<option value="">Pilih Desa</option>`;
+        kota.innerHTML = `<option value="">Select Kota/Kabupaten</option>`;
+        kecamatan.innerHTML = `<option value="">Select Kecamatan</option>`;
+        desa.innerHTML = `<option value="">Select Desa</option>`;
         kota.disabled = !this.value;
         kecamatan.disabled = true;
         desa.disabled = true;
@@ -243,8 +243,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     kota.addEventListener("change", function () {
-        kecamatan.innerHTML = `<option value="">Pilih Kecamatan</option>`;
-        desa.innerHTML = `<option value="">Pilih Desa</option>`;
+        kecamatan.innerHTML = `<option value="">Select Kecamatan</option>`;
+        desa.innerHTML = `<option value="">Select Kelurahan/Desa</option>`;
         kecamatan.disabled = !this.value;
         desa.disabled = true;
 
@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
      kecamatan.addEventListener("change", function () {
-        desa.innerHTML = `<option value="">Pilih Desa</option>`;
+        desa.innerHTML = `<option value="">Pilih Kelurahan/Desa</option>`;
         if (this.value) {
             desa.disabled = false;
             const kecamatanId = this.selectedOptions[0].getAttribute("data-id");
