@@ -62,7 +62,7 @@
                                 <button
                                     class="flex items-center justify-center py-2 px-3 rounded-lg border border-gray-400 text-black hover:bg-blue-400 hover:border-blue-400"
                                     onclick="openMetodeModal('{{ route('metode_pembayaran.show', ['id' => $item->metode_pembayaran_id]) }}')">
-                                    <i class="fa-solid fa-database"></i>
+                                    <i class="fa-solid fa-eye"></i>
                                 </button>
 
                                 {{-- Tombol Edit --}}
