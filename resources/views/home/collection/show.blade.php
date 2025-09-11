@@ -17,7 +17,7 @@
         <h2 class="produk-title">Filter:</h2>
 
         {{-- Aktif Filter Ditampilkan --}}
-        <h2>Kategori:</h2>
+        <h2>Category:</h2>
         @if (!empty($filterKategori))
             <div class="produk-tags">
                 @foreach ($filterKategori as $kategoriId)
@@ -88,9 +88,9 @@
                             <div class="collection-price">
                                 @if (!empty($item->diskon))
                                     <span class="price-discounted">Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
-                                    <span class="price-now">Rp {{ number_format($item->harga_diskon, 0, ',', '.') }}</span>
+                                    <span class="price-now">IDR {{ number_format($item->harga_diskon, 0, ',', '.') }}</span>
                                 @else
-                                    <span class="price-now">Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
+                                    <span class="price-now">IDR {{ number_format($item->harga, 0, ',', '.') }}</span>
                                 @endif
                             </div>
                         </div>

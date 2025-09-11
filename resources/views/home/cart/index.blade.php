@@ -16,7 +16,7 @@
     <h2>Your Cart</h2>
 
     @if(empty($cart))
-        <p>Keranjang Anda Masih Belum Terisi</p>
+        <p>Your cart is still empty</p>
     @else
         <table class="cart-table">
             <thead>
@@ -36,8 +36,8 @@
                             <div class="product-details">
                                 <div class="product-name">{{ $item['nama'] }}</div>
                                 <div class="product-meta">IDR {{ number_format($item['harga'], 2, ',', '.') }}</div>
-                                <div class="product-meta">Warna : {{ $item['warna_nama'] ?? '-' }}</div>
-                                <div class="product-meta">Ukuran : {{ $item['ukuran_nama'] ?? '-' }}</div>
+                                <div class="product-meta">Color : {{ $item['warna_nama'] ?? '-' }}</div>
+                                <div class="product-meta">Size : {{ $item['ukuran_nama'] ?? '-' }}</div>
                             </div>
                         </div>
                     </td>
