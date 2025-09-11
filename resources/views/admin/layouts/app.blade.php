@@ -10,16 +10,17 @@
 
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
 
 <body class="bg-gray-200 min-h-screen flex flex-col font-Montserrat">
     @include('admin.layouts.navbar-mobile')
-    
+
     <div class="flex">
-        @include('admin.layouts.sidebar') 
-        
+        @include('admin.layouts.sidebar')
+
         <div class="flex-1 flex flex-col min-h-screen ml-60 ">
             <main class="flex-1 p-2">
                 @yield('content')
@@ -29,4 +30,5 @@
 
     @stack('scripts')
 </body>
+
 </html>

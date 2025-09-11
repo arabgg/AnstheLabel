@@ -34,9 +34,9 @@
                     <div class="bestseller-price">
                         @if (!empty($item->diskon))
                             <span class="price-discounted">Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
-                            <span class="price-now">Rp {{ number_format($item->harga_diskon, 0, ',', '.') }}</span>
+                            <span class="price-now">IDR {{ number_format($item->harga_diskon, 0, ',', '.') }}</span>
                         @else
-                            <span class="price-now">Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
+                            <span class="price-now">IDR {{ number_format($item->harga, 0, ',', '.') }}</span>
                         @endif
                     </div>
                     <div class="bestseller-kategori">{{ $item->kategori->nama_kategori }}</div>

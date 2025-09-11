@@ -24,7 +24,11 @@ class ProdukController extends Controller
         $title = "List Produk";
         $search = $request->input('search');
         $kategoriFilter = $request->input('kategori');
-        $paginateLimit = $request->input('paginate', 15);
+        $stokMin = $request->input('stok_min');
+        $hargaMax = $request->input('harga_max');
+        $bahanFilter = $request->input('bahan');
+        $sort = $request->input('sort');
+        $paginateLimit = $request->input('paginate', 10);
 
         $kategoriList = Cache::remember('kategori_list', 600, function () {
             return KategoriModel::select('kategori_id', 'nama_kategori')->get();
@@ -32,29 +36,46 @@ class ProdukController extends Controller
 
         $produk = ProdukModel::whereHas('fotoUtama')
             ->with(['kategori', 'bahan', 'fotoUtama'])
+            ->when($search, function ($query, $search) {
+                $query->where('nama_produk', 'like', '%' . $search . '%');
+            })
             ->when($kategoriFilter, function ($query, $kategoriFilter) {
                 return $query->whereHas('kategori', function ($q) use ($kategoriFilter) {
                     $q->where('kategori_id', $kategoriFilter);
                 });
             })
-            ->when($search, function ($query, $search) {
-                $query->where('nama_produk', 'like', '%' . $search . '%');
+            ->when($stokMin, function ($query, $stokMin) {
+                $query->where('stok_produk', '>=', $stokMin);
             })
-            ->when($request->input('sort'), function ($query, $sort) {
+            ->when($hargaMax, function ($query, $hargaMax) {
+                $query->where('harga', '<=', $hargaMax);
+            })
+            ->when($bahanFilter, function ($query, $bahanFilter) {
+                $query->where('bahan_id', $bahanFilter);
+            })
+            ->when($sort, function ($query, $sort) { // Logika sorting
                 if ($sort === 'terbaru') {
                     $query->orderBy('created_at', 'desc');
                 } elseif ($sort === 'terlama') {
                     $query->orderBy('created_at', 'asc');
+                } elseif ($sort === 'terupdate') {
+                    $query->orderBy('updated_at', 'desc');
+                } elseif ($sort === 'stok_terbanyak') {
+                    $query->orderBy('stok_produk', 'desc');
+                } elseif ($sort === 'stok_tersedikit') {
+                    $query->orderBy('stok_produk', 'asc');
+                } elseif ($sort === 'harga_termahal') {
+                    $query->orderBy('harga', 'desc');
+                } elseif ($sort === 'harga_termurah') {
+                    $query->orderBy('harga', 'asc');
                 }
             })
-            ->when($paginateLimit, function ($query, $paginateLimit) {
-                return $query->paginate($paginateLimit);
-            }, function ($query) use ($paginateLimit) {
-                return $query->paginate($paginateLimit);
-            })
+            ->paginate($paginateLimit)
             ->withQueryString();
 
-        return view('admin.produk.index', compact('produk', 'kategoriList', 'paginateLimit', 'title'));
+        $bahanList = BahanModel::select('bahan_id', 'nama_bahan')->get();
+
+        return view('admin.produk.index', compact('produk', 'kategoriList', 'bahanList', 'paginateLimit', 'title'));
     }
 
     public function show($id)
@@ -150,7 +171,7 @@ class ProdukController extends Controller
 
             if ($request->hasFile('foto_utama')) {
                 $fotoUtama = $request->file('foto_utama');
-                $filename = time() . '_' . $fotoUtama->getClientOriginalName();
+                $filename = $fotoUtama->hashName();
 
                 // Simpan ke storage/app/public/foto_produk
                 $fotoUtama->storeAs('public/foto_produk', $filename);
@@ -167,7 +188,7 @@ class ProdukController extends Controller
 
             if ($request->hasFile('foto_sekunder')) {
                 foreach ($request->file('foto_sekunder') as $foto) {
-                    $filename = time() . '_' . $foto->getClientOriginalName();
+                    $filename = $foto->hashName();
                     $foto->storeAs('public/foto_produk', $filename);
                     $optimizerChain->optimize(storage_path('app/public/foto_produk/' . $filename));
 
@@ -278,7 +299,7 @@ class ProdukController extends Controller
                 FotoProdukModel::where('produk_id', $produk->produk_id)->where('status_foto', 1)->delete();
 
                 $fotoUtama = $request->file('foto_utama');
-                $filename = time() . '_' . $fotoUtama->getClientOriginalName();
+                $filename = $fotoUtama->hashName();
                 $fotoUtama->storeAs('public/foto_produk', $filename);
                 $optimizerChain->optimize(storage_path('app/public/foto_produk/' . $filename));
 
@@ -291,7 +312,7 @@ class ProdukController extends Controller
 
             if ($request->hasFile('foto_sekunder')) {
                 foreach ($request->file('foto_sekunder') as $foto) {
-                    $filename = time() . '_' . $foto->getClientOriginalName();
+                    $filename = $foto->hashName();
                     $foto->storeAs('public/foto_produk', $filename);
                     $optimizerChain->optimize(storage_path('app/public/foto_produk/' . $filename));
 

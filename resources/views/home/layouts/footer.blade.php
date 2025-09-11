@@ -4,7 +4,7 @@
     <a href="{{ route('collection') }}" class="footer-item {{ request()->is('collection') ? 'active' : '' }}">Collection</a>
     <a href="{{ route('about') }}" class="footer-item {{ request()->is('about') ? 'active' : '' }}">About Us</a>
     <a href="#">Contact Us</a>
-    <a href="#">Follow Us</a>
+    <a href="{{ route('faq') }}" class="footer-item {{ request()->is('faq') ? 'active' : '' }}">FAQ</a>
   </nav>
 
   <div class="footer-section-social">
@@ -14,5 +14,5 @@
     <a href="https://web.facebook.com/"><i class="fab fa-facebook"></i></a>
   </div>
 
-  <p class="footer-section-text">© Copyright by Ansthelabel</p>
+  <p class="footer-section-text">&copy; {{ date('Y') }} Copyright by Ansthelabel</p>
 </footer>

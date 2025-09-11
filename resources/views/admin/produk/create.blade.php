@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <div class="max-w-6xl mx-auto px-4 py-6">
+    <div class="p-2">
         @if ($errors->any())
             <div class="mb-4 p-4 bg-red-100 text-red-600 rounded-xl">
                 <ul class="list-disc list-inside">
@@ -12,7 +12,7 @@
             </div>
         @endif
 
-        <form action="{{ route('produk.store') }}" method="POST" enctype="multipart/form-data"
+        <form id="produk-form" action="{{ route('produk.store') }}" method="POST" enctype="multipart/form-data"
             class="bg-white p-6 rounded-xl shadow-md space-y-6">
             @csrf
 
@@ -75,18 +75,6 @@
                                 <option value="{{ $k->kategori_id }}">{{ $k->nama_kategori }}</option>
                             @endforeach
                         </select>
-
-                        {{-- Input manual --}}
-                        <div class="mt-2">
-                            <button type="button" class="text-xs text-gray-600 hover:underline"
-                                onclick="document.getElementById('kategori-manual-wrap').classList.toggle('hidden')">
-                                + Tambah kategori baru (opsional)
-                            </button>
-                            <div id="kategori-manual-wrap" class="hidden mt-2">
-                                <input type="text" name="kategori_manual" placeholder="Ketik nama kategori baru…"
-                                    class="border border-gray-300 rounded-xl px-3 py-2 w-full">
-                            </div>
-                        </div>
                     </div>
 
                     {{-- Bahan --}}
@@ -98,18 +86,6 @@
                                 <option value="{{ $b->bahan_id }}">{{ $b->nama_bahan }}</option>
                             @endforeach
                         </select>
-
-                        {{-- Input manual --}}
-                        <div class="mt-2">
-                            <button type="button" class="text-xs text-gray-600 hover:underline"
-                                onclick="document.getElementById('bahan-manual-wrap').classList.toggle('hidden')">
-                                + Tambah bahan baru (opsional)
-                            </button>
-                            <div id="bahan-manual-wrap" class="hidden mt-2">
-                                <input type="text" name="bahan_manual" placeholder="Ketik nama bahan baru…"
-                                    class="border border-gray-300 rounded-xl px-3 py-2 w-full">
-                            </div>
-                        </div>
                     </div>
 
                     {{-- Ukuran --}}
@@ -122,23 +98,6 @@
                                     {{ $itemUkuran->nama_ukuran }}
                                 </label>
                             @endforeach
-                        </div>
-
-                        {{-- Input manual --}}
-                        <div class="mt-3">
-                            <button type="button" class="text-xs text-gray-600 hover:underline"
-                                onclick="document.getElementById('ukuran-manual-wrap').classList.toggle('hidden')">
-                                + Tambah ukuran baru (opsional)
-                            </button>
-                            <div id="ukuran-manual-wrap" class="hidden mt-2">
-                                <div class="flex gap-2">
-                                    <input type="text" id="ukuran-manual-input" placeholder="Misal: XXL"
-                                        class="border border-gray-300 rounded-xl px-3 py-2 w-full">
-                                    <button type="button" class="px-3 py-2 bg-gray-800 text-white rounded-xl"
-                                        onclick="tambahUkuranManual()">Tambah</button>
-                                </div>
-                                <div id="ukuran-manual-list" class="flex flex-wrap gap-2 mt-2"></div>
-                            </div>
                         </div>
                     </div>
 
@@ -155,24 +114,6 @@
                                 </label>
                             @endforeach
                         </div>
-                        {{-- Color picker --}}
-                        <div class="mt-3">
-                            <button type="button" class="text-xs text-gray-600 hover:underline"
-                                onclick="document.getElementById('warna-manual-wrap').classList.toggle('hidden')">
-                                + Tambah warna baru (opsional)
-                            </button>
-                            <div id="warna-manual-wrap" class="hidden mt-2">
-                                <div class="flex items-center gap-2">
-                                    <input type="color" id="warna-picker" class="w-10 h-10 p-0 border rounded-xl">
-                                    <input type="text" id="warna-hex" placeholder="#RRGGBB"
-                                        class="border border-gray-300 rounded-xl px-3 py-2 w-full"
-                                        oninput="sinkronHexKePicker(this.value)">
-                                    <button type="button" class="px-3 py-2 bg-gray-800 text-white rounded-xl"
-                                        onclick="tambahWarnaManual()">Tambah</button>
-                                </div>
-                                <div id="warna-manual-list" class="flex flex-wrap gap-2 mt-2"></div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -184,9 +125,14 @@
                         <input type="file" name="foto_utama" id="foto-utama" accept="image/*"
                             class="border border-gray-300 rounded-xl px-3 py-2 w-full" required>
                         <div
-                            class="mt-3 w-60 aspect-[4/5] border flex items-center justify-center rounded-xl overflow-hidden">
-                            <img id="preview-utama" src="https://via.placeholder.com/200?text=+"
-                                class="object-cover w-full h-full" alt="Preview Utama">
+                            class="mt-3 w-60 aspect-[4/5] border flex items-center justify-center rounded-xl overflow-hidden bg-gray-100">
+                            <img id="preview-utama" class="object-cover w-full h-full hidden" alt="Preview Utama">
+                            <svg id="placeholder-icon-utama" class="w-1/3 h-1/3 text-gray-400" fill="currentColor"
+                                viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-4 4 4 4-4v4zM6 9a1 1 0 11-2 0 1 1 0 012 0zm2 0a1 1 0 11-2 0 1 1 0 012 0z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
                         </div>
                     </div>
 
@@ -196,14 +142,14 @@
                         <div class="grid grid-cols-2 gap-4">
                             @for ($i = 1; $i <= 8; $i++)
                                 <div>
-                                    <label class="text-sm text-gray-600 block mb-1">Foto {{ $i }}</label>
+                                    <label class="text-sm text-gray-600 block mb-1">Foto {{ $i + 1 }}</label>
                                     <input type="file" name="foto_sekunder[]" accept="image/*"
                                         class="border border-gray-300 rounded-xl px-3 py-2 w-full preview-input"
                                         data-preview="preview-sekunder-{{ $i }}">
                                     <div class="mt-2 flex justify-center">
                                         <img id="preview-sekunder-{{ $i }}"
-                                            class="hidden border rounded-xl object-cover"
-                                            style="width:80px; height:100px;" alt="Preview">
+                                            class="hidden border rounded-xl object-cover" style="width:80px; height:100px;"
+                                            alt="Preview">
                                     </div>
                                 </div>
                             @endfor
@@ -225,105 +171,32 @@
             </div>
         </form>
     </div>
+@endsection
 
-    {{-- Preview Foto --}}
-    <script>
-        // UKURAN MANUAL
-        function tambahUkuranManual() {
-            const input = document.getElementById('ukuran-manual-input');
-            const val = (input.value || '').trim();
-            if (!val) return;
+---
 
-            const wrap = document.getElementById('ukuran-manual-list');
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const fotoUtamaInput = document.getElementById('foto-utama');
+        const previewUtama = document.getElementById('preview-utama');
+        const placeholderIconUtama = document.getElementById('placeholder-icon-utama');
 
-            // badge tampilan
-            const tag = document.createElement('span');
-            tag.className = 'inline-flex items-center gap-2 px-3 py-1 rounded-xl border';
-            tag.textContent = val;
+        // Initial state: hide image, show icon
+        previewUtama.classList.add('hidden');
+        placeholderIconUtama.classList.remove('hidden');
 
-            // tombol hapus badge
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'text-xs text-red-600';
-            btn.textContent = '×';
-            btn.onclick = () => {
-                wrap.removeChild(tag);
-            };
-            tag.appendChild(btn);
-
-            // hidden input untuk submit
-            const hidden = document.createElement('input');
-            hidden.type = 'hidden';
-            hidden.name = 'ukuran_baru[]';
-            hidden.value = val;
-            tag.appendChild(hidden);
-
-            wrap.appendChild(tag);
-            input.value = '';
-        }
-
-        // WARNA MANUAL
-        const picker = document.getElementById('warna-picker');
-        const hexInput = document.getElementById('warna-hex');
-
-        if (picker && hexInput) {
-            picker.addEventListener('input', () => {
-                hexInput.value = picker.value.toUpperCase();
-            });
-        }
-
-        function sinkronHexKePicker(val) {
-            // normalisasi ke format #RRGGBB
-            if (/^#?[0-9A-Fa-f]{6}$/.test(val)) {
-                const fixed = val.startsWith('#') ? val : ('#' + val);
-                picker.value = fixed;
-            }
-        }
-
-        function tambahWarnaManual() {
-            const val = (hexInput.value || picker.value || '').trim();
-            if (!/^#?[0-9A-Fa-f]{6}$/.test(val)) return;
-            const hex = val.startsWith('#') ? val.toUpperCase() : ('#' + val.toUpperCase());
-
-            const wrap = document.getElementById('warna-manual-list');
-
-            // badge tampilan dengan bulatan warna
-            const tag = document.createElement('span');
-            tag.className = 'inline-flex items-center gap-2 px-3 py-1 rounded-xl border';
-
-            const dot = document.createElement('span');
-            dot.className = 'w-4 h-4 rounded-full border';
-            dot.style.backgroundColor = hex;
-
-            const label = document.createElement('span');
-            label.textContent = hex;
-
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'text-xs text-red-600';
-            btn.textContent = '×';
-            btn.onclick = () => {
-                wrap.removeChild(tag);
-            };
-
-            // hidden input untuk submit (array warna_baru[])
-            const hidden = document.createElement('input');
-            hidden.type = 'hidden';
-            hidden.name = 'warna_baru[]';
-            hidden.value = hex;
-
-            tag.appendChild(dot);
-            tag.appendChild(label);
-            tag.appendChild(btn);
-            tag.appendChild(hidden);
-            wrap.appendChild(tag);
-        }
         // Preview Foto Utama
-        document.getElementById('foto-utama').addEventListener('change', function(e) {
+        fotoUtamaInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
-            if (!file) return;
-            const preview = document.getElementById('preview-utama');
-            preview.src = URL.createObjectURL(file);
+            if (file) {
+                previewUtama.src = URL.createObjectURL(file);
+                previewUtama.classList.remove('hidden'); // Show the image
+                placeholderIconUtama.classList.add('hidden'); // Hide the icon
+            } else {
+                previewUtama.src = '';
+                previewUtama.classList.add('hidden'); // Hide the image
+                placeholderIconUtama.classList.remove('hidden'); // Show the icon
+            }
         });
 
         // Preview Foto Sekunder
@@ -341,5 +214,5 @@
                 }
             });
         });
-    </script>
-@endsection
+    });
+</script>

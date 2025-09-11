@@ -95,6 +95,19 @@ class HomeController extends Controller
         return view('home.about.index', compact('rekomendasi'));
     }
 
+    public function faq()
+    {
+        $rekomendasi = Cache::remember('rekomendasi', 600, function () {
+            return ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
+                ->with('kategori:kategori_id,nama_kategori')
+                ->inRandomOrder()
+                ->take(4)
+                ->get();
+        });
+
+        return view('home.faq.index', compact('rekomendasi'));
+    }
+
     public function show_produk($id)
     {
         $produk = ProdukModel::with([
