@@ -62,7 +62,11 @@ class PesananController extends Controller
             'detail.ukuran',
             'detail.warna'
         ])->findOrFail($id);
-        return view('admin.pesanan.show', compact('transaksi'));
+
+        $total = 0;
+        $total += $transaksi->pembayaran->total_harga;
+
+        return view('admin.pesanan.show', compact('transaksi', 'total'));
     }
 
     public function updateTransaksi(Request $request, $id)

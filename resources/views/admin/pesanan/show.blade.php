@@ -1,5 +1,8 @@
 {{-- Konten untuk modal show pesanan --}}
-<div class="bg-white rounded-lg shadow-lg w-full max-w-5xl py-8 px-14 relative flex flex-col">
+<div class="fixed inset-0 bg-black/50 flex items-center justify-center p-6 z-50">
+    {{-- Konten Modal --}}
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-5xl py-8 px-14 relative flex flex-col 
+        max-h-[90vh] overflow-y-auto">
     <h2 class="text-xl font-semibold mb-4">Detail Pesanan</h2>
 
     {{-- Informasi Transaksi --}}
@@ -65,23 +68,15 @@
                         <th class="py-2 px-3">Harga</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @php
-                        $total = 0;
-                    @endphp
-
+                <tbody>                    
                     @foreach ($transaksi->detail as $detail)
-                        @php
-                            $subtotal = ($detail->produk->harga ?? 0) * $detail->jumlah;
-                            $total += $subtotal;
-                        @endphp
                         <tr class="border-b border-transparent">
                             <td class="py-2 px-3">{{ $detail->produk->nama_produk ?? '-' }}</td>
                             <td class="py-2 px-3">{{ $detail->ukuran->nama_ukuran ?? '-' }}</td>
                             <td class="py-2 px-3">{{ $detail->warna->nama_warna ?? '-' }}</td>
                             <td class="py-2 px-3">{{ $detail->jumlah }}</td>
                             <td class="py-2 px-3">
-                                Rp {{ number_format($subtotal, 0, ',', '.') }}
+                                Rp {{ number_format($detail->pembayaran->total_harga, 0, ',', '.') }}
                             </td>
                         </tr>
                     @endforeach
@@ -100,8 +95,9 @@
 
     {{-- Tombol Tutup di bawah --}}
     <div class="flex justify-center mt-7 text-white font-semibold">
-        <button onclick="closeModal()" class="px-4 py-2 bg-red-600 rounded hover:bg-red-700">
-            Tutup
-        </button>
+            <button onclick="closeModal()" class="px-4 py-2 bg-red-600 rounded hover:bg-red-700">
+                Tutup
+            </button>
+        </div>
     </div>
 </div>
