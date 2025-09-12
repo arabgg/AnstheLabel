@@ -120,8 +120,8 @@ class ProdukController extends Controller
         $optimizerChain = OptimizerChainFactory::create();
 
         $request->validate([
-            'foto_utama' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'foto_sekunder.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'foto_utama' => 'required|image|mimes:jpeg,png,jpg,avif|max:2048',
+            'foto_sekunder.*' => 'nullable|image|mimes:jpeg,png,jpg,avif|max:2048',
             'nama_produk' => 'required|string|max:255',
             'is_best' => 'nullable|boolean',
             'stok_produk' => 'required|integer',
@@ -275,8 +275,8 @@ class ProdukController extends Controller
         $optimizerChain = OptimizerChainFactory::create();
 
         $request->validate([
-            'foto_utama' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'foto_sekunder.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'foto_utama' => 'nullable|image|mimes:jpeg,png,jpg,avif|max:2048',
+            'foto_sekunder.*' => 'nullable|image|mimes:jpeg,png,jpg,avif|max:2048',
             'nama_produk' => 'required|string|max:255',
             'is_best' => 'nullable|boolean',
             'stok_produk' => 'required|integer',
