@@ -5,7 +5,7 @@
         <div class="p-8 bg-white rounded-lg shadow">
             {{-- Judul --}}
             <div class="flex justify-between items-start mb-7 border-b border-gray-300 pb-4">
-                <h1 class="text-2xl font-bold pl-4 pt-4">Kelola Banner</h1>
+                <h1 class="text-2xl font-bold pl-4 pt-4">Kelola Spanduk</h1>
             </div>
 
             {{-- Search --}}

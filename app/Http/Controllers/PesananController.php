@@ -65,23 +65,6 @@ class PesananController extends Controller
         return view('admin.pesanan.show', compact('transaksi'));
     }
 
-    public function updatePembayaran(Request $request, $id)
-    {
-        $request->validate([
-            'status_pembayaran' => 'required|in:pending,lunas,gagal',
-        ]);
-
-        $pembayaran = PembayaranModel::findOrFail($id);
-        $pembayaran->status_pembayaran = $request->status_pembayaran;
-        $pembayaran->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Status pembayaran berhasil diperbarui',
-            'data' => $pembayaran
-        ]);
-    }
-
     public function updateTransaksi(Request $request, $id)
     {
         $request->validate([
@@ -92,10 +75,28 @@ class PesananController extends Controller
         $transaksi->status_transaksi = $request->status_transaksi;
         $transaksi->save();
 
+        // Update status pembayaran sesuai transaksi
+        $pembayaran = $transaksi->pembayaran; // pastikan relasi transaksi -> pembayaran sudah ada
+
+        if ($pembayaran) {
+            if (in_array($transaksi->status_transaksi, ['dikemas', 'dikirim', 'selesai'])) {
+                $pembayaran->status_pembayaran = 'Lunas';
+            } elseif ($transaksi->status_transaksi === 'batal') {
+                $pembayaran->status_pembayaran = 'Dibatalkan';
+            } else {
+                $pembayaran->status_pembayaran = 'Menunggu Pembayaran';
+            }
+
+            $pembayaran->save();
+        }
+
         return response()->json([
             'success' => true,
-            'message' => 'Status transaksi berhasil diperbarui',
-            'data' => $transaksi
+            'message' => 'Status transaksi & pembayaran berhasil diperbarui',
+            'data' => [
+                'transaksi' => $transaksi,
+                'pembayaran' => $pembayaran ?? null,
+            ]
         ]);
     }
 }
