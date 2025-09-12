@@ -34,8 +34,6 @@
                                 'warna_id' => 'ID',
                                 'nama_warna' => 'NAMA WARNA',
                                 'kode_hex' => 'KODE WARNA',
-                                'created_at' => 'DIBUAT',
-                                'updated_at' => 'UPDATE',
                             ];
                         @endphp
                         @foreach ($columns as $col => $label)
@@ -68,8 +66,6 @@
                                     <span>{{ $item->kode_hex }}</span>
                                 </div>
                             </td>
-                            <td class="p-3">{{ $item->created_at->format('d M Y [ H : i ]') }}</td>
-                            <td class="p-3">{{ $item->updated_at->format('d M Y [ H : i ]') }}</td>
                             <td class="p-3 mt-5 flex gap-2 justify-center items-center">
                                 {{-- Tombol Detail --}}
                                 <button

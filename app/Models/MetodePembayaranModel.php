@@ -18,6 +18,7 @@ class MetodePembayaranModel extends Model
         'metode_id',
         'nama_pembayaran',
         'kode_bayar',
+        'atas_nama',
         'status_pembayaran',
         'icon',
     ];

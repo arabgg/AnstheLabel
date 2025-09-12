@@ -1,75 +1,72 @@
-@extends('admin.layouts.app')
+<div class="bg-white rounded-lg shadow p-6">
+    <h2 class="text-xl font-bold mb-4">Tambah Metode Pembayaran</h2>
+    <form action="{{ route('metode_pembayaran.store') }}" method="POST"
+        id="createMetodeForm" enctype="multipart/form-data" class="text-sm">
+        @csrf
 
-@section('content')
-    <div class="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-xl">
-        <h1 class="text-2xl font-bold mb-6 text-gray-800">Tambah Metode Pembayaran</h1>
+        {{-- Metode --}}
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Metode</label>
+            <select name="metode_id"
+                class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#560024]">
+                <option value="" disabled selected>Pilih Metode</option>
+                <option value="1" {{ old('metode_id') == 1 ? 'selected' : '' }}>Transfer Bank</option>
+                <option value="2" {{ old('metode_id') == 2 ? 'selected' : '' }}>E-Wallet</option>
+            </select>
+        </div>
 
-        <form action="{{ route('metode_pembayaran.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
-            @csrf
+        {{-- Nama Pembayaran --}}
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Jenis Pembayaran</label>
+            <input type="text" name="nama_pembayaran" value="{{ old('nama_pembayaran') }}"
+                class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#560024]">
+        </div>
 
-            {{-- Dropdown Metode --}}
-            <div>
-                <label for="metode_id" class="block text-sm font-medium text-gray-700 mb-1">Metode</label>
-                <select name="metode_id" id="metode_id" required
-                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                    <option value="">-- Pilih Metode --</option>
-                    @foreach ($metodes as $metode)
-                        <option value="{{ $metode->metode_id }}">{{ $metode->nama_metode }}</option>
-                    @endforeach
-                </select>
+        {{-- Kode Bayar --}}
+        <div class="mb-4" id="kode_bayar_text">
+            <label class="block text-sm font-medium mb-1">Nomor Rekening / E-Wallet</label>
+            <input type="text" name="kode_bayar" value="{{ old('kode_bayar') }}"
+                class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#560024]">
+        </div>
+
+        {{-- Atas Nama --}}
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Atas Nama</label>
+            <input type="text" name="atas_nama" value="{{ old('atas_nama') }}"
+                class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#560024]">
+        </div>
+
+        {{-- Status Pembayaran --}}
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Status</label>
+            <div class="flex items-center gap-4">
+                <label class="flex items-center gap-2">
+                    <input type="radio" name="status_pembayaran" value="1"
+                        {{ old('status_pembayaran', '1') == '1' ? 'checked' : '' }}
+                        class="rounded border-gray-300 text-[#560024] focus:ring-[#560024]">
+                    Aktif
+                </label>
+                <label class="flex items-center gap-2">
+                    <input type="radio" name="status_pembayaran" value="0"
+                        {{ old('status_pembayaran') == '0' ? 'checked' : '' }}
+                        class="rounded border-gray-300 text-[#560024] focus:ring-[#560024]">
+                    Non-Aktif
+                </label>
             </div>
+        </div>
 
-            {{-- Nama Pembayaran --}}
-            <div>
-                <label for="nama_pembayaran" class="block text-sm font-medium text-gray-700 mb-1">Nama Pembayaran</label>
-                <input type="text" name="nama_pembayaran" id="nama_pembayaran" value="{{ old('nama_pembayaran') }}"
-                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                @error('nama_pembayaran')
-                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
+        {{-- Icon --}}
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Icon</label>
+            <input type="file" name="icon"
+                class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#560024]">
+        </div>
 
-            {{-- Icon --}}
-            <div>
-                <label for="icon" class="block text-sm font-medium text-gray-700 mb-1">Icon</label>
-                <input type="file" name="icon" id="icon"
-                    class="w-full text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-4 file:py-2 file:text-indigo-700 hover:file:bg-indigo-100">
-                @error('icon')
-                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-
-            {{-- Kode Bayar --}}
-            <div>
-                <label for="kode_bayar" class="block text-sm font-medium text-gray-700 mb-1">Kode Bayar</label>
-                <input type="text" name="kode_bayar" id="kode_bayar" value="{{ old('kode_bayar') }}"
-                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                @error('kode_bayar')
-                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-
-            {{-- Status --}}
-            <div>
-                <label for="status_pembayaran" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                <select name="status_pembayaran" id="status_pembayaran"
-                    class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                    <option value="1" {{ old('status_pembayaran') == 1 ? 'selected' : '' }}>Aktif</option>
-                    <option value="0" {{ old('status_pembayaran') == 0 ? 'selected' : '' }}>Nonaktif</option>
-                </select>
-            </div>
-
-            {{-- Action Buttons --}}
-            <div class="flex items-center space-x-3 pt-4">
-                <button type="submit"
-                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg shadow-md transition duration-200">
-                    Simpan
-                </button>
-                <a href="{{ route('metode_pembayaran.index') }}"
-                    class="px-5 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition duration-200">
-                    Batal
-                </a>
-            </div>
-        </form>
-    </div>
-@endsection
+        {{-- Tombol --}}
+        <div class="flex justify-end gap-2">
+            <button type="button" onclick="closeModal()"
+                class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Batal</button>
+            <button type="submit" class="px-4 py-2 bg-[#560024] text-white rounded hover:bg-[#700030]">Simpan</button>
+        </div>
+    </form>
+</div>

@@ -35,8 +35,6 @@
                                 'bahan_id' => 'No',
                                 'nama_bahan' => 'NAMA BAHAN',
                                 'deskripsi' => 'DESKRIPSI',
-                                'created_at' => 'DIBUAT',
-                                'updated_at' => 'UPDATE',
                             ];
                         @endphp
 
@@ -64,8 +62,6 @@
                             <td class="p-3">{{ $bahan->firstItem() + $loop->index }}</td>
                             <td class="p-3">{{ $item->nama_bahan }}</td>
                             <td class="p-3 break-words max-w-xs">{{ $item->deskripsi }}</td>
-                            <td class="p-3">{{ $item->created_at->format('d M Y [ H : i ]') }}</td>
-                            <td class="p-3">{{ $item->updated_at->format('d M Y [ H : i ]') }}</td>
                             <td class="p-3 mt-5 flex gap-2 justify-center items-center">
                                 {{-- Tombol Detail --}}
                                 <button

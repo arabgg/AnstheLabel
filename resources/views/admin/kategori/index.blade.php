@@ -34,8 +34,6 @@
                             $columns = [
                                 'kategori_id' => 'No',
                                 'nama_kategori' => 'NAMA KATEGORI',
-                                'created_at' => 'DIBUAT',
-                                'updated_at' => 'UPDATE',
                             ];
                         @endphp
 
@@ -62,8 +60,6 @@
                         <tr class="border-b hover:bg-gray-50">
                             <td class="p-3">{{ $kategori->firstItem() + $loop->index }}</td>
                             <td class="p-3">{{ $item->nama_kategori }}</td>
-                            <td class="p-3">{{ $item->created_at->format('d M Y [ H : i ]') }}</td>
-                            <td class="p-3">{{ $item->updated_at->format('d M Y [ H : i ]') }}</td>
                             <td class="p-3 mt-5 flex gap-2 justify-center items-center">
                                 {{-- Tombol Detail --}}
                                 <button

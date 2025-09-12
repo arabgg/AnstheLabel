@@ -34,8 +34,6 @@
                                 'ukuran_id' => 'No',
                                 'nama_ukuran' => 'UKURAN',
                                 'deskripsi' => 'DESKRIPSI',
-                                'created_at' => 'DIBUAT',
-                                'updated_at' => 'UPDATE',
                             ];
                         @endphp
                         @foreach ($columns as $col => $label)
@@ -61,8 +59,6 @@
                             <td class="p-3">{{ $ukuran->firstItem() + $loop->index }}</td>
                             <td class="p-3">{{ $item->nama_ukuran }}</td>
                             <td class="p-3 break-words max-w-xs">{{ $item->deskripsi }}</td>
-                            <td class="p-3">{{ $item->created_at->format('d M Y [ H : i ]') }}</td>
-                            <td class="p-3">{{ $item->updated_at->format('d M Y [ H : i ]') }}</td>
                             <td class="p-3 mt-5 flex gap-2 justify-center items-center">
                                 {{-- Tombol Detail --}}
                                 <button

@@ -73,8 +73,10 @@ class ProdukController extends Controller
             ->paginate($paginateLimit)
             ->withQueryString();
 
-        $bahanList = BahanModel::select('bahan_id', 'nama_bahan')->get();
-
+        $bahanList = Cache::remember('bahan_list', 600, function () {
+            return BahanModel::select('bahan_id', 'nama_bahan')->get();
+        });
+        
         return view('admin.produk.index', compact('produk', 'kategoriList', 'bahanList', 'paginateLimit', 'title'));
     }
 
