@@ -10,23 +10,52 @@ class PesananController extends Controller
 {
     public function index(Request $request)
     {
-        $searchQuery = $request->input('search', '');
+        $searchQuery = $request->input('search');
+        $status = $request->input('status');
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
 
-        $pesanan = TransaksiModel::select('transaksi_id', 'pembayaran_id', 'kode_invoice', 'nama_customer', 'no_telp', 'email', 'alamat', 'status_transaksi')
-            ->with([
-                'pembayaran:pembayaran_id,metode_pembayaran_id,status_pembayaran',
-                'pembayaran.metode:metode_pembayaran_id,nama_pembayaran'
-            ])
-            ->when(!empty($searchQuery), function ($q) use ($searchQuery) {
-                $q->where('kode_invoice', 'like', "%{$searchQuery}%");
+        $query = TransaksiModel::query();
+
+        // Search
+        $query->when(!empty($searchQuery), function ($q) use ($searchQuery) {
+            $q->where(function ($sub) use ($searchQuery) {
+                $sub->where('nama_customer', 'like', "%{$searchQuery}%")
+                    ->orWhere('email', 'like', "%{$searchQuery}%")
+                    ->orWhere('kode_invoice', 'like', "%{$searchQuery}%")
+                    ->orWhere('no_telp', 'like', "%{$searchQuery}%");
+            });
+        });
+
+        // Status
+        $query->when(!empty($status), function ($q) use ($status) {
+            $q->where('status_transaksi', $status);
+        });
+
+        // Filter tanggal fleksibel
+        $query->when($startDate && $endDate, function ($q) use ($startDate, $endDate) {
+            $q->whereBetween('created_at', [
+                $startDate . ' 00:00:00',
+                $endDate . ' 23:59:59'
+            ]);
+        })
+            ->when($startDate && !$endDate, function ($q) use ($startDate) {
+                $q->whereDate('created_at', '>=', $startDate);
             })
-            ->orderBy('transaksi_id', 'asc')
-            ->paginate(10);
+            ->when(!$startDate && $endDate, function ($q) use ($endDate) {
+                $q->whereDate('created_at', '<=', $endDate);
+            });
 
-        return view('admin.pesanan.index', compact('pesanan', 'searchQuery'));
+        // Ambil data
+        $pesanan = $query->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->appends($request->query());
+
+        return view('admin.pesanan.index', compact('pesanan', 'searchQuery', 'status', 'startDate', 'endDate'));
     }
 
-    public function show($id) {
+    public function show($id)
+    {
         $transaksi = TransaksiModel::with([
             'pembayaran.metode', // relasi ke metode pembayaran
             'detail.produk',

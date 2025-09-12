@@ -73,8 +73,10 @@ class ProdukController extends Controller
             ->paginate($paginateLimit)
             ->withQueryString();
 
-        $bahanList = BahanModel::select('bahan_id', 'nama_bahan')->get();
-
+        $bahanList = Cache::remember('bahan_list', 600, function () {
+            return BahanModel::select('bahan_id', 'nama_bahan')->get();
+        });
+        
         return view('admin.produk.index', compact('produk', 'kategoriList', 'bahanList', 'paginateLimit', 'title'));
     }
 
@@ -118,8 +120,8 @@ class ProdukController extends Controller
         $optimizerChain = OptimizerChainFactory::create();
 
         $request->validate([
-            'foto_utama' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'foto_sekunder.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'foto_utama' => 'required|image|mimes:jpeg,png,jpg,avif|max:2048',
+            'foto_sekunder.*' => 'nullable|image|mimes:jpeg,png,jpg,avif|max:2048',
             'nama_produk' => 'required|string|max:255',
             'is_best' => 'nullable|boolean',
             'stok_produk' => 'required|integer',
@@ -273,8 +275,8 @@ class ProdukController extends Controller
         $optimizerChain = OptimizerChainFactory::create();
 
         $request->validate([
-            'foto_utama' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'foto_sekunder.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'foto_utama' => 'nullable|image|mimes:jpeg,png,jpg,avif|max:2048',
+            'foto_sekunder.*' => 'nullable|image|mimes:jpeg,png,jpg,avif|max:2048',
             'nama_produk' => 'required|string|max:255',
             'is_best' => 'nullable|boolean',
             'stok_produk' => 'required|integer',

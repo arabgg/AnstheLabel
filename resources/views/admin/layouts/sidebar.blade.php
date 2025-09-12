@@ -1,5 +1,4 @@
-<div class="hidden md:flex flex-col fixed top-0 left-0 h-screen w-60 bg-gray-100 text-gray-600">
-    {{-- Logo --}}
+<div class="flex flex-col fixed top-0 left-0 h-screen w-60 bg-gray-100 text-gray-600">    {{-- Logo --}}
     <div class="p-4 flex items-center justify-center">
         <a href="/admin">
             <img src="{{ route('storage', ['folder' => 'page', 'filename' => 'ansthelabel.png']) }}" class="h-10"

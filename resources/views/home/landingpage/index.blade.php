@@ -44,9 +44,9 @@
         
         <div id="heroCarousel" class="custom-carousel skeleton-target" style="display:none;">
             @foreach ($hero as $item)
-                @if ($item->banner_id >= 5 && $item->banner_id <= 8)
+                @if ($item->banner_id >= 9 && $item->banner_id <= 12)
                     <img src="{{ route('storage', ['folder' => 'banner', 'filename' => $item->foto_banner]) }}"
-                        class="carousel-image {{ $item->banner_id === 5 ? 'active' : '' }}"
+                        class="carousel-image {{ $item->banner_id === 9 ? 'active' : '' }}"
                         alt="{{ $item->nama_banner }}">
                 @endif
             @endforeach
@@ -62,9 +62,9 @@
         
         <div id="heroCarousel" class="custom-carousel skeleton-target" style="display:none;">
             @foreach ($hero as $item)
-                @if ($item->banner_id >= 5 && $item->banner_id <= 8)
+                @if ($item->banner_id >= 13 && $item->banner_id <= 16)
                     <img src="{{ route('storage', ['folder' => 'banner', 'filename' => $item->foto_banner]) }}"
-                        class="carousel-image {{ $item->banner_id === 5 ? 'active' : '' }}"
+                        class="carousel-image {{ $item->banner_id === 13 ? 'active' : '' }}"
                         alt="{{ $item->nama_banner }}">
                 @endif
             @endforeach
@@ -76,7 +76,7 @@
     <div class="collection-section container">
     <div class="hero-grid">
         @foreach ($hero as $index => $item)
-            @if ($item->banner_id >= 7 && $item->banner_id <= 8)
+            @if ($item->banner_id >= 17 && $item->banner_id <= 18)
                 <div class="hero-item {{ $index === 0 ? 'left' : 'right' }}">
                     <img src="{{ route('storage', ['folder' => 'banner', 'filename' => $item->foto_banner]) }}"
                         alt="{{ $item->nama_banner }}">

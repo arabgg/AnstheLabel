@@ -17,7 +17,7 @@ class BannerController extends Controller
                 $q->where('nama_banner', 'like', "%{$searchQuery}%");
             })
             ->orderBy('banner_id', 'asc')
-            ->paginate(10)
+            ->paginate(4)
             ->through(function($banner) {
                 $banner->is_video = strtolower($banner->nama_banner) === 'transaksi';
                 return $banner;
@@ -51,7 +51,7 @@ class BannerController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'foto_banner' => 'required|file|mimes:jpg,jpeg,png,mp4|max:10240',
+            'foto_banner' => 'required|file|mimes:jpg,jpeg,png,avif,mp4|max:5240',
         ]);
 
         $banner = BannerModel::select('banner_id', 'foto_banner')
@@ -64,7 +64,7 @@ class BannerController extends Controller
             }
 
             $file = $request->file('foto_banner');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            $filename =  $file->hashName();
             $file->storeAs('public/banner', $filename);
             $banner->foto_banner = $filename;
         }

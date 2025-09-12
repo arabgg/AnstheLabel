@@ -6,24 +6,32 @@ use Illuminate\Http\Request;
 use App\Models\KategoriModel;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Tests\Feature\KategoriTest;
 
 class KategoriController extends Controller
 {
     public function index(Request $request)
     {
         $searchQuery = $request->input('search', '');
-        $sortColumn = $request->input('sort', 'created_at'); // default sorting
-        $sortDirection = $request->input('direction', 'desc');
+        $sort = $request->input('sort', 'terbaru');
 
         $kategori = KategoriModel::select('kategori_id', 'nama_kategori', 'created_at', 'updated_at')
             ->when(!empty($searchQuery), function ($q) use ($searchQuery) {
                 $q->where('nama_kategori', 'like', "%{$searchQuery}%");
             })
-            ->orderBy($sortColumn, $sortDirection)
+            ->when($sort === 'terbaru', function ($q) {
+                $q->orderBy('created_at', 'desc');
+            })
+            ->when($sort === 'terlama', function ($q) {
+                $q->orderBy('created_at', 'asc');
+            })
+            ->when($sort === 'terupdate', function ($q) {
+                $q->orderBy('updated_at', 'desc');
+            })
             ->paginate(10)
             ->withQueryString(); // supaya search tetap terbawa saat sorting
 
-        return view('admin.kategori.index', compact('kategori', 'searchQuery', 'sortColumn', 'sortDirection'));
+        return view('admin.kategori.index', compact('kategori', 'searchQuery', 'sort'));
     }
 
     public function create()
@@ -89,13 +97,20 @@ class KategoriController extends Controller
 
     public function destroy($id)
     {
-        $kategori = KategoriModel::findOrFail($id);
-        $kategori->delete();
+        try {
+            $kategori = KategoriModel::findOrFail($id);
+            $kategori->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Kategori berhasil dihapus',
-            'id' => $id
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Kategori berhasil dihapus',
+                'id'      => $id
+            ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kategori tidak bisa dihapus karena masih digunakan pada produk.'
+            ], 400);
+        }
     }
 }
