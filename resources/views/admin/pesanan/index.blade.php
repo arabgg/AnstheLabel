@@ -46,6 +46,11 @@
                     <button type="submit" class="px-4 py-2 bg-[#560024] text-white rounded-lg hover:bg-gray-700 text-sm">
                         Filter
                     </button>
+
+                    <a href="{{ route('transaksi.export.excel', ['start_date' => $startDate, 'end_date' => $endDate]) }}"
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                        Export Excel
+                    </a>
                 </form>
             </div>
 

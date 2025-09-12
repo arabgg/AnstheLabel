@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\PembayaranModel;
 use App\Models\TransaksiModel;
+use App\Exports\PesananExport;
+use App\Exports\TransaksiExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 
 class PesananController extends Controller
@@ -54,6 +57,29 @@ class PesananController extends Controller
         return view('admin.pesanan.index', compact('pesanan', 'searchQuery', 'status', 'startDate', 'endDate'));
     }
 
+    public function exportExcel(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate   = $request->input('end_date');
+
+        if ($startDate && $endDate) {
+            // Jika ada start & end
+            $fileName = 'Transaksi_' . date('d-m-Y', strtotime($startDate)) .
+                '_sampai_' . date('d-m-Y', strtotime($endDate)) . '.xlsx';
+        } elseif ($startDate && !$endDate) {
+            // Hanya start
+            $fileName = 'Transaksi_mulai_' . date('d-m-Y', strtotime($startDate)) . '.xlsx';
+        } elseif (!$startDate && $endDate) {
+            // Hanya end
+            $fileName = 'Transaksi_sampai_' . date('d-m-Y', strtotime($endDate)) . '.xlsx';
+        } else {
+            // Tidak ada filter tanggal
+            $fileName = 'Transaksi_Semua.xlsx';
+        }
+
+        return Excel::download(new TransaksiExport($startDate, $endDate), $fileName);
+    }
+
     public function show($id)
     {
         $transaksi = TransaksiModel::with([
@@ -62,7 +88,11 @@ class PesananController extends Controller
             'detail.ukuran',
             'detail.warna'
         ])->findOrFail($id);
-        return view('admin.pesanan.show', compact('transaksi'));
+        
+        $total = 0;
+        $total += $transaksi->pembayaran->total_harga;
+
+        return view('admin.pesanan.show', compact('transaksi', 'total'));
     }
 
     public function updateTransaksi(Request $request, $id)
