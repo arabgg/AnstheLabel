@@ -5,14 +5,14 @@
         <div class="p-8 bg-white rounded-lg shadow">
             {{-- Judul --}}
             <div class="flex justify-between items-start mb-7 border-b border-gray-300 pb-4">
-                <h1 class="text-2xl font-bold pl-4 pt-4">Manage Banner</h1>
+                <h1 class="text-2xl font-bold pl-4 pt-4">Kelola Banner</h1>
             </div>
 
             {{-- Search --}}
             <div class="flex mb-5">
                 <form method="GET" action="{{ route('banner.index') }}"
-                    class="flex items-center border rounded-lg px-3 py-2 w-1/3">
-                    <input type="text" name="search" placeholder="Search Banner" value="{{ $searchQuery ?? '' }}"
+                    class="flex items-center border rounded-lg px-3 py-2 w-1/2">
+                    <input type="text" name="search" placeholder="Cari Banner atau Hero" value="{{ $searchQuery ?? '' }}"
                         class="w-full outline-none placeholder:text-sm">
                     <button type="submit" class="ml-2">
                         <i class="fas fa-search"></i>
@@ -27,9 +27,9 @@
                         <tr>
                             <th class="p-3">NO</th>
                             <th class="p-3">NAMA</th>
-                            <th class="p-3">FILE FOTO</th>
+                            <th class="p-3">FOTO</th>
                             <th class="p-3">DESKRIPSI</th>
-                            <th class="p-3">ACTION</th>
+                            <th class="p-3">AKSI</th>
                         </tr>
                     </thead>
                     <tbody class="text-sm">

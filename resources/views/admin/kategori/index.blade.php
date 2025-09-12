@@ -1,116 +1,112 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <div class="p-8 bg-white rounded-lg shadow">
-        {{-- Judul --}}
-        <div class="flex justify-between items-start mb-7 border-b border-gray-300 pb-4">
-            <h1 class="text-2xl font-bold pl-4 pt-4">Manage Kategori</h1>
-        </div>
+    <div class="container bg-white rounded-lg min-h-screen">
+        <div class="p-8 bg-white rounded-lg shadow">
+            {{-- Judul --}}
+            <div class="flex justify-between items-start mb-7 border-b border-gray-300 pb-4">
+                <h1 class="text-2xl font-bold pl-4 pt-4">Kelola Kategori</h1>
+            </div>
 
-        {{-- Search --}}
-        <div class="flex justify-end mb-7 mt-12">
-            <form method="GET" action="{{ route('kategori.index') }}"
-                class="mr-3 flex items-center border rounded-lg px-3 py-2 w-1/3">
-                <input type="text" name="search" placeholder="Search Kategori" value="{{ $searchQuery ?? '' }}"
-                    class="w-full outline-none placeholder:text-sm">
-                <button type="submit" class="ml-2">
-                    <i class="fas fa-search"></i>
-                </button>
-            </form>
+            {{-- Search & Sort --}}
+            <div class="flex justify-between items-center mb-7 mt-6">
+                <div class="flex items-center gap-3 w-2/3">
+                    {{-- Form Search --}}
+                    <form method="GET" action="{{ route('kategori.index') }}"
+                        class="flex items-center border rounded-lg px-3 py-2 w-1/2">
+                        <input type="text" name="search" placeholder="Cari Nama Kategori"
+                            value="{{ $searchQuery ?? '' }}" class="w-full outline-none placeholder:text-sm">
+                        <button type="submit" class="ml-2">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
 
-            <a href="javascript:void(0);" onclick="openKategoriModal('{{ route('kategori.create') }}')"
-                class="px-7 py-2 bg-[#560024] text-white font-semibold rounded-lg hover:bg-gray-700 flex items-center justify-center text-sm">
-                Tambah
-            </a>
+                    {{-- Dropdown Sort --}}
+                    <form method="GET" action="{{ route('kategori.index') }}">
+                        <select id="sortFilter" name="sort"
+                            class="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-400 transition-colors">
+                            <option value="">Urutkan</option>
+                            <option value="terbaru" {{ request('sort') == 'terbaru' ? 'selected' : '' }}>Terbaru</option>
+                            <option value="terlama" {{ request('sort') == 'terlama' ? 'selected' : '' }}>Terlama</option>
+                            </option>
+                        </select>
+                    </form>
+                </div>
 
-        </div>
-
-        {{-- Tabel item --}}
-        <div class="overflow-x-auto rounded-lg">
-            <table class="w-full table-auto border-collapse text-center">
-                <thead class="bg-[#560024] text-white text-sm">
-                    <tr>
-                        @php
-                            $columns = [
-                                'kategori_id' => 'No',
-                                'nama_kategori' => 'NAMA KATEGORI',
-                            ];
-                        @endphp
-
-                        @foreach ($columns as $col => $label)
-                            <th class="p-3 cursor-pointer" onclick="sortTable('{{ $col }}')">
-                                {{ $label }}
-                                @if (request('sort') === $col)
-                                    @if (request('direction') === 'asc')
-                                        <i class="fas fa-arrow-up ml-1"></i>
-                                    @else
-                                        <i class="fas fa-arrow-down ml-1"></i>
-                                    @endif
-                                @else
-                                    <i class="fas fa-sort ml-1"></i>
-                                @endif
-                            </th>
-                        @endforeach
-
-                        <th class="p-3">ACTION</th>
-                    </tr>
-                </thead>
-                <tbody class="text-sm">
-                    @forelse ($kategori as $item)
-                        <tr class="border-b hover:bg-gray-50">
-                            <td class="p-3">{{ $kategori->firstItem() + $loop->index }}</td>
-                            <td class="p-3">{{ $item->nama_kategori }}</td>
-                            <td class="p-3 mt-5 flex gap-2 justify-center items-center">
-                                {{-- Tombol Detail --}}
-                                <button
-                                    class="flex items-center justify-center py-2 px-3 rounded-lg border border-gray-400 text-black hover:bg-blue-400 hover:border-blue-400"
-                                    onclick="openKategoriModal('{{ route('kategori.show', ['id' => $item->kategori_id]) }}')">
-                                    <i class="fa-solid fa-eye"></i>
-                                </button>
-
-                                {{-- Tombol Edit --}}
-                                <button
-                                    class="flex items-center justify-center py-2 px-3 rounded-lg border border-gray-400 text-black hover:bg-yellow-300 hover:border-yellow-300"
-                                    onclick="openKategoriModal('{{ route('kategori.edit', ['id' => $item->kategori_id]) }}')">
-                                    <i class="fa-regular fa-pen-to-square"></i>
-                                </button>
-
-                                {{-- Tombol Hapus --}}
-                                <button
-                                    class="flex items-center justify-center py-2 px-3 rounded-lg border border-gray-400 text-black hover:bg-red-500 hover:border-red-500"
-                                    onclick="deleteKategori('{{ route('kategori.destroy', $item->kategori_id) }}')">
-                                    <i class="fa-regular fa-trash-can"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="p-3 text-center text-gray-500">item tidak ditemukan.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-
-        {{-- Pagination --}}
-        <div class="mt-4 flex justify-center space-x-1">
-            @if ($kategori->onFirstPage() === false)
-                <a href="{{ $kategori->previousPageUrl() }}"
-                    class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">&laquo;</a>
-            @endif
-
-            @foreach ($kategori->getUrlRange(1, $kategori->lastPage()) as $page => $url)
-                <a href="{{ $url }}"
-                    class="px-3 py-1 rounded 
-                {{ $kategori->currentPage() === $page ? 'bg-[#560024] text-white' : 'bg-gray-200 hover:bg-gray-300' }}">
-                    {{ $page }}
+                {{-- Tombol Tambah --}}
+                <a href="javascript:void(0);" onclick="openKategoriModal('{{ route('kategori.create') }}')"
+                    class="ml-auto px-7 py-2 bg-[#560024] text-white font-semibold rounded-lg hover:bg-gray-700 flex items-center justify-center text-sm">
+                    Tambah
                 </a>
-            @endforeach
+            </div>
 
-            @if ($kategori->hasMorePages())
-                <a href="{{ $kategori->nextPageUrl() }}"
-                    class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">&raquo;</a>
-            @endif
+            {{-- Tabel item --}}
+            <div class="overflow-x-auto rounded-lg">
+                <table class="w-full table-auto border-collapse text-center">
+                    <thead class="bg-[#560024] text-white text-sm">
+                        <tr>
+                            <th class="p-3">NO</th>
+                            <th class="p-3">NAMA KATEGORI</th>
+                            <th class="p-3">AKSI</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm">
+                        @forelse ($kategori as $item)
+                            <tr class="border-b hover:bg-gray-50">
+                                <td class="p-3">{{ $kategori->firstItem() + $loop->index }}</td>
+                                <td class="p-3">{{ $item->nama_kategori }}</td>
+                                <td class="p-3 flex gap-2 justify-center items-center">
+                                    {{-- Tombol Detail --}}
+                                    <button
+                                        class="flex items-center justify-center py-2 px-3 rounded-lg border border-gray-400 text-black hover:bg-blue-400 hover:border-blue-400"
+                                        onclick="openKategoriModal('{{ route('kategori.show', ['id' => $item->kategori_id]) }}')">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+
+                                    {{-- Tombol Edit --}}
+                                    <button
+                                        class="flex items-center justify-center py-2 px-3 rounded-lg border border-gray-400 text-black hover:bg-yellow-300 hover:border-yellow-300"
+                                        onclick="openKategoriModal('{{ route('kategori.edit', ['id' => $item->kategori_id]) }}')">
+                                        <i class="fa-regular fa-pen-to-square"></i>
+                                    </button>
+
+                                    {{-- Tombol Hapus --}}
+                                    <button
+                                        class="flex items-center justify-center py-2 px-3 rounded-lg border border-gray-400 text-black hover:bg-red-500 hover:border-red-500"
+                                        onclick="deleteKategori('{{ route('kategori.destroy', $item->kategori_id) }}')">
+                                        <i class="fa-regular fa-trash-can"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="p-3 text-center text-gray-500">item tidak ditemukan.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            {{-- Pagination --}}
+            <div class="mt-4 flex justify-center space-x-1">
+                @if ($kategori->onFirstPage() === false)
+                    <a href="{{ $kategori->previousPageUrl() }}"
+                        class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">&laquo;</a>
+                @endif
+
+                @foreach ($kategori->getUrlRange(1, $kategori->lastPage()) as $page => $url)
+                    <a href="{{ $url }}"
+                        class="px-3 py-1 rounded 
+                {{ $kategori->currentPage() === $page ? 'bg-[#560024] text-white' : 'bg-gray-200 hover:bg-gray-300' }}">
+                        {{ $page }}
+                    </a>
+                @endforeach
+
+                @if ($kategori->hasMorePages())
+                    <a href="{{ $kategori->nextPageUrl() }}"
+                        class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">&raquo;</a>
+                @endif
+            </div>
         </div>
     </div>
 
@@ -277,6 +273,15 @@
         document.querySelectorAll('tbody tr').forEach(tr => {
             const kategoriId = tr.querySelector('td')?.innerText;
             if (kategoriId) tr.setAttribute('data-kategori-id', kategoriId.trim());
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sortFilter = document.getElementById('sortFilter');
+
+            sortFilter.addEventListener('change', function() {
+                this.form.submit();
+            });
         });
     </script>
 @endpush

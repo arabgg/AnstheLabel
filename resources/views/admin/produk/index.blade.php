@@ -6,7 +6,7 @@
         <h1 class="text-2xl font-bold pl-4 pt-4">Kelola Produk</h1>
     </div>
 
-    <div class="flex justify-between items-center mb-7 mt-12">
+    <div class="flex justify-between items-center mb-5">
         {{-- Search & Filter Form --}}
         <form id="filterForm" method="GET" action="{{ route('produk.index') }}" class="flex items-center w-full">
             <div class="flex-grow mr-3 flex items-center border rounded-lg px-3 py-2">

@@ -39,9 +39,6 @@ class MetodePembayaranController extends Controller
             ->when($sort === 'terlama', function ($q) {
                 $q->orderBy('created_at', 'asc');
             })
-            ->when($sort === 'terupdate', function ($q) {
-                $q->orderBy('updated_at', 'desc');
-            })
             ->paginate(10)
             ->appends($request->query()); // supaya filter/sort tetap ada saat pindah halaman
 
@@ -148,8 +145,15 @@ class MetodePembayaranController extends Controller
 
     public function destroy($id)
     {
-        $ukuran = MetodePembayaranModel::findOrFail($id);
-        $ukuran->delete();
+        $metode = MetodePembayaranModel::findOrFail($id);
+
+        // Hapus file foto kalau ada
+        if ($metode->icon && Storage::exists('icons/' . $metode->icon)) {
+            Storage::delete('icons/' . $metode->icon);
+        }
+
+        // Hapus data dari database
+        $metode->delete();
 
         return response()->json([
             'success' => true,

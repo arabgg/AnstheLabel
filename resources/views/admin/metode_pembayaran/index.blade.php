@@ -5,7 +5,7 @@
         <div class="p-8 bg-white rounded-lg shadow">
             {{-- Judul --}}
             <div class="flex justify-between items-start mb-7 border-b border-gray-300 pb-4">
-                <h1 class="text-2xl font-bold pl-4 pt-4">Manage Metode Pembayaran</h1>
+                <h1 class="text-2xl font-bold pl-4 pt-4">Kelola Metode Pembayaran</h1>
             </div>
 
             {{-- Search & Filter Form --}}
@@ -40,7 +40,6 @@
                             <option value="">Urutkan</option>
                             <option value="terbaru" {{ request('sort') == 'terbaru' ? 'selected' : '' }}>Terbaru</option>
                             <option value="terlama" {{ request('sort') == 'terlama' ? 'selected' : '' }}>Terlama</option>
-                            <option value="terupdate" {{ request('sort') == 'terupdate' ? 'selected' : '' }}>Terupdate
                             </option>
                         </select>
                     </div>
@@ -63,7 +62,7 @@
                             <th class="p-3">PEMBAYARAN</th>
                             <th class="p-3">KODE BAYAR</th>
                             <th class="p-3">ATAS NAMA</th>
-                            <th class="p-3">ACTION</th>
+                            <th class="p-3">AKSI</th>
                         </tr>
                     </thead>
                     <tbody class="text-sm">

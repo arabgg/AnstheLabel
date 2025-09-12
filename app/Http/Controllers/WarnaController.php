@@ -10,22 +10,30 @@ class WarnaController extends Controller
     public function index(Request $request)
     {
         $searchQuery = $request->input('search', '');
-        $sortColumn = $request->input('sort', 'created_at'); // default sorting
-        $sortDirection = $request->input('direction', 'desc');
+        $sort = $request->input('sort', 'terbaru'); // default sorting
 
         $warna = WarnaModel::select('warna_id', 'nama_warna', 'kode_hex', 'created_at', 'updated_at')
-        ->when(!empty($searchQuery), function($q) use ($searchQuery) {
-                $q->where('nama_warna', 'like', "%{$searchQuery}%");
+            ->when(!empty($searchQuery), function ($q) use ($searchQuery) {
+                $q->where(function ($sub) use ($searchQuery) {
+                    $sub->where('nama_warna', 'like', "%{$searchQuery}%")
+                        ->orWhere('kode_hex', 'like', "%{$searchQuery}%");
+                });
             })
-            ->orderBy($sortColumn, $sortDirection)
-            ->paginate(10);
+            ->when($sort === 'terbaru', function ($q) {
+                $q->orderBy('created_at', 'desc');
+            })
+            ->when($sort === 'terlama', function ($q) {
+                $q->orderBy('created_at', 'asc');
+            })
+            ->paginate(10)
+            ->withQueryString(); // supaya search tetap terbawa saat sorting
 
-        return view('admin.warna.index', compact('warna', 'searchQuery', 'sortColumn', 'sortDirection'));
+        return view('admin.warna.index', compact('warna', 'searchQuery', 'sort'));
     }
 
     public function create()
     {
-        return view('admin.warna.create');   
+        return view('admin.warna.create');
     }
 
     public function store(Request $request)
@@ -42,7 +50,7 @@ class WarnaController extends Controller
     {
         $warna = WarnaModel::select('warna_id', 'nama_warna', 'kode_hex')
             ->findOrFail($id);
-        
+
         if (request()->ajax()) {
             return view('admin.warna.show', compact('warna'));
         }
@@ -80,13 +88,20 @@ class WarnaController extends Controller
 
     public function destroy($id)
     {
-        $warna = WarnaModel::findOrFail($id);
-        $warna->delete();
+        try {
+            $warna = WarnaModel::findOrFail($id);
+            $warna->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Warna berhasil dihapus',
-            'id' => $id
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Warna berhasil dihapus',
+                'id' => $id
+            ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Warna tidak bisa dihapus karena masih digunakan pada produk.'
+            ], 400);
+        }
     }
 }
