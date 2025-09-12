@@ -88,7 +88,6 @@ class PesananController extends Controller
             'detail.ukuran',
             'detail.warna'
         ])->findOrFail($id);
-        
         $total = 0;
         $total += $transaksi->pembayaran->total_harga;
 
