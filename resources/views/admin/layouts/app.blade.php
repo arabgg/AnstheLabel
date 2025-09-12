@@ -13,7 +13,7 @@
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
 
-<body class="bg-gray-200 min-h-screen flex flex-col font-Montserrat">
+<body class="bg-gray-100 min-h-screen flex flex-col font-Montserrat">
     <div class="flex">
         @include('admin.layouts.sidebar')
 

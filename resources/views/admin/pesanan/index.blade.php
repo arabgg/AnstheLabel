@@ -21,7 +21,7 @@
                 </form>
                 {{-- Dropdown Status Transaksi --}}
                 <select name="status" class="border rounded-lg px-3 py-2 text-sm">
-                    <option value="">-- Semua Status --</option>
+                    <option value="">Semua Status</option>
                     <option value="menunggu pembayaran" {{ request('status') == 'menunggu pembayaran' ? 'selected' : '' }}>
                         Menunggu Pembayaran
                     </option>
@@ -46,6 +46,11 @@
                     <button type="submit" class="px-4 py-2 bg-[#560024] text-white rounded-lg hover:bg-gray-700 text-sm">
                         Filter
                     </button>
+
+                    <a href="{{ route('transaksi.export.excel', ['start_date' => $startDate, 'end_date' => $endDate]) }}"
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                        Export Excel
+                    </a>
                 </form>
             </div>
 
@@ -69,21 +74,26 @@
                                 <td class="p-3">{{ $item->kode_invoice }}</td>
                                 <td class="p-3">{{ $item->nama_customer }}</td>
                                 <td class="p-3">{{ $item->no_telp }}</td>
-                                <td>
-                                    <select
-                                        onchange="updateStatusPembayaran('{{ route('update.pembayaran', $item->pembayaran->pembayaran_id) }}', this.value)">
-                                        <option value="pending"
-                                            {{ $item->pembayaran->status_pembayaran === 'pending' ? 'selected' : '' }}>
-                                            Pending
-                                        </option>
-                                        <option value="lunas"
-                                            {{ $item->pembayaran->status_pembayaran === 'lunas' ? 'selected' : '' }}>Lunas
-                                        </option>
-                                        <option value="gagal"
-                                            {{ $item->pembayaran->status_pembayaran === 'gagal' ? 'selected' : '' }}>Gagal
-                                        </option>
-                                    </select>
+                                <td class="p-3">
+                                    @php
+                                        $status = $item->pembayaran->status_pembayaran ?? 'Menunggu Pembayaran';
+
+                                        $color = match ($status) {
+                                            'Lunas' => 'bg-green-100 text-green-700 border-green-500',
+                                            'Dibatalkan' => 'bg-red-100 text-red-700 border-red-500',
+                                            'Menunggu Pembayaran' => 'bg-blue-100 text-blue-700 border-blue-500',
+                                        };
+                                    @endphp
+
+
+                                    <span
+                                        class="inline-block px-3 py-1 text-sm font-semibold rounded-full border whitespace-nowrap {{ $color }}">
+                                        {{ $status }}
+                                    </span>
+
                                 </td>
+
+                                {{-- Dropdown Status Transaksi --}}
                                 <td>
                                     <select
                                         onchange="updateStatusTransaksi('{{ route('update.transaksi', $item->transaksi_id) }}', this.value)">
@@ -106,15 +116,16 @@
                                 </td>
                                 {{-- Action --}}
                                 <td class="p-3 mt-4 flex gap-2 justify-center items-center">
-                                    <a href="{{ route('pesanan.show', ['id' => $item->transaksi_id]) }}"
+                                    <a href="javascript:void(0);"
+                                        onclick="openModal('{{ route('pesanan.show', ['id' => $item->transaksi_id]) }}')"
                                         class="flex items-center justify-center py-2 px-3 rounded-lg border border-gray-400 text-black hover:bg-blue-400 hover:border-blue-400">
                                         <i class="fa-solid fa-eye"></i>
                                     </a>
                                 </td>
                             </tr>
                         @empty
-                            <tr>
-                                <td colspan="9" class="p-3 text-center text-gray-500">Item tidak ditemukan.</td>
+                            <tr class="border-b hover:bg-gray-50">
+                                <td colspan="6" class="p-3 text-center text-gray-500">Item tidak ditemukan.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -155,29 +166,20 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        function updateStatusPembayaran(url, status) {
-            fetch(url, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        status_pembayaran: status
-                    })
-                })
-                .then(res => res.json())
-                .then(data => Swal.fire({
-                    icon: 'success',
-                    title: data.message,
-                    timer: 1500,
-                    showConfirmButton: false,
-                    position: 'top-end', // ⬅ posisi kanan atas
-                    toast: true // ⬅ membuat tampilan seperti toast
-                }))
-                .catch(err => console.error(err));
+        function openModal(url) {
+            fetch(url)
+                .then(res => res.text())
+                .then(html => {
+                    document.getElementById('modalContent').innerHTML = html;
+                    document.getElementById('itemModal').classList.remove('hidden');
+                });
         }
 
+        function closeModal() {
+            document.getElementById('itemModal').classList.add('hidden');
+        }
+    </script>
+    <script>
         function updateStatusTransaksi(url, status) {
             fetch(url, {
                     method: 'PUT',
@@ -190,14 +192,19 @@
                     })
                 })
                 .then(res => res.json())
-                .then(data => Swal.fire({
-                    icon: 'success',
-                    title: data.message,
-                    timer: 1500,
-                    showConfirmButton: false,
-                    position: 'top-end', // kanan atas
-                    toast: true
-                }))
+                .then(data => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: data.message,
+                        timer: 1000,
+                        showConfirmButton: false,
+                        position: 'top-end',
+                        toast: true
+                    }).then(() => {
+                        // reload halaman setelah alert selesai
+                        location.reload();
+                    });
+                })
                 .catch(err => console.error(err));
         }
     </script>

@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\PembayaranModel;
 use App\Models\TransaksiModel;
+use App\Exports\PesananExport;
+use App\Exports\TransaksiExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 
 class PesananController extends Controller
@@ -54,6 +57,29 @@ class PesananController extends Controller
         return view('admin.pesanan.index', compact('pesanan', 'searchQuery', 'status', 'startDate', 'endDate'));
     }
 
+    public function exportExcel(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate   = $request->input('end_date');
+
+        if ($startDate && $endDate) {
+            // Jika ada start & end
+            $fileName = 'Transaksi_' . date('d-m-Y', strtotime($startDate)) .
+                '_sampai_' . date('d-m-Y', strtotime($endDate)) . '.xlsx';
+        } elseif ($startDate && !$endDate) {
+            // Hanya start
+            $fileName = 'Transaksi_mulai_' . date('d-m-Y', strtotime($startDate)) . '.xlsx';
+        } elseif (!$startDate && $endDate) {
+            // Hanya end
+            $fileName = 'Transaksi_sampai_' . date('d-m-Y', strtotime($endDate)) . '.xlsx';
+        } else {
+            // Tidak ada filter tanggal
+            $fileName = 'Transaksi_Semua.xlsx';
+        }
+
+        return Excel::download(new TransaksiExport($startDate, $endDate), $fileName);
+    }
+
     public function show($id)
     {
         $transaksi = TransaksiModel::with([
@@ -62,24 +88,10 @@ class PesananController extends Controller
             'detail.ukuran',
             'detail.warna'
         ])->findOrFail($id);
-        return view('admin.pesanan.show', compact('transaksi'));
-    }
+        $total = 0;
+        $total += $transaksi->pembayaran->total_harga;
 
-    public function updatePembayaran(Request $request, $id)
-    {
-        $request->validate([
-            'status_pembayaran' => 'required|in:pending,lunas,gagal',
-        ]);
-
-        $pembayaran = PembayaranModel::findOrFail($id);
-        $pembayaran->status_pembayaran = $request->status_pembayaran;
-        $pembayaran->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Status pembayaran berhasil diperbarui',
-            'data' => $pembayaran
-        ]);
+        return view('admin.pesanan.show', compact('transaksi', 'total'));
     }
 
     public function updateTransaksi(Request $request, $id)
@@ -92,10 +104,28 @@ class PesananController extends Controller
         $transaksi->status_transaksi = $request->status_transaksi;
         $transaksi->save();
 
+        // Update status pembayaran sesuai transaksi
+        $pembayaran = $transaksi->pembayaran; // pastikan relasi transaksi -> pembayaran sudah ada
+
+        if ($pembayaran) {
+            if (in_array($transaksi->status_transaksi, ['dikemas', 'dikirim', 'selesai'])) {
+                $pembayaran->status_pembayaran = 'Lunas';
+            } elseif ($transaksi->status_transaksi === 'batal') {
+                $pembayaran->status_pembayaran = 'Dibatalkan';
+            } else {
+                $pembayaran->status_pembayaran = 'Menunggu Pembayaran';
+            }
+
+            $pembayaran->save();
+        }
+
         return response()->json([
             'success' => true,
-            'message' => 'Status transaksi berhasil diperbarui',
-            'data' => $transaksi
+            'message' => 'Status transaksi & pembayaran berhasil diperbarui',
+            'data' => [
+                'transaksi' => $transaksi,
+                'pembayaran' => $pembayaran ?? null,
+            ]
         ]);
     }
 }
