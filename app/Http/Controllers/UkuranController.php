@@ -10,16 +10,22 @@ class UkuranController extends Controller
     public function index(Request $request)
     {
         $searchQuery = $request->input('search', '');
-        $sortColumn = $request->input('sort', 'created_at'); // default sorting
-        $sortDirection = $request->input('direction', 'desc');
+        $sort = $request->input('sort', 'terbaru'); // default sorting
+
         $ukuran = UkuranModel::select('ukuran_id', 'nama_ukuran', 'deskripsi', 'created_at', 'updated_at')
             ->when(!empty($searchQuery), function ($q) use ($searchQuery) {
                 $q->where('nama_ukuran', 'like', "%{$searchQuery}%");
             })
-            ->orderBy($sortColumn, $sortDirection)
-            ->paginate(10);
+            ->when($sort === 'terbaru', function ($q) {
+                $q->orderBy('created_at', 'desc');
+            })
+            ->when($sort === 'terlama', function ($q) {
+                $q->orderBy('created_at', 'asc');
+            })
+            ->paginate(10)
+            ->withQueryString(); // supaya search tetap terbawa saat sorting
 
-        return view('admin.ukuran.index', compact('ukuran', 'searchQuery', 'sortColumn', 'sortDirection'));
+        return view('admin.ukuran.index', compact('ukuran', 'searchQuery', 'sort'));
     }
 
     public function create()
@@ -81,13 +87,20 @@ class UkuranController extends Controller
 
     public function destroy($id)
     {
-        $ukuran = UkuranModel::findOrFail($id);
-        $ukuran->delete();
+        try {
+            $ukuran = UkuranModel::findOrFail($id);
+            $ukuran->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Ukuran berhasil dihapus',
-            'id' => $id
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Ukuran berhasil dihapus',
+                'id'      => $id
+            ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ukuran tidak bisa dihapus karena masih digunakan pada produk.'
+            ], 400);
+        }
     }
 }

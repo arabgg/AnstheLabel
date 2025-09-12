@@ -16,7 +16,7 @@ return new class extends Migration
 
             $table->unsignedBigInteger('metode_pembayaran_id');
 
-            $table->enum('status_pembayaran', ['pending', 'lunas', 'gagal'])->default('pending');
+            $table->enum('status_pembayaran', ['Menunggu Pembayaran', 'Lunas', 'Dibatalkan'])->default('Menunggu Pembayaran');
             $table->integer('jumlah_produk');
             $table->string('total_harga');
             $table->timestamp('created_at')->useCurrent();

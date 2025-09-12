@@ -22,8 +22,8 @@ class TransaksiSeeder extends Seeder
                 'email'            => 'adadadadada@mail.com',
                 'alamat'           => 'SSDsd, 3232e2e2e2e, dawdawdwa',
                 'status_transaksi' => 'selesai',
-                'created_at'       => '2025-08-29 07:09:26',
-                'updated_at'       => '2025-08-29 14:23:33',
+                'created_at'       => now(),
+                'updated_at'       => now(),
             ],
             [
                 'transaksi_id'     => 'd0e8b37b-74c0-4fdf-8ca4-cdd7d633dea1',
@@ -34,8 +34,8 @@ class TransaksiSeeder extends Seeder
                 'email'            => 'testtransaksi@gmail.com',
                 'alamat'           => 'Jl. Bandulan IX/no. 574b, Kota Malang, Sukun',
                 'status_transaksi' => 'menunggu pembayaran',
-                'created_at'       => '2025-08-29 06:42:09',
-                'updated_at'       => '2025-08-29 06:42:09',
+                'created_at'       => now(),
+                'updated_at'       => now(),
             ],
             [
                 'transaksi_id'     => 'd4de5e3d-72eb-4bd1-804c-a580a7ce6944',
@@ -46,8 +46,8 @@ class TransaksiSeeder extends Seeder
                 'email'            => 'cobasaja@gmail.com',
                 'alamat'           => 'Jl. Bandulan IX/no. 574b, Kota Malang, Sukun',
                 'status_transaksi' => 'menunggu pembayaran',
-                'created_at'       => '2025-08-29 06:42:49',
-                'updated_at'       => '2025-08-29 06:42:49',
+                'created_at'       => now(),
+                'updated_at'       => now(),
             ]
         ]);
     }

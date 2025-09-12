@@ -10,17 +10,25 @@ class BahanController extends Controller
     public function index(Request $request)
     {
         $searchQuery = $request->input('search', '');
-        $sortColumn = $request->input('sort', 'created_at'); // default sorting
-        $sortDirection = $request->input('direction', 'desc');
+        $sort = $request->input('sort', 'terbaru');
 
         $bahan = BahanModel::select('bahan_id', 'nama_bahan', 'deskripsi', 'created_at', 'updated_at')
-        ->when(!empty($searchQuery), function($q) use ($searchQuery) {
+            ->when(!empty($searchQuery), function ($q) use ($searchQuery) {
                 $q->where('nama_bahan', 'like', "%{$searchQuery}%");
             })
-            ->orderBy($sortColumn, $sortDirection)
-            ->paginate(10);
+            ->when($sort === 'terbaru', function ($q) {
+                $q->orderBy('created_at', 'desc');
+            })
+            ->when($sort === 'terlama', function ($q) {
+                $q->orderBy('created_at', 'asc');
+            })
+            ->when($sort === 'terupdate', function ($q) {
+                $q->orderBy('updated_at', 'desc');
+            })
+            ->paginate(10)
+            ->withQueryString(); // supaya search tetap terbawa saat sorting
 
-        return view('admin.bahan.index', compact('bahan', 'searchQuery', 'sortColumn', 'sortDirection'));
+        return view('admin.bahan.index', compact('bahan', 'searchQuery', 'sort'));
     }
 
     public function create()
@@ -45,7 +53,7 @@ class BahanController extends Controller
     {
         $bahan = BahanModel::select('bahan_id', 'nama_bahan', 'deskripsi')
             ->findOrFail($id);
-        
+
         if (request()->ajax()) {
             return view('admin.bahan.show', compact('bahan'));
         }
@@ -83,13 +91,20 @@ class BahanController extends Controller
 
     public function destroy($id)
     {
-        $bahan = BahanModel::findOrFail($id);
-        $bahan->delete();
+        try {
+            $bahan = BahanModel::findOrFail($id);
+            $bahan->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Bahan berhasil dihapus',
-            'id' => $id
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Bahan berhasil dihapus',
+                'id'      => $id
+            ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Bahan tidak bisa dihapus karena masih digunakan pada produk.'
+            ], 400);
+        }
     }
 }

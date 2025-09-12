@@ -155,6 +155,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('pesanan')->group(function () {
+        Route::get('/export/excel', [PesananController::class, 'exportExcel'])->name('transaksi.export.excel');
         Route::get('/', [PesananController::class, 'index'])->name('pesanan.index');
         Route::get('/show/{id}', [PesananController::class, 'show'])
             ->whereUuid('id')->name('pesanan.show');
