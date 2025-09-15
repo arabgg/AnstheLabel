@@ -75,22 +75,27 @@
                                 <td class="p-3">{{ $item->nama_customer }}</td>
                                 <td class="p-3">{{ $item->no_telp }}</td>
                                 <td class="p-3">
-                                    @php
-                                        $status = $item->pembayaran->status_pembayaran ?? 'Menunggu Pembayaran';
-
-                                        $color = match ($status) {
-                                            'Lunas' => 'bg-green-100 text-green-700 border-green-500',
-                                            'Dibatalkan' => 'bg-red-100 text-red-700 border-red-500',
-                                            'Menunggu Pembayaran' => 'bg-blue-100 text-blue-700 border-blue-500',
-                                        };
-                                    @endphp
-
-
-                                    <span
-                                        class="inline-block px-3 py-1 text-sm font-semibold rounded-full border whitespace-nowrap {{ $color }}">
-                                        {{ $status }}
-                                    </span>
-
+                                    @if ($item->pembayaran->status_pembayaran === 'Menunggu Pembayaran')
+                                        <div
+                                            class="border-transparent p-2 rounded-lg bg-yellow-200 text-yellow-800 border-yellow-400 font-semibold text-center">
+                                            Menunggu Pembayaran
+                                        </div>
+                                    @elseif($item->pembayaran->status_pembayaran === 'Lunas')
+                                        <div
+                                            class="border-transparent p-2 rounded-lg bg-green-200 text-green-800 border-green-400 font-semibold text-center">
+                                            Lunas
+                                        </div>
+                                    @elseif($item->pembayaran->status_pembayaran === 'Dibatalkan')
+                                        <div
+                                            class="border-transparent p-2 rounded-lg bg-red-200 text-red-800 border-red-400 font-semibold text-center">
+                                            Dibatalkan
+                                        </div>
+                                    @else
+                                        <div
+                                            class="border-transparent p-2 rounded-lg bg-gray-200 text-gray-800 border-gray-400 font-semibold text-center">
+                                            {{ ucfirst($item->pembayaran->status_pembayaran) }}
+                                        </div>
+                                    @endif
                                 </td>
 
                                 {{-- Dropdown Status Transaksi --}}

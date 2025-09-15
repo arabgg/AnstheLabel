@@ -25,26 +25,26 @@
 
                     {{-- Kata Sandi Lama --}}
                     <div class="mb-4">
-                        <label class="block text-gray-700 font-semibold">Kata Sandi Lama</label>
+                        <label class="block text-gray-700 font-semibold">Masukkan Kata Sandi Lama</label>
                         <input type="password" name="current_password"
-                            class="w-full border p-2 rounded mt-1 focus:ring focus:ring-blue-300"
-                            placeholder="Masukkan kata sandi lama" required>
+                            class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-700 font-sans"
+                            placeholder="••••••••" required>
                     </div>
 
                     {{-- Kata Sandi Baru --}}
                     <div class="mb-4">
-                        <label class="block text-gray-700 font-semibold">Kata Sandi Baru</label>
+                        <label class="block text-gray-700 font-semibold">Masukkan Kata Sandi Baru</label>
                         <input type="password" name="new_password"
-                            class="w-full border p-2 rounded mt-1 focus:ring focus:ring-blue-300"
-                            placeholder="Masukkan kata sandi baru" required>
+                            class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-700 font-sans"
+                            placeholder="••••••••" required>
                     </div>
 
                     {{-- Konfirmasi Kata Sandi Baru --}}
                     <div class="mb-4">
                         <label class="block text-gray-700 font-semibold">Konfirmasi Kata Sandi Baru</label>
                         <input type="password" name="new_password_confirmation"
-                            class="w-full border p-2 rounded mt-1 focus:ring focus:ring-blue-300"
-                            placeholder="Ulangi kata sandi baru" required>
+                            class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-700 font-sans"
+                            placeholder="••••••••" required>
                     </div>
 
                     {{-- Tombol Submit --}}
