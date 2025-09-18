@@ -35,13 +35,23 @@ class UkuranController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'nama_ukuran' => 'required|string|max:255',
             'deskripsi' => 'nullable|string',
         ]);
 
-        UkuranModel::create($request->all());
+        $ukuran = UkuranModel::create($validated);
+        
+        // Balas JSON kalau request dari AJAX
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Ukuran berhasil ditambahkan',
+                'data'    => $ukuran
+            ]);
+        }
 
+        // Kalau bukan AJAX, fallback ke redirect
         return redirect()->route('ukuran.index')->with('success', 'Ukuran berhasil ditambahkan!');
     }
 

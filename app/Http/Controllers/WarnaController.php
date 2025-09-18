@@ -38,11 +38,21 @@ class WarnaController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'kode_hex' => 'required|string|max:7',
             'nama_warna' => 'required|string|max:255',
         ]);
-        WarnaModel::create($request->all());
+        
+        $warna = WarnaModel::create($validated);
+        
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Warna berhasil ditambahkan',
+                'data'    => $warna
+            ]);
+        }
+
         return redirect()->route('warna.index')->with('success', 'Warna berhasil ditambahkan!');
     }
 
@@ -73,8 +83,7 @@ class WarnaController extends Controller
             'kode_hex' => 'nullable|string|max:50',
         ]);
 
-        $warna = warnaModel::select('warna_id', 'nama_warna', 'kode_hex')
-            ->findOrFail($id);
+        $warna = WarnaModel::findOrFail($id);
         $warna->nama_warna = $request->nama_warna;
         $warna->kode_hex = $request->kode_hex;
         $warna->save();

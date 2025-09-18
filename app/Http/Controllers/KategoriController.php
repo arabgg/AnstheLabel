@@ -49,10 +49,20 @@ class KategoriController extends Controller
             'nama_kategori.max' => 'Nama kategori maksimal 255 karakter.',
         ]);
 
-        KategoriModel::create([
+        $kategori = KategoriModel::create([
             'nama_kategori' => $request->nama_kategori,
         ]);
 
+        // Balas JSON kalau request dari AJAX
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Kategori berhasil ditambahkan',
+                'data'    => $kategori
+            ]);
+        }
+
+        // Kalau bukan AJAX, fallback ke redirect
         return redirect()->route('kategori.index')->with('success', 'Kategori berhasil ditambahkan!');
     }
 
@@ -82,8 +92,7 @@ class KategoriController extends Controller
             'nama_kategori' => 'required|string|max:255',
         ]);
 
-        $kategori = KategoriModel::select('kategori_id', 'nama_kategori')
-            ->findOrFail($id);
+        $kategori = KategoriModel::findOrFail($id);
         $kategori->nama_kategori = $request->nama_kategori;
         $kategori->save();
 

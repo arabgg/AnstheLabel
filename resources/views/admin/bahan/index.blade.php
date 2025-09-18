@@ -120,23 +120,8 @@
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
-        function sortTable(column) {
-            const url = new URL(window.location.href);
-            const currentSort = url.searchParams.get('sort');
-            const currentDir = url.searchParams.get('direction');
-
-            let newDir = 'asc';
-            if (currentSort === column && currentDir === 'asc') newDir = 'desc';
-
-            url.searchParams.set('sort', column);
-            url.searchParams.set('direction', newDir);
-
-            window.location.href = url.toString();
-        }
-    </script>
-    <script>
-        // --- Buka modal ---
         function openBahanModal(url) {
             fetch(url, {
                     headers: {
@@ -148,90 +133,116 @@
                     document.getElementById('modalContent').innerHTML = html;
                     document.getElementById('BahanModal').classList.remove('hidden');
 
-                    // Pasang listener form edit setelah modal dimuat
-                    const form = document.getElementById('editBahanForm');
-                    if (form) {
-                        form.addEventListener('submit', function(e) {
-                            e.preventDefault();
-                            const url = this.action;
-                            const formData = new FormData(this);
-                            const data = Object.fromEntries(formData.entries());
-
-                            fetch(url, {
-                                    method: 'PUT',
-                                    headers: {
-                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                        'Content-Type': 'application/json',
-                                        'Accept': 'application/json',
-                                        'X-Requested-With': 'XMLHttpRequest'
-                                    },
-                                    body: JSON.stringify(data)
-                                })
-                                .then(res => res.json())
-                                .then(data => {
-                                    closeModal(); // Tutup modal
-
-                                    if (data.success) {
-                                        Swal.fire({
-                                            icon: 'success',
-                                            title: data.message,
-                                            toast: true,
-                                            position: 'top-end',
-                                            timer: 1500,
-                                            showConfirmButton: false
-                                        });
-
-                                        // Update row tabel otomatis (loop semua field dari data.data)
-                                        const row = document.querySelector(
-                                            `[data-bahan-id='${data.data.bahan_id}']`);
-                                        if (row) {
-                                            Object.keys(data.data).forEach((key, index) => {
-                                                // index +1 karena td pertama biasanya ID
-                                                if (row.querySelector(`td:nth-child(${index + 1})`))
-                                                    row.querySelector(`td:nth-child(${index + 1})`)
-                                                    .textContent = data.data[key];
-                                            });
-                                        }
-
-                                    } else {
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Gagal',
-                                            text: data.message,
-                                            toast: true,
-                                            position: 'top-end'
-                                        });
-                                    }
-                                })
-                                .catch(err => {
-                                    closeModal();
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Error',
-                                        text: err.message || 'Terjadi kesalahan',
-                                        toast: true,
-                                        position: 'top-end'
-                                    });
-                                });
-                        });
+                    // Event listener untuk form edit
+                    const editForm = document.getElementById('editBahanForm');
+                    if (editForm) {
+                        editForm.addEventListener('submit', handleEditSubmit);
                     }
 
-                    // Pasang listener form create setelah modal dimuat
+                    // Event listener untuk form create
                     const createForm = document.getElementById('createBahanForm');
                     if (createForm) {
                         createForm.addEventListener('submit', handleCreateSubmit);
                     }
                 })
-                .catch(err => console.error(err));
+                .catch(err => {
+                    Swal.fire('Error', err.message || 'Gagal memuat modal', 'error');
+                });
         }
 
-        // --- Tutup modal ---
         function closeModal() {
             document.getElementById('BahanModal').classList.add('hidden');
             document.getElementById('modalContent').innerHTML = '';
         }
 
-        // --- Delete bahan ---
+        function handleEditSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const url = form.action;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    closeModal();
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: data.message,
+                            toast: true,
+                            position: 'top-end',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => location.reload());
+
+                        // Update row tabel
+                        const row = document.querySelector(`[data-bahan-id='${data.data.bahan_id}']`);
+                        if (row) {
+                            const values = Object.values(data.data);
+                            row.querySelectorAll('td').forEach((td, idx) => {
+                                if (values[idx] !== undefined) td.textContent = values[idx];
+                            });
+                        }
+                    } else {
+                        Swal.fire('Gagal', data.message, 'error');
+                    }
+                })
+                .catch(err => {
+                    closeModal();
+                    Swal.fire('Error', err.message || 'Terjadi kesalahan', 'error');
+                });
+        }
+
+        function handleCreateSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const url = form.action;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    closeModal();
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: data.message,
+                            toast: true,
+                            position: 'top-end',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => location.reload());
+                        // TODO: Tambahkan row baru ke tabel (jika ingin langsung update tanpa reload)
+                    } else {
+                        Swal.fire('Gagal', data.message, 'error');
+                    }
+                })
+                .catch(err => {
+                    closeModal();
+                    Swal.fire('Error', err.message || 'Terjadi kesalahan', 'error');
+                });
+        }
+
         function deleteBahan(url) {
             Swal.fire({
                 title: 'Hapus Bahan?',
@@ -242,13 +253,14 @@
                 cancelButtonColor: '#3085d6',
                 confirmButtonText: 'Ya, hapus!',
                 cancelButtonText: 'Batal'
-            }).then((result) => {
+            }).then(result => {
                 if (result.isConfirmed) {
                     fetch(url, {
                             method: 'DELETE',
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'Accept': 'application/json'
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
                             }
                         })
                         .then(res => res.json())
@@ -261,31 +273,31 @@
                                     position: 'top-end',
                                     timer: 1500,
                                     showConfirmButton: false
-                                });
-                                // Hapus row dari tabel
+                                }).then(() => location.reload());
                                 document.querySelector(`[data-bahan-id='${data.id}']`)?.remove();
                             } else {
                                 Swal.fire('Gagal', data.message, 'error');
                             }
                         })
-                        .catch(err => Swal.fire('Error', 'Terjadi kesalahan', 'error'));
+                        .catch(err => Swal.fire('Error', err.message || 'Terjadi kesalahan', 'error'));
                 }
             });
         }
 
-        // --- Tambahkan atribut data-bahan-id ---
-        document.querySelectorAll('tbody tr').forEach(tr => {
-            const bahanId = tr.querySelector('td')?.innerText;
-            if (bahanId) tr.setAttribute('data-bahan-id', bahanId.trim());
-        });
-    </script>
-    <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const sortFilter = document.getElementById('sortFilter');
-
-            sortFilter.addEventListener('change', function() {
-                this.form.submit();
+            // Tambahkan data-bahan-id ke setiap row tabel
+            document.querySelectorAll('tbody tr').forEach(tr => {
+                const bahanId = tr.querySelector('td')?.innerText;
+                if (bahanId) tr.setAttribute('data-bahan-id', bahanId.trim());
             });
+
+            // Listener sort filter (dropdown)
+            const sortFilter = document.getElementById('sortFilter');
+            if (sortFilter) {
+                sortFilter.addEventListener('change', function() {
+                    this.form.submit();
+                });
+            }
         });
     </script>
 @endpush
