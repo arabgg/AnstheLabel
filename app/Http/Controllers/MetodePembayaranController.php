@@ -101,9 +101,7 @@ class MetodePembayaranController extends Controller
 
     public function update(Request $request, $id)
     {
-        $mp = MetodePembayaranModel::findOrFail($id);
-
-        $validated = $request->validate([
+        $request->validate([
             'metode_id' => 'required|integer|exists:m_metode_pembayaran,metode_id',
             'nama_pembayaran' => 'required|string|max:255',
             'kode_bayar' => 'required|string|max:255',
