@@ -18,6 +18,7 @@ class MetodePembayaranModelFactory extends Factory
 
             'nama_pembayaran' => $this->faker->company . ' Payment',
             'kode_bayar' => $this->faker->unique()->bothify('KODE-####'),
+            'atas_nama' => $this->faker->name,
             'status_pembayaran' => $this->faker->boolean,
             'icon' => null, // biar konsisten dengan validasi controller
         ];

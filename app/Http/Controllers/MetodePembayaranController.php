@@ -54,7 +54,7 @@ class MetodePembayaranController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'metode_id' => 'required|string|exists:m_metode_pembayaran,metode_id',
+            'metode_id' => 'required|integer|exists:m_metode_pembayaran,metode_id',
             'nama_pembayaran' => 'required|string|max:255',
             'kode_bayar' => 'required|string|max:255',
             'atas_nama' => 'required|string|max:255',
@@ -101,8 +101,10 @@ class MetodePembayaranController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'metode_id' => 'required|string|exists:m_metode_pembayaran,metode_id',
+        $mp = MetodePembayaranModel::findOrFail($id);
+
+        $validated = $request->validate([
+            'metode_id' => 'required|integer|exists:m_metode_pembayaran,metode_id',
             'nama_pembayaran' => 'required|string|max:255',
             'kode_bayar' => 'required|string|max:255',
             'atas_nama' => 'required|string|max:255',

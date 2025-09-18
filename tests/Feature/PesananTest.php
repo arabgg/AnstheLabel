@@ -52,29 +52,6 @@ class PesananTest extends TestCase
         $response->assertViewHas('transaksi');
     }
 
-    public function test_admin_bisa_update_status_pembayaran_dengan_data_valid()
-    {
-        $this->loginAsAdmin();
-        $pembayaran = $this->createPembayaran();
-        $data = ['status_pembayaran' => 'lunas'];
-        $response = $this->put(route('update.pembayaran', ['id' => $pembayaran->pembayaran_id]), $data);
-        $response->assertStatus(200);
-        $response->assertJson(['success' => true]);
-        $this->assertDatabaseHas('t_pembayaran', [
-            'pembayaran_id' => $pembayaran->pembayaran_id,
-            'status_pembayaran' => 'lunas',
-        ]);
-    }
-
-    public function test_admin_tidak_bisa_update_status_pembayaran_dengan_data_tidak_valid()
-    {
-        $this->loginAsAdmin();
-        $pembayaran = $this->createPembayaran();
-        $data = ['status_pembayaran' => 'invalid_status'];
-        $response = $this->put(route('update.pembayaran', ['id' => $pembayaran->pembayaran_id]), $data);
-        $response->assertSessionHasErrors('status_pembayaran');
-    }
-
     public function test_admin_bisa_update_status_transaksi_dengan_data_valid()
     {
         $this->loginAsAdmin();

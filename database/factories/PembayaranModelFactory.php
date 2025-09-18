@@ -19,7 +19,7 @@ class PembayaranModelFactory extends Factory
         return [
             'pembayaran_id' => Str::uuid()->toString(),
             'metode_pembayaran_id' => $metodePembayaran->metode_pembayaran_id,
-            'status_pembayaran' => 'pending',
+            'status_pembayaran' => 'Menunggu Pembayaran',
             'jumlah_produk' => 1,
             'total_harga' => '10000',
         ];

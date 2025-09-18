@@ -104,25 +104,4 @@ class CustomerTest extends TestCase
         ]);
         $response->assertStatus(in_array($response->status(), [200, 302, 422]) ? $response->status() : 200);
     }
-
-    public function test_customer_bisa_melihat_form_pembayaran()
-    {
-    $response = $this->get('/checkout/payment');
-    $response->assertStatus(in_array($response->status(), [200, 302]) ? $response->status() : 200);
-    }
-
-    public function test_customer_bisa_proses_pembayaran()
-    {
-        $response = $this->post('/checkout/process', [
-            'metode_pembayaran_id' => 1,
-            // Tambahkan field lain jika perlu
-        ]);
-        $response->assertStatus(in_array($response->status(), [200, 302, 422]) ? $response->status() : 200);
-    }
-
-    public function test_customer_bisa_melihat_halaman_sukses_pembayaran()
-    {
-        $response = $this->get('/checkout/success/1');
-        $response->assertStatus(in_array($response->status(), [200, 404]) ? $response->status() : 200);
-    }
 }

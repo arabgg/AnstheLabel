@@ -37,7 +37,8 @@ class MetodePembayaranTest extends TestCase
             'metode_id' => $metode->metode_id,
             'nama_pembayaran' => 'Test Payment',
             'kode_bayar' => 'KODE-1234',
-            'status_pembayaran' => true,
+            'atas_nama' => 'Test Atas Nama',
+            'status_pembayaran' => 1,
             'icon' => null,
         ], $overrides);
     }
@@ -115,15 +116,18 @@ class MetodePembayaranTest extends TestCase
         $data = \App\Models\MetodePembayaranModel::factory()->create();
 
         $update = [
+            'metode_id' => (string) $data->metode_id, // harus sesuai tabel m_metode_pembayaran
             'nama_pembayaran' => 'Metode Update',
-            'metode_id' => (string) $data->metode_id, // tetap string supaya lolos validasi
             'kode_bayar' => 'KODE-UPDATE',
+            'atas_nama' => 'Tester Update',
+            'status_pembayaran' => '1', // valid karena hanya 0 atau 1
+            // icon sengaja dikosongkan supaya tidak kena validasi image
         ];
 
         $response = $this->put(
             route('metode_pembayaran.update', $data->metode_pembayaran_id),
             $update,
-            ['Accept' => 'application/json'] // supaya respon JSON
+            ['Accept' => 'application/json']
         );
 
         $response->assertStatus(200)
@@ -133,10 +137,10 @@ class MetodePembayaranTest extends TestCase
             'metode_pembayaran_id' => $data->metode_pembayaran_id,
             'nama_pembayaran' => 'Metode Update',
             'kode_bayar' => 'KODE-UPDATE',
+            'atas_nama' => 'Tester Update',
+            'status_pembayaran' => '1',
         ]);
     }
-
-
 
     /** @test */
     public function admin_tidak_bisa_update_metode_pembayaran_dengan_data_tidak_valid()
