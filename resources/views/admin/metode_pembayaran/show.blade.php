@@ -21,6 +21,11 @@
                         <td class="py-2">{{ $metode->kode_bayar ?? '-' }}</td>
                     </tr>
                     <tr class="border-b border-transparent">
+                        <td class="py-2 font-medium">Atas Nama</td>
+                        <td class="py-2 px-2">:</td>
+                        <td class="py-2">{{ $metode->atas_nama ?? '-' }}</td>
+                    </tr>
+                    <tr class="border-b border-transparent">
                         <td class="py-2 font-medium">Status</td>
                         <td class="py-2 px-2">:</td>
                         <td class="py-2">

@@ -31,7 +31,7 @@
                         </select>
                     </form>
                 </div>
-                
+
                 {{-- Tombol Tambah --}}
                 <a href="javascript:void(0);" onclick="openWarnaModal('{{ route('warna.create') }}')"
                     class="px-7 py-2 bg-[#560024] text-white font-semibold rounded-lg hover:bg-gray-700 flex items-center justify-center text-sm">
@@ -128,21 +128,7 @@
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        function sortTable(column) {
-            const url = new URL(window.location.href);
-            const currentSort = url.searchParams.get('sort');
-            const currentDir = url.searchParams.get('direction');
 
-            let newDir = 'asc';
-            if (currentSort === column && currentDir === 'asc') newDir = 'desc';
-
-            url.searchParams.set('sort', column);
-            url.searchParams.set('direction', newDir);
-
-            window.location.href = url.toString();
-        }
-    </script>
     <script>
         // --- Buka modal ---
         function openWarnaModal(url) {
@@ -156,81 +142,19 @@
                     document.getElementById('modalContent').innerHTML = html;
                     document.getElementById('WarnaModal').classList.remove('hidden');
 
-                    // Pasang listener form setelah modal dimuat
-                    const form = document.getElementById('editWarnaForm');
-                    if (form) {
-                        form.addEventListener('submit', function(e) {
-                            e.preventDefault();
-                            const url = this.action;
-                            const formData = new FormData(this);
-                            const data = Object.fromEntries(formData.entries());
-
-                            fetch(url, {
-                                    method: 'PUT',
-                                    headers: {
-                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                        'Content-Type': 'application/json',
-                                        'Accept': 'application/json',
-                                        'X-Requested-With': 'XMLHttpRequest'
-                                    },
-                                    body: JSON.stringify(data)
-                                })
-                                .then(res => res.json())
-                                .then(data => {
-                                    closeModal(); // Tutup modal
-
-                                    if (data.success) {
-                                        Swal.fire({
-                                            icon: 'success',
-                                            title: data.message,
-                                            toast: true,
-                                            position: 'top-end',
-                                            timer: 1500,
-                                            showConfirmButton: false
-                                        });
-
-                                        // Update row tabel otomatis (loop semua field dari data.data)
-                                        const row = document.querySelector(
-                                            `[data-warna-id='${data.data.warna_id}']`);
-                                        if (row) {
-                                            Object.keys(data.data).forEach((key, index) => {
-                                                // index +1 karena td pertama biasanya ID
-                                                if (row.querySelector(`td:nth-child(${index + 1})`))
-                                                    row.querySelector(`td:nth-child(${index + 1})`)
-                                                    .textContent = data.data[key];
-                                            });
-                                        }
-
-                                    } else {
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Gagal',
-                                            text: data.message,
-                                            toast: true,
-                                            position: 'top-end'
-                                        });
-                                    }
-                                })
-                                .catch(err => {
-                                    closeModal();
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Error',
-                                        text: err.message || 'Terjadi kesalahan',
-                                        toast: true,
-                                        position: 'top-end'
-                                    });
-                                });
-                        });
+                    // Listener form edit
+                    const editForm = document.getElementById('editWarnaForm');
+                    if (editForm) {
+                        editForm.addEventListener('submit', handleEditSubmit);
                     }
 
-                    // Pasang listener form create setelah modal dimuat
+                    // Listener form create
                     const createForm = document.getElementById('createWarnaForm');
                     if (createForm) {
                         createForm.addEventListener('submit', handleCreateSubmit);
                     }
                 })
-                .catch(err => console.error(err));
+                .catch(err => Swal.fire('Error', err.message || 'Gagal memuat modal', 'error'));
         }
 
         // --- Tutup modal ---
@@ -239,7 +163,87 @@
             document.getElementById('modalContent').innerHTML = '';
         }
 
-        // --- Delete bahan ---
+        // --- Handle edit warna ---
+        function handleEditSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const url = form.action;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    closeModal();
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: data.message,
+                            toast: true,
+                            position: 'top-end',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire('Gagal', data.message, 'error');
+                    }
+                })
+                .catch(err => {
+                    closeModal();
+                    Swal.fire('Error', err.message || 'Terjadi kesalahan', 'error');
+                });
+        }
+
+        // --- Handle create warna ---
+        function handleCreateSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const url = form.action;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    closeModal();
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: data.message,
+                            toast: true,
+                            position: 'top-end',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire('Gagal', data.message, 'error');
+                    }
+                })
+                .catch(err => {
+                    closeModal();
+                    Swal.fire('Error', err.message || 'Terjadi kesalahan', 'error');
+                });
+        }
+
+        // --- Delete warna ---
         function deleteWarna(url) {
             Swal.fire({
                 title: 'Hapus Warna?',
@@ -250,13 +254,14 @@
                 cancelButtonColor: '#3085d6',
                 confirmButtonText: 'Ya, hapus!',
                 cancelButtonText: 'Batal'
-            }).then((result) => {
+            }).then(result => {
                 if (result.isConfirmed) {
                     fetch(url, {
                             method: 'DELETE',
                             headers: {
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                'Accept': 'application/json'
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
                             }
                         })
                         .then(res => res.json())
@@ -269,31 +274,31 @@
                                     position: 'top-end',
                                     timer: 1500,
                                     showConfirmButton: false
-                                });
-                                // Hapus row dari tabel
-                                document.querySelector(`[data-warna-id='${data.id}']`)?.remove();
+                                }).then(() => location.reload());
                             } else {
                                 Swal.fire('Gagal', data.message, 'error');
                             }
                         })
-                        .catch(err => Swal.fire('Error', 'Terjadi kesalahan', 'error'));
+                        .catch(err => Swal.fire('Error', err.message || 'Terjadi kesalahan', 'error'));
                 }
             });
         }
 
-        // --- Tambahkan atribut data-bahan-id ---
-        document.querySelectorAll('tbody tr').forEach(tr => {
-            const warnaId = tr.querySelector('td')?.innerText;
-            if (warnaId) tr.setAttribute('data-warna-id', warnaId.trim());
-        });
-    </script>
-    <script>
+        // --- DOM Ready ---
         document.addEventListener('DOMContentLoaded', function() {
-            const sortFilter = document.getElementById('sortFilter');
-
-            sortFilter.addEventListener('change', function() {
-                this.form.submit();
+            // Tambahkan data-warna-id ke setiap row tabel
+            document.querySelectorAll('tbody tr').forEach(tr => {
+                const warnaId = tr.querySelector('td')?.innerText;
+                if (warnaId) tr.setAttribute('data-warna-id', warnaId.trim());
             });
+
+            // Listener sort filter
+            const sortFilter = document.getElementById('sortFilter');
+            if (sortFilter) {
+                sortFilter.addEventListener('change', function() {
+                    this.form.submit();
+                });
+            }
         });
     </script>
 @endpush

@@ -9,7 +9,7 @@
         </div>
         <div class="mb-4">
             <label class="block text-sm font-medium mb-1">Deskripsi</label>
-            <textarea name="deskripsi" placeholder="Masukkan deskripsi" 
+            <textarea name="deskripsi" placeholder="Masukkan deskripsi ukuran" 
                    class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#560024]"></textarea>
         </div>
         <div class="flex justify-end gap-2">

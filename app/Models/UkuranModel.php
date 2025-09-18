@@ -15,7 +15,7 @@ class UkuranModel extends Model
     
     protected $fillable = [
         'nama_ukuran',
-        'deskripsi',
+        'deskripsi'
     ];
 
     protected $casts = [

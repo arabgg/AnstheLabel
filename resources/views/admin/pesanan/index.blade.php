@@ -11,7 +11,7 @@
             {{-- Search & Filter --}}
             <div class="flex justify-between mb-5">
                 {{-- Search di kiri --}}
-                <form method="GET" action="{{ route('pesanan.index') }}"
+                 <form method="GET" action="{{ route('pesanan.index') }}"
                     class="flex items-center border rounded-lg px-3 py-2 w-1/2">
                     <input type="text" name="search" placeholder="Cari Pesanan Pelanggan" value="{{ request('search') }}"
                         class="w-full outline-none placeholder:text-sm">
@@ -75,17 +75,17 @@
                                 <td class="p-3">{{ $item->nama_customer }}</td>
                                 <td class="p-3">{{ $item->no_telp }}</td>
                                 <td class="p-3">
-                                    @if ($item->pembayaran->status_pembayaran === 'Menunggu Pembayaran')
+                                    @if ($item->pembayaran->status_pembayaran === 'menunggu pembayaran')
                                         <div
                                             class="border-transparent p-2 rounded-lg bg-yellow-200 text-yellow-800 border-yellow-400 font-semibold text-center">
                                             Menunggu Pembayaran
                                         </div>
-                                    @elseif($item->pembayaran->status_pembayaran === 'Lunas')
+                                    @elseif($item->pembayaran->status_pembayaran === 'lunas')
                                         <div
                                             class="border-transparent p-2 rounded-lg bg-green-200 text-green-800 border-green-400 font-semibold text-center">
                                             Lunas
                                         </div>
-                                    @elseif($item->pembayaran->status_pembayaran === 'Dibatalkan')
+                                    @elseif($item->pembayaran->status_pembayaran === 'dibatalkan')
                                         <div
                                             class="border-transparent p-2 rounded-lg bg-red-200 text-red-800 border-red-400 font-semibold text-center">
                                             Dibatalkan
