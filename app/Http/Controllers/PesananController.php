@@ -109,11 +109,11 @@ class PesananController extends Controller
 
         if ($pembayaran) {
             if (in_array($transaksi->status_transaksi, ['dikemas', 'dikirim', 'selesai'])) {
-                $pembayaran->status_pembayaran = 'Lunas';
+                $pembayaran->status_pembayaran = 'lunas';
             } elseif ($transaksi->status_transaksi === 'batal') {
-                $pembayaran->status_pembayaran = 'Dibatalkan';
-            } else {
-                $pembayaran->status_pembayaran = 'Menunggu Pembayaran';
+                $pembayaran->status_pembayaran = 'dibatalkan';
+            } elseif ($transaksi->status_transaksi === 'menunggu pembayaran') {
+                $pembayaran->status_pembayaran = 'menunggu pembayaran';
             }
 
             $pembayaran->save();

@@ -54,7 +54,7 @@ class MetodePembayaranController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'metode_id' => 'required|string|exists:m_metode_pembayaran,metode_id',
+            'metode_id' => 'required|integer|exists:m_metode_pembayaran,metode_id',
             'nama_pembayaran' => 'required|string|max:255',
             'kode_bayar' => 'required|string|max:255',
             'atas_nama' => 'required|string|max:255',
@@ -68,16 +68,25 @@ class MetodePembayaranController extends Controller
             $validated['icon'] = $fileName;
         }
 
+        $metode = MetodePembayaranModel::create($validated);
 
-        MetodePembayaranModel::create($validated);
+        // Kalau request dari AJAX, balas JSON
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Metode pembayaran berhasil ditambahkan',
+                'data'    => $metode
+            ]);
+        }
 
+        // Kalau request biasa (form POST normal), redirect
         return redirect()->route('metode_pembayaran.index')
             ->with('success', 'Metode pembayaran berhasil ditambahkan.');
     }
 
     public function show($id)
     {
-        $metode = MetodePembayaranModel::select('metode_pembayaran_id', 'metode_id', 'nama_pembayaran', 'kode_bayar', 'status_pembayaran', 'icon')
+        $metode = MetodePembayaranModel::select('metode_pembayaran_id', 'metode_id', 'nama_pembayaran', 'kode_bayar', 'atas_nama', 'status_pembayaran', 'icon')
             ->with('metode:metode_id,nama_metode')
             ->findOrFail($id);
 
@@ -102,7 +111,7 @@ class MetodePembayaranController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'metode_id' => 'required|string|exists:m_metode_pembayaran,metode_id',
+            'metode_id' => 'required|integer|exists:m_metode_pembayaran,metode_id',
             'nama_pembayaran' => 'required|string|max:255',
             'kode_bayar' => 'required|string|max:255',
             'atas_nama' => 'required|string|max:255',
@@ -148,8 +157,8 @@ class MetodePembayaranController extends Controller
         $metode = MetodePembayaranModel::findOrFail($id);
 
         // Hapus file foto kalau ada
-        if ($metode->icon && Storage::exists('icons/' . $metode->icon)) {
-            Storage::delete('icons/' . $metode->icon);
+        if ($metode->icon && Storage::disk('public')->exists('icons/' . $metode->icon)) {
+            Storage::disk('public')->delete('icons/' . $metode->icon);
         }
 
         // Hapus data dari database

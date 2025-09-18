@@ -33,10 +33,10 @@
                 </div>
 
                 {{-- Tombol Tambah --}}
-                    <a href="javascript:void(0);" onclick="openUkuranModal('{{ route('ukuran.create') }}')"
-                        class="px-7 py-2 bg-[#560024] text-white font-semibold rounded-lg hover:bg-gray-700 flex items-center justify-center text-sm">
-                        Tambah
-                    </a>
+                <a href="javascript:void(0);" onclick="openUkuranModal('{{ route('ukuran.create') }}')"
+                    class="px-7 py-2 bg-[#560024] text-white font-semibold rounded-lg hover:bg-gray-700 flex items-center justify-center text-sm">
+                    Tambah
+                </a>
             </div>
 
             {{-- Tabel item --}}
@@ -121,21 +121,7 @@
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        function sortTable(column) {
-            const url = new URL(window.location.href);
-            const currentSort = url.searchParams.get('sort');
-            const currentDir = url.searchParams.get('direction');
 
-            let newDir = 'asc';
-            if (currentSort === column && currentDir === 'asc') newDir = 'desc';
-
-            url.searchParams.set('sort', column);
-            url.searchParams.set('direction', newDir);
-
-            window.location.href = url.toString();
-        }
-    </script>
     <script>
         // --- Buka modal ---
         function openUkuranModal(url) {
@@ -149,75 +135,13 @@
                     document.getElementById('modalContent').innerHTML = html;
                     document.getElementById('UkuranModal').classList.remove('hidden');
 
-                    // Pasang listener form setelah modal dimuat
-                    const form = document.getElementById('editUkuranForm');
-                    if (form) {
-                        form.addEventListener('submit', function(e) {
-                            e.preventDefault();
-                            const url = this.action;
-                            const formData = new FormData(this);
-                            const data = Object.fromEntries(formData.entries());
-
-                            fetch(url, {
-                                    method: 'PUT',
-                                    headers: {
-                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                        'Content-Type': 'application/json',
-                                        'Accept': 'application/json',
-                                        'X-Requested-With': 'XMLHttpRequest'
-                                    },
-                                    body: JSON.stringify(data)
-                                })
-                                .then(res => res.json())
-                                .then(data => {
-                                    closeModal(); // Tutup modal
-
-                                    if (data.success) {
-                                        Swal.fire({
-                                            icon: 'success',
-                                            title: data.message,
-                                            toast: true,
-                                            position: 'top-end',
-                                            timer: 1500,
-                                            showConfirmButton: false
-                                        });
-
-                                        // Update row tabel otomatis (loop semua field dari data.data)
-                                        const row = document.querySelector(
-                                            `[data-ukuran-id='${data.data.ukuran_id}']`);
-                                        if (row) {
-                                            Object.keys(data.data).forEach((key, index) => {
-                                                // index +1 karena td pertama biasanya ID
-                                                if (row.querySelector(`td:nth-child(${index + 1})`))
-                                                    row.querySelector(`td:nth-child(${index + 1})`)
-                                                    .textContent = data.data[key];
-                                            });
-                                        }
-
-                                    } else {
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Gagal',
-                                            text: data.message,
-                                            toast: true,
-                                            position: 'top-end'
-                                        });
-                                    }
-                                })
-                                .catch(err => {
-                                    closeModal();
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Error',
-                                        text: err.message || 'Terjadi kesalahan',
-                                        toast: true,
-                                        position: 'top-end'
-                                    });
-                                });
-                        });
+                    // Listener form edit
+                    const editForm = document.getElementById('editUkuranForm');
+                    if (editForm) {
+                        editForm.addEventListener('submit', handleEditSubmit);
                     }
 
-                    // Pasang listener form create setelah modal dimuat
+                    // Listener form create
                     const createForm = document.getElementById('createUkuranForm');
                     if (createForm) {
                         createForm.addEventListener('submit', handleCreateSubmit);
@@ -232,7 +156,85 @@
             document.getElementById('modalContent').innerHTML = '';
         }
 
-        // --- Delete bahan ---
+        // --- Handle edit ukuran ---
+        function handleEditSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const url = form.action;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        closeModal();
+                        Swal.fire({
+                            icon: 'success',
+                            title: data.message,
+                            toast: true,
+                            position: 'top-end',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire('Gagal', data.message, 'error');
+                    }
+                })
+                .catch(err => {
+                    Swal.fire('Error', err.message || 'Terjadi kesalahan', 'error');
+                });
+        }
+
+        // --- Handle create ukuran ---
+        function handleCreateSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const url = form.action;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        closeModal();
+                        Swal.fire({
+                            icon: 'success',
+                            title: data.message,
+                            toast: true,
+                            position: 'top-end',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire('Gagal', data.message, 'error');
+                    }
+                })
+                .catch(err => {
+                    Swal.fire('Error', err.message || 'Terjadi kesalahan', 'error');
+                });
+        }
+
+        // --- Delete ukuran ---
         function deleteUkuran(url) {
             Swal.fire({
                 title: 'Hapus Ukuran?',
@@ -262,9 +264,7 @@
                                     position: 'top-end',
                                     timer: 1500,
                                     showConfirmButton: false
-                                });
-                                // Hapus row dari tabel
-                                document.querySelector(`[data-ukuran-id='${data.id}']`)?.remove();
+                                }).then(() => location.reload());
                             } else {
                                 Swal.fire('Gagal', data.message, 'error');
                             }
@@ -274,19 +274,14 @@
             });
         }
 
-        // --- Tambahkan atribut data-bahan-id ---
-        document.querySelectorAll('tbody tr').forEach(tr => {
-            const ukuranId = tr.querySelector('td')?.innerText;
-            if (ukuranId) tr.setAttribute('data-ukuran-id', ukuranId.trim());
-        });
-    </script>
-    <script>
+        // --- Auto submit sort filter ---
         document.addEventListener('DOMContentLoaded', function() {
             const sortFilter = document.getElementById('sortFilter');
-
-            sortFilter.addEventListener('change', function() {
-                this.form.submit();
-            });
+            if (sortFilter) {
+                sortFilter.addEventListener('change', function() {
+                    this.form.submit();
+                });
+            }
         });
     </script>
 @endpush

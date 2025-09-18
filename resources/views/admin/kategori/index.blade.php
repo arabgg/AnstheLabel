@@ -28,7 +28,6 @@
                             <option value="">Urutkan</option>
                             <option value="terbaru" {{ request('sort') == 'terbaru' ? 'selected' : '' }}>Terbaru</option>
                             <option value="terlama" {{ request('sort') == 'terlama' ? 'selected' : '' }}>Terlama</option>
-                            </option>
                         </select>
                     </form>
                 </div>
@@ -52,7 +51,7 @@
                     </thead>
                     <tbody class="text-sm">
                         @forelse ($kategori as $item)
-                            <tr class="border-b hover:bg-gray-50">
+                            <tr class="border-b hover:bg-gray-50" data-kategori-id="{{ $item->kategori_id }}">
                                 <td class="p-3">{{ $kategori->firstItem() + $loop->index }}</td>
                                 <td class="p-3">{{ $item->nama_kategori }}</td>
                                 <td class="p-3 flex gap-2 justify-center items-center">
@@ -120,24 +119,9 @@
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        function sortTable(column) {
-            const url = new URL(window.location.href);
-            const currentSort = url.searchParams.get('sort');
-            const currentDir = url.searchParams.get('direction');
-
-            let newDir = 'asc';
-            if (currentSort === column && currentDir === 'asc') newDir = 'desc';
-
-            url.searchParams.set('sort', column);
-            url.searchParams.set('direction', newDir);
-
-            window.location.href = url.toString();
-        }
-    </script>
 
     <script>
-        // Fungsi buka modal
+        // --- Buka modal ---
         function openKategoriModal(url) {
             fetch(url, {
                     headers: {
@@ -149,70 +133,13 @@
                     document.getElementById('modalContent').innerHTML = html;
                     document.getElementById('KategoriModal').classList.remove('hidden');
 
-                    // Pasang listener form edit setelah modal dimuat
-                    const form = document.getElementById('editKategoriForm');
-                    if (form) {
-                        form.addEventListener('submit', function(e) {
-                            e.preventDefault();
-                            const url = this.action;
-                            const data = {
-                                nama_kategori: this.nama_kategori.value
-                            };
-
-                            fetch(url, {
-                                    method: 'PUT',
-                                    headers: {
-                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                        'Content-Type': 'application/json',
-                                        'Accept': 'application/json',
-                                        'X-Requested-With': 'XMLHttpRequest'
-                                    },
-                                    body: JSON.stringify(data)
-                                })
-                                .then(res => res.json())
-                                .then(data => {
-                                    closeModal(); // Tutup modal dulu
-
-                                    // SweetAlert sukses
-                                    if (data.success) {
-                                        Swal.fire({
-                                            icon: 'success',
-                                            title: data.message,
-                                            toast: true,
-                                            position: 'top-end',
-                                            timer: 1500,
-                                            showConfirmButton: false
-                                        });
-
-                                        // Update nama kategori di tabel
-                                        const row = document.querySelector(
-                                            `[data-kategori-id='${data.data.kategori_id}']`);
-                                        if (row) row.querySelector('td:nth-child(2)').textContent = data
-                                            .data.nama_kategori;
-                                    } else {
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Gagal',
-                                            text: data.message,
-                                            toast: true,
-                                            position: 'top-end'
-                                        });
-                                    }
-                                })
-                                .catch(err => {
-                                    closeModal();
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Error',
-                                        text: err.message || 'Terjadi kesalahan',
-                                        toast: true,
-                                        position: 'top-end'
-                                    });
-                                });
-                        });
+                    // Listener form edit
+                    const editForm = document.getElementById('editKategoriForm');
+                    if (editForm) {
+                        editForm.addEventListener('submit', handleEditSubmit);
                     }
 
-                    // Pasang listener form create setelah modal dimuat
+                    // Listener form create
                     const createForm = document.getElementById('createKategoriForm');
                     if (createForm) {
                         createForm.addEventListener('submit', handleCreateSubmit);
@@ -221,13 +148,93 @@
                 .catch(err => console.error(err));
         }
 
-        // Fungsi tutup modal
+        // --- Tutup modal ---
         function closeModal() {
             document.getElementById('KategoriModal').classList.add('hidden');
             document.getElementById('modalContent').innerHTML = '';
         }
 
-        // Delete kategori
+        // --- Handle edit kategori ---
+        function handleEditSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const url = form.action;
+            const data = {
+                nama_kategori: form.nama_kategori.value
+            };
+
+            fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        closeModal();
+                        Swal.fire({
+                            icon: 'success',
+                            title: data.message,
+                            toast: true,
+                            position: 'top-end',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire('Gagal', data.message, 'error');
+                    }
+                })
+                .catch(err => {
+                    Swal.fire('Error', err.message || 'Terjadi kesalahan', 'error');
+                });
+        }
+
+        // --- Handle create kategori ---
+        function handleCreateSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const url = form.action;
+            const data = {
+                nama_kategori: form.nama_kategori.value
+            };
+
+            fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        closeModal();
+                        Swal.fire({
+                            icon: 'success',
+                            title: data.message,
+                            toast: true,
+                            position: 'top-end',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => location.reload());
+                    } else {
+                        Swal.fire('Gagal', data.message, 'error');
+                    }
+                })
+                .catch(err => {
+                    Swal.fire('Error', err.message || 'Terjadi kesalahan', 'error');
+                });
+        }
+
+        // --- Delete kategori ---
         function deleteKategori(url) {
             Swal.fire({
                 title: 'Hapus Kategori?',
@@ -257,9 +264,7 @@
                                     position: 'top-end',
                                     timer: 1500,
                                     showConfirmButton: false
-                                });
-                                // Hapus row dari tabel
-                                document.querySelector(`[data-kategori-id='${data.id}']`)?.remove();
+                                }).then(() => location.reload());
                             } else {
                                 Swal.fire('Gagal', data.message, 'error');
                             }
@@ -269,19 +274,14 @@
             });
         }
 
-        // Tambahkan atribut data-kategori-id ke setiap baris tabel
-        document.querySelectorAll('tbody tr').forEach(tr => {
-            const kategoriId = tr.querySelector('td')?.innerText;
-            if (kategoriId) tr.setAttribute('data-kategori-id', kategoriId.trim());
-        });
-    </script>
-    <script>
+        // --- Auto submit sort filter ---
         document.addEventListener('DOMContentLoaded', function() {
             const sortFilter = document.getElementById('sortFilter');
-
-            sortFilter.addEventListener('change', function() {
-                this.form.submit();
-            });
+            if (sortFilter) {
+                sortFilter.addEventListener('change', function() {
+                    this.form.submit();
+                });
+            }
         });
     </script>
 @endpush

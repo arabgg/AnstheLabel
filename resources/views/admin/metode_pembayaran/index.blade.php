@@ -138,6 +138,8 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <script>
         // --- Buka modal ---
         function openMetodeModal(url) {
@@ -151,16 +153,16 @@
                     document.getElementById('modalContent').innerHTML = html;
                     document.getElementById('MetodeModal').classList.remove('hidden');
 
-                    // Pasang listener form edit setelah modal dimuat
-                    const form = document.getElementById('editMetodeForm');
-                    if (form) {
-                        form.addEventListener('submit', function(e) {
+                    // Listener form edit
+                    const editForm = document.getElementById('editMetodeForm');
+                    if (editForm) {
+                        editForm.addEventListener('submit', function(e) {
                             e.preventDefault();
                             const url = this.action;
                             const formData = new FormData(this);
 
                             fetch(url, {
-                                    method: 'POST', // tetap pakai POST
+                                    method: 'POST',
                                     headers: {
                                         'X-CSRF-TOKEN': '{{ csrf_token() }}',
                                         'Accept': 'application/json',
@@ -171,6 +173,7 @@
                                 .then(res => res.json())
                                 .then(data => {
                                     if (data.success) {
+                                        closeModal();
                                         Swal.fire({
                                             icon: 'success',
                                             title: data.message,
@@ -179,37 +182,57 @@
                                             timer: 1500,
                                             showConfirmButton: false
                                         }).then(() => {
-                                            // reload halaman setelah alert selesai
                                             window.location.reload();
                                         });
-
                                     } else {
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Gagal',
-                                            text: data.message,
-                                            toast: true,
-                                            position: 'top-end'
-                                        });
+                                        Swal.fire('Gagal', data.message, 'error');
                                     }
                                 })
                                 .catch(err => {
-                                    closeModal();
-                                    Swal.fire({
-                                        icon: 'error',
-                                        title: 'Error',
-                                        text: err.message || 'Terjadi kesalahan',
-                                        toast: true,
-                                        position: 'top-end'
-                                    });
+                                    Swal.fire('Error', err.message, 'error');
                                 });
                         });
                     }
 
-                    // Listener form create jika ada
+                    // Listener form create
                     const createForm = document.getElementById('createMetodeForm');
                     if (createForm) {
-                        createForm.addEventListener('submit', handleCreateSubmit);
+                        createForm.addEventListener('submit', function(e) {
+                            e.preventDefault();
+                            const url = this.action;
+                            const formData = new FormData(this);
+
+                            fetch(url, {
+                                    method: 'POST',
+                                    headers: {
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                        'Accept': 'application/json',
+                                        'X-Requested-With': 'XMLHttpRequest'
+                                    },
+                                    body: formData
+                                })
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        closeModal();
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Berhasil menambahkan metode',
+                                            toast: true,
+                                            position: 'top-end',
+                                            timer: 1500,
+                                            showConfirmButton: false
+                                        }).then(() => {
+                                            window.location.reload();
+                                        });
+                                    } else {
+                                        Swal.fire('Gagal', data.message, 'error');
+                                    }
+                                })
+                                .catch(err => {
+                                    Swal.fire('Error', err.message, 'error');
+                                });
+                        });
                     }
                 })
                 .catch(err => console.error(err));
@@ -251,9 +274,9 @@
                                     position: 'top-end',
                                     timer: 1500,
                                     showConfirmButton: false
+                                }).then(() => {
+                                    window.location.reload();
                                 });
-                                // Hapus row dari tabel
-                                document.querySelector(`[data-metode-id='${data.id}']`)?.remove();
                             } else {
                                 Swal.fire('Gagal', data.message, 'error');
                             }
@@ -263,13 +286,7 @@
             });
         }
 
-        // --- Tambahkan atribut data-metode-id pada row tabel ---
-        document.querySelectorAll('tbody tr').forEach(tr => {
-            const metodeId = tr.querySelector('td')?.innerText;
-            if (metodeId) tr.setAttribute('data-metode-id', metodeId.trim());
-        });
-    </script>
-    <script>
+        // --- Filter otomatis ---
         document.addEventListener('DOMContentLoaded', function() {
             const metodeFilter = document.getElementById('metodeFilter');
             const sortFilter = document.getElementById('sortFilter');

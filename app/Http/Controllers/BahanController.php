@@ -38,12 +38,20 @@ class BahanController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'nama_bahan' => 'required|string|max:100',
             'deskripsi'  => 'nullable|string',
         ]);
 
-        BahanModel::create($request->all());
+        $bahan = BahanModel::create($validated);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Bahan berhasil ditambahkan',
+                'data'    => $bahan
+            ]);
+        }
 
         return redirect()->route('bahan.index')
             ->with('success', 'Bahan berhasil ditambahkan');

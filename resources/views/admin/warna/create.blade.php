@@ -1,6 +1,6 @@
 <div class="bg-white rounded-lg shadow p-6">
     <h2 class="text-xl font-bold mb-4">Tambah Warna</h2>
-    <form action="{{ route('warna.store') }}" method="POST">
+    <form action="{{ route('warna.store') }}" method="POST" id="createWarnaForm">
         @csrf
         {{-- Input warna --}}
         <div class="mb-4">
