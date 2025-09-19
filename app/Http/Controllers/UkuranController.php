@@ -37,7 +37,7 @@ class UkuranController extends Controller
     {
         $validated = $request->validate([
             'nama_ukuran' => 'required|string|max:255',
-            'deskripsi' => 'nullable|string',
+            'deskripsi' => 'required|string',
         ]);
 
         $ukuran = UkuranModel::create($validated);
@@ -79,7 +79,7 @@ class UkuranController extends Controller
     {
         $request->validate([
             'nama_ukuran' => 'required|string|max:255',
-            'deskripsi' => 'nullable|string|max:255',
+            'deskripsi' => 'required|string',
         ]);
 
         $ukuran = UkuranModel::select('ukuran_id', 'nama_ukuran', 'deskripsi')

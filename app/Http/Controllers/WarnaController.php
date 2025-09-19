@@ -80,7 +80,7 @@ class WarnaController extends Controller
     {
         $request->validate([
             'nama_warna' => 'required|string|max:255',
-            'kode_hex' => 'nullable|string|max:50',
+            'kode_hex' => 'required|regex:/^#[0-9A-Fa-f]{6}$/|max:7',
         ]);
 
         $warna = WarnaModel::findOrFail($id);

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\MetodeModel;
 use App\Models\MetodePembayaranModel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -12,11 +13,14 @@ class MetodePembayaranModelFactory extends Factory
     public function definition()
     {
         return [
-            'metode_id' => 1, // Pastikan id ini ada di tabel m_metode_pembayaran
+            // relasi otomatis → kalau nggak dikasih metode_id, dia akan buat MetodeModel baru
+            'metode_id' => MetodeModel::factory(),
+
             'nama_pembayaran' => $this->faker->company . ' Payment',
             'kode_bayar' => $this->faker->unique()->bothify('KODE-####'),
+            'atas_nama' => $this->faker->name,
             'status_pembayaran' => $this->faker->boolean,
-            'icon' => $this->faker->optional()->imageUrl(),
+            'icon' => null, // biar konsisten dengan validasi controller
         ];
     }
 }

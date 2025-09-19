@@ -40,7 +40,7 @@ class BahanController extends Controller
     {
         $validated = $request->validate([
             'nama_bahan' => 'required|string|max:100',
-            'deskripsi'  => 'nullable|string',
+            'deskripsi' => 'required|string',
         ]);
 
         $bahan = BahanModel::create($validated);
@@ -81,7 +81,7 @@ class BahanController extends Controller
     {
         $request->validate([
             'nama_bahan' => 'required|string|max:255',
-            'deskripsi' => 'nullable|string|max:255',
+            'deskripsi' => 'required|string',
         ]);
 
         $bahan = BahanModel::select('bahan_id', 'nama_bahan', 'deskripsi')

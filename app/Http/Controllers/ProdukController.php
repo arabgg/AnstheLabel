@@ -291,13 +291,14 @@ class ProdukController extends Controller
             'warna_id.*' => 'string|max:50',
         ]);
 
-        DB::transaction(function () use ($request, $id, $optimizerChain) {
-            $produk = ProdukModel::findOrFail($id);
+        $produk = ProdukModel::findOrFail($id);
+
+        DB::transaction(function () use ($request, $produk, $optimizerChain) {
 
             $produk->update($request->only(['nama_produk', 'deskripsi', 'harga', 'diskon', 'stok_produk', 'is_best', 'kategori_id', 'bahan_id']));
 
             if ($request->hasFile('foto_utama')) {
-                FotoProdukModel::where('produk_id', $id)->where('status_foto', 1)->delete();
+                FotoProdukModel::where('produk_id', $produk->produk_id)->where('status_foto', 1)->delete();
 
                 $fotoUtama = $request->file('foto_utama');
                 $filename = $fotoUtama->hashName();
@@ -305,7 +306,7 @@ class ProdukController extends Controller
                 $optimizerChain->optimize(storage_path('app/public/foto_produk/' . $filename));
 
                 FotoProdukModel::create([
-                    'produk_id' => $id,
+                    'produk_id' => $produk->produk_id,
                     'foto_produk' => $filename,
                     'status_foto' => 1
                 ]);
@@ -318,30 +319,30 @@ class ProdukController extends Controller
                     $optimizerChain->optimize(storage_path('app/public/foto_produk/' . $filename));
 
                     FotoProdukModel::create([
-                        'produk_id' => $id,
+                        'produk_id' => $produk->produk_id,
                         'foto_produk' => $filename,
                         'status_foto' => 0
                     ]);
                 }
             }
 
-            UkuranProdukModel::where('produk_id', $id)->delete();
+            UkuranProdukModel::where('produk_id', $produk->produk_id)->delete();
             foreach ($request->ukuran_id as $ukuran) {
                 UkuranProdukModel::create([
-                    'produk_id' => $id,
+                    'produk_id' => $produk->produk_id,
                     'ukuran_id' => $ukuran
                 ]);
             }
 
-            WarnaProdukModel::where('produk_id', $id)->delete();
+            WarnaProdukModel::where('produk_id', $produk->produk_id)->delete();
             foreach ($request->warna_id as $warnaKode) {
                 WarnaProdukModel::create([
-                    'produk_id' => $id,
+                    'produk_id' => $produk->produk_id,
                     'warna_id' => $warnaKode
                 ]);
             }
-            Cache::forget('produk_' . $id);
-            Cache::forget('edit_produk_' . $id);
+            Cache::forget('produk_' . $produk->produk_id);
+            Cache::forget('edit_produk_' . $produk->produk_id);
         });
 
         return redirect()->route('produk.index')->with('success', 'Produk berhasil diperbarui!');
@@ -368,6 +369,6 @@ class ProdukController extends Controller
             Cache::forget('edit_produk_' . $id);
         });
 
-        return redirect('/produk')->with('success', 'Produk berhasil dihapus');
+        return redirect()->route('produk.index')->with('success', 'Produk berhasil disimpan!');
     }
 }
