@@ -6,10 +6,12 @@
             <h1 class="text-2xl font-bold pl-4 pt-4">Kelola Produk</h1>
         </div>
 
-        <div class="flex justify-between items-center mb-5">
-            {{-- Search & Filter Form --}}
-            <form id="filterForm" method="GET" action="{{ route('produk.index') }}" class="flex items-center w-full">
-                <div class="flex-grow mr-3 flex items-center border rounded-lg px-3 py-2">
+        <div class="flex justify-between items-center mb-7 mt-6">
+            {{-- Search & Filter --}}
+            <form id="filterForm" method="GET" action="{{ route('produk.index') }}" class="flex items-center gap-3 w-3/4">
+
+                {{-- Search --}}
+                <div class="flex items-center border rounded-lg px-3 py-2 flex-grow">
                     <input type="text" name="search" placeholder="Cari Produk" value="{{ request('search') }}"
                         class="w-full outline-none placeholder:text-sm">
                     <button type="submit" class="ml-2">
@@ -18,58 +20,51 @@
                 </div>
 
                 {{-- Dropdown Kategori --}}
-                <div class="mr-3">
-                    <select id="kategoriFilter" name="kategori"
-                        class="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-400 transition-colors">
-                        <option value="">Semua Kategori</option>
-                        @foreach ($kategoriList as $kategori)
-                            <option value="{{ $kategori->kategori_id }}"
-                                {{ request('kategori') == $kategori->kategori_id ? 'selected' : '' }}>
-                                {{ $kategori->nama_kategori }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+                <select id="kategoriFilter" name="kategori"
+                    class="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-400 transition-colors">
+                    <option value="">Semua Kategori</option>
+                    @foreach ($kategoriList as $kategori)
+                        <option value="{{ $kategori->kategori_id }}"
+                            {{ request('kategori') == $kategori->kategori_id ? 'selected' : '' }}>
+                            {{ $kategori->nama_kategori }}
+                        </option>
+                    @endforeach
+                </select>
 
                 {{-- Dropdown Bahan --}}
-                <div class="mr-3">
-                    <select id="bahanFilter" name="bahan"
-                        class="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-400 transition-colors">
-                        <option value="">Semua Bahan</option>
-                        @foreach ($bahanList as $bahan)
-                            <option value="{{ $bahan->bahan_id }}"
-                                {{ request('bahan') == $bahan->bahan_id ? 'selected' : '' }}>
-                                {{ $bahan->nama_bahan }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+                <select id="bahanFilter" name="bahan"
+                    class="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-400 transition-colors">
+                    <option value="">Semua Bahan</option>
+                    @foreach ($bahanList as $bahan)
+                        <option value="{{ $bahan->bahan_id }}" {{ request('bahan') == $bahan->bahan_id ? 'selected' : '' }}>
+                            {{ $bahan->nama_bahan }}
+                        </option>
+                    @endforeach
+                </select>
 
                 {{-- Dropdown Sort --}}
-                <div class="mr-3">
-                    <select id="sortFilter" name="sort"
-                        class="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-400 transition-colors">
-                        <option value="">Urutkan</option>
-                        <option value="terbaru" {{ request('sort') == 'terbaru' ? 'selected' : '' }}>Terbaru</option>
-                        <option value="terlama" {{ request('sort') == 'terlama' ? 'selected' : '' }}>Terlama</option>
-                        <option value="terupdate" {{ request('sort') == 'terupdate' ? 'selected' : '' }}>Terupdate</option>
-                        <option value="stok_terbanyak" {{ request('sort') == 'stok_terbanyak' ? 'selected' : '' }}>Stok
-                            Terbanyak</option>
-                        <option value="stok_tersedikit" {{ request('sort') == 'stok_tersedikit' ? 'selected' : '' }}>Stok
-                            Tersedikit</option>
-                        <option value="harga_termahal" {{ request('sort') == 'harga_termahal' ? 'selected' : '' }}>Harga
-                            Termahal</option>
-                        <option value="harga_termurah" {{ request('sort') == 'harga_termurah' ? 'selected' : '' }}>Harga
-                            Termurah</option>
-                    </select>
-                </div>
-
-                {{-- Tombol Tambah Produk --}}
-                <a href="{{ url('/produk/create') }}"
-                    class="px-7 py-2 bg-[#560024] text-white font-semibold rounded-lg hover:bg-gray-700 flex items-center justify-center text-sm ml-auto">
-                    Tambah
-                </a>
+                <select id="sortFilter" name="sort"
+                    class="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-400 transition-colors">
+                    <option value="">Urutkan</option>
+                    <option value="terbaru" {{ request('sort') == 'terbaru' ? 'selected' : '' }}>Terbaru</option>
+                    <option value="terlama" {{ request('sort') == 'terlama' ? 'selected' : '' }}>Terlama</option>
+                    <option value="terupdate" {{ request('sort') == 'terupdate' ? 'selected' : '' }}>Terupdate</option>
+                    <option value="stok_terbanyak" {{ request('sort') == 'stok_terbanyak' ? 'selected' : '' }}>Stok
+                        Terbanyak</option>
+                    <option value="stok_tersedikit" {{ request('sort') == 'stok_tersedikit' ? 'selected' : '' }}>Stok
+                        Tersedikit</option>
+                    <option value="harga_termahal" {{ request('sort') == 'harga_termahal' ? 'selected' : '' }}>Harga
+                        Termahal</option>
+                    <option value="harga_termurah" {{ request('sort') == 'harga_termurah' ? 'selected' : '' }}>Harga
+                        Termurah</option>
+                </select>
             </form>
+
+            {{-- Tombol Tambah Produk --}}
+            <a href="{{ url('/produk/create') }}"
+                class="px-7 py-2 bg-[#560024] text-white font-semibold rounded-lg hover:bg-gray-700 flex items-center justify-center text-sm ml-3">
+                Tambah
+            </a>
         </div>
 
         {{-- Produk Grid --}}

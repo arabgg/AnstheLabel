@@ -10,46 +10,45 @@
 
             {{-- Search & Filter Form --}}
             <div class="flex justify-between items-center mb-7 mt-6">
-                {{-- Search & Filter Form --}}
-                <form id="filterForm" method="GET" action="{{ route('metode_pembayaran.index') }}"
-                    class="flex items-center w-full">
-
-                    {{-- Input Search --}}
-                    <div class="flex-grow mr-3 flex items-center border rounded-lg px-3 py-2">
+                <div class="flex items-center gap-3 w-2/3">
+                    {{-- Form Search --}}
+                    <form method="GET" action="{{ route('metode_pembayaran.index') }}"
+                        class="flex items-center border rounded-lg px-3 py-2 w-1/2">
                         <input type="text" name="search" placeholder="Cari Metode Pembayaran"
                             value="{{ request('search') }}" class="w-full outline-none placeholder:text-sm">
                         <button type="submit" class="ml-2">
                             <i class="fas fa-search"></i>
                         </button>
-                    </div>
+                    </form>
 
                     {{-- Dropdown Metode --}}
-                    <div class="mr-3">
+                    <form method="GET" action="{{ route('metode_pembayaran.index') }}">
                         <select id="metodeFilter" name="metode_id"
-                            class="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-400 transition-colors">
+                            class="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-400 transition-colors"
+                            onchange="this.form.submit()">
                             <option value="">Semua Metode</option>
                             <option value="1" {{ request('metode_id') == 1 ? 'selected' : '' }}>Transfer Bank</option>
                             <option value="2" {{ request('metode_id') == 2 ? 'selected' : '' }}>E-Wallet</option>
                         </select>
-                    </div>
+                    </form>
 
                     {{-- Dropdown Sort --}}
-                    <div class="mr-3">
+                    <form method="GET" action="{{ route('metode_pembayaran.index') }}">
                         <select id="sortFilter" name="sort"
-                            class="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-400 transition-colors">
+                            class="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-400 transition-colors"
+                            onchange="this.form.submit()">
                             <option value="">Urutkan</option>
                             <option value="terbaru" {{ request('sort') == 'terbaru' ? 'selected' : '' }}>Terbaru</option>
                             <option value="terlama" {{ request('sort') == 'terlama' ? 'selected' : '' }}>Terlama</option>
-                            </option>
                         </select>
-                    </div>
+                    </form>
+                </div>
 
-                    {{-- Tombol Tambah --}}
-                    <a href="javascript:void(0);" onclick="openMetodeModal('{{ route('metode_pembayaran.create') }}')"
-                        class="px-7 py-2 bg-[#560024] text-white font-semibold rounded-lg hover:bg-gray-700 flex items-center justify-center text-sm ml-auto">
-                        Tambah
-                    </a>
-                </form>
+                {{-- Tombol Tambah --}}
+                <a href="javascript:void(0);" onclick="openMetodeModal('{{ route('metode_pembayaran.create') }}')"
+                    class="px-7 py-2 bg-[#560024] text-white font-semibold rounded-lg hover:bg-gray-700 flex items-center justify-center text-sm">
+                    Tambah
+                </a>
             </div>
 
             {{-- Tabel item --}}
@@ -139,7 +138,7 @@
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
     <script>
         // --- Buka modal ---
         function openMetodeModal(url) {
