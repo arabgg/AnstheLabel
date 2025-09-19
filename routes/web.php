@@ -7,6 +7,7 @@ use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\BahanController;
 use App\Http\Controllers\UkuranController;
+use App\Http\Controllers\FaqController;
 use App\Http\Controllers\WarnaController;
 use App\Http\Controllers\MetodePembayaranController;
 use App\Http\Controllers\TransaksiController;
@@ -171,5 +172,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/edit/{id}', [BannerController::class, 'edit'])->name('banner.edit');
         Route::put('/update{id}', [BannerController::class, 'update'])->name('banner.update');
         Route::delete('/destroy{id}', [BannerController::class, 'destroy'])->name('banner.destroy');
+    });
+
+    Route::prefix('faq')->group(function () {
+        Route::get('/', [FaqController::class, 'index'])->name('faq.index');
+        Route::get('/show/{id}', [FaqController::class, 'show'])->name('faq.show');
+        Route::get('/create', [FaqController::class, 'create'])->name('faq.create');
+        Route::post('/store', [FaqController::class, 'store'])->name('faq.store');
+        Route::get('/edit/{id}', [FaqController::class, 'edit'])->name('faq.edit');
+        Route::put('/update/{id}', [FaqController::class, 'update'])->name('faq.update');
+        Route::delete('/destroy/{id}', [FaqController::class, 'destroy'])->name('faq.destroy');
     });
 });

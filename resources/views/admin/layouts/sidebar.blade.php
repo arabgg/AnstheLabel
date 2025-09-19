@@ -26,6 +26,12 @@
                 <i class="fa-solid fa-image w-5 text-center min-w-[20px]"></i>
                 <span class="flex-1 leading-none">Kelola Spanduk</span>
             </a>
+            <a href="/faq"
+                class="flex items-center gap-2 px-3 py-2 rounded hover:bg-red-100 transition text-sm
+                {{ request()->is('faq*') ? 'font-bold text-black bg-red-200 border-l-4 border-[#560024]' : '' }}">
+                <i class="fa-solid fa-question-circle w-5 text-center min-w-[20px]"></i>
+                <span class="flex-1 leading-none">Kelola FAQ</span>
+            </a>
         </div>
 
         {{-- Section: Kelola Produk --}}
