@@ -8,6 +8,7 @@ use App\Models\KategoriModel;
 use Illuminate\Support\Facades\Http;
 use App\Models\MetodePembayaranModel;
 use App\Models\PembayaranModel;
+use App\Models\FaqModel;
 use Illuminate\Http\Request;
 use App\Models\ProdukModel;
 use App\Models\TransaksiModel;
@@ -101,6 +102,7 @@ class HomeController extends Controller
 
     public function faq()
     {
+        $faqs = FaqModel::select('faq_id', 'pertanyaan', 'jawaban')->get();
         $rekomendasi = Cache::remember('rekomendasi', 600, function () {
             return ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
                 ->with('kategori:kategori_id,nama_kategori')
@@ -109,7 +111,7 @@ class HomeController extends Controller
                 ->get();
         });
 
-        return view('home.faq.index', compact('rekomendasi'));
+        return view('home.faq.index', compact( 'faqs', 'rekomendasi'));
     }
 
     public function show_produk($id)

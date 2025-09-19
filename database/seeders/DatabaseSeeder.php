@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             BahanSeeder::class,
             MetodeSeeder::class,
             BannerSeeder::class,
+            FaqSeeder::class,
             MetodePembayaranSeeder::class,
             ProdukSeeder::class,
             UkuranProdukSeeder::class,
