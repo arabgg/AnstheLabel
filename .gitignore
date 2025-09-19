@@ -1,4 +1,4 @@
-.github
+/.github
 /.phpunit.cache
 /node_modules
 /public/build
