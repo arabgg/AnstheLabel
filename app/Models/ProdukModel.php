@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use PhpOffice\PhpSpreadsheet\Calculation\Logical\Boolean;
 use Ramsey\Uuid\Type\Decimal;
 
 class ProdukModel extends Model
@@ -21,6 +22,8 @@ class ProdukModel extends Model
         'kategori_id',
         'bahan_id',
         'nama_produk',
+        'is_best'=> 'boolean',
+        'stok_produk',
         'harga',
         'diskon',
         'deskripsi',

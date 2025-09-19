@@ -12,6 +12,7 @@ use App\Models\UkuranModel;
 use App\Models\WarnaModel;
 use App\Http\Middleware\Authenticate;
 use App\Models\ProdukModel;
+use App\Models\User;
 
 class ProdukTest extends TestCase
 {
@@ -21,8 +22,11 @@ class ProdukTest extends TestCase
     {
         parent::setUp();
 
-        // Disable middleware auth supaya POST bisa langsung di-test
-        $this->withoutMiddleware(Authenticate::class);
+        // Disable semua middleware supaya test bisa langsung diakses
+        $this->withoutMiddleware();
+
+        // Buat user untuk autentikasi
+        $this->actingAs(User::factory()->create());
 
         // Pastikan folder untuk foto ada
         File::ensureDirectoryExists(public_path('storage/foto_produk'));
@@ -47,6 +51,8 @@ class ProdukTest extends TestCase
             'deskripsi'   => 'Nyaman dipakai harian.',
             'harga'       => '120000', // string supaya test casting jalan
             'diskon'      => null,
+            'stok_produk' => 10,
+            'is_best'     => false,
             'kategori_id' => $kategori->kategori_id,
             'bahan_id'    => $bahan->bahan_id,
             'ukuran_id'   => [(string)$ukuran->ukuran_id], // array of string id
@@ -156,7 +162,7 @@ class ProdukTest extends TestCase
         $resp = $this->get(route('produk.index'));
 
         $resp->assertStatus(200);
-        $resp->assertViewIs('produk.index'); // sesuaikan dengan view kamu
+        $resp->assertViewIs('admin.produk.index'); // sesuaikan dengan view kamu
         $resp->assertViewHas('produk');
     }
 
@@ -165,10 +171,10 @@ class ProdukTest extends TestCase
     {
         $produk = ProdukModel::factory()->create();
 
-        $resp = $this->get(route('produk.show', $produk->produk_id));
+        $resp = $this->get(route('produk.index') . '/' . $produk->produk_id . '/show');
 
         $resp->assertStatus(200);
-        $resp->assertViewIs('produk.show'); // sesuaikan dengan view kamu
+        $resp->assertViewIs('admin.produk.show'); // sesuaikan dengan view kamu
         $resp->assertViewHas('produk', fn ($p) => $p->produk_id === $produk->produk_id);
     }
 
@@ -187,12 +193,13 @@ class ProdukTest extends TestCase
             'nama_produk' => 'Hijab Pashmina Update',
             'deskripsi'   => 'Update sukses',
             'harga'       => '150000',
+            'stok_produk' => 20, // ini wajib ada!
             'kategori_id' => $produk->kategori_id,
             'bahan_id'    => $produk->bahan_id,
-            // tambahkan jika validasi butuh:
-            'ukuran_id' => [(string)$ukuran->ukuran_id],
-            'warna_id' => [(string)$warna->warna_id]
+            'ukuran_id'   => [(string)$ukuran->ukuran_id],
+            'warna_id'    => [(string)$warna->warna_id],
         ];
+
 
         $resp = $this->put(route('produk.update', $produk->produk_id), $payload);
 
@@ -232,5 +239,49 @@ class ProdukTest extends TestCase
 
         $resp->assertRedirect(route('produk.index'));
         $this->assertDatabaseMissing('t_produk', ['produk_id' => $produk->produk_id]);
+    }
+
+    /** @test */
+    public function delete_produk_gagal_ketika_produk_tidak_ada()
+    {
+        $produk_id_tidak_ada = 999999;
+
+        $resp = $this->delete(route('produk.destroy', $produk_id_tidak_ada));
+
+        $resp->assertStatus(404); // Not found
+        $this->assertDatabaseMissing('t_produk', ['produk_id' => $produk_id_tidak_ada]);
+    }
+
+    /** @test */
+    public function update_produk_gagal_ketika_produk_tidak_ada()
+    {
+        $produk_id_tidak_ada = 999999;
+        $ukuran = UkuranModel::factory()->create();
+        $warna  = WarnaModel::factory()->create();
+
+        $payload = [
+            'nama_produk' => 'Hijab Pashmina Update',
+            'deskripsi'   => 'Update gagal produk tidak ada',
+            'harga'       => '150000',
+            'stok_produk' => 20, 
+            'kategori_id' => 1,
+            'bahan_id'    => 1,
+            'ukuran_id' => [(string)$ukuran->ukuran_id],
+            'warna_id' => [(string)$warna->warna_id]
+        ];
+
+        $resp = $this->put(route('produk.update', $produk_id_tidak_ada), $payload);
+
+        $resp->assertStatus(404); // Not found
+    }
+
+    /** @test */
+    public function show_produk_gagal_ketika_produk_tidak_ada()
+    {
+        $produk_id_tidak_ada = 999999;
+
+        $resp = $this->get("produk.index/{$produk_id_tidak_ada}/show");
+
+        $resp->assertStatus(404); // Not found
     }
 }

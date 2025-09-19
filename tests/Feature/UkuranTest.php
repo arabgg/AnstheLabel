@@ -15,7 +15,7 @@ class UkuranTest extends TestCase
     {
         parent::setUp();
 
-        // Disable middleware auth supaya POST bisa langsung di-test
+        // Disable middleware auth supaya request bisa langsung di-test
         $this->withoutMiddleware(Authenticate::class);
     }
 
@@ -26,66 +26,52 @@ class UkuranTest extends TestCase
     /** @test */
     public function create_ukuran_sukses()
     {
-        // Payload yang dikirim ke controller ukuran.store
         $payload = [
             'nama_ukuran' => 'XL',
-            'deskripsi' => 'Ukuran Extra Large',
+            'deskripsi'   => 'Ukuran Extra Large',
         ];
 
-        // Act → request create ukuran
         $resp = $this->post(route('ukuran.store'), $payload);
 
-        // Assert → redirect sukses dan ada flash message
         $resp->assertRedirect(route('ukuran.index'));
         $resp->assertSessionHas('success', 'Ukuran berhasil ditambahkan!');
 
-        // Assert → cek ukuran tersimpan di DB
         $this->assertDatabaseHas('m_ukuran', [
             'nama_ukuran' => 'XL',
-            'deskripsi' => 'Ukuran Extra Large',
+            'deskripsi'   => 'Ukuran Extra Large',
         ]);
     }
 
     /** @test */
-    public function create_ukuran_sukses_tanpa_deskripsi()
+    public function create_ukuran_gagal_ketika_tanpa_deskripsi()
     {
-        // Payload yang dikirim ke controller ukuran.store
         $payload = [
-            'nama_ukuran' => 'M',
-            'deskripsi' => null, // deskripsi boleh kosong
+            'nama_ukuran' => 'XXXL',
+            // deskripsi tidak dikirim
         ];
 
-        // Act → request create ukuran
         $resp = $this->post(route('ukuran.store'), $payload);
 
-        // Assert → redirect sukses dan ada flash message
-        $resp->assertRedirect(route('ukuran.index'));
-        $resp->assertSessionHas('success', 'Ukuran berhasil ditambahkan!');
+        $resp->assertSessionHasErrors(['deskripsi']);
 
-        // Assert → cek ukuran tersimpan di DB
-        $this->assertDatabaseHas('m_ukuran', [
-            'nama_ukuran' => 'M',
-            'deskripsi' => null,
+        $this->assertDatabaseMissing('m_ukuran', [
+            'nama_ukuran' => 'XXXL',
         ]);
     }
 
     /** @test */
     public function create_ukuran_gagal_ketika_nama_kosong()
     {
-        // Payload yang dikirim ke controller ukuran.store
         $payload = [
-            'nama_ukuran' => '', // kosong
-            'deskripsi' => 'Deskripsi test',
+            'nama_ukuran' => '',
+            'deskripsi'   => 'Deskripsi test',
         ];
 
-        // Act → request create ukuran
         $resp = $this->post(route('ukuran.store'), $payload);
 
-        // Assert → redirect kembali ke form dengan error validasi
         $resp->assertStatus(302);
         $resp->assertSessionHasErrors(['nama_ukuran']);
 
-        // Assert → cek ukuran TIDAK tersimpan di DB
         $this->assertDatabaseMissing('m_ukuran', [
             'deskripsi' => 'Deskripsi test',
         ]);
@@ -94,20 +80,16 @@ class UkuranTest extends TestCase
     /** @test */
     public function create_ukuran_gagal_ketika_nama_terlalu_panjang()
     {
-        // Payload yang dikirim ke controller ukuran.store
         $payload = [
-            'nama_ukuran' => str_repeat('a', 256), // lebih dari 255 karakter
-            'deskripsi' => 'Deskripsi test',
+            'nama_ukuran' => str_repeat('a', 256),
+            'deskripsi'   => 'Deskripsi test',
         ];
 
-        // Act → request create ukuran
         $resp = $this->post(route('ukuran.store'), $payload);
 
-        // Assert → redirect kembali ke form dengan error validasi
         $resp->assertStatus(302);
         $resp->assertSessionHasErrors(['nama_ukuran']);
 
-        // Assert → cek ukuran TIDAK tersimpan di DB
         $this->assertDatabaseMissing('m_ukuran', [
             'nama_ukuran' => str_repeat('a', 256),
         ]);
@@ -125,7 +107,7 @@ class UkuranTest extends TestCase
         $resp = $this->get(route('ukuran.index'));
 
         $resp->assertStatus(200);
-        $resp->assertViewIs('ukuran.index');
+        $resp->assertViewIs('admin.ukuran.index');
         $resp->assertViewHas('ukuran');
     }
 
@@ -134,10 +116,13 @@ class UkuranTest extends TestCase
     {
         $ukuran = UkuranModel::factory()->create();
 
-        $resp = $this->get(route('ukuran.show', $ukuran->ukuran_id));
+        // Pakai header Ajax biar controller return view, bukan redirect
+        $resp = $this->get(route('ukuran.show', $ukuran->ukuran_id), [
+            'X-Requested-With' => 'XMLHttpRequest',
+        ]);
 
         $resp->assertStatus(200);
-        $resp->assertViewIs('ukuran.show');
+        $resp->assertViewIs('admin.ukuran.show');
         $resp->assertViewHas('ukuran', fn ($u) => $u->ukuran_id === $ukuran->ukuran_id);
     }
 
@@ -152,17 +137,21 @@ class UkuranTest extends TestCase
 
         $payload = [
             'nama_ukuran' => 'L Updated',
-            'deskripsi' => 'Deskripsi updated',
+            'deskripsi'   => 'Deskripsi updated',
         ];
 
-        $resp = $this->put(route('ukuran.update', $ukuran->ukuran_id), $payload);
+        $resp = $this->putJson(route('ukuran.update', $ukuran->ukuran_id), $payload);
 
-        $resp->assertRedirect(route('ukuran.index'));
-        $resp->assertSessionHas('success', 'Ukuran berhasil diupdate!');
+        $resp->assertStatus(200)
+             ->assertJson([
+                 'success' => true,
+                 'message' => 'Ukuran berhasil diperbarui',
+             ]);
+
         $this->assertDatabaseHas('m_ukuran', [
             'nama_ukuran' => 'L Updated',
-            'deskripsi' => 'Deskripsi updated',
-            'ukuran_id' => $ukuran->ukuran_id
+            'deskripsi'   => 'Deskripsi updated',
+            'ukuran_id'   => $ukuran->ukuran_id,
         ]);
     }
 
@@ -173,7 +162,7 @@ class UkuranTest extends TestCase
 
         $payload = [
             'nama_ukuran' => '',
-            'deskripsi' => 'Deskripsi test',
+            'deskripsi'   => 'Deskripsi test',
         ];
 
         $resp = $this->put(route('ukuran.update', $ukuran->ukuran_id), $payload);
@@ -181,8 +170,23 @@ class UkuranTest extends TestCase
         $resp->assertSessionHasErrors(['nama_ukuran']);
         $this->assertDatabaseMissing('m_ukuran', [
             'nama_ukuran' => '',
-            'ukuran_id' => $ukuran->ukuran_id
+            'ukuran_id'   => $ukuran->ukuran_id,
         ]);
+    }
+
+    /** @test */
+    public function update_ukuran_gagal_ketika_ukuran_tidak_ada()
+    {
+        $ukuran_id_tidak_ada = 999999;
+
+        $payload = [
+            'nama_ukuran' => 'Ukuran Update Gagal',
+            'deskripsi'   => 'Deskripsi update gagal',
+        ];
+
+        $resp = $this->put(route('ukuran.update', $ukuran_id_tidak_ada), $payload);
+
+        $resp->assertStatus(404);
     }
 
     /* ============================================================
@@ -194,10 +198,45 @@ class UkuranTest extends TestCase
     {
         $ukuran = UkuranModel::factory()->create();
 
-        $resp = $this->delete(route('ukuran.destroy', $ukuran->ukuran_id));
+        $resp = $this->deleteJson(route('ukuran.destroy', $ukuran->ukuran_id));
 
-        $resp->assertRedirect(route('ukuran.index'));
-        $resp->assertSessionHas('success', 'Ukuran berhasil dihapus!');
-        $this->assertDatabaseMissing('m_ukuran', ['ukuran_id' => $ukuran->ukuran_id]);
+        $resp->assertStatus(200)
+             ->assertJson([
+                 'success' => true,
+                 'message' => 'Ukuran berhasil dihapus',
+             ]);
+
+        $this->assertDatabaseMissing('m_ukuran', [
+            'ukuran_id' => $ukuran->ukuran_id,
+        ]);
+    }
+
+    /** @test */
+    public function delete_ukuran_gagal_ketika_ukuran_tidak_ada()
+    {
+        $ukuran_id_tidak_ada = 999999;
+
+        $resp = $this->delete(route('ukuran.destroy', $ukuran_id_tidak_ada));
+
+        $resp->assertStatus(404);
+        $this->assertDatabaseMissing('m_ukuran', [
+            'ukuran_id' => $ukuran_id_tidak_ada,
+        ]);
+    }
+
+    /* ============================================================
+     * SHOW gagal
+     * ============================================================*/
+
+    /** @test */
+    public function show_ukuran_gagal_ketika_ukuran_tidak_ada()
+    {
+        $ukuran_id_tidak_ada = 999999;
+
+        $resp = $this->get(route('ukuran.show', $ukuran_id_tidak_ada), [
+            'X-Requested-With' => 'XMLHttpRequest',
+        ]);
+
+        $resp->assertStatus(404);
     }
 }
