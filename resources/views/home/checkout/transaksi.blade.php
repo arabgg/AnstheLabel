@@ -62,12 +62,12 @@
             <div class="transaksi-card">
                 {{-- Kiri: Detail Pesanan --}}
                 <div class="transaksi-detail-left">
-                    <h4>Detail Pesanan</h4>
-                    <p>Informasi Kontak<br>
+                    <h4>Order Details</h4>
+                    <p>Contact Information<br>
                         {{ $transaksi->email }}
                         {{ $transaksi->no_telp }}
                     </p>
-                    <h4>Alamat Pengiriman</h4>
+                    <h4>Shipping Address</h4>
                     <p>
                         {{ $transaksi->nama_customer }}<br>
                         {{ $transaksi->alamat }}<br>
@@ -76,16 +76,16 @@
 
                 {{-- Kanan: Invoice + Metode Pembayaran --}}
                 <div class="transaksi-detail-right">
-                    <h4>Kode Invoice</h4>
+                    <h4>Invoice Code</h4>
                     <p class="invoice">
                         <button class="invoice-copy-btn" onclick="copyToClipboard('invoiceCode')">
                             <i class="fa-regular fa-clipboard"></i>
                         </button>
                         <span class="invoice-kode" id="invoiceCode">{{ $transaksi->kode_invoice }}</span><br>
-                        <small class="invoice-note">* Simpan kode invoice untuk pengecekan selanjutnya</small>
+                        <small class="invoice-note">* Save the invoice code for further checking</small>
                     </p>
 
-                    <h4>Metode Pembayaran</h4>
+                    <h4>Payment Method</h4>
                     <div class="transaksi-metode">
                         @if($transaksi->pembayaran->metode->nama_pembayaran === 'qris')
                             <img src="{{ route('storage', ['folder' => 'icons', 'filename' => $transaksi->pembayaran->metode->icon]) }}" alt="Metode Logo" class="metode-logo">
@@ -105,12 +105,12 @@
             </div>
 
             <div class="transaksi-status">
-                <p class="transaksi-status-pembayaran">Status Pembayaran: 
+                <p class="transaksi-status-pembayaran">payment status:
                     <span class="status-pembayaran">
                         {{ $transaksi->pembayaran->status_pembayaran }}
                     </span>
                 </p>
-                <p>Status Transaksi: 
+                <p>Transaction Status:
                     <span class="status-transaksi">
                         {{ $transaksi->status_transaksi }}
                     </span>
@@ -129,9 +129,9 @@
             {{-- Informasi produk --}}
             <div class="transaksi-item-info">
                 <p class="transaksi-item-nama">{{ ($item->produk)->nama_produk ?? 'Produk tidak ditemukan' }}</p>
-                <p>Warna: {{ ($item->warna)->nama_warna ?? '-' }}</p>
-                <p>Ukuran: {{ ($item->ukuran)->nama_ukuran ?? '-' }}</p>
-                <p>Jumlah: {{ $item->jumlah }}</p>
+                <p>Color: {{ ($item->warna)->nama_warna ?? '-' }}</p>
+                <p>Size: {{ ($item->ukuran)->nama_ukuran ?? '-' }}</p>
+                <p>Amount: {{ $item->jumlah }}</p>
             </div>
 
             {{-- Harga --}}
@@ -166,7 +166,7 @@
                 toast: true,               
                 position: 'top-end',       
                 icon: 'success',
-                title: 'Berhasil disalin!',
+                title: 'Copied successfully!',
                 text: text,                
                 showConfirmButton: false,
                 timer: 2000,               

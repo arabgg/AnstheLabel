@@ -45,10 +45,10 @@
                     <div class="detail-section-info">
                         <div class="detail-price">
                             @if (!empty($produk->diskon))
-                                <span class="detail-price-discounted">Rp {{ number_format($produk->harga, 0, ',', '.') }}</span>
-                                <span class="detail-price-now">Rp {{ number_format($produk->harga_diskon, 0, ',', '.') }}</span>
+                                <span class="detail-price-discounted">IDR {{ number_format($produk->harga, 0, ',', '.') }}</span>
+                                <span class="detail-price-now">IDR {{ number_format($produk->harga_diskon, 0, ',', '.') }}</span>
                             @else
-                                <span class="detail-price-now">Rp {{ number_format($produk->harga, 0, ',', '.') }}</span>
+                                <span class="detail-price-now">IDR {{ number_format($produk->harga, 0, ',', '.') }}</span>
                             @endif
                         </div>
 
@@ -112,7 +112,7 @@
                     </div>
 
                     <div class="detail-deskripsi-wrapper" style="margin-top: 20px;">
-                        <h3>Detail Produk</h3>
+                        <h3>Product Details</h3>
                         <div class="detail-deskripsi-produk">
                             <p>{{ $produk->deskripsi }}</p>
                         </div>
@@ -128,7 +128,7 @@
                         @endif
 
                         <div class="detail-deskripsi-ukuran">
-                            <h6>Jenis Bahan : {{ $produk->bahan->nama_bahan }}</h6>
+                            <h6>Material : {{ $produk->bahan->nama_bahan }}</h6>
                             <p>{{ $produk->bahan->deskripsi }}</p>
                         </div>
                     </div>
@@ -172,12 +172,12 @@ function validasiWarnaUkuran(form) {
     const ukuranDipilih = form.querySelector('input[name="ukuran"]:checked');
 
     if (!warnaDipilih) {
-        showToast('warning', 'Silakan pilih warna!');
+        showToast('warning', 'Please choose color!');
         return false;
     }
 
     if (!ukuranDipilih) {
-        showToast('warning', 'Silakan pilih ukuran!');
+        showToast('warning', 'Please choose size!');
         return false;
     }
 
@@ -204,13 +204,13 @@ document.getElementById('btn-add-to-cart').addEventListener('click', function (e
     .then(res => res.json())
     .then(data => {
         if (data.success) {
-            showToast('success', 'Barang ditambahkan ke cart!');
+            showToast('success', 'Item added to cart!');
         } else {
-            showToast('error', 'Gagal menambahkan barang ke cart.');
+            showToast('error', 'Failed to add item to cart');
         }
     })
     .catch(() => {
-        showToast('error', 'Terjadi kesalahan saat menambahkan ke cart.');
+        showToast('error', 'An error occurred while adding to cart');
     });
 });
 

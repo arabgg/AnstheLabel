@@ -8,8 +8,11 @@
             @csrf
             {{-- Bagian Kontak --}}
             <div class="checkout-kontak">
-                <h3 class="checkout-kontak-title">Kontak</h3>
+                <h3 class="checkout-kontak-title">Contact</h3>
                 <input class="checkout-kontak-data" type="email" name="email" placeholder="Email" required>
+                @error('email')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
                 <div class="checkout-newsletter">
                     <label>
                         <input type="checkbox" name="newsletter" value="yes" required>
@@ -20,17 +23,40 @@
 
             {{-- Bagian Pengantaran --}}
             <div class="checkout-pengantaran">
-                <h3 class="checkout-pengantaran-title">Alamat Pengantaran</h3>
-                <input class="checkout-pengantaran-data" type="text" name="nama" placeholder="Nama Lengkap" required>
+                <h3 class="checkout-pengantaran-title">Delivery</h3>
+                <input class="checkout-pengantaran-data" type="text" name="nama" placeholder="Full Name" required>
+
+                {{-- Telepon --}}
+                <div class="checkout-pengantaran-telepon">
+                    <span class="prefix">+62</span>
+                    <input class="checkout-pengantaran-data telepon-input" 
+                        type="tel" 
+                        id="telepon_user" 
+                        placeholder="813xxxxxxx" 
+                        pattern="[0-9]{8,15}" 
+                        required>
+                </div>
+                <input type="hidden" name="telepon" id="telepon">
+
+                {{-- Alamat Lengkap --}}
+                <select class="checkout-pengantaran-data" style="margin-left: 0px" id="provinsi" name="provinsi" class="form-select">
+                    <option value="">Select Provinsi</option>
+                </select>
+                <select class="checkout-pengantaran-data" style="margin-left: 0px" id="kota" name="kota" class="form-select" disabled>
+                    <option value="">Select Kota/Kabupaten</option>
+                </select>
+                <select class="checkout-pengantaran-data" style="margin-left: 0px" id="kecamatan" name="kecamatan" class="form-select" disabled>
+                    <option value="">Select Kecamatan</option>
+                </select>
+                <select class="checkout-pengantaran-data" style="margin-left: 0px" id="desa" name="desa" class="form-select" disabled>
+                    <option value="">Select Kelurahan/Desa</option>
+                </select>
                 <input class="checkout-pengantaran-data" type="text" name="alamat" placeholder="Alamat" required>
-                <input class="checkout-pengantaran-data" type="text" name="kota" placeholder="Kota" required>
-                <input class="checkout-pengantaran-data" type="text" name="kecamatan" placeholder="Kecamatan" required>
-                <input class="checkout-pengantaran-data" type="tel" name="telepon" placeholder="Telepon" pattern="[0-9]+" required>
             </div>
 
             {{-- Bagian Metode Pembayaran --}}
             <div class="checkout-payment-section">
-                <h3 class="checkout-payment-title">Metode Pembayaran</h3>
+                <h3 class="checkout-payment-title">Payment Method</h3>
 
                 @foreach($metode->groupBy('metode_id') as $grouped)
                     <div class="checkout-payment-group">
@@ -38,6 +64,7 @@
                                 class="checkout-payment-toggle" 
                                 data-target="payment-{{ $grouped->first()->metode_id }}">
                             {{ $grouped->first()->metode->nama_metode }}
+                            <span style="float: right; font-size: 14px;">&#9662;</span>
                         </button>
 
                         <div id="payment-{{ $grouped->first()->metode_id }}" class="checkout-payment-list">
@@ -62,7 +89,7 @@
                     </div>
                 @endforeach
             </div>
-            <button type="submit" class="checkout-payment-btn">Buat Pesanan</button>
+            <button type="submit" class="checkout-payment-btn">Make an Order</button>
         </form>
     </div>
 
@@ -100,58 +127,155 @@
 
 @push('scripts')
 <script>
-function showToast(icon, title) {
-    Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: icon,
-        title: title,
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true
-    });
-}
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form[action="{{ route('checkout.save') }}"]');
+    const teleponUserInput = document.getElementById('telepon_user');
+    const teleponHiddenInput = document.getElementById('telepon');
 
-// Toggle payment list
-document.querySelectorAll('.checkout-payment-toggle').forEach(button => {
-    button.addEventListener('click', () => {
-        const target = document.getElementById(button.dataset.target);
-        if (target.classList.contains('show')) {
-            target.classList.remove('show');
-        } else {
-            document.querySelectorAll('.checkout-payment-list').forEach(list => list.classList.remove('show'));
-            target.classList.add('show');
+    function showToast(icon, title) {
+        Swal.fire({
+            toast: true, 
+            position: 'top-end', 
+            icon: icon,
+            title: title,
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            customClass: {
+                popup: 'swal2-border-radius',
+            }
+        });
+    }
+
+    // Listener submit form
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const teleponUser = teleponUserInput.value.trim();
+        const email = form.querySelector('input[name="email"]').value.trim();
+        const metodeTerpilih = form.querySelector('input[name="metode_pembayaran_id"]:checked');
+        const cartItems = document.querySelectorAll('.checkout-product-item');
+
+        // Validasi telepon
+        if (!teleponUser) {
+            showToast('error', 'Phone number is required!');
+            return;
+        }
+        if (!/^\d{8,15}$/.test(teleponUser)) {
+            showToast('error', 'Invalid phone number (8-15 digits)!');
+            return;
+        }
+        teleponHiddenInput.value = '+62' + teleponUser;
+
+        // Validasi email sederhana frontend
+        if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(email)) {
+            showToast('error', 'Invalid email format!');
+            return;
+        }
+
+        // Validasi metode pembayaran
+        if (!metodeTerpilih) {
+            showToast('error', 'Please select a payment method!');
+            return;
+        }
+
+        // Validasi keranjang
+        if (cartItems.length === 0) {
+            showToast('error', 'Empty shopping cart!');
+            return;
+        }
+        showToast('success', 'Form valid, transaction processed!');
+
+        setTimeout(() => {
+            form.submit();
+        }, 500);
+    });
+
+    teleponUserInput.addEventListener('input', function() {
+        this.value = this.value.replace(/[^\d]/g, '');
+    });
+
+    // Toggle payment list
+    document.querySelectorAll('.checkout-payment-toggle').forEach(button => {
+        button.addEventListener('click', () => {
+            const target = document.getElementById(button.dataset.target);
+            if (target.classList.contains('show')) {
+                target.classList.remove('show');
+            } else {
+                document.querySelectorAll('.checkout-payment-list').forEach(list => list.classList.remove('show'));
+                target.classList.add('show');
+            }
+        });
+    });
+
+    // Load wilayah (provinsi → kota → kecamatan → desa)
+    const provinsi = document.getElementById("provinsi");
+    const kota = document.getElementById("kota");
+    const kecamatan = document.getElementById("kecamatan");
+    const desa = document.getElementById("desa");
+
+    fetch("/wilayah/provinsi")
+        .then(res => res.json())
+        .then(data => {
+            data.forEach(item => {
+                provinsi.innerHTML += `<option value="${item.name}" data-id="${item.id}">${item.name}</option>`;
+            });
+        });
+
+    provinsi.addEventListener("change", function () {
+        kota.innerHTML = `<option value="">Select Kota/Kabupaten</option>`;
+        kecamatan.innerHTML = `<option value="">Select Kecamatan</option>`;
+        desa.innerHTML = `<option value="">Select Desa</option>`;
+        kota.disabled = !this.value;
+        kecamatan.disabled = true;
+        desa.disabled = true;
+
+        if (this.value) {
+            const provinsiId = this.selectedOptions[0].getAttribute("data-id");
+            fetch(`/wilayah/kota/${provinsiId}`)
+                .then(res => res.json())
+                .then(data => {
+                    data.forEach(item => {
+                        kota.innerHTML += `<option value="${item.name}" data-id="${item.id}">${item.name}</option>`;
+                    });
+                });
         }
     });
-});
 
-// Validasi checkout secara dinamis
-document.querySelector('form[action="{{ route('checkout.save') }}"]').addEventListener('submit', function(e){
-    e.preventDefault(); // hentikan sementara submit
+    kota.addEventListener("change", function () {
+        kecamatan.innerHTML = `<option value="">Select Kecamatan</option>`;
+        desa.innerHTML = `<option value="">Select Kelurahan/Desa</option>`;
+        kecamatan.disabled = !this.value;
+        desa.disabled = true;
 
-    const form = e.target;
+        if (this.value) {
+            const kotaId = this.selectedOptions[0].getAttribute("data-id");
+            fetch(`/wilayah/kecamatan/${kotaId}`)
+                .then(res => res.json())
+                .then(data => {
+                    data.forEach(item => {
+                        kecamatan.innerHTML += `<option value="${item.name}" data-id="${item.id}">${item.name}</option>`;
+                    });
+                });
+        }
+    });
 
-    // Cek metode pembayaran terpilih
-    const metodeTerpilih = form.querySelector('input[name="metode_pembayaran_id"]:checked');
-    if (!metodeTerpilih) {
-        showToast('error', 'Silakan pilih metode pembayaran!');
-        return;
-    }
-
-    // Cek jumlah item di keranjang melalui DOM
-    const cartItems = document.querySelectorAll('.checkout-product-item');
-    if (cartItems.length === 0) {
-        showToast('error', 'Keranjang belanja kosong!');
-        return;
-    }
-
-    // Jika valid, tampilkan toast sukses
-    showToast('success', 'Metode pembayaran berhasil dipilih!');
-
-    // Submit form setelah delay agar toast terlihat
-    setTimeout(() => {
-        form.submit();
-    }, 500); // 0.5 detik
+     kecamatan.addEventListener("change", function () {
+        desa.innerHTML = `<option value="">Pilih Kelurahan/Desa</option>`;
+        if (this.value) {
+            desa.disabled = false;
+            const kecamatanId = this.selectedOptions[0].getAttribute("data-id");
+            fetch(`/wilayah/desa/${kecamatanId}`)
+                .then(res => res.json())
+                .then(data => {
+                    data.forEach(item => {
+                        desa.innerHTML += `<option value="${item.name}" data-id="${item.id}">${item.name}</option>`;
+                    });
+                });
+        } else {
+            desa.disabled = true;
+        }
+    });
 });
 </script>
 @endpush
