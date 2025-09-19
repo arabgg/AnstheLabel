@@ -9,51 +9,56 @@
             </div>
 
             {{-- Search & Filter --}}
-            <div class="flex justify-between mb-5">
-                {{-- Search di kiri --}}
-                 <form method="GET" action="{{ route('pesanan.index') }}"
-                    class="flex items-center border rounded-lg px-3 py-2 w-1/2">
-                    <input type="text" name="search" placeholder="Cari Pesanan Pelanggan" value="{{ request('search') }}"
-                        class="w-full outline-none placeholder:text-sm">
-                    <button type="submit" class="ml-2">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </form>
-                {{-- Dropdown Status Transaksi --}}
-                <select name="status" class="border rounded-lg px-3 py-2 text-sm">
-                    <option value="">Semua Status</option>
-                    <option value="menunggu pembayaran" {{ request('status') == 'menunggu pembayaran' ? 'selected' : '' }}>
-                        Menunggu Pembayaran
-                    </option>
-                    <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>
-                        Selesai
-                    </option>
-                    <option value="dibatalkan" {{ request('status') == 'dibatalkan' ? 'selected' : '' }}>
-                        Dibatalkan
-                    </option>
-                </select>
+            <div class="flex justify-between items-center mb-7 mt-6">
+                {{-- Search, Status & Date Filter --}}
+                <div class="flex items-center gap-3 w-3/3">
+                    {{-- Search --}}
+                    <form method="GET" action="{{ route('pesanan.index') }}"
+                        class="flex items-center border rounded-lg px-3 py-2 w-full">
+                        <input type="text" name="search" placeholder="Cari Pesanan Pelanggan"
+                            value="{{ request('search') }}" class="w-full outline-none placeholder:text-sm">
+                        <button type="submit" class="ml-2 text-gray-600 hover:text-gray-800">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
 
-                {{-- Filter di kanan --}}
-                <form method="GET" action="{{ route('pesanan.index') }}" class="flex items-center gap-2">
+                    {{-- Status Transaksi --}}
+                    <form method="GET" action="{{ route('pesanan.index') }}">
+                        <select name="status"
+                            class="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-400 transition-colors"
+                            onchange="this.form.submit()">
+                            <option value="">Semua Status</option>
+                            <option value="menunggu pembayaran"
+                                {{ request('status') == 'menunggu pembayaran' ? 'selected' : '' }}>
+                                Menunggu Pembayaran
+                            </option>
+                            <option value="lunas" {{ request('status') == 'lunas' ? 'selected' : '' }}>Lunas</option>
+                            <option value="dibatalkan" {{ request('status') == 'dibatalkan' ? 'selected' : '' }}>Dibatalkan
+                            </option>
+                        </select>
+                    </form>
 
-                    {{-- Filter tanggal --}}
-                    <input type="date" name="start_date" value="{{ request('start_date') }}"
-                        class="border rounded-lg px-3 py-2 text-sm">
-                    <span>-</span>
-                    <input type="date" name="end_date" value="{{ request('end_date') }}"
-                        class="border rounded-lg px-3 py-2 text-sm">
+                    {{-- Filter Tanggal --}}
+                    <form method="GET" action="{{ route('pesanan.index') }}" class="flex items-center gap-2">
+                        <input type="date" name="start_date" value="{{ request('start_date') }}"
+                            class="border rounded-lg px-3 py-2 text-sm">
+                        <span>-</span>
+                        <input type="date" name="end_date" value="{{ request('end_date') }}"
+                            class="border rounded-lg px-3 py-2 text-sm">
 
-                    <button type="submit" class="px-4 py-2 bg-[#560024] text-white rounded-lg hover:bg-gray-700 text-sm">
-                        Filter
-                    </button>
+                        <button type="submit"
+                            class="px-4 py-2 bg-[#560024] text-white rounded-lg hover:bg-gray-700 text-sm">
+                            Filter
+                        </button>
+                    </form>
+                </div>
 
-                    <a href="{{ route('transaksi.export.excel', ['start_date' => $startDate, 'end_date' => $endDate]) }}"
-                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                        Export Excel
-                    </a>
-                </form>
+                {{-- Tombol Export --}}
+                <a href="{{ route('transaksi.export.excel', ['start_date' => $startDate, 'end_date' => $endDate]) }}"
+                    class="px-7 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 flex items-center justify-center text-sm">
+                    Export Excel
+                </a>
             </div>
-
 
             {{-- Tabel item --}}
             <div class="overflow-x-auto rounded-lg">

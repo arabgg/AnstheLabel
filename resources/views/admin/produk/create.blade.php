@@ -24,7 +24,7 @@
                     {{-- Nama Produk --}}
                     <div>
                         <label class="block font-medium mb-1">Nama Produk</label>
-                        <input type="text" name="nama_produk" class="border border-gray-300 rounded-xl px-3 py-2 w-full"
+                        <input type="text" name="nama_produk" class="border border-gray-300 rounded-xl px-3 py-2 w-full" placeholder="Masukkan nama produk"
                             required>
                     </div>
 
@@ -34,7 +34,7 @@
                         <label class="inline-flex items-center">
                             <input type="checkbox" name="is_best" value="1"
                                 {{ old('is_best', $produk->is_best ?? 0) == 1 ? 'checked' : '' }}
-                                class="rounded border-gray-300 text-pink-600 focus:ring-pink-500">
+                                class="rounded border-gray-300 text-pink-600 focus:ring-pink-500" >
                             <span class="ml-2 text-sm text-gray-700">Tandai sebagai produk terbaik</span>
                         </label>
                     </div>
@@ -43,13 +43,13 @@
                     <div>
                         <label class="block font-medium mb-1">Stok</label>
                         <input type="number" name="stok_produk" class="border border-gray-300 rounded-xl px-3 py-2 w-full"
-                            required>
+                            placeholder="10" required>
                     </div>
 
                     {{-- Deskripsi --}}
                     <div>
                         <label class="block font-medium mb-1">Deskripsi</label>
-                        <textarea name="deskripsi" rows="4" class="border border-gray-300 rounded-xl px-3 py-2 w-full" required></textarea>
+                        <textarea name="deskripsi" rows="4" class="border border-gray-300 rounded-xl px-3 py-2 w-full" placeholder="Masukkan deskripsi produk" required></textarea>
                     </div>
 
                     {{-- Harga & Diskon --}}
@@ -57,12 +57,12 @@
                         <div>
                             <label class="block font-medium mb-1">Harga</label>
                             <input type="number" step="0.01" name="harga"
-                                class="border border-gray-300 rounded-xl px-3 py-2 w-full" required>
+                                class="border border-gray-300 rounded-xl px-3 py-2 w-full" placeholder="50000" required>
                         </div>
                         <div>
                             <label class="block font-medium mb-1">Diskon</label>
                             <input type="number" step="0.01" name="diskon"
-                                class="border border-gray-300 rounded-xl px-3 py-2 w-full">
+                                class="border border-gray-300 rounded-xl px-3 py-2 w-full" placeholder="10000">
                         </div>
                     </div>
 
