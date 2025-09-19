@@ -4,7 +4,7 @@
     <a href="{{ route('collection') }}" class="footer-item {{ request()->is('collection') ? 'active' : '' }}">Collection</a>
     <a href="{{ route('about') }}" class="footer-item {{ request()->is('about') ? 'active' : '' }}">About Us</a>
     <a href="#">Contact Us</a>
-    <a href="{{ route('faq') }}" class="footer-item {{ request()->is('faq') ? 'active' : '' }}">FAQ</a>
+    <a href="{{ route('homefaq') }}" class="footer-item {{ request()->is('faq') ? 'active' : '' }}">FAQ</a>
   </nav>
 
   <div class="footer-section-social">
