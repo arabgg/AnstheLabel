@@ -30,9 +30,11 @@ class PesananController extends Controller
             });
         });
 
-        // Status
+        // Filter status pembayaran
         $query->when(!empty($status), function ($q) use ($status) {
-            $q->where('status_transaksi', $status);
+            $q->whereHas('pembayaran', function ($sub) use ($status) {
+                $sub->where('status_pembayaran', $status);
+            });
         });
 
         // Filter tanggal fleksibel
