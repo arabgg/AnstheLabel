@@ -59,16 +59,8 @@
                 .then(response => response.json())
                 .then(json => {
                     if (json.status) {
-                        // Login berhasil
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Login Berhasil',
-                            text: 'Anda akan diarahkan ke dashboard...',
-                            timer: 1500,
-                            showConfirmButton: false
-                        }).then(() => {
-                            window.location.href = json.redirect;
-                        });
+                        // Login berhasil -> langsung redirect
+                        window.location.href = json.redirect;
                     } else {
                         // Login gagal
                         Swal.fire({
