@@ -78,7 +78,7 @@ class WarnaTest extends TestCase
     public function create_warna_gagal_ketika_kode_hex_format_salah()
     {
         $payload = [
-            'kode_hex' => 'FF5733', // tanpa #
+            'kode_hex' => '#FF57333', // format salah, harusnya 7 karakter
             'nama_warna' => 'Merah Orange',
         ];
 
