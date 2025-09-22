@@ -51,11 +51,6 @@
         @endif
     </div>
 
-    <!-- Timer -->
-    {{-- <div class="transaksi-timer">
-        <span>2 Hours 59 Minute 59 Second</span>
-    </div> --}}
-
     <div class="transaksi-content">
         <!-- Box Detail Pesanan -->
         <div class="transaksi-left">
