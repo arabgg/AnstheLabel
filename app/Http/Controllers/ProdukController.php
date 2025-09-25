@@ -76,7 +76,7 @@ class ProdukController extends Controller
         $bahanList = Cache::remember('bahan_list', 600, function () {
             return BahanModel::select('bahan_id', 'nama_bahan')->get();
         });
-        
+
         return view('admin.produk.index', compact('produk', 'kategoriList', 'bahanList', 'paginateLimit', 'title'));
     }
 
@@ -350,25 +350,49 @@ class ProdukController extends Controller
 
     public function destroy($id)
     {
-        DB::transaction(function () use ($id) {
-            $produk = ProdukModel::findOrFail($id);
+        try {
+            $produk = ProdukModel::with(['foto'])->findOrFail($id);
 
-            $fotos = $produk->foto;
+            DB::beginTransaction();
 
-            foreach ($fotos as $foto) {
-                Storage::delete('public/foto_produk/' . $foto->foto_produk);
-            }
-
+            // Hapus relasi dulu
             $produk->foto()->delete();
             $produk->warna()->delete();
             $produk->ukuran()->delete();
 
+            // Hapus produk
             $produk->delete();
 
+            DB::commit();
+
+            // Setelah commit berhasil, hapus file fisik
+            foreach ($produk->foto as $foto) {
+                if ($foto->foto_produk && Storage::exists('public/foto_produk/' . $foto->foto_produk)) {
+                    Storage::delete('public/foto_produk/' . $foto->foto_produk);
+                }
+            }
+
+            // Hapus cache
             Cache::forget('produk_' . $id);
             Cache::forget('edit_produk_' . $id);
-        });
 
-        return redirect()->route('produk.index')->with('success', 'Produk berhasil disimpan!');
+            return response()->json([
+                'success' => true,
+                'message' => 'Produk berhasil dihapus',
+                'id' => $id
+            ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Produk tidak bisa dihapus karena masih digunakan pada detail pesanan.'
+            ], 400);
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

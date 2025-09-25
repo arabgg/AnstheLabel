@@ -98,8 +98,7 @@
                                         <i class="fa-regular fa-pen-to-square"></i>
                                         <span>Edit</span>
                                     </a>
-                                    <button type="button"
-                                        onclick="document.getElementById('modal-{{ $p->produk_id }}').classList.remove('hidden');"
+                                    <button type="button" onclick="deleteProduk('{{ route('produk.destroy', $p->produk_id) }}')"
                                         class="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 hover:text-red-700 transition">
                                         <i class="fa-regular fa-trash-can text-red-500"></i>
                                         <span>Hapus</span>
@@ -116,34 +115,6 @@
                                     alt="{{ $p->nama_produk }}" class="w-full h-full object-cover">
                             </div>
                         </a>
-                    </div>
-
-                    {{-- Modal Konfirmasi Hapus --}}
-                    <div id="modal-{{ $p->produk_id }}"
-                        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
-                        onclick="if(event.target === this) this.classList.add('hidden')">
-                        <div class="bg-white rounded-lg p-6 w-96 shadow-lg">
-                            <h2 class="text-lg font-semibold mb-4">Konfirmasi Hapus</h2>
-                            <p class="mb-6">
-                                Apakah Anda yakin ingin menghapus produk
-                                <strong>{{ $p->nama_produk }}</strong>?
-                            </p>
-                            <div class="flex justify-center space-x-10">
-                                <form method="POST" action="{{ route('produk.destroy', $p->produk_id) }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                        class="flex px-4 py-2 bg-red-500 text-white rounded hover:bg-red-800 transition">
-                                        Ya, Hapus
-                                    </button>
-                                </form>
-                                <button type="button"
-                                    onclick="document.getElementById('modal-{{ $p->produk_id }}').classList.add('hidden')"
-                                    class="flex px-4 py-2 bg-gray-300 text-gray-900 rounded hover:bg-gray-400 transition">
-                                    Batal
-                                </button>
-                            </div>
-                        </div>
                     </div>
                 @endforeach
             @endif
@@ -199,5 +170,46 @@
                 form.submit();
             });
         });
+
+        // --- Hapus Produk ---
+        function deleteProduk(url) {
+            Swal.fire({
+                title: 'Hapus Produk?',
+                text: "Data produk akan dihapus permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then(result => {
+                if (result.isConfirmed) {
+                    fetch(url, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: data.message,
+                                    toast: true,
+                                    position: 'top-end',
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                }).then(() => location.reload());
+                            } else {
+                                Swal.fire('Gagal', data.message, 'error');
+                            }
+                        })
+                        .catch(err => Swal.fire('Error', err.message || 'Terjadi kesalahan', 'error'));
+                }
+            });
+        }
     </script>
 @endpush
