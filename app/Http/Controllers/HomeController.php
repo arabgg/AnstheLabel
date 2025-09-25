@@ -98,7 +98,7 @@ class HomeController extends Controller
         return view('home.about.index', compact('rekomendasi'));
     }
 
-    public function faq()
+    public function homefaq()
     {
         $faqs = FaqModel::select('faq_id', 'pertanyaan', 'jawaban')->get();
         $rekomendasi = Cache::remember('rekomendasi', 600, function () {

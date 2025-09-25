@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        showToast('success', 'Form valid, Transaction processed! Please Chehck your email.');
+        showToast('success', 'Form valid, Transaction processed! Please check your email.');
         setTimeout(() => form.submit(), 500);
     });
 
@@ -212,14 +212,14 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(res => res.json())
         .then(data => {
             data.forEach(item => {
-                provinsi.innerHTML += `<option value="${item.id}">${item.name}</option>`;
+                provinsi.innerHTML += `<option value="${item.name}" data-id="${item.id}">${item.name}</option>`;
             });
             $("#provinsi").trigger("change.select2");
         });
 
     // Provinsi → Kota
     $("#provinsi").on("change", function () {
-        const provinsiId = $(this).val();
+        const provinsiId = $(this).find(':selected').data('id');
 
         kota.innerHTML = `<option value="">Select Kota/Kabupaten</option>`;
         kecamatan.innerHTML = `<option value="">Select Kecamatan</option>`;
@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(res => res.json())
                 .then(data => {
                     data.forEach(item => {
-                        kota.innerHTML += `<option value="${item.id}">${item.name}</option>`;
+                        kota.innerHTML += `<option value="${item.name}" data-id="${item.id}">${item.name}</option>`;
                     });
                     $("#kota").prop("disabled", false).trigger("change.select2");
                 });
@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Kota → Kecamatan
     $("#kota").on("change", function () {
-        const kotaId = $(this).val();
+        const kotaId = $(this).find(':selected').data('id');
 
         kecamatan.innerHTML = `<option value="">Select Kecamatan</option>`;
         desa.innerHTML = `<option value="">Select Kelurahan/Desa</option>`;
@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(res => res.json())
                 .then(data => {
                     data.forEach(item => {
-                        kecamatan.innerHTML += `<option value="${item.id}">${item.name}</option>`;
+                        kecamatan.innerHTML += `<option value="${item.name}" data-id="${item.id}">${item.name}</option>`;
                     });
                     $("#kecamatan").prop("disabled", false).trigger("change.select2");
                 });
@@ -262,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Kecamatan → Desa
     $("#kecamatan").on("change", function () {
-        const kecamatanId = $(this).val();
+        const kecamatanId = $(this).find(':selected').data('id');
 
         desa.innerHTML = `<option value="">Select Kelurahan/Desa</option>`;
         $("#desa").val(null).trigger("change.select2").prop("disabled", true);
@@ -272,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 .then(res => res.json())
                 .then(data => {
                     data.forEach(item => {
-                        desa.innerHTML += `<option value="${item.id}">${item.name}</option>`;
+                        desa.innerHTML += `<option value="${item.name}" data-id="${item.id}">${item.name}</option>`;
                     });
                     $("#desa").prop("disabled", false).trigger("change.select2");
                 });
