@@ -8,12 +8,14 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\BahanController;
 use App\Http\Controllers\UkuranController;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\WarnaController;
 use App\Http\Controllers\MetodePembayaranController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BannerController;
+use App\Http\Controllers\EkspedisiController;
 use App\Http\Controllers\PesananController;
 use Illuminate\Support\Facades\Storage;
 
@@ -182,5 +184,25 @@ Route::middleware('auth')->group(function () {
         Route::get('/edit/{id}', [FaqController::class, 'edit'])->name('faq.edit');
         Route::put('/update/{id}', [FaqController::class, 'update'])->name('faq.update');
         Route::delete('/destroy/{id}', [FaqController::class, 'destroy'])->name('faq.destroy');
+    });
+
+    Route::prefix('voucher')->group(function () {
+        Route::get('/', [VoucherController::class, 'index'])->name('voucher.index');
+        Route::get('/show/{id}', [VoucherController::class, 'show'])->name('voucher.show');
+        Route::get('/create', [VoucherController::class, 'create'])->name('voucher.create');
+        Route::post('/store', [VoucherController::class, 'store'])->name('voucher.store');
+        Route::get('/edit/{id}', [VoucherController::class, 'edit'])->name('voucher.edit');
+        Route::put('/update/{id}', [VoucherController::class, 'update'])->name('voucher.update');
+        Route::delete('/destroy/{id}', [VoucherController::class, 'destroy'])->name('voucher.destroy');
+    });
+
+    Route::prefix('ekspedisi')->group(function () {
+        Route::get('/', [EkspedisiController::class, 'index'])->name('ekspedisi.index');
+        Route::get('/show/{id}', [EkspedisiController::class, 'show'])->name('ekspedisi.show');
+        Route::get('/create', [EkspedisiController::class, 'create'])->name('ekspedisi.create');
+        Route::post('/store', [EkspedisiController::class, 'store'])->name('ekspedisi.store');
+        Route::get('/edit/{id}', [EkspedisiController::class, 'edit'])->name('ekspedisi.edit');
+        Route::put('/update/{id}', [EkspedisiController::class, 'update'])->name('ekspedisi.update');
+        Route::delete('/destroy/{id}', [EkspedisiController::class, 'destroy'])->name('ekspedisi.destroy');
     });
 });

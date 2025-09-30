@@ -39,16 +39,16 @@
                 <input type="hidden" name="telepon" id="telepon">
 
                 {{-- Alamat Lengkap --}}
-                <select class="checkout-pengantaran-data" style="margin-left: 0px" id="provinsi" name="provinsi" class="form-select">
+                <select style="margin-left: 0px" id="provinsi" name="provinsi">
                     <option value="">Select Provinsi</option>
                 </select>
-                <select class="checkout-pengantaran-data" style="margin-left: 0px" id="kota" name="kota" class="form-select" disabled>
+                <select style="margin-left: 0px" id="kota" name="kota" disabled>
                     <option value="">Select Kota/Kabupaten</option>
                 </select>
-                <select class="checkout-pengantaran-data" style="margin-left: 0px" id="kecamatan" name="kecamatan" class="form-select" disabled>
+                <select style="margin-left: 0px" id="kecamatan" name="kecamatan" disabled>
                     <option value="">Select Kecamatan</option>
                 </select>
-                <select class="checkout-pengantaran-data" style="margin-left: 0px" id="desa" name="desa" class="form-select" disabled>
+                <select style="margin-left: 0px" id="desa" name="desa" disabled>
                     <option value="">Select Kelurahan/Desa</option>
                 </select>
                 <input class="checkout-pengantaran-data" type="text" name="alamat" placeholder="Alamat" required>
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Listener submit form
+    // Validasi form
     form.addEventListener('submit', function(e) {
         e.preventDefault();
 
@@ -156,7 +156,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const metodeTerpilih = form.querySelector('input[name="metode_pembayaran_id"]:checked');
         const cartItems = document.querySelectorAll('.checkout-product-item');
 
-        // Validasi telepon
         if (!teleponUser) {
             showToast('error', 'Phone number is required!');
             return;
@@ -167,28 +166,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         teleponHiddenInput.value = '+62' + teleponUser;
 
-        // Validasi email sederhana frontend
         if (!/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/.test(email)) {
             showToast('error', 'Invalid email format!');
             return;
         }
 
-        // Validasi metode pembayaran
         if (!metodeTerpilih) {
             showToast('error', 'Please select a payment method!');
             return;
         }
 
-        // Validasi keranjang
         if (cartItems.length === 0) {
             showToast('error', 'Empty shopping cart!');
             return;
         }
-        showToast('success', 'Form valid, transaction processed!');
 
-        setTimeout(() => {
-            form.submit();
-        }, 500);
+        showToast('success', 'Form valid, Transaction processed! Please check your email.');
+        setTimeout(() => form.submit(), 500);
     });
 
     teleponUserInput.addEventListener('input', function() {
@@ -199,81 +193,89 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.checkout-payment-toggle').forEach(button => {
         button.addEventListener('click', () => {
             const target = document.getElementById(button.dataset.target);
-            if (target.classList.contains('show')) {
-                target.classList.remove('show');
-            } else {
-                document.querySelectorAll('.checkout-payment-list').forEach(list => list.classList.remove('show'));
-                target.classList.add('show');
-            }
+            document.querySelectorAll('.checkout-payment-list').forEach(list => list.classList.remove('show'));
+            target.classList.toggle('show');
         });
     });
 
-    // Load wilayah (provinsi → kota → kecamatan → desa)
+    // --- Load wilayah ---
     const provinsi = document.getElementById("provinsi");
     const kota = document.getElementById("kota");
     const kecamatan = document.getElementById("kecamatan");
     const desa = document.getElementById("desa");
 
+    // Inisialisasi Select2
+    $("#provinsi, #kota, #kecamatan, #desa").select2({ width: '100%' });
+
+    // Fetch Provinsi
     fetch("/wilayah/provinsi")
         .then(res => res.json())
         .then(data => {
             data.forEach(item => {
                 provinsi.innerHTML += `<option value="${item.name}" data-id="${item.id}">${item.name}</option>`;
             });
+            $("#provinsi").trigger("change.select2");
         });
 
-    provinsi.addEventListener("change", function () {
+    // Provinsi → Kota
+    $("#provinsi").on("change", function () {
+        const provinsiId = $(this).find(':selected').data('id');
+
         kota.innerHTML = `<option value="">Select Kota/Kabupaten</option>`;
         kecamatan.innerHTML = `<option value="">Select Kecamatan</option>`;
-        desa.innerHTML = `<option value="">Select Desa</option>`;
-        kota.disabled = !this.value;
-        kecamatan.disabled = true;
-        desa.disabled = true;
+        desa.innerHTML = `<option value="">Select Kelurahan/Desa</option>`;
 
-        if (this.value) {
-            const provinsiId = this.selectedOptions[0].getAttribute("data-id");
+        $("#kota, #kecamatan, #desa").val(null).trigger("change.select2").prop("disabled", true);
+
+        if (provinsiId) {
             fetch(`/wilayah/kota/${provinsiId}`)
                 .then(res => res.json())
                 .then(data => {
                     data.forEach(item => {
                         kota.innerHTML += `<option value="${item.name}" data-id="${item.id}">${item.name}</option>`;
                     });
+                    $("#kota").prop("disabled", false).trigger("change.select2");
                 });
         }
     });
 
-    kota.addEventListener("change", function () {
+    // Kota → Kecamatan
+    $("#kota").on("change", function () {
+        const kotaId = $(this).find(':selected').data('id');
+
         kecamatan.innerHTML = `<option value="">Select Kecamatan</option>`;
         desa.innerHTML = `<option value="">Select Kelurahan/Desa</option>`;
-        kecamatan.disabled = !this.value;
-        desa.disabled = true;
 
-        if (this.value) {
-            const kotaId = this.selectedOptions[0].getAttribute("data-id");
+        $("#kecamatan, #desa").val(null).trigger("change.select2").prop("disabled", true);
+
+        if (kotaId) {
             fetch(`/wilayah/kecamatan/${kotaId}`)
                 .then(res => res.json())
                 .then(data => {
                     data.forEach(item => {
                         kecamatan.innerHTML += `<option value="${item.name}" data-id="${item.id}">${item.name}</option>`;
                     });
+                    $("#kecamatan").prop("disabled", false).trigger("change.select2");
                 });
         }
     });
 
-     kecamatan.addEventListener("change", function () {
-        desa.innerHTML = `<option value="">Pilih Kelurahan/Desa</option>`;
-        if (this.value) {
-            desa.disabled = false;
-            const kecamatanId = this.selectedOptions[0].getAttribute("data-id");
+    // Kecamatan → Desa
+    $("#kecamatan").on("change", function () {
+        const kecamatanId = $(this).find(':selected').data('id');
+
+        desa.innerHTML = `<option value="">Select Kelurahan/Desa</option>`;
+        $("#desa").val(null).trigger("change.select2").prop("disabled", true);
+
+        if (kecamatanId) {
             fetch(`/wilayah/desa/${kecamatanId}`)
                 .then(res => res.json())
                 .then(data => {
                     data.forEach(item => {
                         desa.innerHTML += `<option value="${item.name}" data-id="${item.id}">${item.name}</option>`;
                     });
+                    $("#desa").prop("disabled", false).trigger("change.select2");
                 });
-        } else {
-            desa.disabled = true;
         }
     });
 });

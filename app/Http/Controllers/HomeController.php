@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderConfirmationMail;
 use App\Models\BannerModel;
 use App\Models\DetailTransaksiModel;
 use App\Models\KategoriModel;
@@ -15,6 +16,7 @@ use App\Models\TransaksiModel;
 use App\Rules\EmailActive;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class HomeController extends Controller
 {
@@ -96,7 +98,7 @@ class HomeController extends Controller
         return view('home.about.index', compact('rekomendasi'));
     }
 
-    public function faq()
+    public function homefaq()
     {
         $faqs = FaqModel::select('faq_id', 'pertanyaan', 'jawaban')->get();
         $rekomendasi = Cache::remember('rekomendasi', 600, function () {
@@ -324,8 +326,9 @@ class HomeController extends Controller
         }
 
         $kode_invoice = null;
+        $orderData = null;
         
-        DB::transaction(function () use ($cart, $telepon, $validated, $fullAddress, &$kode_invoice) {
+        DB::transaction(function () use ($cart, $telepon, $validated, $fullAddress, &$kode_invoice, &$orderData) {
             $total = collect($cart)->sum(fn($item) => $item['harga'] * $item['quantity']);
 
             $pembayaran = PembayaranModel::create([
@@ -353,7 +356,20 @@ class HomeController extends Controller
                 ]);
             }
             $kode_invoice = $transaksi->kode_invoice; 
+
+            $orderData = [
+                'kode_invoice' => $transaksi->kode_invoice,
+                'nama'        => $validated['nama'],
+                'email'       => $validated['email'],
+                'alamat'      => $fullAddress,
+                'total'       => $total,
+            ];
         });
+
+        // Kirim email
+        if ($orderData) {
+            Mail::to($orderData['email'])->send(new OrderConfirmationMail($orderData, $cart));
+        }
 
         session()->forget(['cart', 'checkout_data']);
 
