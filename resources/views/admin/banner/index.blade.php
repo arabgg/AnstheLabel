@@ -29,6 +29,7 @@
                             <th class="p-3">NAMA</th>
                             <th class="p-3">FOTO</th>
                             <th class="p-3">DESKRIPSI</th>
+                            <th class="p-3">STATUS</th>
                             <th class="p-3">AKSI</th>
                         </tr>
                     </thead>
@@ -55,6 +56,14 @@
                                     </div>
                                 </td>
                                 <td class="p-3 break-words max-w-xs">{{ $banner->deskripsi }}</td>
+                                <td class="p-3 break-words max-w-xs">
+                                    @if ($banner->status == 1)
+                                        <span
+                                            class="px-2 py-1 text-xs font-semibold text-green-700 bg-green-200 rounded-lg">Aktif</span>
+                                    @else
+                                        <span class="px-2 py-1 text-xs font-semibold text-red-700 bg-red-200 rounded-lg">Nonaktif</span>
+                                    @endif
+                                </td>
                                 <td class="p-3 mt-5 flex gap-2 justify-center items-center">
                                     {{-- Tombol Detail --}}
                                     <button
@@ -109,96 +118,90 @@
             </div>
         </div>
     </div>
-    @endsection
+@endsection
 
-    @push('scripts')
-        <script>
-            // --- Buka modal ---
-            function openBannerModal(url) {
-                fetch(url, {
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    })
-                    .then(res => res.text())
-                    .then(html => {
-                        document.getElementById('modalContent').innerHTML = html;
-                        document.getElementById('BannerModal').classList.remove('hidden');
+@push('scripts')
+    <script>
+        // --- Buka modal ---
+        function openBannerModal(url) {
+            fetch(url, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(res => res.text())
+                .then(html => {
+                    document.getElementById('modalContent').innerHTML = html;
+                    document.getElementById('BannerModal').classList.remove('hidden');
 
-                        // Pasang listener form edit setelah modal dimuat
-                        const form = document.getElementById('editBannerForm');
-                        if (form) {
-                            form.addEventListener('submit', function(e) {
-                                e.preventDefault();
-                                const url = this.action;
-                                const formData = new FormData(this);
+                    // Pasang listener form edit setelah modal dimuat
+                    const form = document.getElementById('editBannerForm');
+                    if (form) {
+                        form.addEventListener('submit', function(e) {
+                            e.preventDefault();
+                            const url = this.action;
+                            const formData = new FormData(this);
 
-                                fetch(url, {
-                                        method: 'POST', // tetap pakai POST
-                                        headers: {
-                                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                            'Accept': 'application/json',
-                                            'X-Requested-With': 'XMLHttpRequest'
-                                        },
-                                        body: formData
-                                    })
-                                    .then(res => res.json())
-                                    .then(data => {
-                                        if (data.success) {
-                                            Swal.fire({
-                                                icon: 'success',
-                                                title: data.message,
-                                                toast: true,
-                                                position: 'top-end',
-                                                timer: 1500,
-                                                showConfirmButton: false
-                                            }).then(() => {
-                                                // reload halaman setelah alert selesai
-                                                window.location.reload();
-                                            });
+                            fetch(url, {
+                                    method: 'POST', // tetap pakai POST
+                                    headers: {
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                        'Accept': 'application/json',
+                                        'X-Requested-With': 'XMLHttpRequest'
+                                    },
+                                    body: formData
+                                })
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: data.message,
+                                            toast: true,
+                                            position: 'top-end',
+                                            timer: 1500,
+                                            showConfirmButton: false
+                                        }).then(() => {
+                                            // reload halaman setelah alert selesai
+                                            window.location.reload();
+                                        });
 
-                                        } else {
-                                            Swal.fire({
-                                                icon: 'error',
-                                                title: 'Gagal',
-                                                text: data.message,
-                                                toast: true,
-                                                position: 'top-end'
-                                            });
-                                        }
-                                    })
-                                    .catch(err => {
-                                        closeModal();
+                                    } else {
                                         Swal.fire({
                                             icon: 'error',
-                                            title: 'Error',
-                                            text: err.message || 'Terjadi kesalahan',
+                                            title: 'Gagal',
+                                            text: data.message,
                                             toast: true,
                                             position: 'top-end'
                                         });
+                                    }
+                                })
+                                .catch(err => {
+                                    closeModal();
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: err.message || 'Terjadi kesalahan',
+                                        toast: true,
+                                        position: 'top-end'
                                     });
-                            });
-                        }
+                                });
+                        });
+                    }
+                })
+                .catch(err => console.error(err));
+        }
 
-                        // Listener form create jika ada
-                        const createForm = document.getElementById('createBannerForm');
-                        if (createForm) {
-                            createForm.addEventListener('submit', handleCreateSubmit);
-                        }
-                    })
-                    .catch(err => console.error(err));
-            }
+        // --- Tutup modal ---
+        function closeModal() {
+            document.getElementById('BannerModal').classList.add('hidden');
+            document.getElementById('modalContent').innerHTML = '';
+        }
 
-            // --- Tutup modal ---
-            function closeModal() {
-                document.getElementById('BannerModal').classList.add('hidden');
-                document.getElementById('modalContent').innerHTML = '';
-            }
-
-            // --- Tambahkan atribut data-metode-id pada row tabel ---
-            document.querySelectorAll('tbody tr').forEach(tr => {
-                const bannerId = tr.querySelector('td')?.innerText;
-                if (bannerId) tr.setAttribute('data-banner-id', bannerId.trim());
-            });
-        </script>
-    @endpush
+        // --- Tambahkan atribut data-metode-id pada row tabel ---
+        document.querySelectorAll('tbody tr').forEach(tr => {
+            const bannerId = tr.querySelector('td')?.innerText;
+            if (bannerId) tr.setAttribute('data-banner-id', bannerId.trim());
+        });
+    </script>
+@endpush

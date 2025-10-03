@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nama_banner', 200);
             $table->string('foto_banner');
             $table->text('deskripsi');
+            $table->boolean('status')->default(true);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
