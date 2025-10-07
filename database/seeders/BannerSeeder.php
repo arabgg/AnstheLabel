@@ -145,6 +145,14 @@ class BannerSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            // Banner After Collection Edition
+            [
+                'nama_banner' => 'Banner Header',
+                'foto_banner' => 'header.png',
+                'deskripsi' => 'Enjoy your new collection',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
             // Video Banner for Transactions Page
             [
                 'nama_banner' => 'Transaksi',

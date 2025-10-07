@@ -16,6 +16,7 @@ class BannerModel extends Model
         'nama_banner',
         'foto_banner',
         'deskripsi',
+        'status'
     ];
 
     protected $casts = [
