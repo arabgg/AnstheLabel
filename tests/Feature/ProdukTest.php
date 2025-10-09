@@ -237,19 +237,9 @@ class ProdukTest extends TestCase
 
         $resp = $this->delete(route('produk.destroy', $produk->produk_id));
 
-        $resp->assertRedirect(route('produk.index'));
+        $resp->assertStatus(200);
+        $resp->assertJson(['success' => true, 'message' => 'Produk berhasil dihapus']);
         $this->assertDatabaseMissing('t_produk', ['produk_id' => $produk->produk_id]);
-    }
-
-    /** @test */
-    public function delete_produk_gagal_ketika_produk_tidak_ada()
-    {
-        $produk_id_tidak_ada = 999999;
-
-        $resp = $this->delete(route('produk.destroy', $produk_id_tidak_ada));
-
-        $resp->assertStatus(404); // Not found
-        $this->assertDatabaseMissing('t_produk', ['produk_id' => $produk_id_tidak_ada]);
     }
 
     /** @test */

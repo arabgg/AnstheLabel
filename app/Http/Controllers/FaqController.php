@@ -89,7 +89,6 @@ class FaqController extends Controller
             'jawaban'    => 'required|string',
         ]);
 
-        $faq = FaqModel::findOrFail($id);
         $faq->pertanyaan = $request->pertanyaan;
         $faq->jawaban = $request->jawaban;
         $faq->save();

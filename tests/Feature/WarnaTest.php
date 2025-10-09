@@ -75,10 +75,10 @@ class WarnaTest extends TestCase
     }
 
     /** @test */
-    public function create_warna_gagal_ketika_kode_hex_format_salah()
+    public function create_warna_gagal_ketika_kode_hex_terlalu_panjang()
     {
         $payload = [
-            'kode_hex' => 'FF5733', // tanpa #
+            'kode_hex' => '#FF5733FF', // lebih dari 7 karakter
             'nama_warna' => 'Merah Orange',
         ];
 

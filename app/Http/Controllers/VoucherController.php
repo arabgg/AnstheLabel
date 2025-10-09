@@ -99,7 +99,7 @@ class VoucherController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'kode_voucher'   => 'required|unique:m_voucher,kode_voucher',
+            'kode_voucher'   => 'required|unique:m_voucher,kode_voucher,' . $id . ',voucher_id',
             'deskripsi'      => 'nullable|string|max:255',
             'tipe_diskon'    => 'required|in:persen,nominal',
             'nilai_diskon'   => 'required|numeric|min:0',
