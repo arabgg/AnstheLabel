@@ -1,6 +1,6 @@
 <div class="edition-section">
     <div class="edition-header">
-        <h1 class="edition-title">Collection Edition</h1>
+        <h1 class="edition-title">{{ __('messages.title.edition') }}</h1>
     </div>
 
     <div class="edition-grid" id="katalogGrid">
@@ -15,7 +15,7 @@
                     {{-- Konten Utama --}}
                     <a href="{{ route('detail.show', $item->produk_id) }}">
                         <div class="skeleton-target" style="display:none;">
-                            <div class="edition-label">COLLECTION</div>
+                            <div class="edition-label">{{ __('messages.tag') }}</div>
                             @if ($item->fotoUtama)
                                 <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->fotoUtama->foto_produk]) }}" alt="{{ $item->nama_produk }}" class="edition-image default-image">
                             @endif

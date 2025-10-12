@@ -2,8 +2,8 @@
 
 @section('breadcrumb')
     <div class="breadcrumb">
-        <a href="{{ route('home') }}">Home</a> / 
-        <a href="{{ route('collection') }}">Collection</a> / 
+        <a href="{{ route('home') }}">{{ __('messages.breadcrumb.home') }}</a> / 
+        <a href="{{ route('collection') }}">{{ __('messages.breadcrumb.collection') }}</a> / 
         <span>{{ $produk->nama_produk }}</span>
     </div>
 @endsection
@@ -58,7 +58,7 @@
 
                             <!-- Warna -->
                             <div class="detail-color-wrapper">
-                                <p>Color Available</p>
+                                <p>{{ __('messages.detail.color') }}</p>
                                 @if ($produk->warna->isNotEmpty())
                                     <div class="detail-color-dot">
                                         @foreach ($produk->warna as $warnaItem)
@@ -77,7 +77,7 @@
 
                             <!-- Ukuran -->
                             <div class="detail-size-wrapper">    
-                                <p>Size Available</p>
+                                <p>{{ __('messages.detail.size') }}</p>
                                 @if ($produk->ukuran->isNotEmpty())
                                     <div class="detail-size">
                                         @foreach ($produk->ukuran as $sizeItem)
@@ -94,25 +94,25 @@
                                 @endif
                             </div>
 
-                            <p class="detail-quantity-label">Quantity:</p>
+                            <p class="detail-quantity-label">{{ __('messages.detail.qty') }}</p>
                             <div class="detail-quantity-wrapper" style="margin-top: 10px;">
                                 <input type="number" name="quantity" value="1" min="1" required>
                             </div>
 
                             <div class="detail-buy-wrapper" style="margin-top: 15px;">
-                                <button type="submit" name="action" value="buy_now" class="btn-buy-now">Buy Now</button>
+                                <button type="submit" name="action" value="buy_now" class="btn-buy-now">{{ __('messages.button.buy') }}</button>
                             </div>
 
                             <div class="detail-cart-wrapper" style="margin-top: 10px;">
                                 <button type="button" id="btn-add-to-cart" class="btn-add-cart">
-                                    <i class="fa fa-cart-shopping" style="margin-right: 8px"></i> Add to Cart
+                                    <i class="fa fa-cart-shopping" style="margin-right: 8px"></i> {{ __('messages.button.add_cart') }}
                                 </button>
                             </div>
                         </form>
                     </div>
 
                     <div class="detail-deskripsi-wrapper" style="margin-top: 20px;">
-                        <h3>Product Details</h3>
+                        <h3>{{ __('messages.detail.desc') }}</h3>
                         <div class="detail-deskripsi-produk">
                             <p>{{ $produk->deskripsi }}</p>
                         </div>
@@ -138,7 +138,7 @@
     </div>
 
     <div class="detail-recommend" style="margin-top: 30px;">
-        <h2>You May Also Like</h2>
+        <h2>{{ __('messages.recommend') }}</h2>
         <div class="detail-recommend-grid">
             @foreach ($rekomendasi as $item)
             <div class="detail-recommend-card">

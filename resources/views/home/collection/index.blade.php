@@ -2,7 +2,7 @@
 
 @section('breadcrumb')
     <div class="breadcrumb">
-        <a href="{{ route('home') }}">Home</a> / <span>Collection</span>
+        <a href="{{ route('home') }}">{{ __('messages.breadcrumb.home') }}</a> / <span>{{ __('messages.breadcrumb.collection') }}</span>
     </div>
 @endsection
 

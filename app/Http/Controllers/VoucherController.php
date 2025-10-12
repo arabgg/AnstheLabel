@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\VoucherModel;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 
 class VoucherController extends Controller
 {
@@ -60,6 +61,10 @@ class VoucherController extends Controller
             'tanggal_berakhir' => 'nullable|date|after_or_equal:tanggal_mulai',
             'status_voucher' => 'required|boolean',
         ]);
+
+        if ($validated['tipe_diskon'] === 'persen') {
+            $validated['nilai_diskon'] = $validated['nilai_diskon'] * 0.01;
+        }
 
         $voucher = VoucherModel::create($validated);
 

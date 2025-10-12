@@ -74,17 +74,17 @@
     @include('home.landingpage.edition')    
     
     <div class="collection-section container">
-    <div class="hero-grid">
-        @foreach ($hero as $index => $item)
-            @if ($item->banner_id >= 17 && $item->banner_id <= 18)
-                <div class="hero-item {{ $index === 0 ? 'left' : 'right' }}">
-                    <img src="{{ route('storage', ['folder' => 'banner', 'filename' => $item->foto_banner]) }}"
-                        alt="{{ $item->nama_banner }}">
-                </div>
-            @endif
-        @endforeach
+        <div class="hero-grid">
+            @foreach ($hero as $index => $item)
+                @if ($item->banner_id >= 17 && $item->banner_id <= 18)
+                    <div class="hero-item {{ $index === 0 ? 'left' : 'right' }}">
+                        <img src="{{ route('storage', ['folder' => 'banner', 'filename' => $item->foto_banner]) }}"
+                            alt="{{ $item->nama_banner }}">
+                    </div>
+                @endif
+            @endforeach
+        </div>
     </div>
-</div>
 @endsection
 
 @push('scripts')

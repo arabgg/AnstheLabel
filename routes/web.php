@@ -17,6 +17,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\EkspedisiController;
 use App\Http\Controllers\PesananController;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 
 /*
@@ -38,30 +39,34 @@ Route::get('/', function () {
 
 //Route Pemanggilan File Storage
 Route::get('/storage/{folder}/{filename}', function ($folder, $filename) {
-    $allowedFolders = ['foto_produk', 'icons', 'banner', 'page'];
-
-    if (!in_array($folder, $allowedFolders)) {
-        abort(403, 'Folder tidak diizinkan');
-    }
-
+    $allowedFolders = ['foto_produk', 'icons', 'banner', 'page', 'bukti'];
+    if (!in_array($folder, $allowedFolders)) { abort(403, 'Folder tidak diizinkan'); }
     $path = storage_path("app/public/{$folder}/{$filename}");
-
-    if (!file_exists($path)) {
-        abort(404);
-    }
-
+    if (!file_exists($path)) { abort(404); }
     return response()->file($path);
 })->name('storage');
+
+// localization default
+Route::get('/lang/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'id'])) {
+        Session::put('locale', $locale);
+    }
+    return redirect()->back();
+})->name('change.language');
 
 //Route Landing Page
 Route::get('home', [HomeController::class, 'index'])->name('home');
 Route::get('/collection', [HomeController::class, 'collection'])->name('collection');
+
+// Route::get('/mail', [HomeController::class, 'email'])->name('email');
+
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/homefaq', [HomeController::class, 'homefaq'])->name('homefaq');
 Route::get('/detail/{id}', [HomeController::class, 'show_produk'])->name('detail.show');
 Route::get('/invoice', [HomeController::class, 'invoice'])->name('invoice');
 Route::post('/invoice', [HomeController::class, 'cekInvoice'])->name('invoice.cek');
 Route::get('/transaksi/{kode_invoice}', [HomeController::class, 'transaksi'])->name('transaksi.show');
+Route::post('/transaksi/{pembayaran_id}/upload-bukti', [HomeController::class, 'uploadBukti'])->name('transaksi.upload');
 
 
 // Route Checkout

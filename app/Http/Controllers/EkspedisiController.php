@@ -45,7 +45,7 @@ class EkspedisiController extends Controller
         $validated = $request->validate([
             'nama_ekspedisi' => 'required|string|max:255',
             'status_ekspedisi' => 'required|in:0,1',
-            'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'icon' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($request->hasFile('icon')) {

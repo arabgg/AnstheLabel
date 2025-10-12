@@ -19,6 +19,7 @@ class TransaksiModel extends Model
     protected $keyType = 'string';
     
     protected $fillable = [
+        'ekspedisi_id',
         'pembayaran_id',
         'kode_invoice',
         'nama_customer',
@@ -57,5 +58,10 @@ class TransaksiModel extends Model
     public function pembayaran() :BelongsTo
     {
         return $this->belongsTo(PembayaranModel::class, 'pembayaran_id', 'pembayaran_id');
+    }
+
+    public function ekspedisi() :BelongsTo
+    {
+        return $this->belongsTo(EkspedisiModel::class, 'ekspedisi_id', 'ekspedisi_id');
     }
 }

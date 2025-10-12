@@ -1,5 +1,5 @@
 <div class="swiper arrival-swiper">
-    <h1 class="swiper-title">Best Product</h1>
+    <h1 class="swiper-title">{{ __('messages.title.best_products') }}</h1>
     <div class="swiper-wrapper">
         @foreach ($bestproduk as $bestproduk)
             <div class="swiper-slide">
@@ -14,7 +14,7 @@
                     <div class="arrival-caption">
                         <h3>{{ $bestproduk->nama_produk }}</h3>
                         <a href="{{ route('collection') }}">
-                            <button>Shop here</button>
+                            <button>{{ __('messages.button.shop') }}</button>
                         </a>
                     </div>
                 </div>
