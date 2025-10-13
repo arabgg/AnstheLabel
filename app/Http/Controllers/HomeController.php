@@ -65,26 +65,26 @@ class HomeController extends Controller
 
         return view('home.landingpage.index', compact('newarrival', 'bestseller', 'bestproduk', 'edition', 'hero'));
     }
-    // public function email()
-    // {
-    //     $order = [
-    //         'kode_invoice' => 'ANS-12345678-123456789',
-    //         'nama' => 'John Doe',
-    //         'email' => 'coba@gmail.com',
-    //         'alamat' => 'jl. berkah besar',
-    //         'total' => 100000,
-    //     ];
-    //     $items = [
-    //         [
-    //             'nama' => 'Produk 1',
-    //             'warna_nama' => 'Biru',
-    //             'ukuran_nama' => 'L',
-    //             'quantity' => 2,
-    //             'harga' => 200000,
-    //         ],
-    //     ];
-    //     return view('home.mail.invoice', compact('order', 'items'));
-    // }
+    public function email()
+    {
+        $order = [
+            'kode_invoice' => 'ANS-12345678-123456789',
+            'nama' => 'John Doe',
+            'email' => 'coba@gmail.com',
+            'alamat' => 'jl. berkah besar',
+            'total' => 100000,
+        ];
+        $items = [
+            [
+                'nama' => 'Produk 1',
+                'warna_nama' => 'Biru',
+                'ukuran_nama' => 'L',
+                'quantity' => 2,
+                'harga' => 200000,
+            ],
+        ];
+        return view('home.mail.invoice', compact('order', 'items'));
+    }
 
     public function collection(Request $request)
     {
@@ -374,14 +374,14 @@ class HomeController extends Controller
             $telepon = '0' . substr($telepon, 3);
         }
 
-         $cart = session()->get('cart', []);
+        $cart = session()->get('cart', []);
         if (empty($cart)) {
             return redirect()->route('cart.index')->with('error', 'Data tidak valid.');
         }
 
         $kode_invoice = null;
         
-        DB::transaction(function () use ($cart, $telepon, $validated, $fullAddress, &$kode_invoice) {
+        DB::transaction(function () use ($cart, $telepon, $validated, $fullAddress, &$kode_invoice, &$finalTotal) {
             $total = collect($cart)->sum(fn($item) => $item['harga_diskon'] * $item['quantity']);
             $voucherId = $validated['voucher_id'] ?? null;
             $potongan = 0;
