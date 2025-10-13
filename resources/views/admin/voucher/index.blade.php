@@ -59,7 +59,7 @@
                                 <td class="p-3">{{ ucfirst($item->tipe_diskon) }}</td>
                                 <td class="p-3">
                                     @if ($item->tipe_diskon === 'persen')
-                                        {{ $item->nilai_diskon }}%
+                                        {{ $item->nilai_diskon * 100 }}%
                                     @else
                                         Rp {{ number_format($item->nilai_diskon, 0, ',', '.') }}
                                     @endif

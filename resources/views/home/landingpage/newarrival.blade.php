@@ -1,6 +1,6 @@
 <div class="bestproduk-section">
     <div class="bestproduk-header">
-        <h1 class="bestproduk-title">New Arrival</h1>
+        <h1 class="bestproduk-title">{{ __('messages.title.arrival') }}</h1>
     </div>
 
     <div class="bestproduk-grid" id="katalogGrid">
@@ -48,9 +48,9 @@
     
     <div class="bestproduk-buttons">
         @if (count($newarrival) > 4)
-            <button id="viewAllButton" class="more-link" onclick="showAllKatalog()">MORE</button>
+            <button id="viewAllButton" class="more-link" onclick="showAllKatalog()">{{ __('messages.button.more') }}</button>
             <div class="bestproduk-buttons">
-                <a id="collectionButton" href="{{ route('collection') }}" class="view-all-link" style="display:none;">VIEW ALL</a>
+                <a id="collectionButton" href="{{ route('collection') }}" class="view-all-link" style="display:none;">{{ __('messages.button.view') }}</a>
             </div>
         @endif
     </div>

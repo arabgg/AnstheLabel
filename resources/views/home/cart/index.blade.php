@@ -2,7 +2,7 @@
 
 @section('breadcrumb')
     <div class="breadcrumb">
-        <a href="{{ route('home') }}">Home</a> / 
+        <a href="{{ route('home') }}">{{ __('messages.breadcrumb.home') }}</a> / 
         <span>Cart</span>
     </div>
 @endsection
@@ -13,16 +13,16 @@
         <img src="{{ route('storage', ['folder' => 'page', 'filename' => 'ansthelabel.png']) }}" alt="Ansthelabel Logo">
     </a>
 
-    <h2>Your Cart</h2>
+    <h2>{{ __('messages.title.cart') }}</h2>
 
     @if(empty($cart))
-        <p>Your cart is still empty</p>
+        <p>{{ __('messages.title.null_cart') }}</p>
     @else
         <table class="cart-table">
             <thead>
                 <tr>
-                    <th>Product</th>
-                    <th>Amount</th>
+                    <th>{{ __('messages.table.product') }}</th>
+                    <th>{{ __('messages.table.amount') }}</th>
                     <th>Total</th>
                 </tr>
             </thead>
@@ -35,7 +35,14 @@
                             <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item['foto']]) }}" alt="{{ $item['nama'] }}">
                             <div class="product-details">
                                 <div class="product-name">{{ $item['nama'] }}</div>
-                                <div class="product-meta">IDR {{ number_format($item['harga'], 2, ',', '.') }}</div>
+                                <div class="product-meta">
+                                    @if (!empty($item['diskon']))
+                                        <span class="cart-price-discounted">IDR {{ number_format($item['harga'], 0, ',', '.') }}</span>
+                                        <span class="cart-price-now">IDR {{ number_format($item['harga_diskon'], 0, ',', '.') }}</span>
+                                    @else
+                                        <span class="cart-price-now">IDR {{ number_format($item['harga'], 0, ',', '.') }}</span>
+                                    @endif
+                                </div>
                                 <div class="product-meta">Color : {{ $item['warna_nama'] ?? '-' }}</div>
                                 <div class="product-meta">Size : {{ $item['ukuran_nama'] ?? '-' }}</div>
                             </div>
@@ -58,14 +65,14 @@
                             {{-- Tombol hapus --}}
                             @csrf
                             <input type="hidden" name="index" value="{{ $index }}">
-                            <button type="submit" style="cursor: pointer; background: none; border: none; margin-left: 8px"><i class="fa-regular fa-trash-can"></i></button>
+                            <button type="submit" style="cursor: pointer; background: none; border: none; margin-left: 5px"><i class="fa-regular fa-trash-can"></i></button>
                         </form>
                     </td>
 
                     <!-- Kolom Total -->
                     <td class="total-cell">
                         <div class="total-price">
-                            IDR {{ number_format($item['harga'] * $item['quantity'], 2, ',', '.') }}
+                            IDR {{ number_format($item['harga_diskon'] * $item['quantity'], 2, ',', '.') }}
                         </div>
                     </td>
                 </tr>
@@ -76,33 +83,33 @@
         <!-- Summary -->
         <div class="cart-summary">
             <div class="summary-row">
-                <h3>Estimasi Total</h3>
+                <h3>{{ __('messages.table.total') }}</h3>
                 <span>
                     IDR {{ number_format(collect($cart)->sum(fn($i) => $i['harga'] * $i['quantity']), 2, ',', '.') }}
                 </span>
             </div>
             <div class="summary-buttons">
-                <a href="{{ route('checkout.form') }}" class="cart-checkout">Continue To Payment</a>
-                <a href="{{ route('home') }}" class="cart-back">Back To Home</a>
+                <a href="{{ route('checkout.form') }}" class="cart-checkout">{{ __('messages.button.continue') }}</a>
+                <a href="{{ route('home') }}" class="cart-back">{{ __('messages.button.back_to') }}</a>
             </div>
         </div>
     @endif
 </div>
 
 <div class="detail-recommend" style="margin-top: 30px;">
-        <h2>You May Also Like</h2>
-        <div class="detail-recommend-grid">
-            @foreach ($rekomendasi as $item)
-            <div class="detail-recommend-card">
-                <a href="{{ route('detail.show', $item->produk_id) }}">
-                    <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->fotoUtama->foto_produk]) }}" alt="{{ $item->nama_produk }}">
-                    <h3>{{ $item->nama_produk }}</h3>
-                    <p>{{ $item->kategori->nama_kategori }}</p>
-                </a>
-            </div>
-            @endforeach
+    <h2>{{ __('messages.recommend') }}</h2>
+    <div class="detail-recommend-grid">
+        @foreach ($rekomendasi as $item)
+        <div class="detail-recommend-card">
+            <a href="{{ route('detail.show', $item->produk_id) }}">
+                <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->fotoUtama->foto_produk]) }}" alt="{{ $item->nama_produk }}">
+                <h3>{{ $item->nama_produk }}</h3>
+                <p>{{ $item->kategori->nama_kategori }}</p>
+            </a>
         </div>
+        @endforeach
     </div>
+</div>
 @endsection
 @push('scripts')
 <script>

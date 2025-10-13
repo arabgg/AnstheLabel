@@ -136,6 +136,11 @@ class MetodePembayaranController extends Controller
 
         // Update icon
         if ($request->hasFile('icon')) {
+            // Hapus file lama jika ada
+            if ($metode->icon && Storage::exists('public/icons/' . $metode->icon)) {
+                Storage::delete('public/icons/' . $metode->icon);
+            }
+
             $fileName = $request->file('icon')->hashName();
             $request->file('icon')->storeAs('icons', $fileName, 'public');
             $metode->icon = $fileName;

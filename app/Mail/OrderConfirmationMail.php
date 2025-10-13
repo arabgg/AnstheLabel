@@ -5,7 +5,6 @@ namespace App\Mail;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailables\Attachment;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -14,9 +13,9 @@ use Illuminate\Queue\SerializesModels;
 class OrderConfirmationMail extends Mailable
 {
     use Queueable, SerializesModels;
+    
     public $order;
     public $items;
-    private $pdfData;
 
     /**
      * Create a new message instance.
@@ -25,13 +24,9 @@ class OrderConfirmationMail extends Mailable
     {
         $this->order = $order;
         $this->items = $items;
-
-        // Buat PDF invoice
-        $pdf = Pdf::loadView('home.mail.invoice', [
-            'order' => $order,
-            'items' => $items
-        ]);
-        $this->pdfData = $pdf->output();
+        
+        // ✅ HAPUS generate PDF di constructor
+        // PDF akan di-generate saat email dikirim, bukan saat job dibuat
     }
 
     /**
@@ -65,8 +60,14 @@ class OrderConfirmationMail extends Mailable
      */
     public function attachments(): array
     {
+        // ✅ Generate PDF di sini (saat email akan dikirim)
+        $pdf = Pdf::loadView('home.mail.invoice', [
+            'order' => $this->order,
+            'items' => $this->items
+        ]);
+
         return [
-            Attachment::fromData(fn () => $this->pdfData, 'Invoice-'.$this->order['kode_invoice'].'.pdf')
+            Attachment::fromData(fn () => $pdf->output(), 'Invoice-' . $this->order['kode_invoice'] . '.pdf')
                 ->withMime('application/pdf')
         ];
     }

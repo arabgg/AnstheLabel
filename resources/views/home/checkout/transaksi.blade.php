@@ -57,96 +57,119 @@
             <div class="transaksi-card">
                 {{-- Kiri: Detail Pesanan --}}
                 <div class="transaksi-detail-left">
-                    <h4>Order Details</h4>
-                    <p>Contact Information<br>
-                        {{ $transaksi->email }}
-                        {{ $transaksi->no_telp }}
-                    </p>
-                    <h4>Shipping Address</h4>
-                    <p>
-                        {{ $transaksi->nama_customer }}<br>
-                        {{ $transaksi->alamat }}<br>
-                    </p>
+                    <div class="transaksi-detail-order">
+                        <h4>{{ __('messages.detail.order') }}</h4>
+                        <p>{{ __('messages.detail.contact') }}<br>
+                            {{ $transaksi->email }}
+                            {{ $transaksi->no_telp }}
+                        </p>
+                    </div>
+                    <div class="transaksi-detail-address">
+                        <h4>{{ __('messages.detail.shipping') }}</h4>
+                        <p>
+                            {{ $transaksi->nama_customer }}<br>
+                            {{ $transaksi->alamat }}<br>
+                        </p>
+                    </div>
                 </div>
 
                 {{-- Kanan: Invoice + Metode Pembayaran --}}
                 <div class="transaksi-detail-right">
-                    <h4>Invoice Code</h4>
-                    <p class="invoice">
-                        <button class="invoice-copy-btn" onclick="copyToClipboard('invoiceCode')">
-                            <i class="fa-regular fa-clipboard"></i>
-                        </button>
-                        <span class="invoice-kode" id="invoiceCode">{{ $transaksi->kode_invoice }}</span><br>
-                        <small class="invoice-note">* Save the invoice code for further checking</small>
-                    </p>
-
-                    <h4>Payment Method</h4>
-                    <div class="transaksi-metode">
-                        @if($transaksi->pembayaran->metode->nama_pembayaran === 'qris')
-                            <img src="{{ route('storage', ['folder' => 'icons', 'filename' => $transaksi->pembayaran->metode->icon]) }}" alt="Metode Logo" class="metode-logo">
-                            <img src="{{ route('storage', ['folder' => 'icons', 'filename' => $transaksi->pembayaran->metode->kode_bayar]) }}" 
-                                alt="QR Code" class="qrcode">
-                        @else
+                    <div class="transaksi-invoice">
+                        <h4>{{ __('messages.detail.code') }}</h4>
+                        <p class="invoice">
+                            <button class="invoice-copy-btn" onclick="copyToClipboard('invoiceCode')">
+                                <i class="fa-regular fa-clipboard"></i>
+                            </button>
+                            <span class="invoice-kode" id="invoiceCode">{{ $transaksi->kode_invoice }}</span><br>
+                            <small class="invoice-note">{{ __('messages.detail.note') }}</small>
+                        </p>
+                    </div>
+                    <div class="transaksi-metode-pembayaran">
+                        <h4>{{ __('messages.detail.pay') }}</h4>
+                        <div class="transaksi-metode">
                             <img src="{{ route('storage', ['folder' => 'icons', 'filename' => $transaksi->pembayaran->metode->icon]) }}" alt="Metode Logo" class="metode-logo">
                             <p>
+                                {{ $transaksi->pembayaran->metode->atas_nama }}<br>
                                 <button class="metode-copy-btn" onclick="copyToClipboard('metodeCode')">
                                     <i class="fa-regular fa-clipboard "></i>
                                 </button>
                                 <span class="metode-kode" id="metodeCode">{{ $transaksi->pembayaran->metode->kode_bayar }}</span>
                             </p>
-                        @endif
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="transaksi-status">
-                <p class="transaksi-status-pembayaran">payment status:
-                    <span class="status-pembayaran">
+                <div class="transaksi-status-pembayaran">
+                    <p>{{ __('messages.status.pay') }}</p>
+                    <span class="status-pembayaran {{ Str::slug($transaksi->pembayaran->status_pembayaran) }}">
                         {{ $transaksi->pembayaran->status_pembayaran }}
                     </span>
-                </p>
-                <p>Transaction Status:
-                    <span class="status-transaksi">
+                </div>
+                <div class="transaksi-status-transaksi">
+                    <p>{{ __('messages.status.transaction') }}</p>
+                    <span class="status-transaksi {{ Str::slug($transaksi->status_transaksi) }}">
                         {{ $transaksi->status_transaksi }}
                     </span>
-                </p>
+                </div>
             </div>
         </div>
 
         <!-- Box Ringkasan Order -->
         <div class="transaksi-right">
             @foreach($transaksi->detail as $item)
-        <div class="transaksi-item">
-            {{-- Foto produk --}}
-            <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->produk->fotoUtama->foto_produk]) }}" 
-                 alt="{{ optional($item->produk)->nama_produk ?? 'Produk' }}">
+                <div class="transaksi-item">
+                    {{-- Foto produk --}}
+                    <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->produk->fotoUtama->foto_produk]) }}" 
+                        alt="{{ optional($item->produk)->nama_produk ?? 'Produk' }}">
 
-            {{-- Informasi produk --}}
-            <div class="transaksi-item-info">
-                <p class="transaksi-item-nama">{{ ($item->produk)->nama_produk ?? 'Produk tidak ditemukan' }}</p>
-                <p>Color: {{ ($item->warna)->nama_warna ?? '-' }}</p>
-                <p>Size: {{ ($item->ukuran)->nama_ukuran ?? '-' }}</p>
-                <p>Amount: {{ $item->jumlah }}</p>
+                    {{-- Informasi produk --}}
+                    <div class="transaksi-item-info">
+                        <p class="transaksi-item-nama">{{ ($item->produk)->nama_produk ?? 'Produk tidak ditemukan' }}</p>
+                        <p>Color: {{ ($item->warna)->nama_warna ?? '-' }}</p>
+                        <p>Size: {{ ($item->ukuran)->nama_ukuran ?? '-' }}</p>
+                        <p>Amount: {{ $item->jumlah }}</p>
+                    </div>
+
+                    {{-- Harga --}}
+                    <div class="transaksi-item-harga">
+                        IDR {{ number_format($item->produk->harga * $item->jumlah, 2, ',', '.') }}
+                    </div>
+                </div>
+            @endforeach
+
+            {{-- Ringkasan Transaksi --}}
+            <div class="transaksi-ringkasan">
+                <div class="transaksi-subtotal">
+                    <span>Subtotal : {{ $transaksi->detail->sum('jumlah') }} item</span>
+                    <span>IDR {{ number_format($transaksi->pembayaran->total_harga, 0, ',', '.') }}</span>
+                </div>
+                <div class="transaksi-total">
+                    <span>Total</span>
+                    <span>IDR {{ number_format($transaksi->pembayaran->total_harga, 0, ',', '.') }}</span>
+                </div>
             </div>
 
-            {{-- Harga --}}
-            <div class="transaksi-item-harga">
-                IDR {{ number_format($item->produk->harga * $item->jumlah, 2, ',', '.') }}
+            <!-- Upload Bukti Pembayaran -->
+            <div class="transaksi-upload">
+                @if(!$transaksi->pembayaran->bukti_pembayaran)
+                <div class="upload-bukti">
+                    <h4>{{ __('messages.status.confirm') }}</h4>
+                    <form action="{{ route('transaksi.upload', $transaksi->pembayaran->pembayaran_id) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="file" name="bukti_pembayaran" accept="image/*,application/pdf" required>
+                        <button type="submit" class="btn-upload">{{ __('messages.button.upload') }}</button>
+                    </form>
+                </div>
+                @else
+                <div class="bukti-terbayar">
+                    <h4>{{ __('messages.status.valid') }}</h4>
+                    <img src="{{ route('storage', ['folder' => 'bukti', 'filename' => $transaksi->pembayaran->bukti_pembayaran]) }}" alt="Bukti Pemabayaran" class="">
+                </div>
+                @endif
             </div>
-        </div>
-    @endforeach
-
-    {{-- Ringkasan Transaksi --}}
-    <div class="transaksi-ringkasan">
-        <div class="transaksi-subtotal">
-            <span>Subtotal : {{ $transaksi->detail->sum('jumlah') }} item</span>
-            <span>Rp {{ number_format($transaksi->pembayaran->total_harga, 0, ',', '.') }}</span>
-        </div>
-        <div class="transaksi-total">
-            <span>Total</span>
-            <span>Rp {{ number_format($transaksi->pembayaran->total_harga, 0, ',', '.') }}</span>
-        </div>
-    </div>
         </div>
     </div>
 </div>
@@ -169,5 +192,29 @@
             });
         });
     }
+
+    @if(session('success'))
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Upload Successful',
+            showConfirmButton: false,
+            timer: 2500,
+            timerProgressBar: true
+        });
+    @endif
+
+    @if(session('error'))
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'Upload Failed',
+            showConfirmButton: false,
+            timer: 2500,
+            timerProgressBar: true
+        });
+    @endif
 </script>
 @endpush

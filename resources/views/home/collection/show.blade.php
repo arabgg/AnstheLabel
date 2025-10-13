@@ -1,9 +1,9 @@
 {{-- Header Title & Search --}}
 <div class="produk-header">
-    <h1>Back In Stock</h1>
+    <h1>{{ __('messages.title.collection') }}</h1>
     <div class="produk-search-wrapper">
         <form method="GET" action="{{ route('collection') }}" class="produk-search-form">
-            <input type="text" name="search" placeholder="Search" value="{{ request('search') }}">
+            <input type="text" name="search" placeholder="{{ __('messages.placeholder.search') }}" value="{{ request('search') }}">
             <button type="submit">
                 <i class="fas fa-search"></i>
             </button>
@@ -17,7 +17,7 @@
         <h2 class="produk-title">Filter:</h2>
 
         {{-- Aktif Filter Ditampilkan --}}
-        <h2>Category:</h2>
+        <h2>{{ __('messages.category') }}:</h2>
         @if (!empty($filterKategori))
             <div class="produk-tags">
                 @foreach ($filterKategori as $kategoriId)
@@ -84,15 +84,15 @@
                                 @endforeach
                             </div>
 
-                            <h3>{{ $item->nama_produk }}</h3>
                             <div class="collection-price">
                                 @if (!empty($item->diskon))
-                                    <span class="price-discounted">Rp {{ number_format($item->harga, 0, ',', '.') }}</span>
-                                    <span class="price-now">IDR {{ number_format($item->harga_diskon, 0, ',', '.') }}</span>
+                                    <span class="produk-price-discounted">IDR {{ number_format($item->harga, 0, ',', '.') }}</span>
+                                    <span class="produk-price-now">IDR {{ number_format($item->harga_diskon, 0, ',', '.') }}</span>
                                 @else
-                                    <span class="price-now">IDR {{ number_format($item->harga, 0, ',', '.') }}</span>
+                                    <span class="produk-price-now">IDR {{ number_format($item->harga, 0, ',', '.') }}</span>
                                 @endif
                             </div>
+                            <h3>{{ $item->nama_produk }}</h3>
                         </div>
                     </div>
                 </a>
@@ -103,8 +103,8 @@
         {{-- Tombol Load More di bawah produk --}}
         @if (count($produk) > 6)
             <div class="produk-buttons" style="text-align: center; margin-top: 30px;">
-                <button id="viewAllButton" onclick="showAllKatalog()" class="more-link">More</button>
-                <button id="hideButton" onclick="hideExtraKatalog()" class="more-link" style="display: none;">Hide</button>
+                <button id="viewAllButton" onclick="showAllKatalog()" class="more-link">{{ __('messages.button.more') }}</button>
+                <button id="hideButton" onclick="hideExtraKatalog()" class="more-link" style="display: none;">{{ __('messages.button.hide') }}</button>
             </div>
         @endif
     </div>
