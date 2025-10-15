@@ -207,7 +207,7 @@ class HomeController extends Controller
     public function transaksi($kode_invoice)
     {
         $hero = BannerModel::select('banner_id', 'nama_banner', 'foto_banner')
-                ->where('banner_id', 9)
+                ->where('banner_id', 20)
                 ->first();
 
         $transaksi = TransaksiModel::with(['detail.produk', 'detail.ukuran', 'detail.warna', 'pembayaran'])
@@ -219,7 +219,7 @@ class HomeController extends Controller
         $statusKeys = array_keys($steps);
         $stepIndex = array_search($transaksi->status_transaksi, $statusKeys);
 
-        return view('home.checkout.transaksi', compact('transaksi', 'steps', 'stepIndex', 'hero', 'bannerHeader'));
+        return view('home.checkout.transaksi', compact('transaksi', 'steps', 'stepIndex', 'hero'));
     }
 
     public function uploadBukti(Request $request, $pembayaran_id)
