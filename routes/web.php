@@ -58,7 +58,7 @@ Route::get('/lang/{locale}', function ($locale) {
 Route::get('home', [HomeController::class, 'index'])->name('home');
 Route::get('/collection', [HomeController::class, 'collection'])->name('collection');
 
-// Route::get('/mail', [HomeController::class, 'email'])->name('email');
+Route::get('/mail', [HomeController::class, 'email'])->name('email');
 
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/homefaq', [HomeController::class, 'homefaq'])->name('homefaq');

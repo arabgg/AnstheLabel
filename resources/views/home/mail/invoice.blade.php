@@ -4,191 +4,196 @@
     <meta charset="utf-8">
     <title>Invoice {{ $order['kode_invoice'] }}</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&family=Playfair+Display:wght@600&display=swap');
-        
         @page {
             size: A4;
-            margin: 15mm 20mm;
         }
-        
-        * {
+
+        body {
+            font-family: DejaVuSans, sans-serif;
+            font-size: 12px;
+            color: #4a2b33;
+            background-color: #ffffff;
             margin: 0;
             padding: 0;
+        }
+
+        .page {
+            width: 90%;
+            padding: 10mm;
             box-sizing: border-box;
         }
-        
-        body { 
-            font-family: 'Montserrat', sans-serif; 
-            font-size: 10px; 
-            color: #4a2b33; 
-            background-color: #fdf9f9;
-            line-height: 1.3;
-        }
-        
-        .mail-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
+
+        /* === HEADER === */
+        .mail-header {
+            width: 100%;
             border-bottom: 2px solid #560024;
-            padding-bottom: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
-        
-        .mail-header-kode { 
-            font-size: 10px; 
-            color: #560024; 
+
+        .mail-header td {
+            vertical-align: middle;
+        }
+
+        .mail-header-kode {
+            font-size: 13px;
+            color: #560024;
             line-height: 1.4;
         }
-        
-        .mail-header-kode p {
-            margin: 2px 0;
+
+        .mail-header img {
+            height: 45px;
+            width: auto;
         }
-        
-        .mail-header img { 
-            height: 35px; 
-            width: auto; 
+
+        /* === TITLE === */
+        h1 {
+            text-align: center;
+            color: #6b2e33;
+            font-size: 45px;
+            letter-spacing: 2px;
+            margin: 25px 0 35px 0;
         }
-        
-        h1 { 
-            text-align: center; 
-            font-family: 'Playfair Display', serif; 
-            color: #6b2e33; 
-            font-size: 32px; 
-            letter-spacing: 2px; 
-            margin-bottom: 15px;
-            margin-top: 5px;
+
+        /* === BILL TO / PAYABLE TO === */
+        .mail-info {
+            width: 100%;
+            margin-bottom: 40px;
         }
-        
-        .mail-info { 
-            display: flex; 
-            justify-content: space-between; 
-            margin-bottom: 20px;
-            gap: 30px;
+
+        .mail-info td {
+            width: 50%;
+            vertical-align: top;
+            padding: 5px 10px;
+            color: #6b2e33;
+            font-size: 13px;
+            line-height: 1.6;
         }
-        
-        .mail-section { 
-            width: 48%; 
-            font-size: 10px; 
-            color: #6b2e33; 
-            line-height: 1.5;
-        }
-        
-        .mail-section b { 
-            font-family: 'Playfair Display', serif; 
-            font-size: 11px; 
-            font-weight: bold; 
-            color: #6b2e33; 
-            display: block; 
+
+        .mail-info b {
+            font-size: 15px;
+            color: #6b2e33;
+            display: block;
             margin-bottom: 5px;
         }
-        
-        table { 
-            width: 100%; 
-            text-align: center; 
-            border-collapse: collapse; 
-            margin-bottom: 20px;
+
+        /* === TABLE (ITEMS) === */
+        table.items {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
         }
-        
-        th { 
-            font-size: 10px; 
-            color: #6b2e33; 
-            background: #f0cfd3; 
-            padding: 6px 4px; 
+
+        table.items th {
+            font-size: 13px;
+            color: #6b2e33;
+            background: #f0cfd3;
+            padding: 8px;
             border: 1px solid #f0cfd3;
-            font-weight: 600;
         }
-        
-        td { 
-            padding: 5px 4px; 
-            font-size: 10px;
-            border-bottom: 1px solid #f5e5e7;
+
+        table.items td {
+            font-size: 12px;
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #f0cfd3;
         }
-        
-        .divider { 
-            border-top: 1.5px solid #d5b5b7; 
+
+        /* === DIVIDER & TOTAL === */
+        .divider {
+            border-top: 1px solid #d5b5b7;
             margin: 15px 0;
         }
-        
-        .total { 
-            text-align: right; 
-            font-size: 13px; 
-            font-weight: 600; 
-            color: #6b2e33; 
-            margin-bottom: 20px;
+
+        .total {
+            text-align: right;
+            font-size: 15px;
+            font-weight: bold;
+            color: #6b2e33;
+            margin-top: 10px;
+            margin-bottom: 30px;
         }
-        
-        .status { 
-            font-size: 10px;
-            margin-top: 15px;
+
+        /* === STATUS === */
+        .status {
+            font-size: 13px;
+            color: #4a2b33;
         }
-        
-        .status b { 
-            font-size: 11px;
+
+        .status b {
             display: block;
-            margin-bottom: 3px;
+            font-size: 15px;
+            margin-bottom: 5px;
         }
-        
-        .mail-info, table, .total, .status {
-            page-break-inside: avoid;
-        }
+
     </style>
 </head>
 <body>
-    <div class="mail-header">
-        <div class="mail-header-kode">
-            <p><strong>{{ $order['kode_invoice'] }}</strong></p>
-            <p>Date: {{ now()->format('d-m-Y') }}</p>
-        </div>
-        <img src="{{ asset('storage/page/ansthelabel.png') }}" alt="Ansthelabel Logo">
-    </div>
-    
-    <h1>INVOICE</h1>
-
-    <div class="mail-info">
-        <div class="mail-section">
-            <b>BILL TO:</b>
-            {{ $order['nama'] }}<br>
-            {{ $order['alamat'] }}<br>
-            {{ $order['email'] }}
-        </div>
-        <div class="mail-section">
-            <b>PAYABLE TO:</b>
-            Ansthelabel<br>
-            Qris<br>
-            ansthelabel@fashion.com
-        </div>
-    </div>
-
-    <table>
-        <thead>
+    <div class="page">
+        <!-- HEADER -->
+        <table class="mail-header">
             <tr>
-                <th>Item</th>
-                <th>Warna</th>
-                <th>Ukuran</th>
-                <th>Qty</th>
-                <th>Harga</th>
+                <td align="left" class="mail-header-kode">
+                    <p><strong>{{ $order['kode_invoice'] }}</strong></p>
+                    <p>Date: {{ now()->format('d-m-Y') }}</p>
+                </td>
+                <td align="right">
+                    <img src="{{ asset('storage/page/ansthelabel.png') }}" alt="Ansthelabel Logo">
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach($items as $item)
+        </table>
+
+        <!-- TITLE -->
+        <h1>INVOICE</h1>
+
+        <!-- INFO -->
+        <table class="mail-info">
+            <tr>
+                <td>
+                    <b>BILL TO :</b>
+                    {{ $order['nama'] }}<br>
+                    {{ $order['alamat'] }}<br>
+                    {{ $order['email'] }}
+                </td>
+                <td>
+                    <b>PAYABLE TO :</b>
+                    Ansthelabel<br>
+                </td>
+            </tr>
+        </table>
+
+        <!-- ITEMS TABLE -->
+        <table class="items">
+            <thead>
                 <tr>
-                    <td>{{ $item['nama'] }}</td>
-                    <td>{{ $item['warna_nama'] ?? '-' }}</td>
-                    <td>{{ $item['ukuran_nama'] ?? '-' }}</td>
-                    <td>{{ $item['quantity'] }}</td>
-                    <td>Rp{{ number_format($item['harga'], 0, ',', '.') }}</td>
+                    <th>Item</th>
+                    <th>Warna</th>
+                    <th>Ukuran</th>
+                    <th>Qty</th>
+                    <th>Harga</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach($items as $item)
+                    <tr>
+                        <td>{{ $item['nama'] }}</td>
+                        <td>{{ $item['warna_nama'] ?? '-' }}</td>
+                        <td>{{ $item['ukuran_nama'] ?? '-' }}</td>
+                        <td>{{ $item['quantity'] }}</td>
+                        <td>IDR {{ number_format($item['harga'], 0, ',', '.') }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
 
-    <div class="divider"></div>
-    
-    <p class="total">TOTAL: Rp{{ number_format($order['total'], 0, ',', '.') }}</p>
+        <!-- TOTAL -->
+        <div class="divider"></div>
+        <p class="total">TOTAL : IDR {{ number_format($order['total'], 0, ',', '.') }}</p>
 
-    <div class="status">
-        <p><b>Status Pesanan</b></p>
-        <p>Menunggu Pembayaran</p>
+        <!-- STATUS -->
+        <div class="status">
+            <b>Status Pesanan</b>
+            <p>Menunggu Pembayaran</p>
+        </div>
     </div>
 </body>
 </html>

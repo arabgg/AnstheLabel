@@ -72,26 +72,26 @@ class HomeController extends Controller
 
         return view('home.landingpage.index', compact('newarrival', 'bestseller', 'bestproduk', 'edition', 'bannerHeader', 'hero'));
     }
-    // public function email()
-    // {
-    //     $order = [
-    //         'kode_invoice' => 'ANS-12345678-123456789',
-    //         'nama' => 'John Doe',
-    //         'email' => 'coba@gmail.com',
-    //         'alamat' => 'jl. berkah besar',
-    //         'total' => 100000,
-    //     ];
-    //     $items = [
-    //         [
-    //             'nama' => 'Produk 1',
-    //             'warna_nama' => 'Biru',
-    //             'ukuran_nama' => 'L',
-    //             'quantity' => 2,
-    //             'harga' => 200000,
-    //         ],
-    //     ];
-    //     return view('home.mail.invoice', compact('order', 'items'));
-    // }
+    public function email()
+    {
+        $order = [
+            'kode_invoice' => 'ANS-12345678-123456789',
+            'nama' => 'John Doe',
+            'email' => 'coba@gmail.com',
+            'alamat' => 'jl. berkah besar',
+            'total' => 100000,
+        ];
+        $items = [
+            [
+                'nama' => 'Produk 1',
+                'warna_nama' => 'Biru',
+                'ukuran_nama' => 'L',
+                'quantity' => 2,
+                'harga' => 200000,
+            ],
+        ];
+        return view('home.mail.invoice', compact('order', 'items'));
+    }
 
     public function collection(Request $request)
     {
@@ -398,15 +398,29 @@ class HomeController extends Controller
             $telepon = '0' . substr($telepon, 3);
         }
 
-         $cart = session()->get('cart', []);
+        $cart = session()->get('cart', []);
         if (empty($cart)) {
             return redirect()->route('cart.index')->with('error', 'Data tidak valid.');
         }
 
         $kode_invoice = null;
         
-        DB::transaction(function () use ($cart, $telepon, $validated, $fullAddress, &$kode_invoice, &$orderData) {
-            $total = collect($cart)->sum(fn($item) => $item['harga'] * $item['quantity']);
+        DB::transaction(function () use ($cart, $telepon, $validated, $fullAddress, &$kode_invoice, &$finalTotal) {
+            $total = collect($cart)->sum(fn($item) => $item['harga_diskon'] * $item['quantity']);
+            $voucherId = $validated['voucher_id'] ?? null;
+            $potongan = 0;
+
+            if ($voucherId) {
+                $voucher = VoucherModel::find($voucherId);
+                if ($voucher && $voucher->isValid($total)) {
+                    $potongan = $voucher->hitungPotongan($total);
+                    $voucher->markAsUsed();
+                } else {
+                    $voucherId = null;
+                }
+            }
+
+            $finalTotal = $total - $potongan;
 
             $pembayaran = PembayaranModel::create([
                 'metode_pembayaran_id'  => $validated['metode_pembayaran_id'],
@@ -434,21 +448,19 @@ class HomeController extends Controller
                     'jumlah'         => $item['quantity'],
                 ]);
             }
-            $kode_invoice = $transaksi->kode_invoice; 
 
-            $orderData = [
-                'kode_invoice' => $transaksi->kode_invoice,
+            $kode_invoice = $transaksi->kode_invoice;
+        });
+
+        Mail::to($validated['email'])->queue(
+            new OrderConfirmationMail([
+                'kode_invoice' => $kode_invoice,
                 'nama'        => $validated['nama'],
                 'email'       => $validated['email'],
                 'alamat'      => $fullAddress,
-                'total'       => $total,
-            ];
-        });
-
-        // Kirim email
-        if ($orderData) {
-            Mail::to($orderData['email'])->send(new OrderConfirmationMail($orderData, $cart));
-        }
+                'total'       => $finalTotal ?? 0,
+            ], $cart)
+        );
 
         session()->forget(['cart', 'checkout_data']);
 
