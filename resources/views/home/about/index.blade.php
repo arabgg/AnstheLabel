@@ -2,7 +2,7 @@
 
 @section('breadcrumb')
     <div class="breadcrumb">
-        <a href="{{ route('home') }}">Home</a> / <span>About Us</span>
+        <a href="{{ route('home') }}">{{ __('messages.breadcrumb.home') }}</a> / <span>{{ __('messages.breadcrumb.about') }}</span>
     </div>
 @endsection
 
@@ -23,7 +23,7 @@
     </div>
 
     <div class="about-recommend">
-        <h2>You May Also Like</h2>
+        <h2>{{ __('messages.recommend') }}</h2>
         <div class="recommend-grid">
             @foreach ($rekomendasi as $item)
             <div class="recommend-card">

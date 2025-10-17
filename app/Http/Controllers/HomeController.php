@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderConfirmationMail;
 use App\Models\BannerModel;
 use App\Models\DetailTransaksiModel;
+use App\Models\EkspedisiModel;
 use App\Models\KategoriModel;
 use Illuminate\Support\Facades\Http;
 use App\Models\MetodePembayaranModel;
@@ -12,32 +14,41 @@ use App\Models\FaqModel;
 use Illuminate\Http\Request;
 use App\Models\ProdukModel;
 use App\Models\TransaksiModel;
+use App\Models\VoucherModel;
 use App\Rules\EmailActive;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class HomeController extends Controller
 {
     // CONTROLLER LANDING PAGE
     public function index()
     {
+        $bannerHeader = BannerModel::select('banner_id', 'nama_banner', 'deskripsi')
+            ->where('nama_banner', 'Banner Header')
+            ->first();
+
         $hero = Cache::remember('hero', 600, function () {
             return BannerModel::select('banner_id', 'nama_banner', 'foto_banner')
+                ->where('status', 1)
                 ->get();
         });
 
         $newarrival = ProdukModel::select('produk_id', 'kategori_id', 'nama_produk', 'harga', 'diskon')
             ->with([
-                'fotoUtama', 'hoverFoto'
+                'fotoUtama',
+                'hoverFoto'
             ])
             ->orderBy('produk_id', 'desc')
             ->take(8)
             ->get();
 
         $bestseller = Cache::remember('bestseller', 600, function () {
-            return ProdukModel::select('produk_id', 'kategori_id','nama_produk', 'harga', 'diskon')
+            return ProdukModel::select('produk_id', 'kategori_id', 'nama_produk', 'harga', 'diskon')
                 ->with([
-                    'fotoUtama', 'hoverFoto'
+                    'fotoUtama',
+                    'hoverFoto'
                 ])
                 ->orderByDesc('harga')
                 ->take(4)
@@ -59,32 +70,61 @@ class HomeController extends Controller
                 ->get();
         });
 
-        return view('home.landingpage.index', compact('newarrival', 'bestseller', 'bestproduk', 'edition', 'hero'));
+        return view('home.landingpage.index', compact('newarrival', 'bestseller', 'bestproduk', 'edition', 'bannerHeader', 'hero'));
+    }
+    public function email()
+    {
+        $order = [
+            'kode_invoice' => 'ANS-12345678-123456789',
+            'nama' => 'John Doe',
+            'email' => 'coba@gmail.com',
+            'alamat' => 'jl. berkah besar',
+            'total' => 100000,
+        ];
+        $items = [
+            [
+                'nama' => 'Produk 1',
+                'warna_nama' => 'Biru',
+                'ukuran_nama' => 'L',
+                'quantity' => 2,
+                'harga' => 200000,
+            ],
+        ];
+        return view('home.mail.invoice', compact('order', 'items'));
     }
 
     public function collection(Request $request)
     {
+        $bannerHeader = BannerModel::select('banner_id', 'nama_banner', 'deskripsi')
+            ->where('nama_banner', 'Banner Header')
+            ->first();
+
         $hero = Cache::remember('hero', 600, function () {
             return BannerModel::select('banner_id', 'nama_banner', 'foto_banner')
+                ->where('status', 1)
                 ->get();
         });
 
         $filterKategori = (array) $request->input('filter', []);
         $searchQuery = $request->input('search', '');
-        
+
         $produk = ProdukModel::select('produk_id', 'nama_produk', 'harga', 'diskon', 'kategori_id')
-                ->with(['kategori:kategori_id,nama_kategori', 'fotoUtama'])
-                ->when(!empty($filterKategori), fn($q) => $q->whereIn('kategori_id', $filterKategori))
-                ->when(!empty($searchQuery), fn($q) => $q->where('nama_produk', 'like', "%{$searchQuery}%"))
-                ->paginate(100);
+            ->with(['kategori:kategori_id,nama_kategori', 'fotoUtama'])
+            ->when(!empty($filterKategori), fn($q) => $q->whereIn('kategori_id', $filterKategori))
+            ->when(!empty($searchQuery), fn($q) => $q->where('nama_produk', 'like', "%{$searchQuery}%"))
+            ->paginate(100);
 
         $kategori = KategoriModel::select('kategori_id', 'nama_kategori')->get();
 
-        return view('home.collection.index', compact('produk', 'kategori', 'filterKategori', 'searchQuery', 'hero'));
+        return view('home.collection.index', compact('produk', 'kategori', 'filterKategori', 'searchQuery', 'hero', 'bannerHeader'));
     }
 
     public function about()
     {
+        $bannerHeader = BannerModel::select('banner_id', 'nama_banner', 'deskripsi')
+            ->where('nama_banner', 'Banner Header')
+            ->first();
+
         $rekomendasi = Cache::remember('rekomendasi', 600, function () {
             return ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
                 ->with('kategori:kategori_id,nama_kategori')
@@ -93,11 +133,15 @@ class HomeController extends Controller
                 ->get();
         });
 
-        return view('home.about.index', compact('rekomendasi'));
+        return view('home.about.index', compact('rekomendasi', 'bannerHeader'));
     }
 
-    public function homeFaq()
+    public function homefaq()
     {
+        $bannerHeader = BannerModel::select('banner_id', 'nama_banner', 'deskripsi')
+            ->where('nama_banner', 'Banner Header')
+            ->first();
+
         $faqs = FaqModel::select('faq_id', 'pertanyaan', 'jawaban')->get();
         $rekomendasi = Cache::remember('rekomendasi', 600, function () {
             return ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
@@ -107,19 +151,19 @@ class HomeController extends Controller
                 ->get();
         });
 
-        return view('home.faq.index', compact( 'faqs', 'rekomendasi'));
+        return view('home.faq.index', compact('faqs', 'rekomendasi', 'bannerHeader'));
     }
 
     public function show_produk($id)
     {
         $produk = ProdukModel::with([
-                'kategori:kategori_id,nama_kategori',
-                'bahan:bahan_id,nama_bahan,deskripsi',
-                'foto:foto_produk_id,produk_id,foto_produk,status_foto',
-                'fotoUtama',
-                'warna.warna:warna_id,kode_hex',
-                'ukuran.ukuran:ukuran_id,nama_ukuran,deskripsi',
-            ])
+            'kategori:kategori_id,nama_kategori',
+            'bahan:bahan_id,nama_bahan,deskripsi',
+            'foto:foto_produk_id,produk_id,foto_produk,status_foto',
+            'fotoUtama',
+            'warna.warna:warna_id,kode_hex',
+            'ukuran.ukuran:ukuran_id,nama_ukuran,deskripsi',
+        ])
             ->select('produk_id', 'nama_produk', 'harga', 'diskon', 'deskripsi', 'kategori_id', 'bahan_id')
             ->findOrFail($id);
 
@@ -136,7 +180,11 @@ class HomeController extends Controller
 
     public function invoice()
     {
-        return view('home.checkout.invoice');
+        $bannerHeader = BannerModel::select('banner_id', 'nama_banner', 'deskripsi')
+            ->where('nama_banner', 'Banner Header')
+            ->first();
+
+        return view('home.checkout.invoice', compact('bannerHeader'));
     }
 
     public function cekInvoice(Request $request)
@@ -159,7 +207,7 @@ class HomeController extends Controller
     public function transaksi($kode_invoice)
     {
         $hero = BannerModel::select('banner_id', 'nama_banner', 'foto_banner')
-                ->where('banner_id', 9)
+                ->where('banner_id', 20)
                 ->first();
 
         $transaksi = TransaksiModel::with(['detail.produk', 'detail.ukuran', 'detail.warna', 'pembayaran'])
@@ -174,12 +222,33 @@ class HomeController extends Controller
         return view('home.checkout.transaksi', compact('transaksi', 'steps', 'stepIndex', 'hero'));
     }
 
+    public function uploadBukti(Request $request, $pembayaran_id)
+    {
+        $request->validate([
+            'bukti_pembayaran' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048'
+        ]);
+
+        $pembayaran = PembayaranModel::findOrFail($pembayaran_id);
+
+        if ($request->hasFile('bukti_pembayaran')) {
+            $file = $request->file('bukti_pembayaran');
+            $filename = time().'_'.$file->getClientOriginalName();
+            $file->storeAs('bukti', $filename, 'public');
+
+            $pembayaran->bukti_pembayaran = $filename;
+            $pembayaran->save();
+
+            return back()->with('success', 'Bukti pembayaran berhasil diunggah!');
+        }
+
+        return back()->with('error', 'Terjadi kesalahan saat mengunggah bukti pembayaran.');
+    }
 
     // CONTROLLER CHECKOUT
     public function cart()
     {
         $cart = session()->get('cart', []);
-        $total = collect($cart)->sum(fn($item) => $item['harga'] * $item['quantity']);
+        $total = collect($cart)->sum(fn($item) => $item['harga_diskon'] * $item['quantity']);
 
         $rekomendasi = Cache::remember('rekomendasi', 600, function () {
             return ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
@@ -189,8 +258,7 @@ class HomeController extends Controller
                 ->get();
         });
 
-        return view('home.cart.index', compact('cart', 'total', 'rekomendasi'))
-            ->with('grandTotal', $total);
+        return view('home.cart.index', compact('cart', 'total', 'rekomendasi'));
     }
 
     public function add_cart(Request $request)
@@ -207,11 +275,13 @@ class HomeController extends Controller
         $cart[] = [
             'produk_id' => $produk->produk_id,
             'nama' => $produk->nama_produk,
-            'harga' => $produk->diskon > 0 ? $produk->harga_diskon : $produk->harga,
-            'warna_id' => $warnaData?->warna_id,
-            'warna_nama' => $warnaData?->nama_warna,
-            'ukuran_id' => $ukuranData?->ukuran_id,
-            'ukuran_nama' => $ukuranData?->nama_ukuran,
+            'harga' => $produk->harga,
+            'diskon' => $produk->diskon,
+            'harga_diskon' => $produk->diskon > 0 ? $produk->harga_diskon : $produk->harga,
+            'warna_id' => $warnaData->warna_id,
+            'warna_nama' => $warnaData->nama_warna,
+            'ukuran_id' => $ukuranData->ukuran_id,
+            'ukuran_nama' => $ukuranData->nama_ukuran,
             'quantity' => (int) $request->quantity,
             'foto' => $produk->fotoUtama->foto_produk ?? null,
         ];
@@ -284,16 +354,25 @@ class HomeController extends Controller
     public function checkoutForm()
     {
         $cart = session()->get('cart', []);
-        $total = collect($cart)->sum(fn($item) => $item['harga'] * $item['quantity']);
+        $total = collect($cart)->sum(fn($item) => $item['harga_diskon'] * $item['quantity']);
         $metode = MetodePembayaranModel::select('metode_pembayaran_id', 'metode_id', 'nama_pembayaran', 'kode_bayar', 'icon')
             ->with(['metode:metode_id,nama_metode'])
+            ->get();
+
+        $voucher = VoucherModel::where('status_voucher', true)
+            ->where('min_transaksi', '<=', $total)
+            ->whereDate('tanggal_mulai', '<=', now())
+            ->whereDate('tanggal_berakhir', '>=', now())
+            ->get();
+
+        $ekspedisi = EkspedisiModel::select('ekspedisi_id', 'nama_ekspedisi', 'icon')
             ->get();
 
         if (empty($cart)) {
             return redirect()->route('cart.index')->with('error', 'Keranjang kosong.');
         }
 
-        return view('home.checkout.form', compact('cart', 'total', 'metode'));
+        return view('home.checkout.form', compact('cart', 'total', 'metode', 'voucher', 'ekspedisi'));
     }
 
     public function saveCheckout(Request $request)
@@ -307,7 +386,9 @@ class HomeController extends Controller
             'kecamatan' => 'required|string',
             'desa' => 'required|string',
             'alamat' => 'required|string',
-            'metode_pembayaran_id' => 'required|exists:t_metode_pembayaran,metode_pembayaran_id'
+            'metode_pembayaran_id' => 'required|exists:t_metode_pembayaran,metode_pembayaran_id',
+            'ekspedisi_id' => 'required|exists:m_ekspedisi,ekspedisi_id',
+            'voucher_id' => 'nullable|exists:m_voucher,voucher_id'
         ]);
 
         $fullAddress = "{$validated['alamat']}, {$validated['desa']}, {$validated['kecamatan']}, {$validated['kota']}, {$validated['provinsi']}";
@@ -318,24 +399,39 @@ class HomeController extends Controller
         }
 
         $cart = session()->get('cart', []);
-
         if (empty($cart)) {
             return redirect()->route('cart.index')->with('error', 'Data tidak valid.');
         }
 
         $kode_invoice = null;
         
-        DB::transaction(function () use ($cart, $telepon, $validated, $fullAddress, &$kode_invoice) {
-            $total = collect($cart)->sum(fn($item) => $item['harga'] * $item['quantity']);
+        DB::transaction(function () use ($cart, $telepon, $validated, $fullAddress, &$kode_invoice, &$finalTotal) {
+            $total = collect($cart)->sum(fn($item) => $item['harga_diskon'] * $item['quantity']);
+            $voucherId = $validated['voucher_id'] ?? null;
+            $potongan = 0;
+
+            if ($voucherId) {
+                $voucher = VoucherModel::find($voucherId);
+                if ($voucher && $voucher->isValid($total)) {
+                    $potongan = $voucher->hitungPotongan($total);
+                    $voucher->markAsUsed();
+                } else {
+                    $voucherId = null;
+                }
+            }
+
+            $finalTotal = $total - $potongan;
 
             $pembayaran = PembayaranModel::create([
                 'metode_pembayaran_id'  => $validated['metode_pembayaran_id'],
+                'voucher_id'            => $voucherId,
                 'jumlah_produk'         => count($cart),
-                'total_harga'           => $total,
+                'total_harga'           => $finalTotal,
             ]);
 
             $transaksi = TransaksiModel::create([
                 'pembayaran_id'     => $pembayaran->pembayaran_id,
+                'ekspedisi_id'      => $validated['ekspedisi_id'],
                 'nama_customer'     => $validated['nama'],
                 'no_telp'           => $telepon,
                 'email'             => $validated['email'],
@@ -352,8 +448,19 @@ class HomeController extends Controller
                     'jumlah'         => $item['quantity'],
                 ]);
             }
-            $kode_invoice = $transaksi->kode_invoice; 
+
+            $kode_invoice = $transaksi->kode_invoice;
         });
+
+        Mail::to($validated['email'])->queue(
+            new OrderConfirmationMail([
+                'kode_invoice' => $kode_invoice,
+                'nama'        => $validated['nama'],
+                'email'       => $validated['email'],
+                'alamat'      => $fullAddress,
+                'total'       => $finalTotal ?? 0,
+            ], $cart)
+        );
 
         session()->forget(['cart', 'checkout_data']);
 

@@ -13,7 +13,7 @@ class BannerController extends Controller
     {
         $searchQuery = $request->input('search', '');
 
-        $banners = BannerModel::select('banner_id', 'nama_banner', 'foto_banner', 'deskripsi')
+        $banners = BannerModel::select('banner_id', 'nama_banner', 'foto_banner', 'deskripsi', 'status')
             ->when(!empty($searchQuery), function ($q) use ($searchQuery) {
                 $q->where('nama_banner', 'like', "%{$searchQuery}%");
             })
@@ -43,7 +43,7 @@ class BannerController extends Controller
 
     public function edit($id)
     {
-        $banner = BannerModel::select('banner_id', 'foto_banner')
+        $banner = BannerModel::select('banner_id', 'foto_banner', 'deskripsi', 'status')
             ->findOrFail($id);
 
         return view('admin.banner.edit', compact('banner'));
@@ -54,10 +54,12 @@ class BannerController extends Controller
         $optimizerChain = OptimizerChainFactory::create();
 
         $request->validate([
-            'foto_banner' => 'required|file|mimes:jpg,jpeg,png,avif,mp4|max:5240',
+            'foto_banner' => 'nullable|file|mimes:jpg,jpeg,png,avif,mp4|max:5240',
+            'deskripsi' => 'nullable|string|max:255',
+            'status' => 'nullable|in:0,1'
         ]);
 
-        $banner = BannerModel::select('banner_id', 'foto_banner')
+        $banner = BannerModel::select('banner_id', 'foto_banner', 'deskripsi', 'status')
             ->findOrFail($id);
 
         if ($request->hasFile('foto_banner')) {
@@ -73,12 +75,15 @@ class BannerController extends Controller
             $optimizerChain->optimize(storage_path('app/public/banner/' . $filename));
         }
 
+        $banner->deskripsi = $request->deskripsi;
+        $banner->status = $request->status;
+        
         $banner->save();
 
         return response()->json([
             'success' => true,
             'message' => 'Banner berhasil diperbarui',
-            'foto_banner' => asset('storage/banner/' . $banner->foto_banner)
+            'data' => $banner
         ]);
     }
 }

@@ -1,6 +1,6 @@
 <div class="bestseller-section">
     <div class="bestseller-header">
-        <h1 class="bestseller-title">Best Seller</h1>
+        <h1 class="bestseller-title">{{ __('messages.title.seller') }}</h1>
     </div>
 
     <div class="bestseller-grid" id="katalogGrid">

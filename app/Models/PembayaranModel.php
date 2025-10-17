@@ -21,6 +21,7 @@ class PembayaranModel extends Model
 
     protected $fillable = [
         'metode_pembayaran_id',
+        'voucher_id',
         'status_pembayaran',
         'jumlah_produk',
         'total_harga',
@@ -30,6 +31,11 @@ class PembayaranModel extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    public function voucher() :BelongsTo
+    {
+        return $this->belongsTo(VoucherModel::class, 'voucher_id', 'voucher_id');
+    }
 
     protected static function booted()
     {

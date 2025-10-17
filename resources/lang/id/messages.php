@@ -1,0 +1,86 @@
+<?php
+return [
+    // LANDING PAGE SECTION
+    'welcome' => 'Selamat datang di Ansthelabel!',
+    'page' => [
+        'home' => 'Beranda',
+        'collection' => 'Koleksi',
+        'transaction' => 'Transaksi',
+        'about' => 'Tentang Kami',
+        'contact' => 'Kontak Kami',
+        'copy' => 'Hak Cipta oleh Ansthelabel'
+    ],
+    'breadcrumb' => [
+        'home' => 'Beranda',
+        'collection' => 'Koleksi',
+        'transaction' => 'Transaksi',
+        'about' => 'Tentang Kami'
+    ],
+    'title' => [
+        'collection' => 'Kembali Tersedia',
+        'arrival' => 'Produk Baru',
+        'best_products' => 'Produk Terbaik',
+        'seller' => 'Penjual Terbaik',
+        'edition' => 'Edisi Koleksi',
+        'invoice' => 'Periksa Transaksi Anda',
+        'sub_invoice' => 'Lihat detail pembelian anda dengan nomor invoice',
+        'cart' => 'Keranjang Anda',
+        'null_cart' => 'Keranjang Anda masih kosong',
+        'contact' => 'Kontak',
+        'delivery' => 'Pengantaran',
+        'pay' => 'Metode Pembayaran',
+        'promo' => 'Promosi',
+    ],
+    'label' => [
+        'invoice' => 'Temukan detail pembelian Anda di sini',
+        'email' => 'Kirimkan saya kabar dan penawaran',
+    ],
+    'placeholder' => [
+        'invoice' => 'Masukkan no Invoice Anda (Contoh:ANS-XXXXXXXX-XXXXXXXXX)',
+        'search' => 'Cari',
+        'name' => 'Nama Lengkap',
+        'address' => 'Alamat',
+    ],
+    'button' => [
+        'invoice' => 'Cari Invoice',
+        'shop' => 'Belanja Di Sini',
+        'more' => 'LEBIH BANYAK',
+        'hide' => 'SEMBUNYIKAN',
+        'view' => 'LIHAT SEMUA',
+        'buy' => 'Beli Sekarang',  
+        'add_cart' => 'Masuk Keranjang',
+        'continue' => 'Lanjut Proses Pembayaran',
+        'back_to' => 'Kembali ke Beranda',
+        'order' => 'Buat Pesanan',
+        'voucher' => 'Pilih Voucher',
+        'expedition' => 'Pilih Ekspedisi',
+        'upload' => 'Unggah',
+    ],
+    'detail' => [
+        'color' => 'Warna Tersedia',
+        'size' => 'Ukuran Tersedia',
+        'qty' => 'Kuantitas',
+        'desc' => 'Detail Produk',
+        'order' => 'Detail Pesanan',
+        'code' => 'Kode Invoice',
+        'shipping' => 'Alamat Pengiriman',
+        'pay' => 'Metode Pembayaran',
+        'contact' => 'Informasi Kontak',
+        'note' => '* Simpan kode invoice untuk pengecekan selanjutnya',
+    ],
+    'status' => [
+        'pay' => 'Status Pembayaran',
+        'transaction' => 'Status Transaksi',
+        'confirm' => 'Konfirmasi Pembayaran',
+        'valid' => 'Validasi Pembayaran',
+    ],
+    'table' => [
+        'product' => 'Produk',
+        'amount' => 'Jumlah',
+        'total' => 'Estimasi Total',
+    ],
+
+    'recommend' => 'Anda Mungkin Juga Suka',
+    'tag' => 'Koleksi',
+    'category' => 'Kategori',
+];

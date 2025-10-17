@@ -14,5 +14,5 @@
     <a href="https://web.facebook.com/"><i class="fab fa-facebook"></i></a>
   </div>
 
-  <p class="footer-section-text">&copy; {{ date('Y') }} Copyright by Ansthelabel</p>
+  <p class="footer-section-text">&copy; {{ date('Y') . ' ' . __('messages.page.copy') }}</p>
 </footer>

@@ -15,6 +15,8 @@ return new class extends Migration
             $table->uuid('transaksi_id')->primary();
 
             $table->uuid('pembayaran_id');
+            $table->unsignedBigInteger('ekspedisi_id');   
+
             $table->string('kode_invoice', 50)->unique()->nullable();
             $table->string('nama_customer');
             $table->string('no_telp');
@@ -25,6 +27,7 @@ return new class extends Migration
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
 
             $table->foreign('pembayaran_id')->references('pembayaran_id')->on('t_pembayaran');
+            $table->foreign('ekspedisi_id')->references('ekspedisi_id')->on('m_ekspedisi');
         });
     }
 

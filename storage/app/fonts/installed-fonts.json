@@ -1,0 +1,10 @@
+{
+    "montserrat": {
+        "normal": "C:\\laragon\\www\\AnstheLabel\\storage\\app\/fonts\/montserrat_normal_95c77d2830d640f06faa8261ded6db33",
+        "500": "C:\\laragon\\www\\AnstheLabel\\storage\\app\/fonts\/montserrat_500_2da570d656c67ef7297f2b0b288ce8bc",
+        "600": "montserrat_600_da2f80af0e6d548904b08d3547b44b1c"
+    },
+    "playfair display": {
+        "600": "playfair_display_600_555a1287914f9012e021a3b119eb30d7"
+    }
+}
