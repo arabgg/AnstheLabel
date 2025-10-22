@@ -16,7 +16,6 @@ use App\Models\ProdukModel;
 use App\Models\TransaksiModel;
 use App\Models\VoucherModel;
 use App\Rules\EmailActive;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
@@ -25,166 +24,131 @@ class HomeController extends Controller
     // CONTROLLER LANDING PAGE
     public function index()
     {
-        $bannerHeader = BannerModel::select('banner_id', 'nama_banner', 'deskripsi')
-            ->where('nama_banner', 'Banner Header')
-            ->first();
+        $hero = BannerModel::select('banner_id', 'nama_banner', 'foto_banner')
+            ->get();
 
-        $hero = Cache::remember('hero', 600, function () {
-            return BannerModel::select('banner_id', 'nama_banner', 'foto_banner')
-                ->where('status', 1)
-                ->get();
-        });
+        $desc = BannerModel::select('banner_id', 'deskripsi')
+            ->where('banner_id', 19)
+            ->first();
 
         $newarrival = ProdukModel::select('produk_id', 'kategori_id', 'nama_produk', 'harga', 'diskon')
             ->with([
-                'fotoUtama',
-                'hoverFoto'
+                'fotoUtama', 'hoverFoto'
             ])
             ->orderBy('produk_id', 'desc')
             ->take(8)
             ->get();
 
-        $bestseller = Cache::remember('bestseller', 600, function () {
-            return ProdukModel::select('produk_id', 'kategori_id', 'nama_produk', 'harga', 'diskon')
-                ->with([
-                    'fotoUtama',
-                    'hoverFoto'
-                ])
-                ->orderByDesc('harga')
-                ->take(4)
-                ->get();
-        });
+        $bestseller = ProdukModel::select('produk_id', 'kategori_id','nama_produk', 'harga', 'diskon')
+            ->with([
+                'fotoUtama', 'hoverFoto'
+            ])
+            ->orderByDesc('harga')
+            ->take(4)
+            ->get();
 
-        $bestproduk = Cache::remember('bestproduk', 600, function () {
-            return ProdukModel::select('produk_id', 'nama_produk', 'is_best')
-                ->with(['fotoUtama', 'hoverFoto'])
-                ->where('is_best', 1)
-                ->take(5)
-                ->get();
-        });
+        $bestproduk = ProdukModel::select('produk_id', 'nama_produk', 'is_best')
+            ->with(['fotoUtama', 'hoverFoto'])
+            ->where('is_best', 1)
+            ->take(5)
+            ->get();
 
-        $edition = Cache::remember('edition', 600, function () {
-            return ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
-                ->with(['kategori:kategori_id,nama_kategori', 'fotoUtama', 'hoverFoto'])
-                ->take(8)
-                ->get();
-        });
+        $edition = ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
+            ->with(['kategori:kategori_id,nama_kategori', 'fotoUtama', 'hoverFoto'])
+            ->take(8)
+            ->get();
 
-        return view('home.landingpage.index', compact('newarrival', 'bestseller', 'bestproduk', 'edition', 'bannerHeader', 'hero'));
+        return view('home.landingpage.index', compact('newarrival', 'bestseller', 'bestproduk', 'edition', 'hero', 'desc'));
     }
-    public function email()
-    {
-        $order = [
-            'kode_invoice' => 'ANS-12345678-123456789',
-            'nama' => 'John Doe',
-            'email' => 'coba@gmail.com',
-            'alamat' => 'jl. berkah besar',
-            'total' => 100000,
-        ];
-        $items = [
-            [
-                'nama' => 'Produk 1',
-                'warna_nama' => 'Biru',
-                'ukuran_nama' => 'L',
-                'quantity' => 2,
-                'harga' => 200000,
-            ],
-        ];
-        return view('home.mail.invoice', compact('order', 'items'));
-    }
-
+    
     public function collection(Request $request)
     {
-        $bannerHeader = BannerModel::select('banner_id', 'nama_banner', 'deskripsi')
-            ->where('nama_banner', 'Banner Header')
-            ->first();
+        $hero = BannerModel::select('banner_id', 'nama_banner', 'foto_banner')
+            ->get();
 
-        $hero = Cache::remember('hero', 600, function () {
-            return BannerModel::select('banner_id', 'nama_banner', 'foto_banner')
-                ->where('status', 1)
-                ->get();
-        });
+        $desc = BannerModel::select('banner_id', 'deskripsi')
+            ->where('banner_id', 19)
+            ->first();
 
         $filterKategori = (array) $request->input('filter', []);
         $searchQuery = $request->input('search', '');
-
+        
         $produk = ProdukModel::select('produk_id', 'nama_produk', 'harga', 'diskon', 'kategori_id')
-            ->with(['kategori:kategori_id,nama_kategori', 'fotoUtama'])
-            ->when(!empty($filterKategori), fn($q) => $q->whereIn('kategori_id', $filterKategori))
-            ->when(!empty($searchQuery), fn($q) => $q->where('nama_produk', 'like', "%{$searchQuery}%"))
-            ->paginate(100);
+                ->with(['kategori:kategori_id,nama_kategori', 'fotoUtama'])
+                ->when(!empty($filterKategori), fn($q) => $q->whereIn('kategori_id', $filterKategori))
+                ->when(!empty($searchQuery), fn($q) => $q->where('nama_produk', 'like', "%{$searchQuery}%"))
+                ->paginate(100);
 
         $kategori = KategoriModel::select('kategori_id', 'nama_kategori')->get();
 
-        return view('home.collection.index', compact('produk', 'kategori', 'filterKategori', 'searchQuery', 'hero', 'bannerHeader'));
+        return view('home.collection.index', compact('produk', 'kategori', 'filterKategori', 'searchQuery', 'hero', 'desc'));
     }
 
     public function about()
     {
-        $bannerHeader = BannerModel::select('banner_id', 'nama_banner', 'deskripsi')
-            ->where('nama_banner', 'Banner Header')
+        $desc = BannerModel::select('banner_id', 'deskripsi')
+            ->where('banner_id', 19)
             ->first();
 
-        $rekomendasi = Cache::remember('rekomendasi', 600, function () {
-            return ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
-                ->with('kategori:kategori_id,nama_kategori')
-                ->inRandomOrder()
-                ->take(4)
-                ->get();
-        });
+        $rekomendasi = ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
+            ->with('kategori:kategori_id,nama_kategori')
+            ->inRandomOrder()
+            ->take(4)
+            ->get();
 
-        return view('home.about.index', compact('rekomendasi', 'bannerHeader'));
+        return view('home.about.index', compact('rekomendasi', 'desc'));
     }
 
     public function homefaq()
     {
-        $bannerHeader = BannerModel::select('banner_id', 'nama_banner', 'deskripsi')
-            ->where('nama_banner', 'Banner Header')
+        $desc = BannerModel::select('banner_id', 'deskripsi')
+            ->where('banner_id', 19)
             ->first();
 
         $faqs = FaqModel::select('faq_id', 'pertanyaan', 'jawaban')->get();
-        $rekomendasi = Cache::remember('rekomendasi', 600, function () {
-            return ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
-                ->with('kategori:kategori_id,nama_kategori')
-                ->inRandomOrder()
-                ->take(4)
-                ->get();
-        });
 
-        return view('home.faq.index', compact('faqs', 'rekomendasi', 'bannerHeader'));
+        $rekomendasi = ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
+            ->with('kategori:kategori_id,nama_kategori')
+            ->inRandomOrder()
+            ->take(4)
+            ->get();
+
+        return view('home.faq.index', compact( 'faqs', 'rekomendasi', 'desc'));
     }
 
     public function show_produk($id)
     {
+        $desc = BannerModel::select('banner_id', 'deskripsi')
+            ->where('banner_id', 19)
+            ->first();
+
         $produk = ProdukModel::with([
-            'kategori:kategori_id,nama_kategori',
-            'bahan:bahan_id,nama_bahan,deskripsi',
-            'foto:foto_produk_id,produk_id,foto_produk,status_foto',
-            'fotoUtama',
-            'warna.warna:warna_id,kode_hex',
-            'ukuran.ukuran:ukuran_id,nama_ukuran,deskripsi',
-        ])
+                'kategori:kategori_id,nama_kategori',
+                'bahan:bahan_id,nama_bahan,deskripsi',
+                'foto:foto_produk_id,produk_id,foto_produk,status_foto',
+                'fotoUtama',
+                'warna.warna:warna_id,kode_hex',
+                'ukuran.ukuran:ukuran_id,nama_ukuran,deskripsi',
+            ])
             ->select('produk_id', 'nama_produk', 'harga', 'diskon', 'deskripsi', 'kategori_id', 'bahan_id')
             ->findOrFail($id);
 
-        $rekomendasi = Cache::remember('rekomendasi', 600, function () {
-            return ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
-                ->with('kategori:kategori_id,nama_kategori')
-                ->inRandomOrder()
-                ->take(4)
-                ->get();
-        });
+        $rekomendasi = ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
+            ->with('kategori:kategori_id,nama_kategori')
+            ->inRandomOrder()
+            ->take(4)
+            ->get();
 
-        return view('home.detail.index', compact('produk', 'rekomendasi'));
+        return view('home.detail.index', compact('produk', 'rekomendasi', 'desc'));
     }
 
     public function invoice()
     {
-        $bannerHeader = BannerModel::select('banner_id', 'nama_banner', 'deskripsi')
-            ->where('nama_banner', 'Banner Header')
+        $desc = BannerModel::select('banner_id', 'deskripsi')
+            ->where('banner_id', 19)
             ->first();
 
-        return view('home.checkout.invoice', compact('bannerHeader'));
+        return view('home.checkout.invoice', compact('desc'));
     }
 
     public function cekInvoice(Request $request)
@@ -210,6 +174,10 @@ class HomeController extends Controller
                 ->where('banner_id', 20)
                 ->first();
 
+        $desc = BannerModel::select('banner_id', 'deskripsi')
+            ->where('banner_id', 19)
+            ->first();
+
         $transaksi = TransaksiModel::with(['detail.produk', 'detail.ukuran', 'detail.warna', 'pembayaran'])
             ->where('kode_invoice', $kode_invoice)
             ->firstOrFail();
@@ -219,7 +187,7 @@ class HomeController extends Controller
         $statusKeys = array_keys($steps);
         $stepIndex = array_search($transaksi->status_transaksi, $statusKeys);
 
-        return view('home.checkout.transaksi', compact('transaksi', 'steps', 'stepIndex', 'hero'));
+        return view('home.checkout.transaksi', compact('transaksi', 'steps', 'stepIndex', 'hero', 'desc'));
     }
 
     public function uploadBukti(Request $request, $pembayaran_id)
@@ -247,18 +215,20 @@ class HomeController extends Controller
     // CONTROLLER CHECKOUT
     public function cart()
     {
+        $desc = BannerModel::select('banner_id', 'deskripsi')
+            ->where('banner_id', 19)
+            ->first();
+
         $cart = session()->get('cart', []);
         $total = collect($cart)->sum(fn($item) => $item['harga_diskon'] * $item['quantity']);
 
-        $rekomendasi = Cache::remember('rekomendasi', 600, function () {
-            return ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
-                ->with('kategori:kategori_id,nama_kategori')
-                ->inRandomOrder()
-                ->take(4)
-                ->get();
-        });
+        $rekomendasi = ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
+            ->with('kategori:kategori_id,nama_kategori')
+            ->inRandomOrder()
+            ->take(4)
+            ->get();
 
-        return view('home.cart.index', compact('cart', 'total', 'rekomendasi'));
+        return view('home.cart.index', compact('cart', 'total', 'rekomendasi', 'desc'));
     }
 
     public function add_cart(Request $request)
@@ -353,6 +323,10 @@ class HomeController extends Controller
 
     public function checkoutForm()
     {
+        $desc = BannerModel::select('banner_id', 'deskripsi')
+            ->where('banner_id', 19)
+            ->first();
+
         $cart = session()->get('cart', []);
         $total = collect($cart)->sum(fn($item) => $item['harga_diskon'] * $item['quantity']);
         $metode = MetodePembayaranModel::select('metode_pembayaran_id', 'metode_id', 'nama_pembayaran', 'kode_bayar', 'icon')
@@ -372,7 +346,7 @@ class HomeController extends Controller
             return redirect()->route('cart.index')->with('error', 'Keranjang kosong.');
         }
 
-        return view('home.checkout.form', compact('cart', 'total', 'metode', 'voucher', 'ekspedisi'));
+        return view('home.checkout.form', compact('cart', 'total', 'metode', 'voucher', 'ekspedisi', 'desc'));
     }
 
     public function saveCheckout(Request $request)

@@ -45,11 +45,11 @@ html,body {width:100%;font-family:'Montserrat',sans-serif!important;}
 .breadcrumb span {color:#666;margin-left:5px;}
 .menu-toggle {display: none;}
 .language-switcher { position: relative; display: inline-flex; align-items: center; cursor: pointer; overflow: hidden; }
-.language-switcher a { flex: 1; text-align: center; font-size: 13px; font-weight: 600; text-decoration: none; margin-right:10px; color: #fff; line-height: 28px; }
+.language-switcher a { flex: 1; text-align: center; font-size: 13px; font-weight: 600; text-decoration: none; margin-right:10px; color: #dbb2b6; line-height: 28px; }
 .language-id { margin-left: 10px; }
 .language-switcher::before { content: ""; position: absolute; }
 .language-switcher.id-active::before { left: 35px; }
-.language-switcher.en-active a:first-child, .language-switcher.id-active a:last-child { color: #dbb2b6; }
+.language-switcher.en-active a:first-child, .language-switcher.id-active a:last-child { color: #fff; }
 
 /* INDIKATOR CART */
 .nav-icons { display: flex; align-items: center; gap: 15px; position: relative; }

@@ -9,7 +9,7 @@
         </div>
 
         <div class="top-center">
-            Enjoy Free Shipping On All Orders
+            {{ $desc->deskripsi }}
         </div>
 
         <div class="top-right">
@@ -35,10 +35,10 @@
         </div>
 
         <nav class="nav-links">
-            <a href="{{ route('home') }}" class="nav-item {{ request()->is('home') ? 'active' : '' }}">Home</a>
-            <a href="{{ route('collection') }}" class="nav-item {{ request()->is('collection') ? 'active' : '' }}">Collection</a>
-            <a href="{{ route('invoice') }}" class="nav-item {{ request()->is('invoice') ? 'active' : '' }}">Transaction</a>
-            <a href="{{ route('about') }}" class="nav-item {{ request()->is('about') ? 'active' : '' }}">About Us</a>
+            <a href="{{ route('home') }}" class="nav-item {{ request()->is('home') ? 'active' : '' }}">{{ __('messages.page.home') }}</a>
+            <a href="{{ route('collection') }}" class="nav-item {{ request()->is('collection') ? 'active' : '' }}">{{ __('messages.page.collection') }}</a>
+            <a href="{{ route('invoice') }}" class="nav-item {{ request()->is('invoice') ? 'active' : '' }}">{{ __('messages.page.transaction') }}</a>
+            <a href="{{ route('about') }}" class="nav-item {{ request()->is('about') ? 'active' : '' }}">{{ __('messages.page.about') }}</a>
         </nav>
         
         <div class="nav-icons">
