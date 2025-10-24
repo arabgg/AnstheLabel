@@ -21,16 +21,24 @@
 
                     <div class="skeleton-target" style="display:none;">
                         {{-- Foto Utama --}}
-                        <img class="detail-main-image"
-                            src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $produk->fotoUtama->foto_produk]) }}"
-                            alt="{{ $produk->nama_produk }}">
+                        @if($produk->fotoUtama && $produk->fotoUtama->foto_produk)
+                            <img class="detail-main-image"
+                                src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $produk->fotoUtama->foto_produk]) }}"
+                                alt="{{ $produk->nama_produk }}">
+                        @else
+                            <div class="no-image">Image not available</div>
+                        @endif
     
                         {{-- Foto Thumbnail --}}
                         <div class="detail-thumbnail-wrapper">
-                            @foreach ($produk->foto->where('status_foto', 0) as $foto)
-                                <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $foto->foto_produk]) }}"
-                                    alt="Thumbnail {{ $loop->iteration }}">
-                            @endforeach
+                            @if($produk->foto && $produk->foto->count() > 0)
+                                @foreach ($produk->foto->where('status_foto', 0) as $foto)
+                                    <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $foto->foto_produk]) }}"
+                                        alt="Thumbnail {{ $loop->iteration }}">
+                                @endforeach
+                            @else
+                                <p>No additional images</p>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -39,7 +47,7 @@
                 <div class="detail-product-info">
                     <div class="detail-section">
                         <h2 class="detail-product-name">{{ $produk->nama_produk }}</h2>
-                        <p>{{ $produk->kategori->nama_kategori }}</p>
+                        <p>{{ $produk->kategori->nama_kategori ?? 'Unknown Category' }}</p>
                     </div>
 
                     <div class="detail-section-info">
@@ -72,6 +80,8 @@
                                             @endif
                                         @endforeach
                                     </div>
+                                @else
+                                    <p>No color options</p>
                                 @endif
                             </div>
 
@@ -91,6 +101,8 @@
                                             @endif
                                         @endforeach
                                     </div>
+                                @else
+                                    <p>No size options</p>
                                 @endif
                             </div>
 
@@ -114,7 +126,7 @@
                     <div class="detail-deskripsi-wrapper" style="margin-top: 20px;">
                         <h3>{{ __('messages.detail.desc') }}</h3>
                         <div class="detail-deskripsi-produk">
-                            <p>{{ $produk->deskripsi }}</p>
+                            <p>{{ $produk->deskripsi ?? 'No description available' }}</p>
                         </div>
 
                         @if ($produk->ukuran->isNotEmpty())
@@ -128,8 +140,12 @@
                         @endif
 
                         <div class="detail-deskripsi-ukuran">
-                            <h6>Material : {{ $produk->bahan->nama_bahan }}</h6>
-                            <p>{{ $produk->bahan->deskripsi }}</p>
+                            @if($produk->bahan)
+                                <h6>Material : {{ $produk->bahan->nama_bahan }}</h6>
+                                <p>{{ $produk->bahan->deskripsi }}</p>
+                            @else
+                                <p>No material information</p>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -140,14 +156,19 @@
     <div class="detail-recommend" style="margin-top: 30px;">
         <h2>{{ __('messages.recommend') }}</h2>
         <div class="detail-recommend-grid">
-            @foreach ($rekomendasi as $item)
-            <div class="detail-recommend-card">
-                <a href="{{ route('detail.show', $item->produk_id) }}">
-                    <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->fotoUtama->foto_produk]) }}" alt="{{ $item->nama_produk }}">
-                    <h3>{{ $item->nama_produk }}</h3>
-                    <p>{{ $item->kategori->nama_kategori }}</p>
-                </a>
-            </div>
+           @foreach ($rekomendasi as $item)
+                <div class="detail-recommend-card">
+                    <a href="{{ route('detail.show', $item->produk_id) }}">
+                        @if($item->fotoUtama && $item->fotoUtama->foto_produk)
+                            <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->fotoUtama->foto_produk]) }}" alt="{{ $item->nama_produk }}">
+                        @else
+                            <div class="no-image">No image</div>
+                        @endif
+
+                        <h3>{{ $item->nama_produk ?? 'No name' }}</h3>
+                        <p>{{ $item->kategori->nama_kategori ?? 'No category' }}</p>
+                    </a>
+                </div>
             @endforeach
         </div>
     </div>

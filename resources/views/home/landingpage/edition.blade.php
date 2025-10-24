@@ -16,8 +16,10 @@
                     <a href="{{ route('detail.show', $item->produk_id) }}">
                         <div class="skeleton-target" style="display:none;">
                             <div class="edition-label">{{ __('messages.tag') }}</div>
-                            @if ($item->fotoUtama)
+                            @if ($item->fotoUtama && $item->fotoUtama->foto_produk)
                                 <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->fotoUtama->foto_produk]) }}" alt="{{ $item->nama_produk }}" class="edition-image default-image">
+                            @else
+                                <div class="no-image">Image not available</div>
                             @endif
                             @if ($item->hoverFoto)
                                 <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->hoverFoto->foto_produk]) }}" alt="{{ $item->nama_produk }}" class="edition-image hover-image">

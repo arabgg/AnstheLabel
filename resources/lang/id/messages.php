@@ -40,6 +40,11 @@ return [
         'search' => 'Cari',
         'name' => 'Nama Lengkap',
         'address' => 'Alamat',
+        'sort' => 'Urutkan',
+        'bahan' => 'Bahan',
+        'warna' => 'Warna',
+        'ukuran' => 'Ukuran',
+        'reset' => 'Ulangi',
     ],
     'button' => [
         'invoice' => 'Cari Invoice',

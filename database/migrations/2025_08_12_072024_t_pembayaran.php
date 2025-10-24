@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('metode_pembayaran_id');
             $table->unsignedBigInteger('voucher_id')->nullable();
 
-            $table->enum('status_pembayaran', ['menunggu pembayaran', 'lunas', 'dibatalkan']);
+            $table->enum('status_pembayaran', ['menunggu pembayaran', 'lunas', 'dibatalkan'])->default('menunggu pembayaran');;
             $table->integer('jumlah_produk');
             $table->string('total_harga');
             $table->string('bukti_pembayaran')->nullable();

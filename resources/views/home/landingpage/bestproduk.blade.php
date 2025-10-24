@@ -10,7 +10,12 @@
 
                 <!-- Konten utama -->
                 <div class="skeleton-target" style="display:none;">
-                    <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $bestproduk->fotoUtama->foto_produk]) }}" alt="{{ $bestproduk->nama_produk }}">
+                    @if($bestproduk->fotoUtama && $bestproduk->fotoUtama->foto_produk)
+                        <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $bestproduk->fotoUtama->foto_produk]) }}"
+                            alt="{{ $bestproduk->nama_produk }}">
+                    @else
+                        <span>Image not available</span>
+                    @endif
                     <div class="arrival-caption">
                         <h3>{{ $bestproduk->nama_produk }}</h3>
                         <a href="{{ route('collection') }}">
