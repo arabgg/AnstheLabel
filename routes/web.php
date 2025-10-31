@@ -57,7 +57,7 @@ Route::get('/storage/{folder}/{filename}', function ($folder, $filename) {
 Route::get('home', [HomeController::class, 'index'])->name('home');
 Route::get('/collection', [HomeController::class, 'collection'])->name('collection');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
-Route::get('/faq', [HomeController::class, 'faq'])->name('faq');
+Route::get('/homefaq', [HomeController::class, 'homefaq'])->name('homefaq');
 Route::get('/detail/{id}', [HomeController::class, 'show_produk'])->name('detail.show');
 Route::get('/invoice', [HomeController::class, 'invoice'])->name('invoice');
 Route::post('/invoice', [HomeController::class, 'cekInvoice'])->name('invoice.cek');
@@ -74,7 +74,7 @@ Route::post('/checkout/save', [HomeController::class, 'saveCheckout'])->name('ch
 
 Route::get('wilayah/provinsi', [HomeController::class, 'provinsi']);
 Route::get('wilayah/kota/{provinsi_id}', [HomeController::class, 'kota']);
-Route::get('wilayah/kecamatan/{kota_id}', [HomeController::class, 'kecamatan']) ;
+Route::get('wilayah/kecamatan/{kota_id}', [HomeController::class, 'kecamatan']);
 Route::get('wilayah/desa/{kecamatan_id}', [HomeController::class, 'desa']);
 
 //Route Login
