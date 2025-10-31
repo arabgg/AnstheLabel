@@ -2,71 +2,70 @@
 
 @section('content')
     <div class="container rounded-lg min-h-screen">
-        <div class="grid grid-cols-4  gap-5 mb-6">
-            <div class="bg-white p-6 rounded-lg shadow flex items-center justify-between">
-                <i class="bg-[#FBE9EB] px-6 py-5 rounded-lg fa-solid fa-dollar-sign text-[#560024] text-xl"></i>
-                <div class="text-left">
-                    <p class="text-gray-500">Total Pendapatan</p>
+        <div class="grid grid-cols-4 gap-5 mb-6">
+            <!-- Filter & Mode Tampilan -->
+            <div class="bg-white p-6 rounded-lg shadow flex flex-col justify-between">
+                <form method="GET" action="{{ route('admin.dashboard') }}" class="space-y-4">
+                    {{-- Tahun Dinamis --}}
+                    <div>
+                        <label for="year" class="block text-sm font-semibold text-gray-700 mb-1">Pilih Tahun</label>
+                        <select name="year" id="year"
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#560024]">
+                            @foreach ($availableYears as $y)
+                                <option value="{{ $y }}" {{ $selectedYear == $y ? 'selected' : '' }}>
+                                    {{ $y }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    {{-- Tombol Mode Tampilan --}}
+                    <div class="mt-3">
+                        <div class="grid grid-cols-2 gap-3">
+                            <button type="submit" name="view_mode" value="monthly"
+                                class="px-4 py-2 rounded-lg text-sm font-semibold shadow transition 
+                                {{ $viewMode == 'monthly' ? 'bg-[#560024] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                                Monthly
+                            </button>
+                            <button type="submit" name="view_mode" value="quarterly"
+                                class="px-4 py-2 rounded-lg text-sm font-semibold shadow transition 
+                                {{ $viewMode == 'quarterly' ? 'bg-[#560024] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                                Quarterly
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Total Pendapatan -->
+            <div class="bg-white p-5 rounded-lg shadow grid grid-cols-3 items-center">
+                <div class="col-span-1 flex justify-center">
+                    <p class="bg-[#FBE9EB] px-6 py-4 rounded-lg text-[#560024] text-base font-bold">TOTAL PENDAPATAN</p>
+                </div>
+                <div class="col-span-2 text-center">
                     <h2 class="text-xl font-bold">IDR {{ number_format($pendapatan) }}</h2>
                 </div>
             </div>
-            <div class="bg-white p-6 rounded-lg shadow flex items-center justify-between">
-                <i class="bg-[#FBE9EB] p-5 rounded-lg fa-solid fa-box-open text-[#560024] text-xl ml-3"></i>
-                <div class="text-left mr-3">
-                    <p class="text-gray-500">Item Selesai</p>
-                    <h2 class="text-xl font-bold">{{ $orderSelesai }}</h2>
+
+            <!-- Item Selesai -->
+            <div class="bg-white p-5 rounded-lg shadow grid grid-cols-3 items-center">
+                <div class="col-span-1 flex justify-center">
+                    <p class="bg-[#FBE9EB] px-7 py-4 rounded-lg text-[#560024] text-base font-bold">ITEM SELESAI</p>
+                </div>
+                <div class="col-span-2 text-center">
+                    <h2 class="text-xl font-bold">{{ $orderSelesai }} ITEM</h2>
                 </div>
             </div>
-            <div class="bg-white p-6 rounded-lg shadow flex items-center justify-between">
-                <i class="bg-[#FBE9EB] px-6 py-5 rounded-lg fa-solid fa-box text-[#560024] text-xl ml-2"></i>
-                <div class="text-left mr-2">
-                    <p class="text-gray-500">Item Diproses</p>
-                    <h2 class="text-2xl font-bold">{{ $orderProses }}</h2>
+
+            <!-- Total Produk -->
+            <div class="bg-white p-5 rounded-lg shadow grid grid-cols-3 items-center">
+                <div class="col-span-1 flex justify-center">
+                    <p class="bg-[#FBE9EB] px-7 py-4 rounded-lg text-[#560024] text-base font-bold">TOTAL PRODUK</p>
+                </div>
+                <div class="col-span-2 text-center">
+                    <h2 class="text-xl font-bold">{{ $produk }} ITEM</h2>
                 </div>
             </div>
-            <div class="bg-white p-6 rounded-lg shadow flex items-center justify-between">
-                <i class="bg-[#FBE9EB] px-6 py-5 rounded-lg fa-solid fa-bag-shopping text-[#560024] text-xl ml-3"></i>
-                <div class="text-left mr-3">
-                    <p class="text-gray-500">Total Produk</p>
-                    <h2 class="text-2xl font-bold">{{ $produk }}</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="flex justify-start mb-6">
-            <form method="GET" action="{{ route('admin.dashboard') }}"
-                class="flex items-end gap-6 bg-white p-6 rounded-lg shadow w-fit">
-
-                {{-- Tahun Dinamis --}}
-                <div class="flex flex-col">
-                    <label for="year" class="text-sm font-semibold text-gray-700 mb-1">Pilih Tahun</label>
-                    <select name="year" id="year"
-                        class="w-40 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#560024]">
-                        @foreach ($availableYears as $y)
-                            <option value="{{ $y }}" {{ $selectedYear == $y ? 'selected' : '' }}>
-                                {{ $y }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                {{-- Tombol Mode Tampilan --}}
-                <div class="flex flex-col">
-                    <label class="text-sm font-semibold text-gray-700 mb-1">Mode Tampilan</label>
-                    <div class="flex gap-3">
-                        <button type="submit" name="view_mode" value="monthly"
-                            class="px-4 py-2 rounded-lg text-sm font-semibold shadow transition
-                    {{ $viewMode == 'monthly' ? 'bg-[#560024] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
-                            Monthly
-                        </button>
-                        <button type="submit" name="view_mode" value="quarterly"
-                            class="px-4 py-2 rounded-lg text-sm font-semibold shadow transition
-                    {{ $viewMode == 'quarterly' ? 'bg-[#560024] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
-                            Quarterly
-                        </button>
-                    </div>
-                </div>
-            </form>
         </div>
 
         <div class="grid grid-cols-2 gap-6 mb-6">

@@ -19,6 +19,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\EkspedisiController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PesananController;
+use App\Http\Controllers\StokController;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 
@@ -101,6 +102,17 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('produk')->group(function () {
         Route::get('/', [ProdukController::class, 'index'])->name('produk.index');
+        Route::get('/filter', [ProdukController::class, 'filter'])->name('produk.filter');
+        Route::get('/{id}/show', [ProdukController::class, 'show']);
+        Route::get('/create', [ProdukController::class, 'create'])->name('produk.create');
+        Route::post('/store', [ProdukController::class, 'store'])->name('produk.store');
+        Route::get('/{id}/edit', [ProdukController::class, 'edit'])->name('produk.edit');
+        Route::put('/{id}/update', [ProdukController::class, 'update'])->name('produk.update');
+        Route::delete('/{id}/destroy', [ProdukController::class, 'destroy'])->name('produk.destroy');
+    });
+
+    Route::prefix('stok')->group(function () {
+        Route::get('/', [StokController::class, 'index'])->name('stok.index');
         Route::get('/filter', [ProdukController::class, 'filter'])->name('produk.filter');
         Route::get('/{id}/show', [ProdukController::class, 'show']);
         Route::get('/create', [ProdukController::class, 'create'])->name('produk.create');

@@ -44,7 +44,12 @@
         <div class="flex flex-col space-y-1">
             <h2 class="text-xs font-semibold uppercase tracking-wide text-gray-500 px-3 mt-2">Menu Produk</h2>
             <hr class="border-t border-gray-300 mx-3">
-            @foreach ([['url' => '/produk', 'icon' => 'fa-boxes-stacked', 'label' => 'Produk'], ['url' => '/kategori', 'icon' => 'fa-tag', 'label' => 'Kategori'], ['url' => '/bahan', 'icon' => 'fa-leaf', 'label' => 'Bahan'], ['url' => '/ukuran', 'icon' => 'fa-ruler', 'label' => 'Ukuran'], ['url' => '/warna', 'icon' => 'fa-paintbrush', 'label' => 'Warna']] as $item)
+            @foreach ([['url' => '/produk', 'icon' => 'fa-boxes-stacked', 'label' => 'Produk'],
+                ['url' => '/stok', 'icon' => 'fa-boxes-stacked', 'label' => 'Stok Produk'], 
+                ['url' => '/kategori', 'icon' => 'fa-tag', 'label' => 'Kategori'], 
+                ['url' => '/bahan', 'icon' => 'fa-leaf', 'label' => 'Bahan'], 
+                ['url' => '/ukuran', 'icon' => 'fa-ruler', 'label' => 'Ukuran'], 
+                ['url' => '/warna', 'icon' => 'fa-paintbrush', 'label' => 'Warna']] as $item)
                 <a href="{{ $item['url'] }}"
                     class="menu-item flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-red-100 transition text-sm
                     {{ request()->is(ltrim($item['url'], '/') . '*') ? 'font-bold text-black bg-red-200 border-l-4 border-[#560024]' : '' }}">
