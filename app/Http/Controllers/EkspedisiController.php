@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\EkspedisiModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class EkspedisiController extends Controller
@@ -13,23 +14,23 @@ class EkspedisiController extends Controller
         $searchQuery = $request->input('search', '');
         $sort = $request->input('sort', 'terbaru');
         $ekspedisi = EkspedisiModel::select(
-            'ekspedisi_id', 
-            'nama_ekspedisi', 
+            'ekspedisi_id',
+            'nama_ekspedisi',
             'icon',
-            'created_at', 
+            'created_at',
             'updated_at'
         )
-        ->when(!empty($searchQuery), function ($q) use ($searchQuery) {
-            $q->where('nama_ekspedisi', 'like', "%{$searchQuery}%");
-        })
-        ->when($sort === 'terbaru', function ($q) {
-            $q->orderBy('created_at', 'desc');
-        })
-        ->when($sort === 'terlama', function ($q) {
-            $q->orderBy('created_at', 'asc');
-        })
-        ->paginate(10)
-        ->appends($request->query());
+            ->when(!empty($searchQuery), function ($q) use ($searchQuery) {
+                $q->where('nama_ekspedisi', 'like', "%{$searchQuery}%");
+            })
+            ->when($sort === 'terbaru', function ($q) {
+                $q->orderBy('created_at', 'desc');
+            })
+            ->when($sort === 'terlama', function ($q) {
+                $q->orderBy('created_at', 'asc');
+            })
+            ->paginate(10)
+            ->appends($request->query());
 
         return view('admin.ekspedisi.index', compact('ekspedisi', 'searchQuery', 'sort'));
     }
@@ -100,7 +101,7 @@ class EkspedisiController extends Controller
             if ($ekspedisi->icon && Storage::exists('public/icons/' . $ekspedisi->icon)) {
                 Storage::delete('public/icons/' . $ekspedisi->icon);
             }
-    
+
             $fileName = $request->file('icon')->hashName();
             $request->file('icon')->storeAs('icons', $fileName, 'public');
             $ekspedisi->icon = $fileName;
@@ -111,7 +112,7 @@ class EkspedisiController extends Controller
         $ekspedisi->save();
 
         return response()->json([
-            'success' => true, 
+            'success' => true,
             'message' => 'Ekspedisi berhasil diperbarui.',
             'data' => $ekspedisi
         ]);
@@ -119,14 +120,38 @@ class EkspedisiController extends Controller
 
     public function destroy($id)
     {
-        $ekspedisi = EkspedisiModel::findOrFail($id);
+        try {
+            $ekspedisi = EkspedisiModel::findOrFail($id);
 
-        // Hapus file foto kalau ada
-        if ($ekspedisi->icon && Storage::disk('public')->exists('icons/' . $ekspedisi->icon)) {
-            Storage::disk('public')->delete('icons/' . $ekspedisi->icon);
+            DB::beginTransaction();
+
+            // Hapus data di database
+            $ekspedisi->delete();
+
+            DB::commit();
+
+            // Setelah berhasil commit, baru hapus file icon
+            if ($ekspedisi->icon && Storage::disk('public')->exists('icons/' . $ekspedisi->icon)) {
+                Storage::disk('public')->delete('icons/' . $ekspedisi->icon);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Ekspedisi berhasil dihapus.',
+                'id' => $id
+            ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Ekspedisi tidak bisa dihapus karena masih digunakan pada data lain.'
+            ], 400);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
         }
-        $ekspedisi->delete();
-
-        return response()->json(['success' => true, 'message' => 'Ekspedisi berhasil dihapus.']);
     }
 }
