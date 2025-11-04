@@ -37,7 +37,10 @@ class ProdukController extends Controller
         $produk = ProdukModel::whereHas('fotoUtama')
             ->with(['kategori', 'bahan', 'fotoUtama'])
             ->when($search, function ($query, $search) {
-                $query->where('nama_produk', 'like', '%' . $search . '%');
+                $keywords = explode(' ', $search);
+                foreach ($keywords as $word) {
+                    $query->where('nama_produk', 'like', '%' . $word . '%');
+                }
             })
             ->when($kategoriFilter, function ($query, $kategoriFilter) {
                 return $query->whereHas('kategori', function ($q) use ($kategoriFilter) {
