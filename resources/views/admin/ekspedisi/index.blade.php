@@ -14,8 +14,8 @@
                     {{-- Form Search --}}
                     <form method="GET" action="{{ route('ekspedisi.index') }}"
                         class="flex items-center border rounded-lg px-3 py-2 w-1/2">
-                        <input type="text" name="search" placeholder="Cari Ekspedisi..."
-                            value="{{ request('search') }}" class="w-full outline-none placeholder:text-sm">
+                        <input type="text" name="search" placeholder="Cari Ekspedisi..." value="{{ request('search') }}"
+                            class="w-full outline-none placeholder:text-sm">
                         <button type="submit" class="ml-2">
                             <i class="fas fa-search"></i>
                         </button>
@@ -47,7 +47,6 @@
                         <tr>
                             <th class="p-3">NO</th>
                             <th class="p-3">NAMA EKSPEDISI</th>
-                            <th class="p-3">ICON</th>
                             <th class="p-3">AKSI</th>
                         </tr>
                     </thead>
@@ -56,11 +55,6 @@
                             <tr class="border-b hover:bg-gray-50">
                                 <td class="p-3">{{ $ekspedisi->firstItem() + $loop->index }}</td>
                                 <td class="p-3">{{ $item->nama_ekspedisi }}</td>
-                                <td class="p-3">
-                                    <div class="flex justify-center">
-                                        <img src="{{ asset('storage/icons/' . $item->icon) }}" class="w-10 h-10 object-cover mx-auto">
-                                    </div>
-                                </td>
                                 <td class="p-3 flex gap-2 justify-center items-center">
                                     {{-- Tombol Detail --}}
                                     <button
