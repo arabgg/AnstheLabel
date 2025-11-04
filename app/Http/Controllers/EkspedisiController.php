@@ -144,7 +144,7 @@ class EkspedisiController extends Controller
             DB::rollBack();
             return response()->json([
                 'success' => false,
-                'message' => 'Ekspedisi tidak bisa dihapus karena masih digunakan pada data lain.'
+                'message' => 'Ekspedisi tidak bisa dihapus karena masih digunakan pada data pesanan.'
             ], 400);
         } catch (\Exception $e) {
             DB::rollBack();
