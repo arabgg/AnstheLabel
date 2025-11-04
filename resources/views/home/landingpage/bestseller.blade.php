@@ -19,8 +19,11 @@
                                 <span class="diskon-label">Save {{ $item->diskon_persen }} %</span>
                             @endif
                             {{-- Gambar utama dengan status_foto = 1 --}}
-                            @if ($item->fotoUtama)
-                                <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->fotoUtama->foto_produk]) }}" alt="{{ $item->nama_produk }}" class="bestseller-image default-image">
+                            @if ($item->fotoUtama && $item->fotoUtama->foto_produk)
+                                <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->fotoUtama->foto_produk]) }}"
+                                    alt="{{ $item->nama_produk }}" class="bestseller-image default-image">
+                            @else
+                                <div class="no-image">Image not available</div>
                             @endif
                             @if ($item->hoverFoto)
                                 <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->hoverFoto->foto_produk]) }}" alt="{{ $item->nama_produk }}" class="bestseller-image hover-image">

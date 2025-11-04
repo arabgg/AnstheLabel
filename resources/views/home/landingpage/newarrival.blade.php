@@ -19,8 +19,10 @@
                             @endif
                             
                             {{-- Gambar utama dengan status_foto = 1 --}}
-                            @if ($item->fotoUtama)
+                            @if ($item->fotoUtama && $item->fotoUtama->foto_produk)
                                 <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->fotoUtama->foto_produk]) }}" class="bestproduk-image default-image">
+                            @else
+                                <div class="no-image">Image not available</div>
                             @endif
     
                             @if ($item->hoverFoto)

@@ -15,8 +15,11 @@ use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\BannerController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\EkspedisiController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PesananController;
+use App\Http\Controllers\StokController;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 
@@ -63,24 +66,23 @@ Route::get('/mail', [HomeController::class, 'email'])->name('email');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
 Route::get('/homefaq', [HomeController::class, 'homeFaq'])->name('homefaq');
 Route::get('/detail/{id}', [HomeController::class, 'show_produk'])->name('detail.show');
-Route::get('/invoice', [HomeController::class, 'invoice'])->name('invoice');
-Route::post('/invoice', [HomeController::class, 'cekInvoice'])->name('invoice.cek');
-Route::get('/transaksi/{kode_invoice}', [HomeController::class, 'transaksi'])->name('transaksi.show');
-Route::post('/transaksi/{pembayaran_id}/upload-bukti', [HomeController::class, 'uploadBukti'])->name('transaksi.upload');
-
+Route::get('/invoice', [InvoiceController::class, 'invoice'])->name('invoice');
+Route::post('/invoice', [InvoiceController::class, 'cekInvoice'])->name('invoice.cek');
+Route::get('/transaksi/{kode_invoice}', [CheckoutController::class, 'transaksi'])->name('transaksi.show');
+Route::post('/transaksi/{pembayaran_id}/upload-bukti', [CheckoutController::class, 'uploadBukti'])->name('transaksi.upload');
 
 // Route Checkout
-Route::post('/cart/add', [HomeController::class, 'add_cart'])->name('cart.add');
-Route::get('/cart', [HomeController::class, 'cart'])->name('cart.index');
-Route::post('/cart/update', [HomeController::class, 'update_cart'])->name('cart.update');
-Route::post('/cart/remove', [HomeController::class, 'remove_cart'])->name('cart.remove');
-Route::get('/checkout', [HomeController::class, 'checkoutForm'])->name('checkout.form');
-Route::post('/checkout/save', [HomeController::class, 'saveCheckout'])->name('checkout.save');
+Route::post('/cart/add', [CheckoutController::class, 'add_cart'])->name('cart.add');
+Route::get('/cart', [CheckoutController::class, 'cart'])->name('cart.index');
+Route::post('/cart/update', [CheckoutController::class, 'update_cart'])->name('cart.update');
+Route::post('/cart/remove', [CheckoutController::class, 'remove_cart'])->name('cart.remove');
+Route::get('/checkout', [CheckoutController::class, 'checkoutForm'])->name('checkout.form');
+Route::post('/checkout/save', [CheckoutController::class, 'saveCheckout'])->name('checkout.save');
 
-Route::get('wilayah/provinsi', [HomeController::class, 'provinsi']);
-Route::get('wilayah/kota/{provinsi_id}', [HomeController::class, 'kota']);
-Route::get('wilayah/kecamatan/{kota_id}', [HomeController::class, 'kecamatan']) ;
-Route::get('wilayah/desa/{kecamatan_id}', [HomeController::class, 'desa']);
+Route::get('wilayah/provinsi', [CheckoutController::class, 'provinsi']);
+Route::get('wilayah/kota/{provinsi_id}', [CheckoutController::class, 'kota']);
+Route::get('wilayah/kecamatan/{kota_id}', [CheckoutController::class, 'kecamatan']) ;
+Route::get('wilayah/desa/{kecamatan_id}', [CheckoutController::class, 'desa']);
 
 //Route Login
 Route::middleware('guest')->group(function () {
@@ -100,6 +102,17 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('produk')->group(function () {
         Route::get('/', [ProdukController::class, 'index'])->name('produk.index');
+        Route::get('/filter', [ProdukController::class, 'filter'])->name('produk.filter');
+        Route::get('/{id}/show', [ProdukController::class, 'show']);
+        Route::get('/create', [ProdukController::class, 'create'])->name('produk.create');
+        Route::post('/store', [ProdukController::class, 'store'])->name('produk.store');
+        Route::get('/{id}/edit', [ProdukController::class, 'edit'])->name('produk.edit');
+        Route::put('/{id}/update', [ProdukController::class, 'update'])->name('produk.update');
+        Route::delete('/{id}/destroy', [ProdukController::class, 'destroy'])->name('produk.destroy');
+    });
+
+    Route::prefix('stok')->group(function () {
+        Route::get('/', [StokController::class, 'index'])->name('stok.index');
         Route::get('/filter', [ProdukController::class, 'filter'])->name('produk.filter');
         Route::get('/{id}/show', [ProdukController::class, 'show']);
         Route::get('/create', [ProdukController::class, 'create'])->name('produk.create');

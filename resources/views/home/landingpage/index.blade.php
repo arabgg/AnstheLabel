@@ -9,9 +9,13 @@
         <div id="heroCarouselCustom" class="custom-carousel skeleton-target" style="display:none;">
             @foreach ($hero as $item)
                 @if ($item->banner_id >= 1 && $item->banner_id <= 4)
-                    <img src="{{ route('storage', ['folder' => 'banner', 'filename' => $item->foto_banner]) }}"
+                    @if ($item->foto_banner)
+                        <img src="{{ route('storage', ['folder' => 'banner', 'filename' => $item->foto_banner]) }}"
                         class="carousel-image {{ $item->banner_id === 1 ? 'active' : '' }}"
                         alt="{{ $item->nama_banner }}">
+                    @else
+                        <div class="no-banner">Banner not available</div>
+                    @endif
                 @endif
             @endforeach
         </div>
@@ -27,9 +31,13 @@
         <div id="heroCarousel" class="custom-carousel skeleton-target" style="display:none;">
             @foreach ($hero as $item)
                 @if ($item->banner_id >= 5 && $item->banner_id <= 8)
-                    <img src="{{ route('storage', ['folder' => 'banner', 'filename' => $item->foto_banner]) }}"
-                        class="carousel-image {{ $item->banner_id === 5 ? 'active' : '' }}"
-                        alt="{{ $item->nama_banner }}">
+                    @if ($item->foto_banner)
+                        <img src="{{ route('storage', ['folder' => 'banner', 'filename' => $item->foto_banner]) }}"
+                            class="carousel-image {{ $item->banner_id === 5 ? 'active' : '' }}"
+                            alt="{{ $item->nama_banner }}">
+                    @else
+                        <div class="no-banner">Banner not available</div>
+                    @endif
                 @endif
             @endforeach
         </div>
@@ -45,9 +53,13 @@
         <div id="heroCarousel" class="custom-carousel skeleton-target" style="display:none;">
             @foreach ($hero as $item)
                 @if ($item->banner_id >= 9 && $item->banner_id <= 12)
-                    <img src="{{ route('storage', ['folder' => 'banner', 'filename' => $item->foto_banner]) }}"
-                        class="carousel-image {{ $item->banner_id === 9 ? 'active' : '' }}"
-                        alt="{{ $item->nama_banner }}">
+                    @if ($item->foto_banner)
+                        <img src="{{ route('storage', ['folder' => 'banner', 'filename' => $item->foto_banner]) }}"
+                            class="carousel-image {{ $item->banner_id === 9 ? 'active' : '' }}"
+                            alt="{{ $item->nama_banner }}">
+                    @else
+                        <div class="no-banner">Banner not available</div>
+                    @endif
                 @endif
             @endforeach
         </div>
@@ -63,9 +75,13 @@
         <div id="heroCarousel" class="custom-carousel skeleton-target" style="display:none;">
             @foreach ($hero as $item)
                 @if ($item->banner_id >= 13 && $item->banner_id <= 16)
-                    <img src="{{ route('storage', ['folder' => 'banner', 'filename' => $item->foto_banner]) }}"
-                        class="carousel-image {{ $item->banner_id === 13 ? 'active' : '' }}"
-                        alt="{{ $item->nama_banner }}">
+                    @if ($item->foto_banner)
+                        <img src="{{ route('storage', ['folder' => 'banner', 'filename' => $item->foto_banner]) }}"
+                            class="carousel-image {{ $item->banner_id === 13 ? 'active' : '' }}"
+                            alt="{{ $item->nama_banner }}">
+                    @else
+                        <div class="no-banner">Banner not available</div>
+                    @endif
                 @endif
             @endforeach
         </div>
@@ -78,8 +94,12 @@
             @foreach ($hero as $index => $item)
                 @if ($item->banner_id >= 17 && $item->banner_id <= 18)
                     <div class="hero-item {{ $index === 0 ? 'left' : 'right' }}">
-                        <img src="{{ route('storage', ['folder' => 'banner', 'filename' => $item->foto_banner]) }}"
+                        @if ($item->foto_banner)
+                            <img src="{{ route('storage', ['folder' => 'banner', 'filename' => $item->foto_banner]) }}"
                             alt="{{ $item->nama_banner }}">
+                        @else
+                            <div class="no-banner">Banner not available</div>
+                        @endif
                     </div>
                 @endif
             @endforeach

@@ -1,13 +1,68 @@
 {{-- Header Title & Search --}}
 <div class="produk-header">
     <h1>{{ __('messages.title.collection') }}</h1>
-    <div class="produk-search-wrapper">
-        <form method="GET" action="{{ route('collection') }}" class="produk-search-form">
-            <input type="text" name="search" placeholder="{{ __('messages.placeholder.search') }}" value="{{ request('search') }}">
-            <button type="submit">
-                <i class="fas fa-search"></i>
-            </button>
-        </form>
+    <div class="produk-button-wrapper">
+        <div class="produk-filter-wrapper">
+            {{-- FILTER BAHAN --}}
+            <form method="GET" action="{{ route('collection') }}" class="produk-bahan-form">
+                <select name="bahan[]" onchange="this.form.submit()">
+                    <option value="">{{ __('messages.placeholder.bahan') }}</option>
+                    @foreach ($bahan as $b)
+                        <option value="{{ $b->bahan_id }}" {{ in_array($b->bahan_id,$filterBahan)?'selected':'' }}>
+                            {{ ucfirst($b->nama_bahan) }}
+                        </option>
+                    @endforeach
+                </select>
+            </form>
+    
+            {{-- FILTER WARNA --}}
+            <form method="GET" action="{{ route('collection') }}" class="produk-warna-form">
+                <select name="warna[]" onchange="this.form.submit()">
+                    <option value="">{{ __('messages.placeholder.warna') }}</option>
+                    @foreach ($warna as $w)
+                        <option value="{{ $w->warna_id }}" {{ in_array($w->warna_id,$filterWarna)?'selected':'' }}>
+                            {{ ucfirst($w->nama_warna) }}
+                        </option>
+                    @endforeach
+                </select>
+            </form>
+    
+            {{-- FILTER UKURAN --}}
+            <form method="GET" action="{{ route('collection') }}" class="produk-ukuran-form">
+                <select name="ukuran[]" onchange="this.form.submit()">
+                    <option value="">{{ __('messages.placeholder.ukuran') }}</option>
+                    @foreach ($ukuran as $u)
+                        <option value="{{ $u->ukuran_id }}" {{ in_array($u->ukuran_id,$filterUkuran)?'selected':'' }}>
+                            {{ ucfirst($u->nama_ukuran) }}
+                        </option>
+                    @endforeach
+                </select>
+            </form>
+    
+            {{-- RESET FILTER --}}
+            <a href="{{ route('collection') }}" class="produk-sort-form">
+                <button type="button" >
+                    {{ __('messages.placeholder.reset') }}
+                </button>
+            </a>
+        </div>
+
+        <div class="produk-search-wrapper">
+            {{-- SORT --}}
+            <form method="GET" action="{{ route('collection') }}" class="produk-sort-form">
+                <select name="sort" onchange="this.form.submit()">
+                    <option value="">{{ __('messages.placeholder.sort') }}</option>
+                    <option value="terbaru"  {{ $sort=='terbaru'?'selected':'' }}>Terbaru</option>
+                    <option value="termahal" {{ $sort=='termahal'?'selected':'' }}>Termahal</option>
+                </select>
+            </form>
+
+            {{-- SEARCH --}}
+            <form method="GET" action="{{ route('collection') }}" class="produk-search-form">
+                <input type="text" name="search" placeholder="{{ __('messages.placeholder.search') }}" value="{{ request('search') }}">
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -53,7 +108,6 @@
         </form>
     </div>
 
-
     {{-- Kontainer Konten Produk --}}
     <div style="flex: 1;">
         {{-- Product Grid --}}
@@ -72,7 +126,11 @@
                                 <span class="diskon-label-collection">Save {{ $item->diskon_persen }} %</span>
                             @endif
                             
-                            <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->fotoUtama->foto_produk]) }}" alt="{{ $item->nama_produk }}">
+                            @if($item->fotoUtama && $item->fotoUtama->foto_produk)
+                                <img src="{{ route('storage', ['folder' => 'foto_produk', 'filename' => $item->fotoUtama->foto_produk]) }}" alt="{{ $item->nama_produk }}">
+                            @else
+                                <span>Image not available</span>
+                            @endif
                             
                             <div class="produk-color-dot">
                                 @foreach ($item->warna as $warnaItem)

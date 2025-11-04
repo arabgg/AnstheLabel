@@ -36,9 +36,14 @@ return [
     ],
     'placeholder' => [
         'invoice' => 'Enter Your Invoice No (Example:ANS-XXXXXXXX-XXXXXXXXX)',
-        'search' => 'Cari',
+        'search' => 'Search',
         'name' => 'Full Name',
         'address' => 'Address',
+        'sort' => 'Sort By',
+        'bahan' => 'Material',
+        'warna' => 'Color',
+        'ukuran' => 'Size',
+        'reset' => 'Reset',
     ],
     'button' => [
         'invoice' => 'Search Invoice',

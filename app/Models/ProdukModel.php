@@ -15,14 +15,13 @@ class ProdukModel extends Model
 
     protected $table = 't_produk';
     protected $primaryKey = 'produk_id';
-    public $incrementing = true;   // penting biar PK dianggap auto-increment
-    protected $keyType = 'int';    // pastikan PK dianggap integer
+    public $incrementing = true;   
+    protected $keyType = 'int';    
     
     protected $fillable = [
         'kategori_id',
         'bahan_id',
         'nama_produk',
-        'is_best'=> 'boolean',
         'stok_produk',
         'harga',
         'diskon',
@@ -33,6 +32,7 @@ class ProdukModel extends Model
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'is_best'=> 'boolean',
     ];
 
     public function getHargaDiskonAttribute()
