@@ -64,7 +64,7 @@ Route::get('/collection', [HomeController::class, 'collection'])->name('collecti
 Route::get('/mail', [HomeController::class, 'email'])->name('email');
 
 Route::get('/about', [HomeController::class, 'about'])->name('about');
-Route::get('/homefaq', [HomeController::class, 'homeFaq'])->name('homefaq');
+Route::get('/homefaq', [HomeController::class, 'homefaq'])->name('homefaq');
 Route::get('/detail/{id}', [HomeController::class, 'show_produk'])->name('detail.show');
 Route::get('/invoice', [InvoiceController::class, 'invoice'])->name('invoice');
 Route::post('/invoice', [InvoiceController::class, 'cekInvoice'])->name('invoice.cek');
@@ -79,10 +79,10 @@ Route::post('/cart/remove', [CheckoutController::class, 'remove_cart'])->name('c
 Route::get('/checkout', [CheckoutController::class, 'checkoutForm'])->name('checkout.form');
 Route::post('/checkout/save', [CheckoutController::class, 'saveCheckout'])->name('checkout.save');
 
-Route::get('wilayah/provinsi', [CheckoutController::class, 'provinsi']);
-Route::get('wilayah/kota/{provinsi_id}', [CheckoutController::class, 'kota']);
-Route::get('wilayah/kecamatan/{kota_id}', [CheckoutController::class, 'kecamatan']) ;
-Route::get('wilayah/desa/{kecamatan_id}', [CheckoutController::class, 'desa']);
+Route::get('wilayah/provinsi', [HomeController::class, 'provinsi']);
+Route::get('wilayah/kota/{provinsi_id}', [HomeController::class, 'kota']);
+Route::get('wilayah/kecamatan/{kota_id}', [HomeController::class, 'kecamatan']);
+Route::get('wilayah/desa/{kecamatan_id}', [HomeController::class, 'desa']);
 
 //Route Login
 Route::middleware('guest')->group(function () {

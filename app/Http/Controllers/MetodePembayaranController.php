@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MetodePembayaranModel;
 use App\Models\MetodeModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class MetodePembayaranController extends Controller
@@ -159,20 +160,38 @@ class MetodePembayaranController extends Controller
 
     public function destroy($id)
     {
-        $metode = MetodePembayaranModel::findOrFail($id);
+        try {
+            $metode = MetodePembayaranModel::findOrFail($id);
 
-        // Hapus file foto kalau ada
-        if ($metode->icon && Storage::disk('public')->exists('icons/' . $metode->icon)) {
-            Storage::disk('public')->delete('icons/' . $metode->icon);
+            DB::beginTransaction();
+
+            // Hapus data di database
+            $metode->delete();
+
+            DB::commit();
+
+            // Setelah berhasil commit, baru hapus file
+            if ($metode->icon && Storage::disk('public')->exists('icons/' . $metode->icon)) {
+                Storage::disk('public')->delete('icons/' . $metode->icon);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Metode pembayaran berhasil dihapus',
+                'id' => $id
+            ]);
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Metode pembayaran tidak bisa dihapus karena masih digunakan pada data pesanan.'
+            ], 400);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menghapus metode pembayaran: ' . $e->getMessage()
+            ], 500);
         }
-
-        // Hapus data dari database
-        $metode->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Metode pembayaran berhasil dihapus',
-            'id' => $id
-        ]);
     }
 }
