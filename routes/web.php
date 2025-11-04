@@ -79,10 +79,10 @@ Route::post('/cart/remove', [CheckoutController::class, 'remove_cart'])->name('c
 Route::get('/checkout', [CheckoutController::class, 'checkoutForm'])->name('checkout.form');
 Route::post('/checkout/save', [CheckoutController::class, 'saveCheckout'])->name('checkout.save');
 
-Route::get('wilayah/provinsi', [HomeController::class, 'provinsi']);
-Route::get('wilayah/kota/{provinsi_id}', [HomeController::class, 'kota']);
-Route::get('wilayah/kecamatan/{kota_id}', [HomeController::class, 'kecamatan']);
-Route::get('wilayah/desa/{kecamatan_id}', [HomeController::class, 'desa']);
+Route::get('wilayah/provinsi', [CheckoutController::class, 'provinsi']);
+Route::get('wilayah/kota/{provinsi_id}', [CheckoutController::class, 'kota']);
+Route::get('wilayah/kecamatan/{kota_id}', [CheckoutController::class, 'kecamatan']);
+Route::get('wilayah/desa/{kecamatan_id}', [CheckoutController::class, 'desa']);
 
 //Route Login
 Route::middleware('guest')->group(function () {
