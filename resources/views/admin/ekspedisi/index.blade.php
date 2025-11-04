@@ -47,6 +47,7 @@
                         <tr>
                             <th class="p-3">NO</th>
                             <th class="p-3">NAMA EKSPEDISI</th>
+                            <th class="p-3">STATUS</th>
                             <th class="p-3">AKSI</th>
                         </tr>
                     </thead>
@@ -55,6 +56,15 @@
                             <tr class="border-b hover:bg-gray-50">
                                 <td class="p-3">{{ $ekspedisi->firstItem() + $loop->index }}</td>
                                 <td class="p-3">{{ $item->nama_ekspedisi }}</td>
+                                <td class="p-3">
+                                    @if ($item->status_ekspedisi == 1)
+                                        <span
+                                            class="px-2 py-1 text-xs font-semibold text-green-700 bg-green-200 rounded-lg">Aktif</span>
+                                    @else
+                                        <span
+                                            class="px-2 py-1 text-xs font-semibold text-red-700 bg-red-200 rounded-lg">Nonaktif</span>
+                                    @endif
+                                </td>
                                 <td class="p-3 flex gap-2 justify-center items-center">
                                     {{-- Tombol Detail --}}
                                     <button

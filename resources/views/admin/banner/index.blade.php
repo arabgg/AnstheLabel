@@ -36,7 +36,7 @@
                     <tbody class="text-sm">
                         @forelse ($banners as $banner)
                             <tr class="border-b hover:bg-gray-50">
-                                <td class="p-3">{{ $loop->iteration }}</td>
+                                <td class="p-3">{{ $banners->firstItem() + $loop->index }}</td>
                                 <td class="p-3">{{ $banner->nama_banner }}</td>
                                 <td class="p-3">
                                     <div class="flex justify-center">

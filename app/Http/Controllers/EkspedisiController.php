@@ -16,7 +16,7 @@ class EkspedisiController extends Controller
         $ekspedisi = EkspedisiModel::select(
             'ekspedisi_id',
             'nama_ekspedisi',
-            'icon',
+            'status_ekspedisi',
             'created_at',
             'updated_at'
         )

@@ -14,7 +14,7 @@ class EkspedisiModel extends Model
     
     protected $fillable = [
         'nama_ekspedisi',
-        'status_pembayaran',
+        'status_ekspedisi',
         'icon',
     ];
 

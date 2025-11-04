@@ -84,10 +84,8 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/change-password', [AuthController::class, 'changePasswordForm'])
-        ->name('auth.change-password.form');
-    Route::post('/change-password', [AuthController::class, 'changePassword'])
-        ->name('auth.change-password.update');
+    Route::get('/change-password', [AuthController::class, 'changePasswordForm'])->name('auth.change-password.form');
+    Route::post('/change-password', [AuthController::class, 'changePassword'])->name('auth.change-password.update');
 
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -204,5 +202,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/edit/{id}', [EkspedisiController::class, 'edit'])->name('ekspedisi.edit');
         Route::put('/update/{id}', [EkspedisiController::class, 'update'])->name('ekspedisi.update');
         Route::delete('/destroy/{id}', [EkspedisiController::class, 'destroy'])->name('ekspedisi.destroy');
+    });
+
+    Route::middleware('role:super_admin')->group(function () {
+        Route::get('/admin/users', [AdminController::class, 'userIndex'])->name('admin.users.index');
+        Route::get('/admin/users/{id}/edit', [AdminController::class, 'userEdit'])->name('admin.users.edit');
+        Route::put('/admin/users/{id}/update', [AdminController::class, 'userUpdate'])->name('admin.users.update');
+        Route::delete('/admin/users/{id}/destroy', [AdminController::class, 'userDestroy'])->name('admin.users.destroy');
     });
 });
