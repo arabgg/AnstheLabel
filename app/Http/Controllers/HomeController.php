@@ -182,6 +182,10 @@ class HomeController extends Controller
 
     public function transaksi($kode_invoice)
     {
+        $bannerHeader = BannerModel::select('banner_id', 'nama_banner', 'deskripsi')
+            ->where('nama_banner', 'Banner Header')
+            ->first();
+
         $hero = BannerModel::select('banner_id', 'nama_banner', 'foto_banner')
             ->where('banner_id', 20)
             ->first();
