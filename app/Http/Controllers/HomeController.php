@@ -163,7 +163,7 @@ class HomeController extends Controller
                 ->take(4)
                 ->get();
 
-        return view('home.detail.index', compact('produk', 'rekomendasi'));
+        return view('home.detail.index', compact('produk', 'rekomendasi', 'desc'));
     }
 
     public function invoice()
