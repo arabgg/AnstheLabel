@@ -47,7 +47,7 @@
                         <tr>
                             <th class="p-3">NO</th>
                             <th class="p-3">NAMA WARNA</th>
-                            <th class="p-3">KODE HEX</th>
+                            <th class="p-3 text-center align-middle">KODE HEX</th>
                             <th class="p-3">AKSI</th>
                         </tr>
                     </thead>
@@ -56,11 +56,11 @@
                             <tr class="border-b hover:bg-gray-50">
                                 <td class="p-3">{{ $warna->firstItem() + $loop->index }}</td>
                                 <td class="p-3">{{ $item->nama_warna }}</td>
-                                <td class="p-3">
-                                    <div class="flex items-center gap-2">
+                                <td class="p-3 align-middle">
+                                    <div class="flex items-center justify-center gap-2 w-full">
                                         <div class="w-4 h-4 rounded-full border"
                                             style="background-color: {{ $item->kode_hex }};"></div>
-                                        <span>{{ $item->kode_hex }}</span>
+                                        <span class="inline-block">{{ $item->kode_hex }}</span>
                                     </div>
                                 </td>
                                 <td class="p-3 flex gap-2 justify-center items-center">
