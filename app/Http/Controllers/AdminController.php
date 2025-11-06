@@ -13,14 +13,12 @@ class AdminController extends Controller
 {
     public function index(Request $request)
     {
-        // Ambil tahun-tahun unik dari transaksi
         $availableYears = TransaksiModel::selectRaw('YEAR(created_at) as year')
             ->distinct()
             ->orderByDesc('year')
             ->pluck('year')
             ->toArray();
 
-        // Default: tahun terbaru dan mode bulanan
         $selectedYear = $request->input('year', $availableYears[0] ?? date('Y'));
         $viewMode = $request->input('view_mode', 'monthly');
 
@@ -85,17 +83,6 @@ class AdminController extends Controller
             ->take(5)
             ->get();
 
-        return view('admin.dashboard', compact(
-            'pendapatan',
-            'orderSelesai',
-            'orderProses',
-            'produk',
-            'revenueChart',
-            'ordersChart',
-            'orders',
-            'viewMode',
-            'selectedYear',
-            'availableYears'
-        ));
+        return view('admin.dashboard', compact('pendapatan','orderSelesai','orderProses','produk','revenueChart','ordersChart','orders','viewMode','selectedYear','availableYears'));
     }
 }

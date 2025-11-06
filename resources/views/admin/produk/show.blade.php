@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="max-w-5xl mx-auto px-4 py-8">
         <div class="grid md:grid-cols-2 gap-10 items-start">
             {{-- Bagian Kiri: Gambar Utama --}}
             <div>

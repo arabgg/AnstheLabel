@@ -3,12 +3,12 @@
 @section('content')
     <div class="container rounded-lg min-h-screen">
         <div class="grid grid-cols-4 gap-5 mb-6">
-            <!-- Filter & Mode Tampilan -->
-            <div class="bg-white p-6 rounded-lg shadow flex flex-col justify-between">
+            <div class="bg-white p-6 rounded-lg shadow">
                 <form method="GET" action="{{ route('admin.dashboard') }}" class="space-y-4">
-                    {{-- Tahun Dinamis --}}
                     <div>
-                        <label for="year" class="block text-sm font-semibold text-gray-700 mb-1">Pilih Tahun</label>
+                        <label for="year" class="block text-sm font-semibold text-gray-700 mb-1">
+                            Pilih Tahun
+                        </label>
                         <select name="year" id="year"
                             class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#560024]">
                             @foreach ($availableYears as $y)
@@ -18,55 +18,51 @@
                             @endforeach
                         </select>
                     </div>
+                    <div class="grid grid-cols-2 gap-3 mt-3">
+                        <button type="submit" name="view_mode" value="monthly"
+                            class="px-4 py-2 rounded-lg text-sm font-semibold shadow transition 
+                            {{ $viewMode == 'monthly' ? 'bg-[#560024] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                            Monthly
+                        </button>
 
-                    {{-- Tombol Mode Tampilan --}}
-                    <div class="mt-3">
-                        <div class="grid grid-cols-2 gap-3">
-                            <button type="submit" name="view_mode" value="monthly"
-                                class="px-4 py-2 rounded-lg text-sm font-semibold shadow transition 
-                                {{ $viewMode == 'monthly' ? 'bg-[#560024] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
-                                Monthly
-                            </button>
-                            <button type="submit" name="view_mode" value="quarterly"
-                                class="px-4 py-2 rounded-lg text-sm font-semibold shadow transition 
-                                {{ $viewMode == 'quarterly' ? 'bg-[#560024] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
-                                Quarterly
-                            </button>
-                        </div>
+                        <button type="submit" name="view_mode" value="quarterly"
+                            class="px-4 py-2 rounded-lg text-sm font-semibold shadow transition 
+                            {{ $viewMode == 'quarterly' ? 'bg-[#560024] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                            Quarterly
+                        </button>
                     </div>
                 </form>
             </div>
 
-            <!-- Total Pendapatan -->
-            <div class="bg-white p-5 rounded-lg shadow grid grid-cols-3 items-center">
-                <div class="col-span-1 flex justify-center">
-                    <p class="bg-[#FBE9EB] px-6 py-4 rounded-lg text-[#560024] text-base font-bold">TOTAL PENDAPATAN</p>
-                </div>
-                <div class="col-span-2 text-center">
-                    <h2 class="text-xl font-bold">IDR {{ number_format($pendapatan) }}</h2>
-                </div>
+            <div class="bg-white p-6 rounded-lg shadow text-center">
+                <p class="bg-[#FBE9EB] inline-block px-6 py-3 rounded-lg text-[#560024] text-base font-bold mb-3 mt-3">
+                    TOTAL PENDAPATAN
+                </p>
+                <h2 class="text-xl font-bold">
+                    IDR {{ number_format($pendapatan) }}
+                </h2>
             </div>
 
-            <!-- Item Selesai -->
-            <div class="bg-white p-5 rounded-lg shadow grid grid-cols-3 items-center">
-                <div class="col-span-1 flex justify-center">
-                    <p class="bg-[#FBE9EB] px-7 py-4 rounded-lg text-[#560024] text-base font-bold">ITEM SELESAI</p>
-                </div>
-                <div class="col-span-2 text-center">
-                    <h2 class="text-xl font-bold">{{ $orderSelesai }} ITEM</h2>
-                </div>
+            <div class="bg-white p-6 rounded-lg shadow text-center">
+                <p class="bg-[#FBE9EB] inline-block px-7 py-3 rounded-lg text-[#560024] text-base font-bold mb-3 mt-3">
+                    ITEM SELESAI
+                </p>
+                <h2 class="text-xl font-bold">
+                    {{ $orderSelesai }} ITEM
+                </h2>
+            </div>
+            
+            <div class="bg-white p-6 rounded-lg shadow text-center">
+                <p class="bg-[#FBE9EB] inline-block px-7 py-3 rounded-lg text-[#560024] text-base font-bold mb-3 mt-3">
+                    TOTAL PRODUK
+                </p>
+                <h2 class="text-xl font-bold">
+                    {{ $produk }} ITEM
+                </h2>
             </div>
 
-            <!-- Total Produk -->
-            <div class="bg-white p-5 rounded-lg shadow grid grid-cols-3 items-center">
-                <div class="col-span-1 flex justify-center">
-                    <p class="bg-[#FBE9EB] px-7 py-4 rounded-lg text-[#560024] text-base font-bold">TOTAL PRODUK</p>
-                </div>
-                <div class="col-span-2 text-center">
-                    <h2 class="text-xl font-bold">{{ $produk }} ITEM</h2>
-                </div>
-            </div>
         </div>
+
 
         <div class="grid grid-cols-2 gap-6 mb-6">
             <div class="bg-white p-6 rounded-lg shadow">

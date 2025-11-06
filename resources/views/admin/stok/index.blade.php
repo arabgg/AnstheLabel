@@ -54,8 +54,7 @@
                                 <td class="p-3">
                                     <div class="flex items-center justify-center gap-2">
                                         @if ($item->stok_produk > 5)
-                                            <span class="w-3 h-3 rounded-full bg-green-400"></span>
-                                            <span>Stok Aman</span>
+                                            <div class="p-2 rounded-lg bg-green-500 text-white font-semibold">Stok Aman</div>
                                         @elseif ($item->stok_produk >= 4 && $item->stok_produk <= 5)
                                             <span class="w-3 h-3 rounded-full bg-orange-400"></span>
                                             <span>Mulai Restock</span>

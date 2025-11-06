@@ -63,7 +63,6 @@ class BannerController extends Controller
             ->findOrFail($id);
 
         if ($request->hasFile('foto_banner')) {
-            // Hapus file lama jika ada
             if ($banner->foto_banner && Storage::exists('public/banner/' . $banner->foto_banner)) {
                 Storage::delete('public/banner/' . $banner->foto_banner);
             }
