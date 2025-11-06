@@ -5,7 +5,7 @@
         <div class="p-8 bg-white rounded-lg shadow">
             {{-- Judul --}}
             <div class="flex justify-between items-start mb-7 border-b border-gray-300 pb-4">
-                <h1 class="text-2xl font-bold pl-4 pt-4">Kelola Spanduk</h1>
+                <h1 class="text-2xl font-bold pl-4 pt-4">Kelola Banner</h1>
             </div>
 
             {{-- Search --}}
@@ -58,10 +58,10 @@
                                 <td class="p-3 break-words max-w-xs">{{ $banner->deskripsi }}</td>
                                 <td class="p-3 break-words max-w-xs">
                                     @if ($banner->status == 1)
-                                        <span
-                                            class="px-2 py-1 text-xs font-semibold text-green-700 bg-green-200 rounded-lg">Aktif</span>
+                                        <div
+                                            class="border-transparent p-2 rounded-lg bg-green-200 text-green-800 border-green-400 font-semibold text-center">Aktif</div>
                                     @else
-                                        <span class="px-2 py-1 text-xs font-semibold text-red-700 bg-red-200 rounded-lg">Nonaktif</span>
+                                        <div class="border-transparent p-2 rounded-lg bg-red-200 text-red-800 border-red-400 font-semibold text-center">Nonaktif</div>
                                     @endif
                                 </td>
                                 <td class="p-3 mt-5 flex gap-2 justify-center items-center">

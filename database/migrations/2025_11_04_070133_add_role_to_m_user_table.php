@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('m_user', function (Blueprint $table) {
-            $table->enum('role', ['super_admin', 'admin'])->default('admin')->after('password');
+            $table->enum('role', ['super_admin', 'admin'])->after('password');
         });
     }
 
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('m_user', function (Blueprint $table) {
+        Schema::table('m_user', function (Blueprint $table) {   
             $table->dropColumn('role');
         });
     }

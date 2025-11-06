@@ -13,7 +13,14 @@ class AuthController extends Controller
     public function login()
     {
         if (Auth::check()) {
-            return redirect('/admin');
+            $user = Auth::user();
+
+            // Redirect sesuai role
+            if ($user->role === 'super_admin') {
+                return redirect()->route('admin.dashboard');
+            } elseif ($user->role === 'admin') {
+                return redirect()->route('produk.index');
+            }
         }
 
         return view('auth.login');
@@ -31,19 +38,26 @@ class AuthController extends Controller
         if ($user && Hash::check($request->password, $user->password)) {
             Auth::login($user);
 
+            // Tentukan redirect URL berdasarkan role
+            $redirectUrl = match ($user->role) {
+                'super_admin' => url('/admin'),
+                'admin' => url('/produk'),
+                default => url('/'), // fallback kalau role tak dikenal
+            };
+
             return response()->json([
                 'status' => true,
                 'message' => 'Login berhasil',
-                'redirect' => url('/admin')
+                'redirect' => $redirectUrl,
             ]);
         }
 
         return response()->json([
             'status' => false,
-            'message' => 'Username atau password salah'
+            'message' => 'Username atau password salah',
         ]);
     }
-
+    
     public function changePasswordForm()
     {
         return view('auth.change-password');

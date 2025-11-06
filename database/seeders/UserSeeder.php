@@ -15,11 +15,22 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         DB::table('m_user')->insert([
-            'nama' => 'Admin',
-            'username' => 'admin123',
-            'password' => Hash::make('password'),
-            'remember_token' => Str::random(10),
-            'created_at' => now(),
+            [
+                'nama' => 'Super Admin',
+                'username' => 'superadmin',
+                'password' => Hash::make('Super123!'),
+                'role' => 'super_admin',
+                'remember_token' => Str::random(10),
+                'created_at' => now(),
+            ],
+            [
+                'nama' => 'Admin',
+                'username' => 'admin',
+                'password' => Hash::make('Biasa123!'),
+                'role' => 'admin',
+                'remember_token' => Str::random(10),
+                'created_at' => now(),
+            ],
         ]);
     }
 }
