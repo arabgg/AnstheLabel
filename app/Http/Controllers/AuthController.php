@@ -31,6 +31,10 @@ class AuthController extends Controller
         $request->validate([
             'username' => 'required|string',
             'password' => 'required|string',
+            'g-recaptcha-response' => 'required|captcha',
+        ], [
+            'g-recaptcha-response.required' => 'Silakan verifikasi bahwa Anda bukan robot.',
+            'g-recaptcha-response.captcha' => 'Verifikasi reCAPTCHA gagal, coba lagi.',
         ]);
 
         $user = UserModel::where('username', $request->username)->first();
@@ -38,11 +42,10 @@ class AuthController extends Controller
         if ($user && Hash::check($request->password, $user->password)) {
             Auth::login($user);
 
-            // Tentukan redirect URL berdasarkan role
             $redirectUrl = match ($user->role) {
                 'super_admin' => url('/admin'),
                 'admin' => url('/produk'),
-                default => url('/'), // fallback kalau role tak dikenal
+                default => url('/'),
             };
 
             return response()->json([
@@ -57,7 +60,7 @@ class AuthController extends Controller
             'message' => 'Username atau password salah',
         ]);
     }
-    
+
     public function changePasswordForm()
     {
         return view('auth.change-password');
