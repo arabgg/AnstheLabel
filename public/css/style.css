@@ -199,7 +199,7 @@ html,body {width:100%;font-family:'Montserrat',sans-serif!important;}
   .edition-grid {grid-template-columns:repeat(2,1fr);}
   .bestproduk-section, .edition-section, .bestseller-section {padding:0 20px;}
   .bestproduk-title, .edition-title, .bestseller-title {font-size:18px;}
-  .bestproduk-name, .edition-name, .bestseller-name {font-size:12px;}
+  .bestproduk-name, .edition-name, .bestseller-name, {font-size:12px;}
   .edition-label {font-size:10px;}
   .price-discounted, .price-now {font-size:12px;}
 
