@@ -11,22 +11,33 @@ class StokController extends Controller
     {
         $searchQuery = $request->input('search', '');
         $sort = $request->input('sort', '');
+        $status = $request->input('status', '');
 
-        $produk = ProdukModel::select('produk_id', 'nama_produk', 'stok_produk','created_at', 'updated_at')
+        $produk = ProdukModel::select('produk_id', 'nama_produk', 'stok_produk', 'created_at', 'updated_at')
             ->when(!empty($searchQuery), function ($q) use ($searchQuery) {
-                $q->where('nama_kategori', 'like', "%{$searchQuery}%");
+                $q->where('nama_produk', 'like', "%{$searchQuery}%");
             })
-            ->when($sort === 'terbaru', function ($q) {
-                $q->orderBy('created_at', 'desc');
+            ->when($status === 'aman', function ($q) {
+                $q->where('stok_produk', '>', 5);
             })
-            ->when($sort === 'terlama', function ($q) {
-                $q->orderBy('created_at', 'asc');
+            ->when($status === 'mulai', function ($q) {
+                $q->whereBetween('stok_produk', [4, 5]);
             })
-            ->when($sort === 'terupdate', function ($q) {
-                $q->orderBy('updated_at', 'desc');
+            ->when($status === 'habis', function ($q) {
+                $q->where('stok_produk', '<', 4);
+            })
+            ->when($sort === 'stok_desc', function ($q) {
+                $q->orderBy('stok_produk', 'desc');
+            })
+            ->when($sort === 'stok_asc', function ($q) {
+                $q->orderBy('stok_produk', 'asc');
+            })
+            // Default sort: stok paling sedikit di atas
+            ->when(empty($sort), function ($q) {
+                $q->orderBy('stok_produk', 'asc');
             })
             ->paginate(10)
-            ->withQueryString(); 
+            ->withQueryString();
 
         return view('admin.stok.index', compact('produk', 'searchQuery', 'sort'));
     }

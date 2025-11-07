@@ -26,7 +26,7 @@
 
         <div class="mb-4">
             <label class="block text-sm font-medium mb-1">Status</label>
-            @if (!in_array($banner->banner_id, [1, 5, 9, 13, 17, 18, 19, 20]))
+            @if (!in_array($banner->banner_id, [1, 5, 9, 13, 17, 21, 22, 23, 24]))
                 <div class="flex items-center gap-4">
                     <label class="flex items-center gap-2">
                         <input type="radio" name="status" value="1" {{ $banner->status == 1 ? 'checked' : '' }}

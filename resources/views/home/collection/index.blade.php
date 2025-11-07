@@ -13,10 +13,14 @@
         </div>
         <div class="custom-carousel-collection skeleton-target" style="display:none;">
             @foreach ($hero as $item)
-                @if ($item->banner_id >= 1 && $item->banner_id <= 5)
-                    <img src="{{ route('storage', ['folder' => 'banner', 'filename' => $item->foto_banner]) }}"
-                        class="carousel-image {{ $item->banner_id === 1 ? 'active' : '' }}"
+                @if ($item->banner_id >= 17 && $item->banner_id <= 20)
+                    @if ($item->foto_banner)
+                        <img src="{{ route('storage', ['folder' => 'banner', 'filename' => $item->foto_banner]) }}"
+                        class="carousel-image {{ $item->banner_id === 17 ? 'active' : '' }}"
                         alt="{{ $item->nama_banner }}">
+                    @else
+                        <div class="no-banner">Banner not available</div>
+                    @endif
                 @endif
             @endforeach
         </div>

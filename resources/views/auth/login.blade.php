@@ -32,6 +32,11 @@
                         class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-700 font-sans">
                 </div>
 
+                <div class="mb-4 flex justify-center">
+                    {!! NoCaptcha::display() !!}
+                </div>
+                {!! NoCaptcha::renderJs() !!}
+
                 <button type="submit"
                     class="w-full bg-[#560024] text-white py-2 transition hover:bg-[#A65A6A] rounded">LOG
                     IN</button>
@@ -42,42 +47,74 @@
     </div>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const form = e.target;
             const formData = new FormData(form);
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-            fetch("{{ route('login') }}", {
+            try {
+                const response = await fetch("{{ route('login') }}", {
                     method: 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': csrfToken
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json',
                     },
                     body: formData
-                })
-                .then(response => response.json())
-                .then(json => {
-                    if (json.status) {
-                        // Login berhasil -> langsung redirect
-                        window.location.href = json.redirect;
-                    } else {
-                        // Login gagal
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Login Gagal',
-                            text: json.message || 'Username atau password salah'
-                        });
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+
+                    let errorMessage = 'Terjadi kesalahan sistem.';
+
+                    if (errorData.errors) {
+                        // Ambil pesan error dari Laravel
+                        const firstError = Object.values(errorData.errors)[0];
+                        errorMessage = Array.isArray(firstError) ? firstError[0] : firstError;
                     }
-                })
-                .catch(error => {
+
                     Swal.fire({
                         icon: 'error',
-                        title: 'Oops...',
-                        text: 'Terjadi kesalahan sistem.'
+                        title: 'Verifikasi Gagal',
+                        text: errorMessage,
                     });
-                    console.error(error);
+
+                    // refresh recaptcha agar bisa dicentang ulang
+                    if (typeof grecaptcha !== "undefined") {
+                        grecaptcha.reset();
+                    }
+
+                    return;
+                }
+
+                const json = await response.json();
+
+                if (json.status) {
+                    // Login berhasil -> redirect
+                    window.location.href = json.redirect;
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Login Gagal',
+                        text: json.message || 'Username atau password salah'
+                    });
+
+                    // reset captcha supaya user bisa isi ulang
+                    if (typeof grecaptcha !== "undefined") {
+                        grecaptcha.reset();
+                    }
+                }
+
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Terjadi kesalahan sistem.'
                 });
+                console.error(error);
+            }
         });
     </script>
 
