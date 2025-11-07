@@ -184,6 +184,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'Pdf' => Barryvdh\DomPDF\Facade\Pdf::class,
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
