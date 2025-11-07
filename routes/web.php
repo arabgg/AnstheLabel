@@ -133,6 +133,8 @@ Route::middleware('auth')->group(function () {
             Route::delete('/{id}/destroy', [ProdukController::class, 'destroy'])->name('produk.destroy');
         });
 
+        Route::get('/stok', [StokController::class, 'index'])->name('stok.index');
+
         Route::prefix('kategori')->group(function () {
             Route::get('/', [KategoriController::class, 'index'])->name('kategori.index');
             Route::get('/show/{id}', [KategoriController::class, 'show'])->name('kategori.show');

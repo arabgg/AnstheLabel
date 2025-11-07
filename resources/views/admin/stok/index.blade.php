@@ -14,22 +14,40 @@
                     {{-- Form Search --}}
                     <form method="GET" action="{{ route('stok.index') }}"
                         class="flex items-center border rounded-lg px-3 py-2 w-1/2">
-                        <input type="text" name="search" placeholder="Cari Nama Produk"
-                            value="{{ $searchQuery ?? '' }}" class="w-full outline-none placeholder:text-sm">
+                        <input type="text" name="search" placeholder="Cari Nama Produk" value="{{ $searchQuery ?? '' }}"
+                            class="w-full outline-none placeholder:text-sm">
                         <button type="submit" class="ml-2">
                             <i class="fas fa-search"></i>
                         </button>
                     </form>
 
+                    {{-- Dropdown Filter Status --}}
+                    <form method="GET" action="{{ route('stok.index') }}">
+                        <select id="statusFilter" name="status"
+                            class="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-400 transition-colors"
+                            onchange="this.form.submit()">
+                            <option value="">Semua Status</option>
+                            <option value="aman" {{ request('status') == 'aman' ? 'selected' : '' }}>Stok Aman</option>
+                            <option value="mulai" {{ request('status') == 'mulai' ? 'selected' : '' }}>Mulai Restock
+                            </option>
+                            <option value="habis" {{ request('status') == 'habis' ? 'selected' : '' }}>Harus Restock
+                            </option>
+                        </select>
+                    </form>
+
                     {{-- Dropdown Sort --}}
                     <form method="GET" action="{{ route('stok.index') }}">
                         <select id="sortFilter" name="sort"
-                            class="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-400 transition-colors">
-                            <option value="">Urutkan</option>
-                            <option value="terbaru" {{ request('sort') == 'terbaru' ? 'selected' : '' }}>Terbaru</option>
-                            <option value="terlama" {{ request('sort') == 'terlama' ? 'selected' : '' }}>Terlama</option>
+                            class="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-400 transition-colors"
+                            onchange="this.form.submit()">
+                            <option value="">Urutkan Berdasarkan</option>
+                            <option value="stok_asc" {{ request('sort') == 'stok_asc' ? 'selected' : '' }}>Stok Sedikit →
+                                Banyak</option>
+                            <option value="stok_desc" {{ request('sort') == 'stok_desc' ? 'selected' : '' }}>Stok Banyak →
+                                Sedikit</option>
                         </select>
                     </form>
+
                 </div>
             </div>
 
@@ -54,14 +72,19 @@
                                 <td class="p-3">
                                     <div class="flex items-center justify-center gap-2">
                                         @if ($item->stok_produk > 5)
-                                            <div class="p-2 rounded-lg bg-green-500 text-white font-semibold">Stok Aman</div>
+                                            <div class="p-2 rounded-lg bg-green-500 text-white font-semibold text-center">
+                                                Stok Aman
+                                            </div>
                                         @elseif ($item->stok_produk >= 4 && $item->stok_produk <= 5)
-                                            <span class="w-3 h-3 rounded-full bg-orange-400"></span>
-                                            <span>Mulai Restock</span>
+                                            <div class="p-2 rounded-lg bg-orange-400 text-white font-semibold text-center">
+                                                Mulai Restock
+                                            </div>
                                         @else
-                                            <span class="w-3 h-3 rounded-full bg-red-500"></span>
-                                            <span>Harus Restock</span>
+                                            <div class="p-2 rounded-lg bg-red-500 text-white font-semibold text-center">
+                                                Harus Restock
+                                            </div>
                                         @endif
+
                                     </div>
                                 </td>
                             </tr>
@@ -107,5 +130,4 @@
 
 
 @push('scripts')
-    
 @endpush
