@@ -51,7 +51,7 @@
                     {{ $orderSelesai }} ITEM
                 </h2>
             </div>
-            
+
             <div class="bg-white p-6 rounded-lg shadow text-center">
                 <p class="bg-[#FBE9EB] inline-block px-7 py-3 rounded-lg text-[#560024] text-base font-bold mb-3 mt-3">
                     TOTAL PRODUK
@@ -100,17 +100,17 @@
                             <td class="px-4 py-4">IDR {{ number_format($order->pembayaran->total_harga) }}</td>
                             <td class="px-4 py-4">{{ $order->pembayaran->metode->nama_pembayaran }}</td>
                             <td class="px-7 py-4">
-                                @if ($order->pembayaran->status_pembayaran === 'Menunggu Pembayaran')
+                                @if ($order->pembayaran->status_pembayaran === 'menunggu pembayaran')
                                     <div
                                         class="border-transparent p-2 rounded-lg bg-yellow-200 text-yellow-800 border-yellow-400 font-semibold text-center">
                                         Menunggu Pembayaran
                                     </div>
-                                @elseif($order->pembayaran->status_pembayaran === 'Lunas')
+                                @elseif($order->pembayaran->status_pembayaran === 'lunas')
                                     <div
                                         class="border-transparent p-2 rounded-lg bg-green-200 text-green-800 border-green-400 font-semibold text-center">
                                         Lunas
                                     </div>
-                                @elseif($order->pembayaran->status_pembayaran === 'Dibatalkan')
+                                @elseif($order->pembayaran->status_pembayaran === 'dibatalkan')
                                     <div
                                         class="border-transparent p-2 rounded-lg bg-red-200 text-red-800 border-red-400 font-semibold text-center">
                                         Dibatalkan
