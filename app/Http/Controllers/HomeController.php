@@ -28,15 +28,17 @@ class HomeController extends Controller
 
         $newarrival = ProdukModel::select('produk_id', 'kategori_id', 'nama_produk', 'harga', 'diskon')
             ->with([
-                'fotoUtama', 'hoverFoto'
+                'fotoUtama',
+                'hoverFoto'
             ])
             ->orderBy('produk_id', 'desc')
             ->take(8)
             ->get();
 
-        $bestseller = ProdukModel::select('produk_id', 'kategori_id','nama_produk', 'harga', 'diskon')
+        $bestseller = ProdukModel::select('produk_id', 'kategori_id', 'nama_produk', 'harga', 'diskon')
             ->with([
-                'fotoUtama', 'hoverFoto'
+                'fotoUtama',
+                'hoverFoto'
             ])
             ->orderByDesc('harga')
             ->take(4)
@@ -55,14 +57,14 @@ class HomeController extends Controller
 
         return view('home.landingpage.index', compact('newarrival', 'bestseller', 'bestproduk', 'edition', 'hero', 'desc'));
     }
-    
+
     public function collection(Request $request)
     {
         $hero = BannerModel::select('banner_id', 'nama_banner', 'foto_banner')
             ->get();
 
         $desc = BannerModel::select('banner_id', 'deskripsi')
-            ->where('banner_id', 19)
+            ->where('banner_id', 23)
             ->first();
 
         $filterKategori = (array) $request->input('filter', []);
@@ -72,23 +74,23 @@ class HomeController extends Controller
 
         $searchQuery = $request->input('search', '');
         $sort = $request->input('sort', '');
-        
+
         $produk = ProdukModel::select('produk_id', 'nama_produk', 'harga', 'diskon', 'kategori_id')
             ->with(['kategori:kategori_id,nama_kategori', 'fotoUtama'])
             ->when(!empty($filterKategori), fn($q) => $q->whereIn('kategori_id', $filterKategori))
-            ->when(!empty($filterBahan), fn($q)=>$q->whereIn('bahan_id',$filterBahan))
+            ->when(!empty($filterBahan), fn($q) => $q->whereIn('bahan_id', $filterBahan))
 
-        ->when(!empty($filterWarna), function($q) use($filterWarna){
-            $q->whereHas('warna', fn($q2)=>$q2->whereIn('warna_id',$filterWarna));
-        })
+            ->when(!empty($filterWarna), function ($q) use ($filterWarna) {
+                $q->whereHas('warna', fn($q2) => $q2->whereIn('warna_id', $filterWarna));
+            })
 
-        ->when(!empty($filterUkuran), function($q) use($filterUkuran){
-            $q->whereHas('ukuran', fn($q2)=>$q2->whereIn('ukuran_id',$filterUkuran));
-        })
+            ->when(!empty($filterUkuran), function ($q) use ($filterUkuran) {
+                $q->whereHas('ukuran', fn($q2) => $q2->whereIn('ukuran_id', $filterUkuran));
+            })
 
             ->when(!empty($searchQuery), function ($q) use ($searchQuery) {
                 $keywords = explode(' ', $searchQuery);
-                $q->where(function($q2) use ($keywords) {
+                $q->where(function ($q2) use ($keywords) {
                     foreach ($keywords as $word) {
                         $q2->orWhere('nama_produk', 'like', "%{$word}%");
                     }
@@ -99,13 +101,25 @@ class HomeController extends Controller
             ->paginate(100);
 
         $kategori = KategoriModel::select('kategori_id', 'nama_kategori')->get();
-         $bahan    = BahanModel::select('bahan_id','nama_bahan')->get();
-    $warna    = WarnaModel::select('warna_id','nama_warna')->get();
-    $ukuran   = UkuranModel::select('ukuran_id','nama_ukuran')->get();
+        $bahan    = BahanModel::select('bahan_id', 'nama_bahan')->get();
+        $warna    = WarnaModel::select('warna_id', 'nama_warna')->get();
+        $ukuran   = UkuranModel::select('ukuran_id', 'nama_ukuran')->get();
 
-        return view('home.collection.index', compact('produk','kategori','bahan','warna','ukuran',
-        'filterKategori','filterBahan','filterWarna','filterUkuran',
-        'searchQuery','sort','hero','desc'));
+        return view('home.collection.index', compact(
+            'produk',
+            'kategori',
+            'bahan',
+            'warna',
+            'ukuran',
+            'filterKategori',
+            'filterBahan',
+            'filterWarna',
+            'filterUkuran',
+            'searchQuery',
+            'sort',
+            'hero',
+            'desc'
+        ));
     }
 
     public function about()
@@ -137,7 +151,7 @@ class HomeController extends Controller
             ->take(4)
             ->get();
 
-        return view('home.faq.index', compact( 'faqs', 'rekomendasi', 'desc'));
+        return view('home.faq.index', compact('faqs', 'rekomendasi', 'desc'));
     }
 
     public function show_produk($id)
@@ -147,21 +161,21 @@ class HomeController extends Controller
             ->first();
 
         $produk = ProdukModel::with([
-                'kategori:kategori_id,nama_kategori',
-                'bahan:bahan_id,nama_bahan,deskripsi',
-                'foto:foto_produk_id,produk_id,foto_produk,status_foto',
-                'fotoUtama',
-                'warna.warna:warna_id,kode_hex',
-                'ukuran.ukuran:ukuran_id,nama_ukuran,deskripsi',
-            ])
+            'kategori:kategori_id,nama_kategori',
+            'bahan:bahan_id,nama_bahan,deskripsi',
+            'foto:foto_produk_id,produk_id,foto_produk,status_foto',
+            'fotoUtama',
+            'warna.warna:warna_id,kode_hex',
+            'ukuran.ukuran:ukuran_id,nama_ukuran,deskripsi',
+        ])
             ->select('produk_id', 'nama_produk', 'harga', 'diskon', 'deskripsi', 'kategori_id', 'bahan_id')
             ->findOrFail($id);
 
         $rekomendasi = ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
-                ->with('kategori:kategori_id,nama_kategori')
-                ->inRandomOrder()
-                ->take(4)
-                ->get();
+            ->with('kategori:kategori_id,nama_kategori')
+            ->inRandomOrder()
+            ->take(4)
+            ->get();
 
         return view('home.detail.index', compact('produk', 'rekomendasi', 'desc'));
     }
@@ -222,10 +236,10 @@ class HomeController extends Controller
         $total = collect($cart)->sum(fn($item) => $item['harga'] * $item['quantity']);
 
         $rekomendasi = ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
-                ->with('kategori:kategori_id,nama_kategori')
-                ->inRandomOrder()
-                ->take(4)
-                ->get();
+            ->with('kategori:kategori_id,nama_kategori')
+            ->inRandomOrder()
+            ->take(4)
+            ->get();
 
         return view('home.cart.index', compact('cart', 'total', 'rekomendasi'))
             ->with('grandTotal', $total);
