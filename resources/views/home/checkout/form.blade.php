@@ -4,7 +4,7 @@
 <div class="checkout-container">
     {{-- Bagian Form --}}
     <div class="checkout-form">
-        <form action="{{ route('checkout.save') }}" method="POST">
+        <form id="checkoutForm" action="{{ route('checkout.save') }}" method="POST">
             @csrf
             {{-- Hidden untuk data voucher & ekspedisi --}}
             <input type="hidden" name="voucher_id" id="voucherHidden">
@@ -93,7 +93,7 @@
                     </div>
                 @endforeach
             </div>
-            <button type="submit" class="checkout-payment-btn">{{ __('messages.button.order') }}</button>
+            {{-- <button type="submit" class="checkout-payment-btn">{{ __('messages.button.order') }}</button> --}}
         </form>
     </div>
 
@@ -169,7 +169,7 @@
         </div>
 
         {{-- Bagian Total --}}
-        <div class="checkout-total-section">
+        {{-- <div class="checkout-total-section">
             <div class="checkout-subtotal">
                 <span>Subtotal {{ count($cart) }} item</span>
             </div>
@@ -177,7 +177,32 @@
                 <span>Total</span>
                 <span class="checkout-total-price">IDR {{ number_format($total, 0, ',', '.') }}</span>
             </div>
+        </div> --}}
+
+        {{-- Bagian Total --}}
+        <div class="checkout-total-section">
+            <div class="checkout-subtotal">
+                <span>Subtotal</span>
+                <span class="checkout-subtotal-price">{{ count($cart) }} item</span>
+            </div>
+
+            <div class="checkout-subtotal">
+                <span>Subtotal Pesanan</span>
+                <span class="checkout-subtotal-price">IDR {{ number_format($total, 0, ',', '.') }}</span>
+            </div>
+
+            <div class="checkout-voucher-discount" style="display: none;">
+                <span>Potongan Voucher</span>
+                <span class="checkout-voucher-price text-danger">- IDR 0</span>
+            </div>
+
+            <div class="checkout-total">
+                <span>Total Pembayaran</span>
+                <span class="checkout-total-price">IDR {{ number_format($total, 0, ',', '.') }}</span>
+            </div>
         </div>
+
+        <button type="submit" form="checkoutForm" class="checkout-payment-btn">{{ __('messages.button.order') }}</button>
     </div>
 </div>
 @endsection
@@ -217,51 +242,67 @@ document.addEventListener('DOMContentLoaded', function() {
         voucherHidden.value = voucherSelect.value;
 
         voucherSelect.addEventListener("change", function() {
-            const selected = this.options[this.selectedIndex];
-            const tipe = selected.dataset.tipe;
-            const nilai = parseFloat(selected.dataset.nilai || 0);
-            const min = parseFloat(selected.dataset.min || 0);
+    const selected = this.options[this.selectedIndex];
+    const tipe = selected.dataset.tipe;
+    const nilai = parseFloat(selected.dataset.nilai || 0);
+    const min = parseFloat(selected.dataset.min || 0);
 
-            let newTotal = baseTotal;
-            let potongan = 0;
+    const subtotalText = document.querySelector(".checkout-subtotal-price");
+    const voucherRow = document.querySelector(".checkout-voucher-discount");
+    const voucherPrice = document.querySelector(".checkout-voucher-price");
+    const totalText = document.querySelector(".checkout-total-price");
 
-            if (this.value) {
-                if (baseTotal >= min) {
-                    if (tipe === "persen") {
-                        potongan = (nilai) * baseTotal;
-                    } else if (tipe === "nominal") {
-                        potongan = nilai;
-                    }
-                    newTotal = baseTotal - potongan;
+    let newTotal = baseTotal;
+    let potongan = 0;
 
-                    Swal.fire({
-                        toast: true,
-                        position: "top-end",
-                        icon: "success",
-                        title: `Voucher diterapkan! Hemat IDR ${potongan.toLocaleString("id-ID")}`,
-                        showConfirmButton: false,
-                        timer: 2500
-                    });
-
-                    voucherHidden.value = this.value;
-                } else {
-                    Swal.fire({
-                        toast: true,
-                        position: "top-end",
-                        icon: "warning",
-                        title: "Belanja Anda belum memenuhi syarat minimal voucher",
-                        showConfirmButton: false,
-                        timer: 2500
-                    });
-                    this.value = "";
-                    voucherHidden.value = ""; // reset hidden kalau gagal
-                }
-            } else {
-                voucherHidden.value = ""; // reset kalau pilih "--Tidak Pakai Voucher--"
+    if (this.value) {
+        if (baseTotal >= min) {
+            if (tipe === "persen") {
+                potongan = (nilai / 100) * baseTotal;
+            } else if (tipe === "nominal") {
+                potongan = nilai;
             }
 
-            totalText.textContent = "IDR " + newTotal.toLocaleString("id-ID");
-        });
+            newTotal = baseTotal - potongan;
+            voucherHidden.value = this.value;
+
+            // Tampilkan baris potongan voucher
+            voucherRow.style.display = "flex";
+            voucherPrice.textContent = "- IDR " + potongan.toLocaleString("id-ID");
+
+            Swal.fire({
+                toast: true,
+                position: "top-end",
+                icon: "success",
+                title: `Voucher diterapkan! Hemat IDR ${potongan.toLocaleString("id-ID")}`,
+                showConfirmButton: false,
+                timer: 2500
+            });
+        } else {
+            Swal.fire({
+                toast: true,
+                position: "top-end",
+                icon: "warning",
+                title: "Belanja Anda belum memenuhi syarat minimal voucher",
+                showConfirmButton: false,
+                timer: 2500
+            });
+            this.value = "";
+            voucherHidden.value = "";
+            voucherRow.style.display = "none";
+        }
+    } else {
+        // Reset jika tidak pakai voucher
+        voucherHidden.value = "";
+        voucherRow.style.display = "none";
+        potongan = 0;
+        newTotal = baseTotal;
+    }
+
+    subtotalText.textContent = "IDR " + baseTotal.toLocaleString("id-ID");
+    totalText.textContent = "IDR " + newTotal.toLocaleString("id-ID");
+});
+
     }
 
     // Update ekspedisi ke hidden

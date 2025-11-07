@@ -261,12 +261,18 @@ class CheckoutController extends Controller
             ->where('kode_invoice', $kode_invoice)
             ->firstOrFail();
 
+        $total = $transaksi->detail->sum(function ($item) {
+            $hargaNormal = $item->produk->harga;
+            $diskon = $item->produk->diskon ?? 0;
+            return ($hargaNormal - $diskon) * $item->jumlah;
+        });
+
         $steps = config('transaksi.steps');
 
         $statusKeys = array_keys($steps);
         $stepIndex = array_search($transaksi->status_transaksi, $statusKeys);
 
-        return view('home.checkout.transaksi', compact('transaksi', 'steps', 'stepIndex', 'hero', 'desc'));
+        return view('home.checkout.transaksi', compact('transaksi', 'steps', 'stepIndex', 'hero', 'desc', 'total'));
     }
 
     public function uploadBukti(Request $request, $pembayaran_id)

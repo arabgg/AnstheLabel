@@ -135,7 +135,12 @@
 
                     {{-- Harga --}}
                     <div class="transaksi-item-harga">
-                        IDR {{ number_format($item->produk->harga * $item->jumlah, 2, ',', '.') }}
+                        @if (!empty($item->produk->diskon))
+                            <span class="detail-price-discounted">IDR {{ number_format($item->produk->harga * $item->jumlah, 0, ',', '.') }}</span>
+                            <span class="detail-price-now">IDR {{ number_format(($item->produk->harga - $item->produk->diskon) * $item->jumlah, 0, ',', '.') }}</span>
+                        @else
+                            <span class="detail-price-now">IDR {{ number_format($item->produk->harga * $item->jumlah, 0, ',', '.') }}</span>
+                        @endif
                     </div>
                 </div>
             @endforeach
@@ -143,11 +148,21 @@
             {{-- Ringkasan Transaksi --}}
             <div class="transaksi-ringkasan">
                 <div class="transaksi-subtotal">
-                    <span>Subtotal : {{ $transaksi->detail->sum('jumlah') }} item</span>
-                    <span>IDR {{ number_format($transaksi->pembayaran->total_harga, 0, ',', '.') }}</span>
+                    <span>Subtotal</span>
+                    <span>{{ $transaksi->detail->sum('jumlah') }} item</span>
                 </div>
+                <div class="transaksi-subtotal">
+                    <span>Subtotal Pesanan</span>
+                    <span>IDR {{ number_format($total, 0, ',', '.') }}</span>
+                </div>
+                @if (!empty($transaksi->pembayaran->voucher) && !empty($transaksi->pembayaran->voucher->nilai_diskon))
+                    <div class="transaksi-subtotal">
+                        <span>Potongan Voucher</span>
+                        <span>- IDR {{ number_format($transaksi->pembayaran->voucher->nilai_diskon, 0, ',', '.') }}</span>
+                    </div>
+                @endif
                 <div class="transaksi-total">
-                    <span>Total</span>
+                    <span>Total Pembayaran</span>
                     <span>IDR {{ number_format($transaksi->pembayaran->total_harga, 0, ',', '.') }}</span>
                 </div>
             </div>
