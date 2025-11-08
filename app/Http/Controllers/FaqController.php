@@ -26,11 +26,8 @@ class FaqController extends Controller
         } elseif ($sort === 'terlama') {
             $query->orderBy('created_at', 'asc');
         } else {
-            // default order
             $query->orderBy('faq_id', 'desc');
         }
-
-        // paginate (10 per page) dan pertahankan query string (search + sort)
         $faqs = $query->paginate(10)->withQueryString();
 
         return view('admin.faq.index', compact('faqs', 'searchQuery'));

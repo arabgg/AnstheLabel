@@ -130,6 +130,35 @@ class BannerSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            // Banner At Top Collection Page
+            [
+                'nama_banner' => 'Banner5.1',
+                'foto_banner' => 'hero5.avif',
+                'deskripsi' => 'Foto Banner 1 halaman collection paling atas',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nama_banner' => 'Banner5.2',
+                'foto_banner' => 'hero6.avif',
+                'deskripsi' => 'Foto Banner 2 halaman collection paling atas',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nama_banner' => 'Banner5.3',
+                'foto_banner' => 'hero7.avif',
+                'deskripsi' => 'Foto Banner 3 halaman collection paling atas',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nama_banner' => 'Banner5.4',
+                'foto_banner' => 'hero8.avif',
+                'deskripsi' => 'Foto Banner 4 halaman collection paling atas',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
             // Banner After Collection Edition
             [
                 'nama_banner' => 'Banner4.1',
@@ -145,7 +174,7 @@ class BannerSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            // Banner After Collection Edition
+            // Banner top header
             [
                 'nama_banner' => 'Banner Header',
                 'foto_banner' => 'header.png',

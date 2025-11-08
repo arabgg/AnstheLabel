@@ -176,6 +176,10 @@
                         @csrf
                         <input type="file" name="bukti_pembayaran" accept="image/*,application/pdf" required>
                         <button type="submit" class="btn-upload">{{ __('messages.button.upload') }}</button>
+                        <div>
+                            {!! NoCaptcha::display() !!}
+                        </div>
+                        {!! NoCaptcha::renderJs() !!}
                     </form>
                 </div>
                 @else

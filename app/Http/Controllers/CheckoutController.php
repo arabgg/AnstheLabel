@@ -250,7 +250,7 @@ class CheckoutController extends Controller
     public function transaksi($kode_invoice)
     {
         $hero = BannerModel::select('banner_id', 'nama_banner', 'foto_banner')
-                ->where('banner_id', 20)
+                ->where('banner_id', 24)
                 ->first();
 
         $desc = BannerModel::select('banner_id', 'deskripsi')

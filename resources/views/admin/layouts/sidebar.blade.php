@@ -20,17 +20,22 @@
         <div class="flex flex-col space-y-1">
             <h2 class="text-xs font-semibold uppercase tracking-wide text-gray-500 px-3 mt-2">Menu Utama</h2>
             <hr class="border-t border-gray-300 mx-3">
-            <a href="/admin"
-                class="menu-item flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-red-100 transition text-sm
-                {{ request()->is('admin*') ? 'font-bold text-black bg-red-200 border-l-4 border-[#560024]' : '' }}">
-                <i class="fa-solid fa-home w-5 text-center min-w-[20px]"></i>
-                <span class="flex-1 leading-none">Dasbor</span>
-            </a>
+
+            {{-- Dashboard hanya untuk super_admin --}}
+            @if (Auth::user()->role === 'super_admin')
+                <a href="/admin"
+                    class="menu-item flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-red-100 transition text-sm
+                    {{ request()->is('admin*') ? 'font-bold text-black bg-red-200 border-l-4 border-[#560024]' : '' }}">
+                    <i class="fa-solid fa-home w-5 text-center min-w-[20px]"></i>
+                    <span class="flex-1 leading-none">Dashboard</span>
+                </a>
+            @endif
+
             <a href="/banner"
                 class="menu-item flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-red-100 transition text-sm
                 {{ request()->is('banner*') ? 'font-bold text-black bg-red-200 border-l-4 border-[#560024]' : '' }}">
                 <i class="fa-solid fa-image w-5 text-center min-w-[20px]"></i>
-                <span class="flex-1 leading-none">Spanduk</span>
+                <span class="flex-1 leading-none">Banner</span>
             </a>
             <a href="/faq"
                 class="menu-item flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-red-100 transition text-sm
@@ -44,7 +49,12 @@
         <div class="flex flex-col space-y-1">
             <h2 class="text-xs font-semibold uppercase tracking-wide text-gray-500 px-3 mt-2">Menu Produk</h2>
             <hr class="border-t border-gray-300 mx-3">
-            @foreach ([['url' => '/produk', 'icon' => 'fa-boxes-stacked', 'label' => 'Produk'], ['url' => '/kategori', 'icon' => 'fa-tag', 'label' => 'Kategori'], ['url' => '/bahan', 'icon' => 'fa-leaf', 'label' => 'Bahan'], ['url' => '/ukuran', 'icon' => 'fa-ruler', 'label' => 'Ukuran'], ['url' => '/warna', 'icon' => 'fa-paintbrush', 'label' => 'Warna']] as $item)
+            @foreach ([['url' => '/produk', 'icon' => 'fa-boxes-stacked', 'label' => 'Produk'],
+                ['url' => '/stok', 'icon' => 'fa-boxes-stacked', 'label' => 'Stok Produk'], 
+                ['url' => '/kategori', 'icon' => 'fa-tag', 'label' => 'Kategori'], 
+                ['url' => '/bahan', 'icon' => 'fa-leaf', 'label' => 'Bahan'], 
+                ['url' => '/ukuran', 'icon' => 'fa-ruler', 'label' => 'Ukuran'], 
+                ['url' => '/warna', 'icon' => 'fa-paintbrush', 'label' => 'Warna']] as $item)
                 <a href="{{ $item['url'] }}"
                     class="menu-item flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-red-100 transition text-sm
                     {{ request()->is(ltrim($item['url'], '/') . '*') ? 'font-bold text-black bg-red-200 border-l-4 border-[#560024]' : '' }}">
@@ -70,18 +80,22 @@
                 <i class="fa-solid fa-truck w-5 text-center min-w-[20px]"></i>
                 <span class="flex-1 leading-none">Ekspedisi</span>
             </a>
-            <a href="/metode_pembayaran"
-                class="menu-item flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-red-100 transition text-sm
+            
+            {{-- Daftar Pesanan hanya untuk super_admin --}}
+            @if (Auth::user()->role === 'super_admin')
+                <a href="/metode_pembayaran"
+                    class="menu-item flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-red-100 transition text-sm
                 {{ request()->is('metode_pembayaran*') ? 'font-bold text-black bg-red-200 border-l-4 border-[#560024]' : '' }}">
-                <i class="fa-solid fa-credit-card w-5 text-center min-w-[20px]"></i>
-                <span class="flex-1 leading-none">Metode Pembayaran</span>
-            </a>
-            <a href="/pesanan"
-                class="menu-item flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-red-100 transition text-sm
-                {{ request()->is('pesanan*') ? 'font-bold text-black bg-red-200 border-l-4 border-[#560024]' : '' }}">
-                <i class="fa-solid fa-receipt w-5 text-center min-w-[20px]"></i>
-                <span class="flex-1 leading-none">Daftar Pesanan</span>
-            </a>
+                    <i class="fa-solid fa-credit-card w-5 text-center min-w-[20px]"></i>
+                    <span class="flex-1 leading-none">Metode Pembayaran</span>
+                </a>
+                <a href="/pesanan"
+                    class="menu-item flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-red-100 transition text-sm
+                    {{ request()->is('pesanan*') ? 'font-bold text-black bg-red-200 border-l-4 border-[#560024]' : '' }}">
+                    <i class="fa-solid fa-receipt w-5 text-center min-w-[20px]"></i>
+                    <span class="flex-1 leading-none">Daftar Pesanan</span>
+                </a>
+            @endif
         </div>
     </nav>
 
@@ -103,7 +117,7 @@
         <form method="POST" action="{{ route('logout') }}" id="logout-form" class="hidden">@csrf</form>
     </div>
 
-    {{-- SweetAlert: Logout --}}
+    {{-- Script: Logout & Pencarian Menu --}}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -176,6 +190,6 @@
                     }
                 }
             });
-        }); 
+        });
     </script>
 </div>

@@ -121,6 +121,19 @@ class PesananController extends Controller
             $pembayaran->save();
         }
 
+        if ($request->status_transaksi === 'selesai') {
+            $detailTransaksi = $transaksi->detailTransaksi; 
+
+            foreach ($detailTransaksi as $detail) {
+                $produk = $detail->produk; 
+                if ($produk) {
+                    $jumlahBeli = $detail->jumlah;
+                    $produk->stok_produk = max(0, $produk->stok_produk - $jumlahBeli);
+                    $produk->save();
+                }
+            }
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Status transaksi & pembayaran berhasil diperbarui',

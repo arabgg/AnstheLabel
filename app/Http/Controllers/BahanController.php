@@ -26,7 +26,7 @@ class BahanController extends Controller
                 $q->orderBy('updated_at', 'desc');
             })
             ->paginate(10)
-            ->withQueryString(); // supaya search tetap terbawa saat sorting
+            ->withQueryString();
 
         return view('admin.bahan.index', compact('bahan', 'searchQuery', 'sort'));
     }

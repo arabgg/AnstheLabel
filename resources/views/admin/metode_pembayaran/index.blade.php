@@ -59,8 +59,9 @@
                             <th class="p-3">NO</th>
                             <th class="p-3">METODE</th>
                             <th class="p-3">PEMBAYARAN</th>
-                            <th class="p-3">KODE BAYAR</th>
+                            <th class="p-3">NO REKENING</th>
                             <th class="p-3">ATAS NAMA</th>
+                            <th class="p-3">STATUS</th>
                             <th class="p-3">AKSI</th>
                         </tr>
                     </thead>
@@ -72,6 +73,14 @@
                                 <td class="p-3">{{ $item->nama_pembayaran }}</td>
                                 <td class="p-3">{{ $item->kode_bayar }}</td>
                                 <td class="p-3">{{ $item->atas_nama }}</td>
+                                <td class="p-3">
+                                    @if ($item->status_pembayaran == 1)
+                                        <div
+                                            class="border-transparent p-2 rounded-lg bg-green-200 text-green-800 border-green-400 font-semibold text-center">Aktif</div>
+                                    @else
+                                        <div class="border-transparent p-2 rounded-lg bg-red-200 text-red-800 border-red-400 font-semibold text-center">Nonaktif</div>
+                                    @endif
+                                </td>
                                 <td class="p-3 flex gap-2 justify-center items-center">
                                     {{-- Tombol Detail --}}
                                     <button

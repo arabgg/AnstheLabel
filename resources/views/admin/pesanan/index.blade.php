@@ -105,23 +105,30 @@
 
                                 {{-- Dropdown Status Transaksi --}}
                                 <td>
-                                    <select
-                                        onchange="updateStatusTransaksi('{{ route('update.transaksi', $item->transaksi_id) }}', this.value)">
+                                     <select
+                                        onchange="updateStatusTransaksi('{{ route('update.transaksi', $item->transaksi_id) }}', this.value)"
+                                        class="border rounded px-2 py-1 text-sm"
+                                        {{ in_array($item->status_transaksi, ['selesai', 'batal']) ? 'disabled' : '' }}>
                                         <option value="menunggu pembayaran"
                                             {{ $item->status_transaksi === 'menunggu pembayaran' ? 'selected' : '' }}>
                                             Menunggu
                                         </option>
                                         <option value="dikemas"
                                             {{ $item->status_transaksi === 'dikemas' ? 'selected' : '' }}>
-                                            Dikemas</option>
+                                            Dikemas
+                                        </option>
                                         <option value="dikirim"
                                             {{ $item->status_transaksi === 'dikirim' ? 'selected' : '' }}>
-                                            Dikirim</option>
+                                            Dikirim
+                                        </option>
                                         <option value="selesai"
                                             {{ $item->status_transaksi === 'selesai' ? 'selected' : '' }}>
-                                            Selesai</option>
-                                        <option value="batal" {{ $item->status_transaksi === 'batal' ? 'selected' : '' }}>
-                                            Batal</option>
+                                            Selesai
+                                        </option>
+                                        <option value="batal"
+                                            {{ $item->status_transaksi === 'batal' ? 'selected' : '' }}>
+                                            Batal
+                                        </option>
                                     </select>
                                 </td>
                                 {{-- Action --}}

@@ -2,72 +2,67 @@
 
 @section('content')
     <div class="container rounded-lg min-h-screen">
-        <div class="grid grid-cols-4  gap-5 mb-6">
-            <div class="bg-white p-6 rounded-lg shadow flex items-center justify-between">
-                <i class="bg-[#FBE9EB] px-6 py-5 rounded-lg fa-solid fa-dollar-sign text-[#560024] text-xl"></i>
-                <div class="text-left">
-                    <p class="text-gray-500">Total Pendapatan</p>
-                    <h2 class="text-xl font-bold">IDR {{ number_format($pendapatan) }}</h2>
-                </div>
-            </div>
-            <div class="bg-white p-6 rounded-lg shadow flex items-center justify-between">
-                <i class="bg-[#FBE9EB] p-5 rounded-lg fa-solid fa-box-open text-[#560024] text-xl ml-3"></i>
-                <div class="text-left mr-3">
-                    <p class="text-gray-500">Item Selesai</p>
-                    <h2 class="text-xl font-bold">{{ $orderSelesai }}</h2>
-                </div>
-            </div>
-            <div class="bg-white p-6 rounded-lg shadow flex items-center justify-between">
-                <i class="bg-[#FBE9EB] px-6 py-5 rounded-lg fa-solid fa-box text-[#560024] text-xl ml-2"></i>
-                <div class="text-left mr-2">
-                    <p class="text-gray-500">Item Diproses</p>
-                    <h2 class="text-2xl font-bold">{{ $orderProses }}</h2>
-                </div>
-            </div>
-            <div class="bg-white p-6 rounded-lg shadow flex items-center justify-between">
-                <i class="bg-[#FBE9EB] px-6 py-5 rounded-lg fa-solid fa-bag-shopping text-[#560024] text-xl ml-3"></i>
-                <div class="text-left mr-3">
-                    <p class="text-gray-500">Total Produk</p>
-                    <h2 class="text-2xl font-bold">{{ $produk }}</h2>
-                </div>
-            </div>
-        </div>
-
-        <div class="flex justify-start mb-6">
-            <form method="GET" action="{{ route('admin.dashboard') }}"
-                class="flex items-end gap-6 bg-white p-6 rounded-lg shadow w-fit">
-
-                {{-- Tahun Dinamis --}}
-                <div class="flex flex-col">
-                    <label for="year" class="text-sm font-semibold text-gray-700 mb-1">Pilih Tahun</label>
-                    <select name="year" id="year"
-                        class="w-40 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#560024]">
-                        @foreach ($availableYears as $y)
-                            <option value="{{ $y }}" {{ $selectedYear == $y ? 'selected' : '' }}>
-                                {{ $y }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-
-                {{-- Tombol Mode Tampilan --}}
-                <div class="flex flex-col">
-                    <label class="text-sm font-semibold text-gray-700 mb-1">Mode Tampilan</label>
-                    <div class="flex gap-3">
+        <div class="grid grid-cols-4 gap-5 mb-6">
+            <div class="bg-white p-6 rounded-lg shadow">
+                <form method="GET" action="{{ route('admin.dashboard') }}" class="space-y-4">
+                    <div>
+                        <label for="year" class="block text-sm font-semibold text-gray-700 mb-1">
+                            Pilih Tahun
+                        </label>
+                        <select name="year" id="year"
+                            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#560024]">
+                            @foreach ($availableYears as $y)
+                                <option value="{{ $y }}" {{ $selectedYear == $y ? 'selected' : '' }}>
+                                    {{ $y }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 mt-3">
                         <button type="submit" name="view_mode" value="monthly"
-                            class="px-4 py-2 rounded-lg text-sm font-semibold shadow transition
-                    {{ $viewMode == 'monthly' ? 'bg-[#560024] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                            class="px-4 py-2 rounded-lg text-sm font-semibold shadow transition 
+                            {{ $viewMode == 'monthly' ? 'bg-[#560024] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
                             Monthly
                         </button>
+
                         <button type="submit" name="view_mode" value="quarterly"
-                            class="px-4 py-2 rounded-lg text-sm font-semibold shadow transition
-                    {{ $viewMode == 'quarterly' ? 'bg-[#560024] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
+                            class="px-4 py-2 rounded-lg text-sm font-semibold shadow transition 
+                            {{ $viewMode == 'quarterly' ? 'bg-[#560024] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
                             Quarterly
                         </button>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow text-center">
+                <p class="bg-[#FBE9EB] inline-block px-6 py-3 rounded-lg text-[#560024] text-base font-bold mb-3 mt-3">
+                    TOTAL PENDAPATAN
+                </p>
+                <h2 class="text-xl font-bold">
+                    IDR {{ number_format($pendapatan) }}
+                </h2>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow text-center">
+                <p class="bg-[#FBE9EB] inline-block px-7 py-3 rounded-lg text-[#560024] text-base font-bold mb-3 mt-3">
+                    ITEM SELESAI
+                </p>
+                <h2 class="text-xl font-bold">
+                    {{ $orderSelesai }} ITEM
+                </h2>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow text-center">
+                <p class="bg-[#FBE9EB] inline-block px-7 py-3 rounded-lg text-[#560024] text-base font-bold mb-3 mt-3">
+                    TOTAL PRODUK
+                </p>
+                <h2 class="text-xl font-bold">
+                    {{ $produk }} ITEM
+                </h2>
+            </div>
+
         </div>
+
 
         <div class="grid grid-cols-2 gap-6 mb-6">
             <div class="bg-white p-6 rounded-lg shadow">
@@ -105,17 +100,17 @@
                             <td class="px-4 py-4">IDR {{ number_format($order->pembayaran->total_harga) }}</td>
                             <td class="px-4 py-4">{{ $order->pembayaran->metode->nama_pembayaran }}</td>
                             <td class="px-7 py-4">
-                                @if ($order->pembayaran->status_pembayaran === 'Menunggu Pembayaran')
+                                @if ($order->pembayaran->status_pembayaran === 'menunggu pembayaran')
                                     <div
                                         class="border-transparent p-2 rounded-lg bg-yellow-200 text-yellow-800 border-yellow-400 font-semibold text-center">
                                         Menunggu Pembayaran
                                     </div>
-                                @elseif($order->pembayaran->status_pembayaran === 'Lunas')
+                                @elseif($order->pembayaran->status_pembayaran === 'lunas')
                                     <div
                                         class="border-transparent p-2 rounded-lg bg-green-200 text-green-800 border-green-400 font-semibold text-center">
                                         Lunas
                                     </div>
-                                @elseif($order->pembayaran->status_pembayaran === 'Dibatalkan')
+                                @elseif($order->pembayaran->status_pembayaran === 'dibatalkan')
                                     <div
                                         class="border-transparent p-2 rounded-lg bg-red-200 text-red-800 border-red-400 font-semibold text-center">
                                         Dibatalkan

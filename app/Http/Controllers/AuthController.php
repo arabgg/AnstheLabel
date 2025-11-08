@@ -13,7 +13,14 @@ class AuthController extends Controller
     public function login()
     {
         if (Auth::check()) {
-            return redirect('/admin');
+            $user = Auth::user();
+
+            // Redirect sesuai role
+            if ($user->role === 'super_admin') {
+                return redirect()->route('admin.dashboard');
+            } elseif ($user->role === 'admin') {
+                return redirect()->route('produk.index');
+            }
         }
 
         return view('auth.login');
@@ -24,6 +31,10 @@ class AuthController extends Controller
         $request->validate([
             'username' => 'required|string',
             'password' => 'required|string',
+            'g-recaptcha-response' => 'required|captcha',
+        ], [
+            'g-recaptcha-response.required' => 'Silakan verifikasi bahwa Anda bukan robot.',
+            'g-recaptcha-response.captcha' => 'Verifikasi reCAPTCHA gagal, coba lagi.',
         ]);
 
         $user = UserModel::where('username', $request->username)->first();
@@ -31,16 +42,22 @@ class AuthController extends Controller
         if ($user && Hash::check($request->password, $user->password)) {
             Auth::login($user);
 
+            $redirectUrl = match ($user->role) {
+                'super_admin' => url('/admin'),
+                'admin' => url('/produk'),
+                default => url('/'),
+            };
+
             return response()->json([
                 'status' => true,
                 'message' => 'Login berhasil',
-                'redirect' => url('/admin')
+                'redirect' => $redirectUrl,
             ]);
         }
 
         return response()->json([
             'status' => false,
-            'message' => 'Username atau password salah'
+            'message' => 'Username atau password salah',
         ]);
     }
 

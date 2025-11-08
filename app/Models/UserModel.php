@@ -6,19 +6,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Facades\Hash;
 // use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class UserModel extends Authenticatable
 {
     use HasFactory;
+    use Notifiable;
 
     protected $table = 'm_user';
     protected $primaryKey = 'user_id';
+    public $timestamps = true;
     
     protected $fillable = [
         'nama',
         'username',
         'password',
-        'remember_token'
+        'role',
     ];
 
     protected $casts = [
@@ -28,6 +31,7 @@ class UserModel extends Authenticatable
 
     protected $hidden = [
         'password',
+        'remember_token',
     ];
 
     /**
@@ -47,5 +51,15 @@ class UserModel extends Authenticatable
         // Update password baru
         $this->password = Hash::make($newPassword);
         return $this->save();
+    }
+
+    public function isSuperAdmin()
+    {
+        return $this->role === 'super_admin';
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
     }
 }
