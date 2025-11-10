@@ -1,0 +1,26 @@
+name: 🚀 Deploy to VPS via SSH
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧩 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔐 Setup SSH
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: 🚀 Deploy to VPS
+        run: |
+          ssh -o StrictHostKeyChecking=no root@103.179.66.74 "
+            cd /var/www/html/AnstheLabel &&
+            git pull origin master
+          "
