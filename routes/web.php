@@ -128,6 +128,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/{id}/show', [ProdukController::class, 'show']);
             Route::get('/create', [ProdukController::class, 'create'])->name('produk.create');
             Route::post('/store', [ProdukController::class, 'store'])->name('produk.store');
+            Route::get('/editBest', [ProdukController::class, 'editBest'])->name('produk.editBest');
+            Route::post('/postBest', [ProdukController::class, 'postBest'])->name('produk.postBest');
             Route::get('/{id}/edit', [ProdukController::class, 'edit'])->name('produk.edit');
             Route::put('/{id}/update', [ProdukController::class, 'update'])->name('produk.update');
             Route::delete('/{id}/destroy', [ProdukController::class, 'destroy'])->name('produk.destroy');

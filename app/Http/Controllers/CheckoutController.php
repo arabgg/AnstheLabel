@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
 {
@@ -285,9 +286,9 @@ class CheckoutController extends Controller
 
         if ($request->hasFile('bukti_pembayaran')) {
             $file = $request->file('bukti_pembayaran');
-            $filename = time().'_'.$file->getClientOriginalName();
+            $extension = $file->getClientOriginalExtension();
+            $filename = time() . '_' . Str::random(10) . '.' . $extension;
             $file->storeAs('bukti', $filename, 'public');
-
             $pembayaran->bukti_pembayaran = $filename;
             $pembayaran->save();
 

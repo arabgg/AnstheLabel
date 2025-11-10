@@ -174,12 +174,17 @@
                     <h4>{{ __('messages.status.confirm') }}</h4>
                     <form action="{{ route('transaksi.upload', $transaksi->pembayaran->pembayaran_id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        <input type="file" name="bukti_pembayaran" accept="image/*,application/pdf" required>
-                        <button type="submit" class="btn-upload">{{ __('messages.button.upload') }}</button>
-                        <div>
-                            {!! NoCaptcha::display() !!}
+
+                        {{-- reCAPTCHA dulu --}}
+                        <div class="captcha-container mb-4">
+                            {!! NoCaptcha::display(['data-callback' => 'enableUploadForm']) !!}
                         </div>
                         {!! NoCaptcha::renderJs() !!}
+
+                        <div id="uploadSection" style="display: none;">
+                            <input type="file" name="bukti_pembayaran" accept="image/*,application/pdf" required>
+                            <button type="submit" class="btn-upload">{{ __('messages.button.upload') }}</button>
+                        </div>
                     </form>
                 </div>
                 @else
@@ -235,5 +240,19 @@
             timerProgressBar: true
         });
     @endif
+
+    function enableUploadForm() {
+        document.getElementById('uploadSection').style.display = 'block';
+
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Captcha berhasil diverifikasi!',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+        });
+    }
 </script>
 @endpush
