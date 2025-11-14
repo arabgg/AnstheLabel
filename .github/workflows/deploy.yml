@@ -21,6 +21,7 @@ jobs:
       - name: 🚀 Deploy to VPS
         run: |
           ssh -o StrictHostKeyChecking=no root@103.179.66.74 "
+            cd ..
             cd /var/www/html/AnstheLabel &&
             git pull origin master
           "
