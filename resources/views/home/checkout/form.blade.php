@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (this.value) {
         if (baseTotal >= min) {
             if (tipe === "persen") {
-                potongan = (nilai / 100) * baseTotal;
+                potongan = nilai * baseTotal;
             } else if (tipe === "nominal") {
                 potongan = nilai;
             }

@@ -158,7 +158,7 @@
                 @if (!empty($transaksi->pembayaran->voucher) && !empty($transaksi->pembayaran->voucher->nilai_diskon))
                     <div class="transaksi-subtotal">
                         <span>Potongan Voucher</span>
-                        <span>- IDR {{ number_format($transaksi->pembayaran->voucher->nilai_diskon, 0, ',', '.') }}</span>
+                        <span>IDR {{ number_format($diskon, 0, ',', '.') }}</span>
                     </div>
                 @endif
                 <div class="transaksi-total">
