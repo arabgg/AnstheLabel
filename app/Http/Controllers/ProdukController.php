@@ -56,7 +56,7 @@ class ProdukController extends Controller
             ->when($bahanFilter, function ($query, $bahanFilter) {
                 $query->where('bahan_id', $bahanFilter);
             })
-            ->when($sort, function ($query, $sort) { // Logika sorting
+            ->when($sort, function ($query, $sort) { 
                 if ($sort === 'terbaru') {
                     $query->orderBy('created_at', 'desc');
                 } elseif ($sort === 'terlama') {
@@ -80,7 +80,9 @@ class ProdukController extends Controller
             return BahanModel::select('bahan_id', 'nama_bahan')->get();
         });
 
-        return view('admin.produk.index', compact('produk', 'kategoriList', 'bahanList', 'paginateLimit', 'title'));
+        $best = ProdukModel::where('is_best', 1)->paginate(10);
+
+        return view('admin.produk.index', compact('produk', 'best', 'kategoriList', 'bahanList', 'paginateLimit', 'title'));
     }
 
     public function show($id)
@@ -126,7 +128,6 @@ class ProdukController extends Controller
             'foto_utama' => 'required|image|mimes:jpeg,png,jpg,avif|max:2048',
             'foto_sekunder.*' => 'nullable|image|mimes:jpeg,png,jpg,avif|max:2048',
             'nama_produk' => 'required|string|max:255',
-            'is_best' => 'nullable|boolean',
             'stok_produk' => 'required|integer',
             'deskripsi' => 'required|string',
             'harga' => 'required|numeric|min:0',
@@ -165,7 +166,6 @@ class ProdukController extends Controller
 
             $produk = ProdukModel::create([
                 'nama_produk' => $request->nama_produk,
-                'is_best' => $request->is_best,
                 'deskripsi' => $request->deskripsi,
                 'stok_produk' => $request->stok_produk,
                 'harga' => $request->harga,
@@ -250,6 +250,30 @@ class ProdukController extends Controller
         return redirect()->route('produk.index')->with('success', 'Produk berhasil disimpan!');
     }
 
+    public function editBest()
+    {
+        $best = ProdukModel::with(['fotoUtama'])
+            ->paginate(100);
+
+        return view('admin.produk.best', compact('best'));
+    }
+
+    public function postBest(Request $request)
+    {
+        $request->validate([
+            'produk_id' => 'required|array|size:5',
+            'produk_id.*' => 'exists:t_produk,produk_id',
+        ], [
+            'produk_id.required' => 'Kamu harus memilih 5 produk.',
+            'produk_id.size' => 'Kamu harus memilih tepat 5 produk terbaik.',
+        ]);
+
+        ProdukModel::where('is_best', 1)->update(['is_best' => 0]);
+        ProdukModel::whereIn('produk_id', $request->produk_id)->update(['is_best' => 1]);
+
+        return redirect()->route('produk.index')->with('success', '5 produk terbaik berhasil diperbarui!');
+    }
+
     public function edit($id)
     {
         $title = "Edit Produk";
@@ -281,7 +305,6 @@ class ProdukController extends Controller
             'foto_utama' => 'nullable|image|mimes:jpeg,png,jpg,avif|max:2048',
             'foto_sekunder.*' => 'nullable|image|mimes:jpeg,png,jpg,avif|max:2048',
             'nama_produk' => 'required|string|max:255',
-            'is_best' => 'nullable|boolean',
             'stok_produk' => 'required|integer',
             'deskripsi' => 'required|string',
             'harga' => 'required|numeric|min:0',
@@ -298,7 +321,7 @@ class ProdukController extends Controller
 
         DB::transaction(function () use ($request, $produk, $optimizerChain) {
 
-            $produk->update($request->only(['nama_produk', 'deskripsi', 'harga', 'diskon', 'stok_produk', 'is_best', 'kategori_id', 'bahan_id']));
+            $produk->update($request->only(['nama_produk', 'deskripsi', 'harga', 'diskon', 'stok_produk', 'kategori_id', 'bahan_id']));
 
             if ($request->hasFile('foto_utama')) {
                 FotoProdukModel::where('produk_id', $produk->produk_id)->where('status_foto', 1)->delete();

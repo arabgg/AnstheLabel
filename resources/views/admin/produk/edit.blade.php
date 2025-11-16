@@ -29,18 +29,6 @@
                             value="{{ old('nama_produk', $produk->nama_produk) }}" required>
                     </div>
 
-                    {{-- Status Best --}}
-                    <div class="mt-3">
-                        {{-- Fallback agar tetap kirim 0 jika tidak dicentang --}}
-                        <input type="hidden" name="is_best" value="0">
-                        <label class="inline-flex items-center">
-                            <input type="checkbox" name="is_best" value="1"
-                                {{ old('is_best', $produk->is_best) == 1 ? 'checked' : '' }}
-                                class="rounded border-gray-300 text-pink-600 focus:ring-pink-500">
-                            <span class="ml-2 text-sm text-gray-700">Tandai sebagai produk terbaik</span>
-                        </label>
-                    </div>
-
                     {{-- Stok --}}
                     <div>
                         <label class="block font-medium mb-1">Stok</label>

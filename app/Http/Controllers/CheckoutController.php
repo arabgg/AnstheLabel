@@ -16,13 +16,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
 {
     public function cart()
     {
         $desc = BannerModel::select('banner_id', 'deskripsi')
-            ->where('banner_id', 19)
+            ->where('banner_id', 23)
             ->first();
 
         $cart = session()->get('cart', []);
@@ -101,7 +102,7 @@ class CheckoutController extends Controller
     public function checkoutForm()
     {
         $desc = BannerModel::select('banner_id', 'deskripsi')
-            ->where('banner_id', 19)
+            ->where('banner_id', 23)
             ->first();
 
         $cart = session()->get('cart', []);
@@ -254,7 +255,7 @@ class CheckoutController extends Controller
                 ->first();
 
         $desc = BannerModel::select('banner_id', 'deskripsi')
-            ->where('banner_id', 19)
+            ->where('banner_id', 23)
             ->first();
 
         $transaksi = TransaksiModel::with(['detail.produk', 'detail.ukuran', 'detail.warna', 'pembayaran'])
@@ -267,12 +268,22 @@ class CheckoutController extends Controller
             return ($hargaNormal - $diskon) * $item->jumlah;
         });
 
+        $hargaProduk = $transaksi->detail->sum(function ($item) {
+            $hargaNormal = $item->produk->harga;
+            $diskon = $item->produk->diskon ?? 0;
+                return ($hargaNormal - $diskon) * $item->jumlah;
+            });
+        
+        $totalBayar = $transaksi->pembayaran->total_harga;
+
+        $diskon = $hargaProduk - $totalBayar;
+
         $steps = config('transaksi.steps');
 
         $statusKeys = array_keys($steps);
         $stepIndex = array_search($transaksi->status_transaksi, $statusKeys);
 
-        return view('home.checkout.transaksi', compact('transaksi', 'steps', 'stepIndex', 'hero', 'desc', 'total'));
+        return view('home.checkout.transaksi', compact('diskon', 'transaksi', 'steps', 'stepIndex', 'hero', 'desc', 'total'));
     }
 
     public function uploadBukti(Request $request, $pembayaran_id)
@@ -285,9 +296,9 @@ class CheckoutController extends Controller
 
         if ($request->hasFile('bukti_pembayaran')) {
             $file = $request->file('bukti_pembayaran');
-            $filename = time().'_'.$file->getClientOriginalName();
+            $extension = $file->getClientOriginalExtension();
+            $filename = time() . '_' . Str::random(10) . '.' . $extension;
             $file->storeAs('bukti', $filename, 'public');
-
             $pembayaran->bukti_pembayaran = $filename;
             $pembayaran->save();
 
