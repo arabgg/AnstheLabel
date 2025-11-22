@@ -179,76 +179,90 @@
         </form>
     </div>
 
-    {{-- Preview Foto dan Validasi --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const fotoUtamaInput = document.getElementById('foto-utama');
-            const previewUtama = document.getElementById('preview-utama');
-            const placeholderIconUtama = document.getElementById('placeholder-icon-utama');
-            const form = document.getElementById('product-form');
+<script src="https://cdn.jsdelivr.net/npm/heic2any/dist/heic2any.min.js"></script>
 
-            // Cek jika ada foto utama saat memuat halaman
-            const hasExistingFotoUtama = previewUtama.src && !previewUtama.src.includes('placeholder');
-            if (hasExistingFotoUtama) {
-                previewUtama.classList.remove('hidden');
-                placeholderIconUtama.classList.add('hidden');
-            } else {
-                previewUtama.classList.add('hidden');
-                placeholderIconUtama.classList.remove('hidden');
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const fotoUtamaInput = document.getElementById('foto-utama');
+    const previewUtama = document.getElementById('preview-utama');
+    const placeholderIconUtama = document.getElementById('placeholder-icon-utama');
+
+    // Preview Foto Utama (support HEIC)
+    fotoUtamaInput.addEventListener('change', async function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const isHeic = file.type === "image/heic" || file.name.toLowerCase().endsWith(".heic");
+
+        if (isHeic) {
+            try {
+                const converted = await heic2any({
+                    blob: file,
+                    toType: "image/jpeg",
+                    quality: 0.9
+                });
+
+                const jpgBlob = new Blob([converted], { type: "image/jpeg" });
+                const url = URL.createObjectURL(jpgBlob);
+
+                previewUtama.src = url;
+            } catch (err) {
+                console.error("HEIC convert error:", err);
+                alert("Gagal membaca HEIC.");
+                return;
+            }
+        } else {
+            previewUtama.src = URL.createObjectURL(file);
+        }
+
+        previewUtama.classList.remove('hidden');
+        placeholderIconUtama.classList.add('hidden');
+    });
+
+
+
+    // Preview Foto Sekunder (support HEIC)
+    document.querySelectorAll('.preview-input').forEach(input => {
+        input.addEventListener('change', async function(e) {
+            const previewId = this.dataset.preview;
+            const previewImg = document.getElementById(previewId);
+            const file = this.files[0];
+
+            if (!file) {
+                previewImg.src = '';
+                previewImg.classList.add('hidden');
+                return;
             }
 
-            // Preview Foto Utama
-            fotoUtamaInput.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    previewUtama.src = URL.createObjectURL(file);
-                    previewUtama.classList.remove('hidden');
-                    placeholderIconUtama.classList.add('hidden');
-                } else {
-                    // Jika file dihapus, kembali ke status awal
-                    previewUtama.src = "{{ $produk->fotoUtama ? asset('storage/foto_produk/' . $produk->fotoUtama->foto_produk) : '' }}";
-                    if (previewUtama.src) {
-                        previewUtama.classList.remove('hidden');
-                        placeholderIconUtama.classList.add('hidden');
-                    } else {
-                        previewUtama.classList.add('hidden');
-                        placeholderIconUtama.classList.remove('hidden');
-                    }
+            const isHeic = file.type === "image/heic" || file.name.toLowerCase().endsWith(".heic");
+
+            if (isHeic) {
+                try {
+                    const converted = await heic2any({
+                        blob: file,
+                        toType: "image/jpeg",
+                        quality: 0.8
+                    });
+
+                    const jpgBlob = new Blob([converted], { type: "image/jpeg" });
+                    const url = URL.createObjectURL(jpgBlob);
+
+                    previewImg.src = url;
+                } catch (err) {
+                    console.error("Error HEIC sekunder:", err);
+                    alert("Gagal membaca foto sekunder HEIC");
+                    return;
                 }
-            });
+            } else {
+                previewImg.src = URL.createObjectURL(file);
+            }
 
-            // Preview Foto Sekunder
-            document.querySelectorAll('.preview-input').forEach(input => {
-                input.addEventListener('change', function(e) {
-                    const previewId = this.dataset.preview;
-                    const previewImg = document.getElementById(previewId);
-
-                    if (this.files && this.files[0]) {
-                        previewImg.src = URL.createObjectURL(this.files[0]);
-                        previewImg.classList.remove('hidden');
-                    } else {
-                        previewImg.src = '';
-                        previewImg.classList.add('hidden');
-                    }
-                });
-            });
-
-            // Validation for checkboxes on form submission
-            form.addEventListener('submit', function(event) {
-                const ukuranCheckboxes = document.querySelectorAll('input[name="ukuran_id[]"]');
-                const isUkuranChecked = Array.from(ukuranCheckboxes).some(checkbox => checkbox.checked);
-
-                const warnaCheckboxes = document.querySelectorAll('input[name="warna_id[]"]');
-                const isWarnaChecked = Array.from(warnaCheckboxes).some(checkbox => checkbox.checked);
-
-                if (!isUkuranChecked) {
-                    alert('Harap pilih setidaknya satu Ukuran.');
-                    event.preventDefault();
-                } else if (!isWarnaChecked) {
-                    alert('Harap pilih setidaknya satu Warna.');
-                    event.preventDefault();
-                }
-            });
+            previewImg.classList.remove('hidden');
         });
-    </script>
+    });
+
+});
+</script>
+
 @endsection
