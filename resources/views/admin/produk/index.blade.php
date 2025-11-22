@@ -143,6 +143,43 @@
             </div>
         @endif
     </div>
+
+    {{-- Best Produk --}}
+    <div class="p-8 bg-white rounded-lg shadow">
+        <div class="flex justify-between items-start mb-7 border-b border-gray-300 pb-4">
+            <h1 class="text-2xl font-bold pl-4 pt-4">Kelola Best Produk</h1>
+        </div>
+
+        <div class="flex justify-between items-center mb-5">
+                {{-- Tombol Tambah Produk --}}
+                <a href="{{ url('/produk/editBest') }}"
+                    class="px-7 py-2 bg-[#560024] text-white font-semibold rounded-lg hover:bg-gray-700 flex items-center justify-center text-sm ml-auto">
+                    Edit Best Produk
+                </a>
+            </form>
+        </div>
+
+        <div class="grid gap-5 grid-cols-[repeat(auto-fill,minmax(220px,1fr))]">
+            @if ($best->isEmpty())
+                <div class="col-span-full text-center py-10">
+                    <p class="text-gray-500 text-lg">Best produk tidak ditemukan.</p>
+                </div>
+            @else
+                @foreach ($best as $p)
+                    <div class="p-2 bg-slate-200 rounded-xl shadow-md overflow-visible hover:bg-[#DFE3E7] transition duration-200">
+                        {{-- Nama Produk + Dropdown --}}
+                        <div class="flex justify-between items-center mb-2">
+                            <h2 class="text-small font-montserrat truncate">{{ $p->nama_produk }}</h2>
+                        </div>
+                        <div class="aspect-[4/5] rounded-xl overflow-hidden">
+                            <img src="{{ asset('storage/foto_produk/' . $p->fotoUtama->foto_produk) }}"
+                                alt="{{ $p->nama_produk }}" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                @endforeach
+            @endif
+        </div>
+    </div>
 @endsection
 
 @push('scripts')

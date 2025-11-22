@@ -28,17 +28,6 @@
                             required>
                     </div>
 
-                    {{-- Status Best --}}
-                    <div class="mt-3">
-                        <input type="hidden" name="is_best" value="0">
-                        <label class="inline-flex items-center">
-                            <input type="checkbox" name="is_best" value="1"
-                                {{ old('is_best', $produk->is_best ?? 0) == 1 ? 'checked' : '' }}
-                                class="rounded border-gray-300 text-pink-600 focus:ring-pink-500" >
-                            <span class="ml-2 text-sm text-gray-700">Tandai sebagai produk terbaik</span>
-                        </label>
-                    </div>
-
                     {{-- Stok --}}
                     <div>
                         <label class="block font-medium mb-1">Stok</label>
@@ -174,45 +163,88 @@
 @endsection
 
 ---
+<script src="https://cdn.jsdelivr.net/npm/heic2any/dist/heic2any.min.js"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const fotoUtamaInput = document.getElementById('foto-utama');
-        const previewUtama = document.getElementById('preview-utama');
-        const placeholderIconUtama = document.getElementById('placeholder-icon-utama');
+document.addEventListener('DOMContentLoaded', () => {
 
-        // Initial state: hide image, show icon
-        previewUtama.classList.add('hidden');
-        placeholderIconUtama.classList.remove('hidden');
+    const fotoUtamaInput = document.getElementById('foto-utama');
+    const previewUtama = document.getElementById('preview-utama');
+    const placeholderIconUtama = document.getElementById('placeholder-icon-utama');
 
-        // Preview Foto Utama
-        fotoUtamaInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                previewUtama.src = URL.createObjectURL(file);
-                previewUtama.classList.remove('hidden'); // Show the image
-                placeholderIconUtama.classList.add('hidden'); // Hide the icon
-            } else {
-                previewUtama.src = '';
-                previewUtama.classList.add('hidden'); // Hide the image
-                placeholderIconUtama.classList.remove('hidden'); // Show the icon
+    // Preview Foto Utama (support HEIC)
+    fotoUtamaInput.addEventListener('change', async function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const isHeic = file.type === "image/heic" || file.name.toLowerCase().endsWith(".heic");
+
+        if (isHeic) {
+            try {
+                const converted = await heic2any({
+                    blob: file,
+                    toType: "image/jpeg",
+                    quality: 0.9
+                });
+
+                const jpgBlob = new Blob([converted], { type: "image/jpeg" });
+                const url = URL.createObjectURL(jpgBlob);
+
+                previewUtama.src = url;
+            } catch (err) {
+                console.error("HEIC convert error:", err);
+                alert("Gagal membaca HEIC.");
+                return;
             }
-        });
+        } else {
+            previewUtama.src = URL.createObjectURL(file);
+        }
 
-        // Preview Foto Sekunder
-        document.querySelectorAll('.preview-input').forEach(input => {
-            input.addEventListener('change', function(e) {
-                const previewId = this.dataset.preview;
-                const previewImg = document.getElementById(previewId);
+        previewUtama.classList.remove('hidden');
+        placeholderIconUtama.classList.add('hidden');
+    });
 
-                if (this.files && this.files[0]) {
-                    previewImg.src = URL.createObjectURL(this.files[0]);
-                    previewImg.classList.remove('hidden');
-                } else {
-                    previewImg.src = '';
-                    previewImg.classList.add('hidden');
+
+
+    // Preview Foto Sekunder (support HEIC)
+    document.querySelectorAll('.preview-input').forEach(input => {
+        input.addEventListener('change', async function(e) {
+            const previewId = this.dataset.preview;
+            const previewImg = document.getElementById(previewId);
+            const file = this.files[0];
+
+            if (!file) {
+                previewImg.src = '';
+                previewImg.classList.add('hidden');
+                return;
+            }
+
+            const isHeic = file.type === "image/heic" || file.name.toLowerCase().endsWith(".heic");
+
+            if (isHeic) {
+                try {
+                    const converted = await heic2any({
+                        blob: file,
+                        toType: "image/jpeg",
+                        quality: 0.8
+                    });
+
+                    const jpgBlob = new Blob([converted], { type: "image/jpeg" });
+                    const url = URL.createObjectURL(jpgBlob);
+
+                    previewImg.src = url;
+                } catch (err) {
+                    console.error("Error HEIC sekunder:", err);
+                    alert("Gagal membaca foto sekunder HEIC");
+                    return;
                 }
-            });
+            } else {
+                previewImg.src = URL.createObjectURL(file);
+            }
+
+            previewImg.classList.remove('hidden');
         });
     });
+
+});
 </script>

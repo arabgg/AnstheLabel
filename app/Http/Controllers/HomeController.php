@@ -20,10 +20,11 @@ class HomeController extends Controller
     public function index()
     {
         $hero = BannerModel::select('banner_id', 'nama_banner', 'foto_banner')
+            ->where('status', 1)
             ->get();
 
         $desc = BannerModel::select('banner_id', 'deskripsi')
-            ->where('banner_id', 19)
+            ->where('banner_id', 23)
             ->first();
 
         $newarrival = ProdukModel::select('produk_id', 'kategori_id', 'nama_produk', 'harga', 'diskon')
@@ -61,6 +62,7 @@ class HomeController extends Controller
     public function collection(Request $request)
     {
         $hero = BannerModel::select('banner_id', 'nama_banner', 'foto_banner')
+            ->where('status', 1)
             ->get();
 
         $desc = BannerModel::select('banner_id', 'deskripsi')
@@ -125,7 +127,7 @@ class HomeController extends Controller
     public function about()
     {
         $desc = BannerModel::select('banner_id', 'deskripsi')
-            ->where('banner_id', 19)
+            ->where('banner_id', 23)
             ->first();
 
         $rekomendasi = ProdukModel::select('produk_id', 'nama_produk', 'kategori_id')
@@ -140,7 +142,7 @@ class HomeController extends Controller
     public function homefaq()
     {
         $desc = BannerModel::select('banner_id', 'deskripsi')
-            ->where('banner_id', 19)
+            ->where('banner_id', 23)
             ->first();
 
         $faqs = FaqModel::select('faq_id', 'pertanyaan', 'jawaban')->get();
@@ -157,7 +159,7 @@ class HomeController extends Controller
     public function show_produk($id)
     {
         $desc = BannerModel::select('banner_id', 'deskripsi')
-            ->where('banner_id', 19)
+            ->where('banner_id', 23)
             ->first();
 
         $produk = ProdukModel::with([
