@@ -11,7 +11,7 @@ class InvoiceController extends Controller
     public function invoice()
     {
         $desc = BannerModel::select('banner_id', 'deskripsi')
-            ->where('banner_id', 19)
+            ->where('banner_id', 23)
             ->first();
 
         return view('home.checkout.invoice', compact('desc'));
