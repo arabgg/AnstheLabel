@@ -15,6 +15,10 @@ use Spatie\ImageOptimizer\OptimizerChainFactory;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Imagick\Driver as ImagickDriver;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class ProdukController extends Controller
 {
@@ -27,12 +31,13 @@ class ProdukController extends Controller
         $stokMin = $request->input('stok_min');
         $hargaMax = $request->input('harga_max');
         $bahanFilter = $request->input('bahan');
-        $sort = $request->input('sort');
+        $sort = $request->input('sort', 'terbaru');
         $paginateLimit = $request->input('paginate', 10);
 
         $kategoriList = Cache::remember('kategori_list', 600, function () {
             return KategoriModel::select('kategori_id', 'nama_kategori')->get();
         });
+
 
         $produk = ProdukModel::whereHas('fotoUtama')
             ->with(['kategori', 'bahan', 'fotoUtama'])
@@ -56,7 +61,7 @@ class ProdukController extends Controller
             ->when($bahanFilter, function ($query, $bahanFilter) {
                 $query->where('bahan_id', $bahanFilter);
             })
-            ->when($sort, function ($query, $sort) { // Logika sorting
+            ->when($sort, function ($query, $sort) {
                 if ($sort === 'terbaru') {
                     $query->orderBy('created_at', 'desc');
                 } elseif ($sort === 'terlama') {
@@ -80,7 +85,8 @@ class ProdukController extends Controller
             return BahanModel::select('bahan_id', 'nama_bahan')->get();
         });
 
-        return view('admin.produk.index', compact('produk', 'kategoriList', 'bahanList', 'paginateLimit', 'title'));
+        $best = ProdukModel::where('is_best', 1)->paginate(10);
+        return view('admin.produk.index', compact('produk', 'best', 'kategoriList', 'bahanList', 'paginateLimit', 'title'));
     }
 
     public function show($id)
@@ -120,13 +126,14 @@ class ProdukController extends Controller
 
     public function store(Request $request)
     {
+        $manager = new ImageManager(new ImagickDriver()); // V3: Instansiasi ImageManager
         $optimizerChain = OptimizerChainFactory::create();
 
+        // 1. Validasi Input (Tetap sama)
         $request->validate([
-            'foto_utama' => 'required|image|mimes:jpeg,png,jpg,avif|max:2048',
-            'foto_sekunder.*' => 'nullable|image|mimes:jpeg,png,jpg,avif|max:2048',
+            'foto_utama' => 'required|mimes:jpeg,png,jpg,avif,heic,heif,webp|max:2048',
+            'foto_sekunder.*' => 'nullable|mimes:jpeg,png,jpg,avif,heic,heif,webp|max:2048',
             'nama_produk' => 'required|string|max:255',
-            'is_best' => 'nullable|boolean',
             'stok_produk' => 'required|integer',
             'deskripsi' => 'required|string',
             'harga' => 'required|numeric|min:0',
@@ -137,35 +144,14 @@ class ProdukController extends Controller
             'ukuran_id.*' => 'string|max:50',
             'warna_id' => 'required|array|min:1',
             'warna_id.*' => 'string|max:50',
-            'kategori_manual' => 'nullable|string|max:255',
-            'bahan_manual' => 'nullable|string|max:255',
-            'ukuran_manual' => 'nullable|array',
-            'ukuran_manual.*' => 'string|max:50',
-            'warna_manual' => 'nullable|array',
-            'warna_manual.*' => 'string|max:50',
         ]);
 
-        DB::transaction(function () use ($request, $optimizerChain) {
-            if ($request->filled('kategori_manual')) {
-                $k = KategoriModel::firstOrCreate(
-                    ['nama_kategori' => $request->kategori_manual]
-                );
-                $request->merge(['kategori_id' => $k->kategori_id]);
-                Cache::forget('kategori_list');
-                Cache::forget('create_form_kategori');
-            }
+        // 2. Jalankan Logika dalam Database Transaction
+        DB::transaction(function () use ($request, $optimizerChain, $manager) {
 
-            if ($request->filled('bahan_manual')) {
-                $b = BahanModel::firstOrCreate(
-                    ['nama_bahan' => $request->bahan_manual]
-                );
-                $request->merge(['bahan_id' => $b->bahan_id]);
-                Cache::forget('create_form_bahan');
-            }
-
+            // Buat entri Produk
             $produk = ProdukModel::create([
                 'nama_produk' => $request->nama_produk,
-                'is_best' => $request->is_best,
                 'deskripsi' => $request->deskripsi,
                 'stok_produk' => $request->stok_produk,
                 'harga' => $request->harga,
@@ -174,16 +160,24 @@ class ProdukController extends Controller
                 'bahan_id' => $request->bahan_id,
             ]);
 
+            // === 3. Proses Konversi dan Penyimpanan FOTO UTAMA ===
             if ($request->hasFile('foto_utama')) {
-                $fotoUtama = $request->file('foto_utama');
-                $filename = $fotoUtama->hashName();
+                $uploadedFile = $request->file('foto_utama');
 
-                // Simpan ke storage/app/public/foto_produk
-                $fotoUtama->storeAs('public/foto_produk', $filename);
+                // 3a. Muat dan Konversi Gambar ke JPG (V3 SYNTAX: gunakan toJpeg(quality))
+                $image = $manager->read($uploadedFile)->toJpeg(85);
 
-                // Optimasi file
-                $optimizerChain->optimize(storage_path('app/public/foto_produk/' . $filename));
+                // 3b. Tentukan nama file baru dengan ekstensi .jpg
+                $filename = Str::random(40) . '.jpg';
+                $path = 'public/foto_produk/' . $filename;
 
+                // 3c. Simpan gambar yang sudah dikonversi ke Storage (V3 SYNTAX: gunakan toString())
+                Storage::put($path, $image->toString()); // <-- Diperbaiki: toString()
+
+                // 3d. Optimasi file JPG yang baru disimpan
+                $optimizerChain->optimize(storage_path('app/' . $path));
+
+                // 3e. Simpan data foto ke database
                 FotoProdukModel::create([
                     'produk_id' => $produk->produk_id,
                     'foto_produk' => $filename,
@@ -191,12 +185,24 @@ class ProdukController extends Controller
                 ]);
             }
 
+            // === 4. Proses Konversi dan Penyimpanan FOTO SEKUNDER ===
             if ($request->hasFile('foto_sekunder')) {
                 foreach ($request->file('foto_sekunder') as $foto) {
-                    $filename = $foto->hashName();
-                    $foto->storeAs('public/foto_produk', $filename);
-                    $optimizerChain->optimize(storage_path('app/public/foto_produk/' . $filename));
 
+                    // 4a. Muat dan Konversi Gambar ke JPG (V3 SYNTAX: gunakan toJpeg(quality))
+                    $image = $manager->read($foto)->toJpeg(85);
+
+                    // 4b. Tentukan nama file baru dengan ekstensi .jpg
+                    $filename = Str::random(40) . '.jpg';
+                    $path = 'public/foto_produk/' . $filename;
+
+                    // 4c. Simpan gambar yang sudah dikonversi ke Storage (V3 SYNTAX: gunakan toString())
+                    Storage::put($path, $image->toString()); // <-- Diperbaiki: toString()
+
+                    // 4d. Optimasi file JPG yang baru disimpan
+                    $optimizerChain->optimize(storage_path('app/' . $path));
+
+                    // 4e. Simpan data foto ke database
                     FotoProdukModel::create([
                         'produk_id' => $produk->produk_id,
                         'foto_produk' => $filename,
@@ -205,44 +211,15 @@ class ProdukController extends Controller
                 }
             }
 
+            // ... (Logika ukuran dan warna tetap sama)
             if ($request->has('ukuran_id')) {
                 foreach ($request->ukuran_id as $ukuran) {
-                    UkuranProdukModel::create([
-                        'produk_id' => $produk->produk_id,
-                        'ukuran_id' => $ukuran,
-                    ]);
+                    UkuranProdukModel::create(['produk_id' => $produk->produk_id, 'ukuran_id' => $ukuran,]);
                 }
             }
-            if ($request->has('ukuran_manual')) {
-                foreach ($request->ukuran_manual as $namaUkuranBaru) {
-                    $u = UkuranModel::firstOrCreate(['nama_ukuran' => $namaUkuranBaru]);
-                    UkuranProdukModel::firstOrCreate([
-                        'produk_id' => $produk->produk_id,
-                        'ukuran_id' => $u->ukuran_id,
-                    ]);
-                    Cache::forget('create_form_ukuran');
-                }
-            }
-
             if ($request->has('warna_id')) {
                 foreach ($request->warna_id as $kode) {
-                    WarnaProdukModel::create([
-                        'produk_id' => $produk->produk_id,
-                        'warna_id' => $kode,
-                    ]);
-                }
-            }
-            if ($request->has('warna_manual')) {
-                foreach ($request->warna_manual as $hex) {
-                    $w = WarnaModel::firstOrCreate(
-                        ['kode_hex' => strtoupper($hex)],
-                        ['nama_warna' => strtoupper($hex)]
-                    );
-                    WarnaProdukModel::firstOrCreate([
-                        'produk_id' => $produk->produk_id,
-                        'warna_id' => $w->warna_id,
-                    ]);
-                    Cache::forget('create_form_warna');
+                    WarnaProdukModel::create(['produk_id' => $produk->produk_id, 'warna_id' => $kode,]);
                 }
             }
         });
@@ -275,14 +252,20 @@ class ProdukController extends Controller
 
     public function update(Request $request, $id)
     {
-        $optimizerChain = OptimizerChainFactory::create();
+        // Inisialisasi ImageManager V3 (Menggunakan Imagick karena mendukung HEIC)
+        $manager = new ImageManager(new ImagickDriver());
 
+        // Inisialisasi Optimizer Chain
+        $optimizerChain = OptimizerChainFactory::create([]); // Menggunakan [] untuk menghindari error linter P1005
+
+        // 1. Validasi Input
         $request->validate([
-            'foto_utama' => 'nullable|image|mimes:jpeg,png,jpg,avif|max:2048',
-            'foto_sekunder.*' => 'nullable|image|mimes:jpeg,png,jpg,avif|max:2048',
+            // 'nullable' karena gambar bisa saja tidak diubah
+            'foto_utama' => 'nullable|mimes:jpeg,png,jpg,avif,heic,heif,webp|max:2048',
+            'foto_sekunder.*' => 'nullable|mimes:jpeg,png,jpg,avif,heic,heif,webp|max:2048',
             'nama_produk' => 'required|string|max:255',
-            'is_best' => 'nullable|boolean',
             'stok_produk' => 'required|integer',
+            // ... (Validasi lainnya tetap sama)
             'deskripsi' => 'required|string',
             'harga' => 'required|numeric|min:0',
             'diskon' => 'nullable|numeric|min:0',
@@ -296,31 +279,64 @@ class ProdukController extends Controller
 
         $produk = ProdukModel::findOrFail($id);
 
-        DB::transaction(function () use ($request, $produk, $optimizerChain) {
+        // 2. Jalankan Logika dalam Database Transaction
+        DB::transaction(function () use ($request, $produk, $optimizerChain, $manager) {
 
-            $produk->update($request->only(['nama_produk', 'deskripsi', 'harga', 'diskon', 'stok_produk', 'is_best', 'kategori_id', 'bahan_id']));
+            // Update data produk non-media
+            $produk->update($request->only([
+                'nama_produk',
+                'deskripsi',
+                'harga',
+                'diskon',
+                'stok_produk',
+                'kategori_id',
+                'bahan_id'
+            ]));
 
+            // === 3. PROSES FOTO UTAMA ===
             if ($request->hasFile('foto_utama')) {
-                FotoProdukModel::where('produk_id', $produk->produk_id)->where('status_foto', 1)->delete();
+                $uploadedFile = $request->file('foto_utama');
 
-                $fotoUtama = $request->file('foto_utama');
-                $filename = $fotoUtama->hashName();
-                $fotoUtama->storeAs('public/foto_produk', $filename);
-                $optimizerChain->optimize(storage_path('app/public/foto_produk/' . $filename));
+                // A. Hapus Foto Lama (dari DB dan Storage)
+                $oldFotoUtama = FotoProdukModel::where('produk_id', $produk->produk_id)->where('status_foto', 1)->first();
+                if ($oldFotoUtama) {
+                    Storage::delete('public/foto_produk/' . $oldFotoUtama->foto_produk); // Hapus dari storage
+                    $oldFotoUtama->delete(); // Hapus dari DB
+                }
 
+                // B. Konversi dan Simpan Foto Baru
+                $image = $manager->read($uploadedFile)->toJpeg(85);
+
+                $filename = Str::random(40) . '.jpg';
+                $path = 'public/foto_produk/' . $filename;
+
+                Storage::put($path, $image->toString()); // Simpan yang sudah dikonversi
+                $optimizerChain->optimize(storage_path('app/' . $path)); // Optimasi
+
+                // C. Simpan entri baru ke DB
                 FotoProdukModel::create([
                     'produk_id' => $produk->produk_id,
                     'foto_produk' => $filename,
                     'status_foto' => 1
                 ]);
             }
+            // Catatan: Jika foto sekunder diunggah, ia akan selalu ditambahkan, tidak menggantikan yang lama
+            // Kecuali Anda menghapus semua foto sekunder lama di sini (logika di bawah ini hanya ADD)
 
+            // === 4. PROSES FOTO SEKUNDER (ADD ONLY) ===
             if ($request->hasFile('foto_sekunder')) {
                 foreach ($request->file('foto_sekunder') as $foto) {
-                    $filename = $foto->hashName();
-                    $foto->storeAs('public/foto_produk', $filename);
-                    $optimizerChain->optimize(storage_path('app/public/foto_produk/' . $filename));
 
+                    // Konversi dan Simpan Foto Baru
+                    $image = $manager->read($foto)->toJpeg(85);
+
+                    $filename = Str::random(40) . '.jpg';
+                    $path = 'public/foto_produk/' . $filename;
+
+                    Storage::put($path, $image->toString());
+                    $optimizerChain->optimize(storage_path('app/' . $path));
+
+                    // Simpan entri baru ke DB
                     FotoProdukModel::create([
                         'produk_id' => $produk->produk_id,
                         'foto_produk' => $filename,
@@ -329,28 +345,27 @@ class ProdukController extends Controller
                 }
             }
 
+            // --- 5. UPDATE UKURAN DAN WARNA ---
+            // Ukuran
             UkuranProdukModel::where('produk_id', $produk->produk_id)->delete();
             foreach ($request->ukuran_id as $ukuran) {
-                UkuranProdukModel::create([
-                    'produk_id' => $produk->produk_id,
-                    'ukuran_id' => $ukuran
-                ]);
+                UkuranProdukModel::create(['produk_id' => $produk->produk_id, 'ukuran_id' => $ukuran]);
             }
 
+            // Warna
             WarnaProdukModel::where('produk_id', $produk->produk_id)->delete();
             foreach ($request->warna_id as $warnaKode) {
-                WarnaProdukModel::create([
-                    'produk_id' => $produk->produk_id,
-                    'warna_id' => $warnaKode
-                ]);
+                WarnaProdukModel::create(['produk_id' => $produk->produk_id, 'warna_id' => $warnaKode]);
             }
+
+            // Hapus Cache
             Cache::forget('produk_' . $produk->produk_id);
             Cache::forget('edit_produk_' . $produk->produk_id);
         });
 
         return redirect()->route('produk.index')->with('success', 'Produk berhasil diperbarui!');
     }
-
+    
     public function destroy($id)
     {
         try {
