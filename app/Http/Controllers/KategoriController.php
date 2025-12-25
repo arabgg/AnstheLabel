@@ -42,11 +42,15 @@ class KategoriController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_kategori' => 'required|string|max:255',
+            'nama_kategori' => [
+                'required',
+                'unique:m_kategori,nama_kategori',
+                'regex:/^[A-Za-z\s]+$/'
+            ],
         ], [
             'nama_kategori.required' => 'Nama kategori wajib diisi.',
-            'nama_kategori.string' => 'Nama kategori harus berupa teks.',
-            'nama_kategori.max' => 'Nama kategori maksimal 255 karakter.',
+            'nama_kategori.unique'   => 'Nama kategori sudah ada.',
+            'nama_kategori.regex'    => 'Nama kategori hanya boleh berisi huruf dan spasi.'
         ]);
 
         $kategori = KategoriModel::create([
