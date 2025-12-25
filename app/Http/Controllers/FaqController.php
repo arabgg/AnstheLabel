@@ -44,8 +44,17 @@ class FaqController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'pertanyaan' => 'required|string|max:255',
-            'jawaban'    => 'required|string',
+            'pertanyaan' => [
+                'required',
+                'unique:m_faq,pertanyaan',
+                'regex:/^[A-Za-z0-9\s\?\.\,]+$/',
+                'max:255'
+            ],
+            'jawaban' => [
+                'required',
+                'string',
+                'max:500'
+            ]
         ]);
 
         $faq = FaqModel::create([
