@@ -61,6 +61,13 @@
                                 {{ $transaksi->pembayaran->metode->nama_pembayaran ?? '-' }}
                             </td>
                         </tr>
+                        <tr>
+                            <td class="py-2 font-medium">Ekspedisi</td>
+                            <td class="py-2 px-2">:</td>
+                            <td class="py-2">
+                                {{ $transaksi->ekspedisi->nama_ekspedisi ?? '-' }}
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
