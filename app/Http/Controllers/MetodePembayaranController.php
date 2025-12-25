@@ -56,9 +56,15 @@ class MetodePembayaranController extends Controller
     {
         $validated = $request->validate([
             'metode_id' => 'required|integer|exists:m_metode_pembayaran,metode_id',
-            'nama_pembayaran' => 'required|string|max:255',
-            'kode_bayar' => 'required|string|max:255',
-            'atas_nama' => 'required|string|max:255',
+            'nama_pembayaran' => 'required|string|max:100',
+            'kode_bayar' => [
+                'required',
+                'string',
+                'max:50',
+                'unique:t_metode_pembayaran,kode_bayar',
+                'regex:/^[A-Z0-9\-]+$/'
+            ],
+            'atas_nama' => 'required|string|max:50',
             'status_pembayaran' => 'required|in:0,1',
             'icon' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
