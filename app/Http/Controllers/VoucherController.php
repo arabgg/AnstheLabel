@@ -53,7 +53,7 @@ class VoucherController extends Controller
             'kode_voucher'   => 'required|unique:m_voucher,kode_voucher',
             'deskripsi'      => 'nullable|string|max:255',
             'tipe_diskon'    => 'required|in:persen,nominal',
-            'nilai_diskon'   => 'required|numeric|min:0',
+            'nilai_diskon'   => 'required|numeric|gt:0',
             'min_transaksi'  => 'nullable|numeric|min:0',
             'usage_limit'    => 'nullable|integer|min:0',
             'tanggal_mulai'  => 'nullable|date',
