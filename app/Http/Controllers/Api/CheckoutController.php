@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Helpers\ApiResponse;
-use App\Models\Product;
-use App\Models\Transaction;
+use App\Models\ProdukModel as Product;
+use App\Models\TransaksiModel as Transaction;
 use Carbon\Carbon;
 
 class CheckoutController extends Controller

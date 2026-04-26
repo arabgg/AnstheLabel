@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Transaction;
+use App\Models\TransaksiModel;
 use App\Helpers\ApiResponse;
 
 class TransactionController extends Controller
 {
     public function show(Request $request, $kode_invoice)
     {
-        $trx = Transaction::where('kode_invoice', $kode_invoice)
+        $trx = TransaksiModel::where('kode_invoice', $kode_invoice)
             ->where('token', $request->token)
             ->first();
 
@@ -34,7 +34,7 @@ class TransactionController extends Controller
 
     public function uploadPayment(Request $request, $kode_invoice)
     {
-        $trx = Transaction::where('kode_invoice', $kode_invoice)
+        $trx = TransaksiModel::where('kode_invoice', $kode_invoice)
             ->where('token', $request->token)
             ->first();
 

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Product;
+use App\Models\ProdukModel;
 use Illuminate\Http\Request;
 use App\Helpers\ApiResponse;
 
@@ -13,7 +13,7 @@ class ProductController extends Controller
     {
         $limit = $request->limit ?? 10;
 
-        $query = Product::query()
+        $query = ProdukModel::query()
             ->where('stock', '>', 0);
 
         if ($request->search) {
@@ -57,7 +57,7 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $product = Product::with(['variants', 'photos'])->find($id);
+        $product = ProdukModel::with(['variants', 'photos'])->find($id);
 
         if (!$product) {
             return ApiResponse::error('Produk tidak ditemukan', 404);
