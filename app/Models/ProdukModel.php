@@ -107,12 +107,12 @@ class ProdukModel extends Model
     return $this->hasMany(ProductVariant::class, 'product_id');
     }
 
-    public function bahan()
+    public function bahan2()
     {
     return $this->belongsTo(Bahan::class, 'bahan_id');
     }
 
-    public function kategori()
+    public function kategori2()
     {
     return $this->belongsTo(Kategori::class, 'kategori_id');
     }
