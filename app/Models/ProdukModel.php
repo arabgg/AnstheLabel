@@ -102,4 +102,18 @@ class ProdukModel extends Model
     {
         return $this->hasMany(DetailTransaksiModel::class, 'produk_id', 'produk_id');
     }
+    public function variants()
+    {
+    return $this->hasMany(ProductVariant::class, 'product_id');
+    }
+
+    public function bahan()
+    {
+    return $this->belongsTo(Bahan::class, 'bahan_id');
+    }
+
+    public function kategori()
+    {
+    return $this->belongsTo(Kategori::class, 'kategori_id');
+    }
 }
