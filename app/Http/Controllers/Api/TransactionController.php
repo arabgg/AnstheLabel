@@ -120,7 +120,7 @@ class TransactionController extends Controller
      * Upload payment proof
      * POST /api/v1/transactions/{kode_invoice}/upload-payment
      */
-    public function uploadPayment(Request $request, $kode_invoice)
+   public function uploadPayment(Request $request, $kode_invoice)
     {
         try {
             $request->validate([
@@ -145,13 +145,13 @@ class TransactionController extends Controller
 
             // Delete old payment proof if exists
             if ($transaksi->pembayaran->bukti_pembayaran) {
-                Storage::delete('public/bukti_pembayaran/' . $transaksi->pembayaran->bukti_pembayaran);
+                Storage::delete('public/bukti/' . $transaksi->pembayaran->bukti_pembayaran);
             }
 
             // Store new payment proof
             $file = $request->file('bukti_pembayaran');
             $filename = Str::random(40) . '.' . $file->getClientOriginalExtension();
-            $path = 'public/bukti_pembayaran/' . $filename;
+            $path = 'public/bukti/' . $filename;
             Storage::put($path, file_get_contents($file));
 
             // Update pembayaran
@@ -164,7 +164,7 @@ class TransactionController extends Controller
                 'message' => 'Bukti pembayaran berhasil diupload',
                 'data' => [
                     'kode_invoice' => $kode_invoice,
-                    'bukti_pembayaran_url' => url('storage/bukti_pembayaran/' . $filename),
+                    'bukti_pembayaran_url' => url('storage/bukti/' . $filename),
                     'status_pembayaran' => $transaksi->pembayaran->fresh()->status_pembayaran,
                 ],
             ]);

@@ -24,7 +24,7 @@ class CheckoutController extends Controller
     {
         try {
             $metode = Cache::remember('api_metode_pembayaran', 3600, function () {
-                return MetodeModel::with(['metodepembayaran' => function ($query) {
+                return MetodeModel::with(['metode' => function ($query) {
                     $query->where('status_pembayaran', 1);
                 }])->get();
             });
@@ -33,7 +33,7 @@ class CheckoutController extends Controller
                 return [
                     'metode_id' => $m->metode_id,
                     'nama_metode' => $m->nama_metode,
-                    'pembayaran' => $m->metodepembayaran->map(function ($p) {
+                    'pembayaran' => $m->metode->map(function ($p) {
                         return [
                             'metode_pembayaran_id' => $p->metode_pembayaran_id,
                             'nama_pembayaran' => $p->nama_pembayaran,
